@@ -1,11 +1,20 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
 import MyCalendar from './MyCalendar'
+import apiService from './services/apiService'
 
-function App() {
+const App = () => {
+
+  const [events, setEvents] = useState([])
+
+
+  useEffect(() => {
+    apiService.getEvents().then(data => setEvents(data))
+  }, [])
+
   return (
     <div className="App">
-      <MyCalendar/>
+      <MyCalendar events={events}/>
     </div>
   )
 }
