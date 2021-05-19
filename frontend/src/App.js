@@ -1,4 +1,5 @@
-import './App.css';
+import React from 'react'
+import './App.css'
 import MyCalendar from './MyCalendar'
 
 function App() {
@@ -6,7 +7,7 @@ function App() {
     <div className="App">
       <MyCalendar/>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

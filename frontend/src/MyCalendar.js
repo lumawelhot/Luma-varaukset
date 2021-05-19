@@ -1,6 +1,8 @@
+import React from 'react'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
-import 'react-big-calendar/lib/css/react-big-calendar.css'
+//import 'react-big-calendar/lib/css/react-big-calendar.css'
+import 'moment/locale/fi'
 
 const localizer = momentLocalizer(moment)
 const now = new Date()
@@ -93,7 +95,7 @@ const events = [
   },
   {
     id: 11.2,
-    title: "Project Kickoff - Lou's Shoes",
+    title: 'Project Kickoff - Lou\'s Shoes',
     start: new Date(2015, 3, 13, 11, 30, 0),
     end: new Date(2015, 3, 13, 14, 0, 0),
   },
@@ -183,13 +185,14 @@ const events = [
   },
 ]
 
-const MyCalendar = props => (
+const MyCalendar = () => (
   <div>
     <Calendar
+      culture='fi'
       localizer={localizer}
       events={events}
-      startAccessor="start"
-      endAccessor="end"
+      startAccessor='start'
+      endAccessor='end'
       style={{ height: 500 }}
     />
   </div>
