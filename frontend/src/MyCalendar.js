@@ -1,13 +1,11 @@
 import React from 'react'
-import { Calendar, Views, momentLocalizer } from 'react-big-calendar'
+import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 //import 'react-big-calendar/lib/css/react-big-calendar.css'
 import 'moment/locale/fi'
-import * as dates from 'react-big-calendar/lib/utils/dates'
+import { messages } from './helpers/calendar-messages-fi'
 
 const localizer = momentLocalizer(moment)
-
-let allViews = Object.keys(Views).map(k => Views[k])
 
 const resourceMap = [
   { resourceId: 1, resourceTitle: 'Summamutikka' },
@@ -22,13 +20,15 @@ const MyCalendar = ({ events }) => (
     <Calendar
       culture='fi'
       localizer={localizer}
-      views={allViews}
+      messages={messages}
+      views={['month','work_week','day','agenda']}
       showMultiDayTimes
       events={events}
       startAccessor='start'
       endAccessor='end'
       style={{ height: 500 }}
-      max={dates.add(dates.endOf(new Date(2021, 7, 1), 'day'), -1, 'hours')}
+      min={moment('8:00am', 'h:mma').toDate()}
+      max={moment('5:00pm', 'h:mma').toDate()}
       resources={resourceMap}
       resourceIdAccessor="resourceId"
       resourceTitleAccessor="resourceTitle"

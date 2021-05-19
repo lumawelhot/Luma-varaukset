@@ -1,0 +1,18 @@
+export const messages = {
+  allDay: 'Hela dagen',
+  previous: '<',
+  next: '>',
+  today: 'Idag',
+  month: 'Månad',
+  week: 'Vecka',
+  day: 'Dag',
+  agenda: 'Agenda',
+  date: 'Datum',
+  time: 'Tid',
+  event: 'Evenemang',
+  noEventsInRange: 'Inga evenemang',
+  showMore: (total) => `+ Visa mera (${total})`,
+  work_week: 'Vecka',
+  yesterday: 'Igår',
+  tomorrow: 'Imorgon',
+}
