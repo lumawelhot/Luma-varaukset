@@ -10,7 +10,7 @@ The application has been created for the Helsinki University course Software Eng
 
 [Documentation](#documentation)
 
-[Usge](#usage)
+[Usage](#usage)
 
 [Contributing](#contributing)
 
@@ -43,7 +43,7 @@ The application has been created for the Helsinki University course Software Eng
 
 ## Project Documentation
 
-Definition of Done
+[Definition of Done](https://github.com/lumawelhot/Luma-varaukset/blob/main/docs/definition_of_done.md)
 
 [Product Backlog](https://docs.google.com/spreadsheets/d/1jKcC4YyXZ3QNNSCfvvapEfwdzT-gH4OzLNnMJK1LMGA/edit#gid=0)
 
