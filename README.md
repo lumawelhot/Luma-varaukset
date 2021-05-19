@@ -47,6 +47,8 @@ Definition of Done
 
 [Product Backlog](https://docs.google.com/spreadsheets/d/1jKcC4YyXZ3QNNSCfvvapEfwdzT-gH4OzLNnMJK1LMGA/edit#gid=0)
 
+[Sprint Backlog and time sheets](https://docs.google.com/spreadsheets/d/1QTQyVfhW5SEzO3SSph0t2J4dzxE0-PgdmP1BX4H8VZk/edit#gid=634615120)
+
 ## Licence
 
 *To be added.*
