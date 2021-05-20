@@ -20,26 +20,25 @@ The application has been created for the Helsinki University course Software Eng
 
 [Licence](#licence)
 
-
 ## Installation
 
-*To be added.*
+_To be added._
 
 ## Documentation
 
-*To be added.*
+[High-level software architecture](./docs/architecture.png)
 
 ## Usage
 
-*To be added.*
+_To be added._
 
 ## Contributing
 
-*To be added.*
+_To be added._
 
 ## Credits
 
-*To be added.*
+_To be added._
 
 ## Project Documentation
 
@@ -51,4 +50,4 @@ The application has been created for the Helsinki University course Software Eng
 
 ## Licence
 
-*To be added.*
+_To be added._
