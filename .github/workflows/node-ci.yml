@@ -1,0 +1,68 @@
+name: Node.js CI on push
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci && cd ../backend && npm ci && cd ../frontend
+    - run: npm run build --if-present
+      
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+     run:
+       working-directory: backend
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+
+  - name: Discord notification
+        uses: Ilshidur/action-discord@master
+        with:
+          status: success
+          fields: repo, commit, author, took
+          custom_payload: |
+            {
+              attachments: [{
+                color: 'good',
+                text: `a new version deployed to Heroku (${process.env.AS_COMMIT}) by ${process.env.AS_AUTHOR} build took ${process.env.AS_TOOK}`
+              }]
+            }
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }} # required
+        if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') && success() }}
+
+      - name: Announce failure on Discord
+        uses: Ilshidur/action-discord@master
+        with:
+          status: failure
+          fields: repo, message, commit, author, action
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }} # required
+        if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') && failure() }}
