@@ -44,9 +44,9 @@ _To be added._
 
 [Definition of Done](https://github.com/lumawelhot/Luma-varaukset/blob/main/docs/definition_of_done.md)
 
-[Product Backlog](https://docs.google.com/spreadsheets/d/1jKcC4YyXZ3QNNSCfvvapEfwdzT-gH4OzLNnMJK1LMGA/edit#gid=0)
+[Product Backlog](https://docs.google.com/spreadsheets/d/1jKcC4YyXZ3QNNSCfvvapEfwdzT-gH4OzLNnMJK1LMGA/edit?usp=sharing)
 
-[Sprint Backlog and time sheets](https://docs.google.com/spreadsheets/d/1QTQyVfhW5SEzO3SSph0t2J4dzxE0-PgdmP1BX4H8VZk/edit#gid=634615120)
+[Sprint Backlog and time sheets](https://docs.google.com/spreadsheets/d/1QTQyVfhW5SEzO3SSph0t2J4dzxE0-PgdmP1BX4H8VZk/edit?usp=sharing)
 
 ## Licence
 
