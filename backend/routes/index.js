@@ -1,8 +1,12 @@
 var express = require('express');
 var router = express.Router();
 
-const now = new Date()
-const events = [
+const items = require('../events.json')
+
+const Event = require('../models/event')
+
+//const now = new Date()
+/* const items = [
   {
     id: 0,
     title: 'Scratch-ohjelmointikieli',
@@ -171,15 +175,21 @@ const events = [
     start: new Date(2021, 5, 14, 18, 30, 0),
     end: new Date(2021, 5, 14, 20, 0, 0),
   },
-]
+] */
+
+items.forEach(item => {
+  const event = new Event(item)
+  event.save()
+})
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 })
 
-router.get('/events', (req, res, next) => {
-  res.json(events)
+router.get('/events', async (req, res, next) => {
+  const events = await Event.find({})
+  res.json(events.map(event => event.toJSON()))
 })
 
 module.exports = router;

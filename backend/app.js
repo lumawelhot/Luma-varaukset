@@ -10,6 +10,15 @@ var usersRouter = require('./routes/users');
 var app = express();
 const cors = require('cors')
 
+const { MongoMemoryServer } = require('mongodb-memory-server')
+const mongoose = require('mongoose')
+
+const mongoServer = new MongoMemoryServer()
+mongoServer.getUri().then(uri => {
+  mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  console.log('connected to mongodb')
+})
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

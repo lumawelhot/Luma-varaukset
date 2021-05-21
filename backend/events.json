@@ -1,0 +1,144 @@
+[
+  {
+    "title": "Scratch-ohjelmointikieli",
+    "allDay": true,
+    "start": "Tue Jun 01 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Wed Jun 02 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
+    "resourceId": 3
+  },
+  {
+    "title": "Maanjäristystysten alueellisuus ja niiden vaikutukset",
+    "start": "Mon Jun 07 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Thu Jun 10 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
+    "resourceId": 4
+  },
+  {
+    "title": "Lämpösäteily ja ilmastonmuutos",
+    "start": "Sun Jun 13 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Sun Jun 20 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
+    "resourceId": 4
+  },
+  {
+    "title": "Kemian kokeelliset työt",
+    "start": "Tue Jul 06 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Tue Jul 13 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
+    "resourceId": 4
+  },
+  {
+    "title": "Python-ohjelmointikieli",
+    "start": "Wed Jun 09 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Thu Jun 10 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
+    "resourceId": 5
+  },
+  {
+    "title": "Matematiikkan työpajat",
+    "start": "Fri Jun 11 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Sun Jun 13 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
+    "desc": "Big conference for important people",
+    "resourceId": 1
+  },
+  {
+    "title": "Meeting",
+    "start": "Sat Jun 12 2021 10:30:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Sat Jun 12 2021 12:30:00 GMT+0300 (Eastern European Summer Time)",
+    "desc": "Pre-meeting meeting, to prepare for the meeting",
+    "resourceId": 2
+  },
+  {
+    "title": "Lunch",
+    "start": "Sat Jun 12 2021 12:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Sat Jun 12 2021 13:00:00 GMT+0300 (Eastern European Summer Time)",
+    "desc": "Power lunch",
+    "resourceId": 3
+  },
+  {
+    "title": "Dinner",
+    "start": "Sat Jun 12 2021 20:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Sat Jun 12 2021 21:00:00 GMT+0300 (Eastern European Summer Time)",
+    "resourceId": 1
+  },
+  {
+    "title": "Planning Meeting with Paige",
+    "start": "Sun Jun 13 2021 08:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Sun Jun 13 2021 10:30:00 GMT+0300 (Eastern European Summer Time)",
+    "resourceId": 1
+  },
+  {
+    "title": "Late Night Event",
+    "start": "Thu Jun 17 2021 19:30:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Fri Jun 18 2021 02:00:00 GMT+0300 (Eastern European Summer Time)",
+    "resourceId": 1
+  },
+  {
+    "title": "Multi-day Event",
+    "start": "Sun Jun 20 2021 19:30:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Tue Jun 22 2021 02:00:00 GMT+0300 (Eastern European Summer Time)",
+    "resourceId": 1
+  },
+  {
+    "title": "Today",
+    "start": "Fri May 21 2021 07:46:57 GMT+0300 (Eastern European Summer Time)",
+    "end": "Fri May 21 2021 13:46:57 GMT+0300 (Eastern European Summer Time)",
+    "resourceId": 1
+  },
+  {
+    "title": "Point in Time Event",
+    "start": "Fri May 21 2021 10:46:57 GMT+0300 (Eastern European Summer Time)",
+    "end": "Fri May 21 2021 10:46:57 GMT+0300 (Eastern European Summer Time)",
+    "resourceId": 3
+  },
+  {
+    "title": "Video Record",
+    "start": "Mon Jun 14 2021 15:30:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Mon Jun 14 2021 19:00:00 GMT+0300 (Eastern European Summer Time)",
+    "resourceId": 3
+  },
+  {
+    "title": "Dutch Song Producing",
+    "start": "Tue Jun 15 2021 16:30:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Tue Jun 15 2021 20:00:00 GMT+0300 (Eastern European Summer Time)"
+  },
+  {
+    "title": "Meeting",
+    "start": "Sat Jun 12 2021 14:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Sat Jun 12 2021 15:00:00 GMT+0300 (Eastern European Summer Time)",
+    "resourceId": 4
+  },
+  {
+    "title": "Happy Hour",
+    "start": "Sat Jun 12 2021 17:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Sat Jun 12 2021 17:30:00 GMT+0300 (Eastern European Summer Time)",
+    "desc": "Most important meal of the day",
+    "resourceId": 5
+  },
+  {
+    "title": "Itaewon Halloween Meeting",
+    "start": "Mon Jun 14 2021 16:30:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Mon Jun 14 2021 17:30:00 GMT+0300 (Eastern European Summer Time)"
+  },
+  {
+    "title": "Online Coding Test",
+    "start": "Mon Jun 14 2021 17:30:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Mon Jun 14 2021 20:30:00 GMT+0300 (Eastern European Summer Time)"
+  },
+    {
+    "title": "An overlapped Event",
+    "start": "Mon Jun 14 2021 17:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Mon Jun 14 2021 18:30:00 GMT+0300 (Eastern European Summer Time)"
+  },
+  {
+    "title": "Phone Interview",
+    "start": "Mon Jun 14 2021 17:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Mon Jun 14 2021 18:30:00 GMT+0300 (Eastern European Summer Time)"
+  },
+  {
+    "title": "Cooking Class",
+    "start": "Mon Jun 14 2021 17:30:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Mon Jun 14 2021 19:00:00 GMT+0300 (Eastern European Summer Time)"
+  },
+  {
+    "title": "Go to the gym",
+    "start": "Mon Jun 14 2021 18:30:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Mon Jun 14 2021 20:00:00 GMT+0300 (Eastern European Summer Time)"
+  }
+]
