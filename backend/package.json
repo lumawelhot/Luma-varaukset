@@ -3,17 +3,22 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "dev": "cross-env NODE_ENV=development nodemon ./bin/www"
+    "start": "node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js"
   },
   "dependencies": {
+    "apollo-server": "^2.24.1",
+    "apollo-server-express": "^2.24.1",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "graphql": "^15.5.0",
+    "graphql-playground-middleware-express": "^1.7.22",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
+    "lodash": "^4.17.21",
     "mongoose": "^5.12.10",
     "mongoose-unique-validator": "^2.0.3",
     "morgan": "~1.9.1",
