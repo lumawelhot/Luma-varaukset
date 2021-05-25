@@ -48,6 +48,6 @@ _To be added._
 
 [Sprint Backlog and time sheets](https://docs.google.com/spreadsheets/d/1QTQyVfhW5SEzO3SSph0t2J4dzxE0-PgdmP1BX4H8VZk/edit?usp=sharing)
 
-## Licence
+## License
 
-_To be added._
+See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT).
