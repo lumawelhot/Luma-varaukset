@@ -3,12 +3,17 @@ const express = require('express')
 const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
+const bcrypt = require('bcrypt')
 
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
 
 const app = express()
 const cors = require('cors')
+
+const jwt = require('jsonwebtoken')
+
+const User = require('./models/user')
 
 const { ApolloServer } = require('apollo-server-express')
 const resolvers = require('./graphql/resolvers')
@@ -18,6 +23,16 @@ const server = new ApolloServer({
   resolvers,
   introspection: true,
   playground: true,
+  context: async ({ req }) => {
+    const auth = req ? req.headers.authorization : null
+    if (auth && auth.toLowerCase().startsWith('bearer ')) {
+      const decodedToken = jwt.verify(
+        auth.substring(7), 'huippusalainen'
+      )
+      const currentUser = await User.findById(decodedToken.id)
+      return { currentUser }
+    }
+  }
 });
 server.applyMiddleware({ app });
 
@@ -29,6 +44,17 @@ mongoServer.getUri().then(uri => {
   mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   console.log('connected to mongodb')
 })
+
+const createAdmin = async () => {
+  const userObject = new User({
+    username: 'Admin',
+    passwordHash: await bcrypt.hash('salainen', 10),
+    isAdmin: true,
+  })
+  userObject.save()
+}
+
+createAdmin()
 
 app.use(logger('dev'));
 app.use(cors())
