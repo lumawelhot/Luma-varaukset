@@ -30,7 +30,6 @@
   "devDependencies": {
     "@shelf/jest-mongodb": "^1.2.4",
     "apollo-server-testing": "^2.24.1",
-    "graphql-query-test-mock": "^0.12.1",
     "jest": "^27.0.1",
     "mongodb-memory-server": "^6.9.6",
     "supertest": "^6.1.3"

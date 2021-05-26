@@ -18,6 +18,6 @@ eventSchema.set('toJSON', {
   }
 })
 
-eventSchema.plugin(uniqueValidator)
+eventSchema.plugin(uniqueValidator,)
 
 module.exports = mongoose.model('Event', eventSchema)
