@@ -16,7 +16,6 @@ import { LOGIN } from './graphql/queries'
 */
 
 const App = () => {
-
   const [events, setEvents] = useState([])
   // GraphQL Client variables
   // const client = useApolloClient()

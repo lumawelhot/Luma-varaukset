@@ -10,11 +10,6 @@ items.forEach(item => {
   event.save()
 })
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-})
-
 router.get('/events', async (req, res, next) => {
   const events = await Event.find({})
   res.json(events.map(event => event.toJSON()))
