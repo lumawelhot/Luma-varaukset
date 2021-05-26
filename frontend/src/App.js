@@ -4,7 +4,6 @@ import MyCalendar from './MyCalendar'
 import apiService from './services/apiService'
 
 const App = () => {
-
   const [events, setEvents] = useState([])
 
 
