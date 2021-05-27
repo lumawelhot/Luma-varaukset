@@ -7,6 +7,7 @@ import { Switch, Route, useHistory } from 'react-router-dom'
 import { useApolloClient, useLazyQuery } from '@apollo/client'
 import UserForm from './components/UserForm'
 import { CURRENT_USER } from './graphql/queries'
+import UserList from './components/UserList'
 
 const App = () => {
   const history = useHistory()
@@ -59,7 +60,10 @@ const App = () => {
           }
         </Route>
         <Route path='/users'>
-          <div></div>
+          {currentUser && currentUser.isAdmin &&
+            <UserList />
+          }
+          {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
         </Route>
         <Route path='/'>
           {!currentUser &&
