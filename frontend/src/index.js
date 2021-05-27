@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { setContext } from 'apollo-link-context'
+import { BrowserRouter as Router } from 'react-router-dom'
 
 import {
   ApolloClient,
@@ -13,7 +14,7 @@ import './index.css'
 import App from './App'
 
 const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('libraryapp-token')
+  const token = localStorage.getItem('app-token')
 
   return {
     headers: {
@@ -23,7 +24,7 @@ const authLink = setContext((_, { headers }) => {
   }
 })
 
-const httpLink = new HttpLink({ uri: 'http://localhost:3001' })
+const httpLink = new HttpLink({ uri: 'http://localhost:3001/graphql' })
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
@@ -32,7 +33,9 @@ const client = new ApolloClient({
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <App />
+    <Router>
+      <App />
+    </Router>
   </ApolloProvider>,
   document.getElementById('root')
 )
