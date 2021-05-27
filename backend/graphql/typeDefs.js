@@ -6,12 +6,20 @@ const typeDefs = gql `
     username: String!
     isAdmin: Boolean!
   }
+  type Event {
+    id: ID!
+    title: String!
+    resourceId: Int
+    start: String!
+    end: String!
+  }
   type Token {
     value: String!
   }
   type Query {
     getUsers: [User]!
     me: User!
+    getEvents: [Event]!
   }
   type Mutation {
     createUser(
@@ -23,6 +31,12 @@ const typeDefs = gql `
       username: String!
       password: String!
     ): Token
+    createEvent(
+      title: String!
+      class: String!
+      start: String!
+      end: String!
+    ): Event
   }
 `
 
