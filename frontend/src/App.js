@@ -47,9 +47,10 @@ const App = () => {
           }
         </Route>
         <Route path='/users'>
-          {!token &&
+          {token &&
             <ListUsers />
           }
+          {!token && <p>Et ole kirjautunut sisään.</p>}
         </Route>
         <Route path='/'>
           {!token &&
