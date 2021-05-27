@@ -5,6 +5,7 @@ import MyCalendar from './MyCalendar'
 import apiService from './services/apiService'
 import { Switch, Route, useHistory } from 'react-router-dom'
 import { useApolloClient } from '@apollo/client'
+import ListUsers from './components/ListUsers'
 
 const App = () => {
   const history = useHistory()
@@ -44,6 +45,12 @@ const App = () => {
           {!token &&
             <LoginForm setToken={setToken} />
           }
+        </Route>
+        <Route path='/users'>
+          {token &&
+            <ListUsers />
+          }
+          {!token && <p>Et ole kirjautunut sisään.</p>}
         </Route>
         <Route path='/'>
           {!token &&
