@@ -11,6 +11,19 @@ export const LOGIN = gql `
   }
 `
 
+export const CREATE_USER = gql `
+  mutation createUser($username: String!, $password: String!, $isAdmin: Boolean!) {
+    createUser(
+      username: $username,
+      password: $password,
+      isAdmin: $isAdmin
+    ) {
+      username,
+      isAdmin
+    }
+  }
+`
+
 export const USERS = gql `
   query getUsers {
     getUsers {
@@ -27,6 +40,14 @@ export const EVENTS = gql `
       resourceId
       start
       end
+    }
+  }
+`
+export const CURRENT_USER = gql `
+  query me {
+    me {
+      username,
+      isAdmin
     }
   }
 `

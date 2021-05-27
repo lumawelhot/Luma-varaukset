@@ -23,6 +23,9 @@ const resolvers = {
       if (!currentUser || currentUser.isAdmin !== true) {
         throw new AuthenticationError('not authenticated or not credentials')
       }
+      if (args.username.length < 5) {
+        throw new UserInputError('username too short')
+      }
       const salt = 10
       const passwordHash = await bcrypt.hash(args.password, salt)
       const newUser = new User({
