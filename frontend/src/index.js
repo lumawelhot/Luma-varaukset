@@ -13,6 +13,8 @@ import {
 import './index.css'
 import App from './App'
 
+const BASE_URL = process.env.PUBLIC_URL || 'http://localhost:3001'
+
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('app-token')
 
@@ -24,7 +26,7 @@ const authLink = setContext((_, { headers }) => {
   }
 })
 
-const httpLink = new HttpLink({ uri: 'http://localhost:3001/graphql' })
+const httpLink = new HttpLink({ uri: BASE_URL + '/graphql' })
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
