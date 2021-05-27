@@ -19,3 +19,14 @@ export const USERS = gql `
     }
   }
 `
+
+export const EVENTS = gql `
+  query getEvents {
+    getEvents {
+      title
+      resourceId
+      start
+      end
+    }
+  }
+`

@@ -2,21 +2,32 @@ import React, { useState, useEffect } from 'react'
 import './App.css'
 import LoginForm from './components/LoginForm'
 import MyCalendar from './MyCalendar'
-import apiService from './services/apiService'
 import { Switch, Route, useHistory } from 'react-router-dom'
-import { useApolloClient } from '@apollo/client'
+import { useApolloClient, useQuery } from '@apollo/client'
 import ListUsers from './components/ListUsers'
+import { EVENTS } from './graphql/queries'
 
 const App = () => {
   const history = useHistory()
   const [events, setEvents] = useState([])
   const client = useApolloClient()
+  const result = useQuery(EVENTS)
 
   const [token, setToken] = useState(null)
 
   useEffect(() => {
-    apiService.getEvents().then(data => setEvents(data))
-  }, [])
+    if (result.data) {
+      const events = result.data.getEvents.map(event => {
+        return {
+          title: event.title,
+          resourceId: event.resourceId,
+          start: new Date(event.start),
+          end: new Date(event.end)
+        }
+      })
+      setEvents(events)
+    }
+  }, [result])
 
   useEffect(() => {
     const token = localStorage.getItem('app-token')
