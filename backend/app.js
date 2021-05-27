@@ -1,12 +1,9 @@
 const createError = require('http-errors')
 const express = require('express')
-const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const bcrypt = require('bcrypt')
-
-const indexRouter = require('./routes/index')
-const usersRouter = require('./routes/users')
+const path = require('path')
 
 const app = express()
 const cors = require('cors')
@@ -71,9 +68,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
 app.use(express.static('build'))
-app.use('/events', indexRouter)
-app.use('/users', usersRouter)
-//app.get('*', (req, res) => res.sendFile(path.resolve('build', 'index.html')))
+app.get('*', (req, res) => res.sendFile(path.resolve('build', 'index.html'))) // This is needed for React Router in frontend!
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404))
