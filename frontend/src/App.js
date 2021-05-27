@@ -2,28 +2,45 @@ import React, { useState, useEffect } from 'react'
 import './App.css'
 import LoginForm from './components/LoginForm'
 import MyCalendar from './MyCalendar'
-import apiService from './services/apiService'
 import { Switch, Route, useHistory } from 'react-router-dom'
-import { useApolloClient } from '@apollo/client'
-import ListUsers from './components/ListUsers'
+import { EVENTS } from './graphql/queries'
+import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client'
+import UserForm from './components/UserForm'
+import { CURRENT_USER } from './graphql/queries'
+import UserList from './components/UserList'
 
 const App = () => {
   const history = useHistory()
   const [events, setEvents] = useState([])
   const client = useApolloClient()
+  const result = useQuery(EVENTS)
+  const [getUser, { loading, data }] = useLazyQuery(CURRENT_USER, {
+    fetchPolicy: 'cache-and-network'
+  })
 
-  const [token, setToken] = useState(null)
+  const [currentUser, setUser] = useState(null)
 
   useEffect(() => {
-    apiService.getEvents().then(data => setEvents(data))
-  }, [])
-
-  useEffect(() => {
-    const token = localStorage.getItem('app-token')
-    if (token) {
-      setToken(token)
+    if (result.data) {
+      const events = result.data.getEvents.map(event => {
+        return {
+          title: event.title,
+          resourceId: event.resourceId,
+          start: new Date(event.start),
+          end: new Date(event.end)
+        }
+      })
+      setEvents(events)
     }
+  }, [result])
+
+  useEffect(() => {
+    if (localStorage.getItem('app-token')) getUser()
   }, [])
+
+  useEffect(() => {
+    if (data) setUser(data.me)
+  }, [data])
 
   const login = (event) => {
     event.preventDefault()
@@ -32,33 +49,40 @@ const App = () => {
 
   const logout = (event) => {
     event.preventDefault()
-    setToken(null)
-    localStorage.clear()
+    setUser(null)
+    localStorage.removeItem('app-token')
     client.resetStore()
     history.push('/')
   }
+
+  if (loading) return <div></div>
 
   return (
     <div className="App">
       <Switch>
         <Route path='/admin'>
-          {!token &&
-            <LoginForm setToken={setToken} />
+          {!currentUser &&
+            <LoginForm getUser={getUser} />
+          }
+        </Route>
+        <Route path='/users/create'>
+          {currentUser && currentUser.isAdmin &&
+            <UserForm setUser={setUser} />
           }
         </Route>
         <Route path='/users'>
-          {token &&
-            <ListUsers />
+          {currentUser && currentUser.isAdmin &&
+            <UserList />
           }
-          {!token && <p>Et ole kirjautunut sisään.</p>}
+          {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
         </Route>
         <Route path='/'>
-          {!token &&
+          {!currentUser &&
             <div className="control">
               <button className="button is-link is-light" onClick={login}>Kirjaudu sisään</button>
             </div>
           }
-          {token &&
+          {currentUser &&
             <div className="control">
               <button className="button is-link is-light" onClick={logout}>Kirjaudu ulos</button>
             </div>
