@@ -39,8 +39,14 @@ server.applyMiddleware({ app });
 
 const { MongoMemoryServer } = require('mongodb-memory-server')
 const mongoose = require('mongoose')
+mongoose.set('useCreateIndex', true)
 const mongoServer = new MongoMemoryServer()
-mongoServer.getUri().then(uri => {
+
+mongoServer.getUri().then(async (uri) => {
+  const port = await mongoServer.getPort();
+  const dbPath = await mongoServer.getDbPath();
+  const dbName = await mongoServer.getDbName();
+  console.log('tietoja: ', port, dbName, dbPath)
   mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   console.log('connected to mongodb')
 })
