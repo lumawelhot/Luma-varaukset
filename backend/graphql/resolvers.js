@@ -8,12 +8,18 @@ const resolvers = {
     getUsers: async () => {
       const users = await User.find({})
       return users
+    },
+    me: (root, args, context) => {
+      return context.currentUser
     }
   },
   Mutation: {
     createUser: async (root, args, { currentUser }) => {
       if (!currentUser || currentUser.isAdmin !== true) {
         throw new AuthenticationError('not authenticated or not credentials')
+      }
+      if (args.username.length < 5) {
+        throw new UserInputError('username too short')
       }
       const salt = 10
       const passwordHash = await bcrypt.hash(args.password, salt)
