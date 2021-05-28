@@ -2,17 +2,19 @@ import React, { useState, useEffect } from 'react'
 import './App.css'
 import LoginForm from './components/LoginForm'
 import MyCalendar from './MyCalendar'
-import apiService from './services/apiService'
 import { Switch, Route, useHistory } from 'react-router-dom'
-import { useApolloClient, useLazyQuery } from '@apollo/client'
+import { EVENTS } from './graphql/queries'
+import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client'
 import UserForm from './components/UserForm'
 import { CURRENT_USER } from './graphql/queries'
 import UserList from './components/UserList'
+import EventForm from './components/EventForm'
 
 const App = () => {
   const history = useHistory()
   const [events, setEvents] = useState([])
   const client = useApolloClient()
+  const result = useQuery(EVENTS)
   const [getUser, { loading, data }] = useLazyQuery(CURRENT_USER, {
     fetchPolicy: 'cache-and-network'
   })
@@ -20,8 +22,18 @@ const App = () => {
   const [currentUser, setUser] = useState(null)
 
   useEffect(() => {
-    apiService.getEvents().then(data => setEvents(data))
-  }, [])
+    if (result.data) {
+      const events = result.data.getEvents.map(event => {
+        return {
+          title: event.title,
+          resourceId: event.resourceId,
+          start: new Date(event.start),
+          end: new Date(event.end)
+        }
+      })
+      setEvents(events)
+    }
+  }, [result])
 
   useEffect(() => {
     if (localStorage.getItem('app-token')) getUser()
@@ -34,6 +46,12 @@ const App = () => {
   const login = (event) => {
     event.preventDefault()
     history.push('/admin')
+  }
+
+  const createEvent = (event) => {
+    event.preventDefault()
+    history.push('/event')
+
   }
 
   const logout = (event) => {
@@ -57,6 +75,12 @@ const App = () => {
             <div>You are already logged in</div>
           }
         </Route>
+        <Route path='/event'>
+          {currentUser && currentUser.isAdmin &&
+              <EventForm/>
+          }
+          {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
+        </Route>
         <Route path='/users/create'>
           {currentUser && currentUser.isAdmin &&
             <UserForm setUser={setUser} />
@@ -64,6 +88,7 @@ const App = () => {
           {!(currentUser && currentUser.isAdmin) &&
             <div>Access denied</div>
           }
+          {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
         </Route>
         <Route path='/users'>
           {currentUser && currentUser.isAdmin &&
@@ -80,6 +105,7 @@ const App = () => {
           {currentUser &&
             <div className="control">
               <button className="button is-link is-light" onClick={logout}>Kirjaudu ulos</button>
+              <button className="button is-link is-light" onClick={createEvent}>Luo uusi vierailu</button>
             </div>
           }
           <MyCalendar events={events} />

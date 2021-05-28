@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client'
 import React from 'react'
 import { USERS } from '../graphql/queries'
 
-const ListUsers = () => {
+const UserList = () => {
   const result = useQuery(USERS)
 
   if (result.loading) {
@@ -34,4 +34,4 @@ const ListUsers = () => {
   )
 }
 
-export default ListUsers
+export default UserList

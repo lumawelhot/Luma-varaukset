@@ -1,14 +1,15 @@
-module.exports = { // eslint-disable-line
+module.exports = {
   'env': {
     'node':true,
     'browser': true,
     'es6': true,
-    'cypress/globals': true,
-    'jest/globals': true
+    //'cypress/globals': true,
+    //'jest/globals': true
   },
   'extends': [
     'eslint:recommended',
-    'plugin:react/recommended'
+    'plugin:react/recommended',
+    'plugin:cypress/recommended'
   ],
   'parserOptions': {
     'ecmaFeatures': {
@@ -36,7 +37,7 @@ module.exports = { // eslint-disable-line
   'plugins': [
     'react',
     'cypress',
-    'jest'
+    //'jest'
   ],
   'rules': {
     'indent': [

@@ -13,6 +13,7 @@ When('valid information are entered', () => {
   cy.get('#password').type('secret')
   cy.get('#admin').click()
   cy.get('#create').click()
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
   cy.wait(2000)
 })
 

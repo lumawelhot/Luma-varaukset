@@ -2,7 +2,7 @@ name: Node.js CI on push
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   frontend:
@@ -16,28 +16,43 @@ jobs:
         node-version: [16.x]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm ci && cd ../backend && npm ci && cd ../frontend
-    - run: npm run build --if-present
-      
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci && cd ../backend && npm ci && cd ../frontend
+      - run: npm run build --if-present
+
   backend:
     runs-on: ubuntu-latest
     defaults:
-     run:
-       working-directory: backend
+      run:
+        working-directory: backend
 
     strategy:
       matrix:
         node-version: [16.x]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm ci
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+
+  build:
+    name: 'Publish to dockerhub'
+    needs: [frontend, backend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Publish to Dockerhub
+        uses: docker/build-push-action@v1.1.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: lumawelhot/luma-varaukset
+          tags: latest

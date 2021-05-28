@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^12.1.10",
     "apollo-link-context": "^1.0.20",
     "axios": "^0.21.1",
+    "formik": "^2.2.8",
     "graphql": "^15.5.0",
     "moment": "^2.29.1",
     "react": "^17.0.2",
@@ -24,7 +25,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "cypress:open": "cypress open",
-    "test:e2e": "cypress run"
+    "test:e2e": "cypress run",
+    "lint": "eslint ."
   },
   "eslintConfig": {
     "extends": [
