@@ -35,67 +35,84 @@ const EventForm = () => {
     },
   })
   return (
+    <div className="container">
+      <div className="columns is-centered">
+        <div className="section">
+          <div className="title">Luo uusi vierailu</div>
+          <form onSubmit={formik.handleSubmit}>
+            <div className="field">
 
-    <form onSubmit={formik.handleSubmit}>
-
-      <b>Tiedevierailulomake</b>
-      <p><label htmlFor="scienceClass">Tiedeluokka </label>
-        <FormikProvider value ={formik}>
-          <select
-            name="scienceClass"
-            value={formik.values.scienceClass}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            style={{ display: 'block' }}
-          >
-            <option value="" label="Valitse tiedeluokka, jossa vierailu tapahtuu" />
-            <option value="SUMMAMUTIKKA" label="SUMMAMUTIKKA" />
-            <option value="FOTONI" label="FOTONI" />
-            <option value="LINKKI" label="LINKKI" />
-            <option value="GEOPISTE" label="GEOPISTE" />
-            <option value="GADOLIN" label="GADOLIN" />
-          </select>
-
-
-        </FormikProvider>
-      </p>
-      {formik.touched.scienceClass && formik.errors.scienceClass ? (
-        <Message message={formik.errors.scienceClass}/>
-      ) : null}
-
-      <p>
-        <label htmlFor="date">Päivämäärä </label>
-        <input style={{ width: 100 }}
-          id="date"
-          name="date"
-          type="date"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.date}
-        />
-      </p>
-      {formik.touched.date && formik.errors.date ? (
-        <Message message={formik.errors.date}/>
-      ) : null}
-
-      <p>
-        <label htmlFor="time">Kellonaika </label>
-        <input style={{ width: 100 }}
-          id="time"
-          name="time"
-          type="time"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.time}
-        />
-      </p>
-      {formik.touched.time && formik.errors.time ? (
-        <Message message={formik.errors.time}/>
-      ) : null}
+              <label htmlFor="scienceClass">Tiedeluokka </label>
+              <div className="control">
+                <FormikProvider value ={formik}>
+                  <select
+                    name="scienceClass"
+                    value={formik.values.scienceClass}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    style={{ display: 'block', width: 300 }}
+                  ><option value="" label="Valitse tiedeluokka"  />
+                    <option value="SUMMAMUTIKKA" label="SUMMAMUTIKKA" />
+                    <option value="FOTONI" label="FOTONI" />
+                    <option value="LINKKI" label="LINKKI" />
+                    <option value="GEOPISTE" label="GEOPISTE" />
+                    <option value="GADOLIN" label="GADOLIN" />
+                  </select>
 
 
-      <button type="submit">Tallenna</button>
-    </form>
+                </FormikProvider>
+              </div>
+            </div>
+            {formik.touched.scienceClass && formik.errors.scienceClass ? (
+              <Message message={formik.errors.scienceClass}/>
+            ) : null}
+
+
+            <div className="field">
+
+              <label htmlFor="date">Päivämäärä </label>
+              <div className="control">
+
+                <input style={{ width: 300 }}
+                  id="date"
+                  name="date"
+                  type="date"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.date}
+                />
+              </div>
+            </div>
+            {formik.touched.date && formik.errors.date ? (
+              <Message message={formik.errors.date}/>
+            ) : null}
+
+            <div className="field">
+
+              <label htmlFor="time">Kellonaika </label>
+              <div className="control">
+
+                <input style={{ width: 300 }}
+                  id="time"
+                  name="time"
+                  type="time"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.time}
+                />
+              </div>
+            </div>
+
+            {formik.touched.time && formik.errors.time ? (
+              <Message message={formik.errors.time}/>
+            ) : null}
+
+
+            <button className="button is-link" type='submit'>Tallenna</button>
+          </form>
+        </div>
+      </div>
+    </div>
   )
 }
 export default EventForm

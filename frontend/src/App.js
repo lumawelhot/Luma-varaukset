@@ -8,6 +8,7 @@ import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client'
 import UserForm from './components/UserForm'
 import { CURRENT_USER } from './graphql/queries'
 import UserList from './components/UserList'
+import EventForm from './components/EventForm'
 
 const App = () => {
   const history = useHistory()
@@ -47,6 +48,12 @@ const App = () => {
     history.push('/admin')
   }
 
+  const createEvent = (event) => {
+    event.preventDefault()
+    history.push('/event')
+
+  }
+
   const logout = (event) => {
     event.preventDefault()
     setUser(null)
@@ -65,10 +72,17 @@ const App = () => {
             <LoginForm getUser={getUser} />
           }
         </Route>
+        <Route path='/event'>
+          {currentUser && currentUser.isAdmin &&
+              <EventForm/>
+          }
+          {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
+        </Route>
         <Route path='/users/create'>
           {currentUser && currentUser.isAdmin &&
             <UserForm setUser={setUser} />
           }
+          {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
         </Route>
         <Route path='/users'>
           {currentUser && currentUser.isAdmin &&
@@ -85,6 +99,7 @@ const App = () => {
           {currentUser &&
             <div className="control">
               <button className="button is-link is-light" onClick={logout}>Kirjaudu ulos</button>
+              <button className="button is-link is-light" onClick={createEvent}>Luo uusi vierailu</button>
             </div>
           }
           <MyCalendar events={events} />
