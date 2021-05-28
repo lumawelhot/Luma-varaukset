@@ -1,12 +1,9 @@
 const createError = require('http-errors')
 const express = require('express')
-const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const bcrypt = require('bcrypt')
-
-const indexRouter = require('./routes/index')
-const usersRouter = require('./routes/users')
+const path = require('path')
 
 const app = express()
 const cors = require('cors')
@@ -14,6 +11,7 @@ const cors = require('cors')
 const jwt = require('jsonwebtoken')
 
 const User = require('./models/user')
+const Event = require('./models/event')
 
 const { ApolloServer } = require('apollo-server-express')
 const resolvers = require('./graphql/resolvers')
@@ -33,19 +31,27 @@ const server = new ApolloServer({
       return { currentUser }
     }
   }
-});
-server.applyMiddleware({ app });
-
-
-const { MongoMemoryServer } = require('mongodb-memory-server')
-const mongoose = require('mongoose')
-const mongoServer = new MongoMemoryServer()
-mongoServer.getUri().then(uri => {
-  mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-  console.log('connected to mongodb')
 })
+server.applyMiddleware({ app })
+
+const mongoose = require('mongoose')
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+  const { MongoMemoryServer } = require('mongodb-memory-server')
+  const mongoServer = new MongoMemoryServer()
+  mongoose.set('useFindAndModify', false)
+  mongoose.set('useCreateIndex', true)
+  mongoServer.getUri().then(uri => {
+    mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+    console.log('connected to mongodb')
+  })
+} else { // production mode
+  mongoose.set('useFindAndModify', false)
+  mongoose.set('useCreateIndex', true)
+  mongoose.connect('mongodb://luma-varaukset-db:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
+}
 
 const createAdmin = async () => {
+  await User.deleteMany({})
   const userObject = new User({
     username: 'Admin',
     passwordHash: await bcrypt.hash('salainen', 10),
@@ -54,18 +60,27 @@ const createAdmin = async () => {
   userObject.save()
 }
 
+
+const staticEvents = require('./events.json')
+const createEvents = async () => {
+  await Event.deleteMany({})
+  staticEvents.forEach(event => {
+    const newEvent = new Event(event)
+    newEvent.save()
+  })
+}
+
 createAdmin()
+createEvents()
 
-app.use(logger('dev'));
+app.use(logger('dev'))
 app.use(cors())
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+app.use(cookieParser())
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
+app.use(express.static('build'))
+app.get('*', (req, res) => res.sendFile(path.resolve('build', 'index.html'))) // This is needed for React Router in frontend!
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404))
@@ -74,12 +89,12 @@ app.use((req, res, next) => {
 // error handler
 app.use((err, req, res, next) => {
   // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.message = err.message
+  res.locals.error = req.app.get('env') === 'development' ? err : {}
 
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  res.status(err.status || 500)
+  res.render('error')
 })
 
-module.exports = app;
+module.exports = app
