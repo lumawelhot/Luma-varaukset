@@ -53,10 +53,16 @@ const App = () => {
           {!currentUser &&
             <LoginForm getUser={getUser} />
           }
+          {currentUser &&
+            <div>You are already logged in</div>
+          }
         </Route>
         <Route path='/users/create'>
           {currentUser && currentUser.isAdmin &&
             <UserForm setUser={setUser} />
+          }
+          {!(currentUser && currentUser.isAdmin) &&
+            <div>Access denied</div>
           }
         </Route>
         <Route path='/users'>

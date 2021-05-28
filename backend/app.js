@@ -53,8 +53,17 @@ const createAdmin = async () => {
   })
   userObject.save()
 }
+const createEmployee = async () => {
+  const userObject = new User({
+    username: 'Employee',
+    passwordHash: await bcrypt.hash('emp', 10),
+    isAdmin: false,
+  })
+  userObject.save()
+}
 
 createAdmin()
+createEmployee()
 
 app.use(logger('dev'));
 app.use(cors())
