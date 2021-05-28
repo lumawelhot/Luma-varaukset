@@ -11,6 +11,7 @@ const cors = require('cors')
 const jwt = require('jsonwebtoken')
 
 const User = require('./models/user')
+const Event = require('./models/event')
 
 const { ApolloServer } = require('apollo-server-express')
 const resolvers = require('./graphql/resolvers')
@@ -59,7 +60,18 @@ const createAdmin = async () => {
   userObject.save()
 }
 
+
+const staticEvents = require('./events.json')
+const createEvents = async () => {
+  await Event.deleteMany({})
+  staticEvents.forEach(event => {
+    const newEvent = new Event(event)
+    newEvent.save()
+  })
+}
+
 createAdmin()
+createEvents()
 
 app.use(logger('dev'))
 app.use(cors())
