@@ -35,19 +35,6 @@ const server = new ApolloServer({
 server.applyMiddleware({ app })
 
 const mongoose = require('mongoose')
-<<<<<<< HEAD
-mongoose.set('useCreateIndex', true)
-const mongoServer = new MongoMemoryServer()
-
-mongoServer.getUri().then(async (uri) => {
-  const port = await mongoServer.getPort();
-  const dbPath = await mongoServer.getDbPath();
-  const dbName = await mongoServer.getDbName();
-  console.log('tietoja: ', port, dbName, dbPath)
-  mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-  console.log('connected to mongodb')
-})
-=======
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   const { MongoMemoryServer } = require('mongodb-memory-server')
   const mongoServer = new MongoMemoryServer()
@@ -62,7 +49,6 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   mongoose.set('useCreateIndex', true)
   mongoose.connect('mongodb://luma-varaukset-db:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
 }
->>>>>>> main
 
 const createAdmin = async () => {
   await User.deleteMany({})
@@ -111,8 +97,4 @@ app.use((err, req, res, next) => {
   res.render('error')
 })
 
-<<<<<<< HEAD
-module.exports = app;
-=======
 module.exports = app
->>>>>>> main
