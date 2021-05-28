@@ -22,13 +22,13 @@ sen pakkausten hallintaan työkalua npm ja molempien tulee olla asennettuna
 jotta sovellus voi toimia.
 Kloonaa tämä github-repositio ```git clone <url>```.
 Asenna projektin `frontend` ja `backend` riippuvuudet.
-Siirry `frontend` hakemistoon ```cd frontend/``` ja asenna tarvittavat riippuvuudet kirjoittamalla komennon ```npm install``.
-Siirry sitten `backend` hakemistoon ```cd ../backend/``` ja asenna riippuvuudet kirjoittamalla komennon ```npm install``.
+Siirry `frontend` hakemistoon ```cd frontend/``` ja asenna tarvittavat riippuvuudet kirjoittamalla komennon ```npm install```.
+Siirry sitten `backend` hakemistoon ```cd ../backend/``` ja asenna riippuvuudet kirjoittamalla komennon ```npm install```.
 
 ### Käynnistys
 Frontendin ja backendin pitää olla samanaikaisesti päällä.
-Siirry sitten `backend` hakemistoon ```cd ../backend/``` ja käynnistä sovelluksen `backend`  kirjoittamalla komennon ```npm run``.
-Siirry `frontend` hakemistoon ```cd frontend/``` ja käynnistä sovelluksen `frontend`  kirjoittamalla komennon ```yarn run``.
+Siirry sitten `backend` hakemistoon ```cd ../backend/``` ja käynnistä sovelluksen `backend`  kirjoittamalla komennon ```npm run```.
+Siirry `frontend` hakemistoon ```cd frontend/``` ja käynnistä sovelluksen `frontend`  kirjoittamalla komennon ```yarn run```.
 
 ## Usage
 
