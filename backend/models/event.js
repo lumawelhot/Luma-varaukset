@@ -2,11 +2,26 @@ const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 
 const eventSchema = mongoose.Schema({
-  title: String,
-  allDay: Boolean,
-  start: String,
-  end: String,
-  resourceId: Number,
+  title: {
+    type: String,
+    required: true,
+    minlength: 5
+  },
+  allDay: {
+    type: Boolean,
+  },
+  start: {
+    type: String,
+    required: true,
+  },
+  end: {
+    type: String,
+    required: true,
+  },
+  resourceId: {
+    type: Number,
+    required: true,
+  },
   desc: String,
 })
 

@@ -9,9 +9,11 @@ const resolvers = require('../graphql/resolvers')
 
 let basicUserData
 let adminUserData
-let server
+let serverAdmin
+let serverBasic
 
 beforeAll(async () => {
+  // connect to database
   await mongoose.connect(process.env.MONGO_URL,
     { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true })
     .then(() => {
@@ -22,13 +24,22 @@ beforeAll(async () => {
     })
   await UserModel.deleteMany({})
 
-  const adminPassword = await bcrypt.hash('password', 10)
+  // create test data for admin user and basic user
+  const adminPassword = await bcrypt.hash('admin-password', 10)
+  const basicPassword = await bcrypt.hash('basic-password', 10)
+
   adminUserData = { username: 'admin', passwordHash: adminPassword, isAdmin: true }
+  basicUserData = { username: 'basic', passwordHash: basicPassword, isAdmin: false }
+  
   const adminUser = new UserModel(adminUserData)
   const savedAdminUser = await adminUser.save()
   expect(savedAdminUser.isAdmin).toBe(adminUser.isAdmin)
+  const basicUser = new UserModel(basicUserData)
+  const savedBasicUser = await basicUser.save()
+  expect(savedBasicUser.isAdmin).toBe(basicUser.isAdmin)
   
-  server = new ApolloServer({
+  // create test server for context "currentUser = admin"
+  serverAdmin = new ApolloServer({
     typeDefs,
     resolvers,
     context: async ({ req }) => {
@@ -36,12 +47,22 @@ beforeAll(async () => {
       return { currentUser }
     }
   })
+
+  // create test server for context "currentUser = basic"
+  serverBasic = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: async ({ req }) => {
+      const currentUser = savedBasicUser
+      return { currentUser }
+    }
+  })
 })
 
-describe('Server Test', () => {
+describe('Server Test (currentUser = admin)', () => {
 
   it("get all users", async () => {
-    const { query } = createTestClient(server)
+    const { query } = createTestClient(serverAdmin)
     const GET_ALL_USERS = gql`
       query {
         getUsers {
@@ -57,18 +78,17 @@ describe('Server Test', () => {
     const { getUsers } = data
     getUsers.map(user => {
       expect(user.id).toBeDefined()
-      expect(user.username).toBe(adminUserData.username)
-      expect(user.isAdmin).toBe(adminUserData.isAdmin)
     })
+    expect(getUsers.length).toBe(2)
   })
   
   it("login successfully", async () => {
-    const { mutate } = createTestClient(server)
+    const { mutate } = createTestClient(serverAdmin)
     const LOGIN = gql`
       mutation {
         login(
           username: "admin"
-          password: "password"
+          password: "admin-password"
         ){
           value
         }
@@ -79,7 +99,7 @@ describe('Server Test', () => {
   })
   
   it("admin can create new user successfully", async () => {
-    const { mutate } = createTestClient(server)
+    const { mutate } = createTestClient(serverAdmin)
     const CREATE_USER = gql`
       mutation {
         createUser(
@@ -95,17 +115,12 @@ describe('Server Test', () => {
     let response = await mutate({ mutation: CREATE_USER })
     expect(response.errors).toBeUndefined()
   })
+})
+
+describe('Server Test (currentUser = basic)', () => {
 
   it("basic user cannot create new user", async () => {
-    server2 = new ApolloServer({
-      typeDefs,
-      resolvers,
-      context: async ({ req }) => {
-        const currentUser = { username: 'username', passwordHash: 'password', isAdmin: false}
-        return { currentUser }
-      }
-    })
-    const { mutate } = createTestClient(server2)
+    const { mutate } = createTestClient(serverBasic)
     const CREATE_USER = gql`
       mutation {
         createUser(
@@ -122,6 +137,24 @@ describe('Server Test', () => {
     expect(response.errors).toBeDefined()
   })
 
+  it("return current user data correctly", async () => {
+    const { query } = createTestClient(serverBasic)
+    const ME = gql`
+      query {
+        me {
+          id
+          username
+          isAdmin
+        }
+      }
+    `
+    const { data } = await query({
+      query: ME
+    })
+    const { me } = data
+    expect(me.username).toBe(basicUserData.username)
+    expect(me.isAdmin).toBe(basicUserData.isAdmin)
+  })
 })
 
 describe('User Model Test', () => {
@@ -136,14 +169,14 @@ describe('User Model Test', () => {
     expect(savedUser.isAdmin).toBe(basicUserData.isAdmin)
   })
 
-  it('insert user successfully, but the field not defined in schema should be undefined', async () => {
+  it('insert user successfully, but the field not defined in schema should be "undefined"', async () => {
     const userWithInvalidField = new UserModel({ username: 'Basic user 2', passwordHash: 'password2', isAdmin: false, nickname: 'Bassy' })
     const savedUserWithInvalidField = await userWithInvalidField.save()
     expect(savedUserWithInvalidField._id).toBeDefined()
     expect(savedUserWithInvalidField.nickname).toBeUndefined()
   })
 
-  it('create user without required field should fail', async () => {
+  it('cannot create user without required field', async () => {
     const userWithoutRequiredField = new UserModel({ username: 'Basic user 3' })
     let err
     try {

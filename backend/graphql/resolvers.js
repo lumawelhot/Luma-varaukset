@@ -21,7 +21,7 @@ const resolvers = {
   Mutation: {
     createUser: async (root, args, { currentUser }) => {
       if (!currentUser || currentUser.isAdmin !== true) {
-        throw new AuthenticationError('not authenticated or not credentials')
+        throw new AuthenticationError('not authenticated or no credentials')
       }
       if (args.username.length < 5) {
         throw new UserInputError('username too short')
@@ -49,8 +49,8 @@ const resolvers = {
       return { value: jwt.sign(userForToken, "huippusalainen") }
     },
     createEvent: async (root, args, { currentUser }) =>{
-      if (!currentUser || currentUser.isAdmin !== true) {
-        throw new AuthenticationError('not authenticated or not credentials')
+      if (!currentUser) {
+        throw new AuthenticationError('no credentials')
       }
       let resourceId = null
       switch(args.class) {
