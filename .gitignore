@@ -103,4 +103,9 @@ dist
 # TernJS port file
 .tern-port
 
+<<<<<<< HEAD
 globalConfig.json
+=======
+# MongoDB data
+data
+>>>>>>> main

@@ -3,9 +3,16 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+<<<<<<< HEAD
     "start": "node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "test": "NODE_ENV=test jest --verbose --runInBand --detectOpenHandles"
+=======
+    "start": "NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "build:ui": "rm -rf build && cd ../frontend && npm run build --prod && cp -r build ../backend",
+    "lint": "eslint ."
+>>>>>>> main
   },
   "dependencies": {
     "apollo-server": "^2.24.1",
