@@ -68,6 +68,8 @@ button.rbc-input::-moz-focus-inner {
 }
 
 .rbc-header {
+  text-transform: capitalize;
+  background-color: #e8eef7;
   overflow: hidden;
   flex: 1 0 0%;
   text-overflow: ellipsis;
@@ -76,7 +78,7 @@ button.rbc-input::-moz-focus-inner {
   text-align: center;
   vertical-align: middle;
   font-weight: 700;
-  font-size: 90%;
+  font-size: 80%;
   min-height: 0;
   border-bottom: 1px solid #ddd;
 }
@@ -121,7 +123,7 @@ button.rbc-input::-moz-focus-inner {
   flex-grow: 1;
   padding: 0 10px;
   text-align: center;
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 
 .rbc-toolbar button {
@@ -213,9 +215,6 @@ button.rbc-input::-moz-focus-inner {
   box-sizing: border-box;
   box-shadow: none;
   margin: 0;
-  padding: 2px 5px;
-  background-color: #3174ad;
-  border-radius: 5px;
   color: #fff;
   cursor: pointer;
   width: 100%;
@@ -317,6 +316,9 @@ button.rbc-input::-moz-focus-inner {
 }
 
 .rbc-date-cell {
+  border-left: 1px solid #ddd;
+  background-color: #e8eef7;
+  font-size: 80%;
   flex: 1 1 0;
   min-width: 0;
   padding-right: 5px;
@@ -487,7 +489,6 @@ button.rbc-input::-moz-focus-inner {
 }
 
 .rbc-day-slot .rbc-event {
-  border: 1px solid #265985;
   display: flex;
   max-height: 100%;
   min-height: 20px;
@@ -507,6 +508,7 @@ button.rbc-input::-moz-focus-inner {
   width: 100%;
   flex: 1 1 0;
   word-wrap: break-word;
+  padding: 2px 5px;
   line-height: 1;
   height: 100%;
   min-height: 1em;
@@ -751,7 +753,6 @@ button.rbc-input::-moz-focus-inner {
 .rbc-event {
   border: none;
   border-radius: unset;
-  background-color: #107eab;
 }
 
 .rbc-event .rbc-event-label {
@@ -760,14 +761,12 @@ button.rbc-input::-moz-focus-inner {
 
 .rbc-event .rbc-event-content {
   font-size: small;
-  font-weight: lighter;
   margin: 0.3em 0;
+  padding: 2px 5px;
 }
 
 .rbc-event-allday {
-  background-color: #f8f8f8;
   border: 5px #555;
-  color: #000;
 }
 
 .examEvent {

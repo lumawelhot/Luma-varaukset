@@ -87,7 +87,7 @@ const App = () => {
               <button className="button is-link is-light" onClick={logout}>Kirjaudu ulos</button>
             </div>
           }
-          <MyCalendar events={events} />
+          <MyCalendar events={events} currentUser={currentUser} />
         </Route>
       </Switch>
     </div>
