@@ -5,7 +5,7 @@ import { CREATE_USER } from '../graphql/queries'
 import { useField } from '../hooks'
 import Message from './Message'
 
-const UserForm = () => {
+const UserForm = ({ sendMessage }) => {
   const history = useHistory()
   const username = useField('')
   const password = useField('password')
@@ -25,6 +25,7 @@ const UserForm = () => {
 
   useEffect(() => {
     if (result.data) {
+      sendMessage(`Käyttäjä tunnus '${result.data.createUser.username}' luotu.`)
       history.push('/')
     }
   }, [result])
@@ -83,7 +84,7 @@ const UserForm = () => {
             </div>
             <div className="field is-grouped">
               <div className="control">
-                <button className="button is-link" type='submit'>Kirjaudu sisään</button>
+                <button className="button is-link" type='submit'>Luo uusi käyttäjä</button>
               </div>
               <div className="control">
                 <button className="button is-link is-light" onClick={cancel}>Poistu</button>
