@@ -3,8 +3,9 @@ import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import 'moment/locale/fi'
 import { messages } from './helpers/calendar-messages-fi'
+import { resourceColors } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
-import LumaEventWrapper from './components/Custom/LumaEventWrapper'
+//import LumaEventWrapper from './components/Custom/LumaEventWrapper'
 
 const localizer = momentLocalizer(moment)
 
@@ -49,32 +50,16 @@ const MyCalendar = ({ events, currentUser }) => {
     else return {}
   }
 
-  const resourceColours = [
-    '#A32929', // SUMMAMUTIKKA
-    '#5229A3', // FOTONI
-    '#528800', // LINKKI
-    '#2952A3', // GEOPISTE
-    '#E7A732', // GADOLIN
-  ]
-
-  /*   const Event = ({ event }) => {
-    const me = useRef(null)
-    if (me.current?.parentNode) {
-      me.current.parentNode.parentNode.style.backgroundColor = resourceColours[event.resourceId-1]
-    }
-    return (
-      <span ref={me} style={{ backgroundColor:resourceColours[event.resourceId-1] }}>
-        <strong style={{ color: 'white' }}>{event.title}</strong>
-      </span>
-    )
-  } */
+  const customEventPropGetter = event => {
+    return { className: resourceMap[event.resourceId-1]?.resourceTitle.toLowerCase() || '' }
+  }
 
   const AgendaEvent = ({ event }) => {
     const resourceName = resourceMap[event.resourceId-1]?.resourceTitle || null
     return (
       <div className="block">
         {resourceName &&
-          <span className='tag is-small is-link' style={{ backgroundColor:resourceColours[event.resourceId-1] }}>{resourceName}</span>
+          <span className='tag is-small is-link' style={{ backgroundColor:resourceColors[event.resourceId-1] }}>{resourceName}</span>
         }
         <span> {event.title}</span>
         <p>{event.desc}</p>
@@ -98,7 +83,6 @@ const MyCalendar = ({ events, currentUser }) => {
         events={localEvents}
         startAccessor='start'
         endAccessor='end'
-        style={{ height: 500 }}
         min={moment('8:00am', 'h:mma').toDate()}
         max={moment('5:00pm', 'h:mma').toDate()}
         //resources={resourceMap}
@@ -108,12 +92,13 @@ const MyCalendar = ({ events, currentUser }) => {
         onSelectEvent={event => alert(JSON.stringify(event))}
         onSelectSlot={handleSelect}
         components={{
-          eventWrapper: LumaEventWrapper,
+          //eventWrapper: LumaEventWrapper,
           agenda: {
             event: AgendaEvent
           }
         }}
         dayPropGetter={customDayPropGetter}
+        eventPropGetter={customEventPropGetter}
       />
     </div>)
 }

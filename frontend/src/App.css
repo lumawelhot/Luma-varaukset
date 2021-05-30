@@ -23,7 +23,7 @@ button.rbc-input::-moz-focus-inner {
 
 .rbc-calendar {
   box-sizing: border-box;
-  height: 100%;
+  height: 550px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -752,10 +752,11 @@ button.rbc-input::-moz-focus-inner {
 
 .rbc-event {
   border: none;
-  border-radius: unset;
+  border-radius: 4px;
 }
 
 .rbc-event .rbc-event-label {
+  padding-left: 3px;
   font-weight: 700;
 }
 
@@ -776,4 +777,49 @@ button.rbc-input::-moz-focus-inner {
 .rbc-month-row {
   overflow: visible !important;
   overflow: initial !important;
+}
+
+.rbc-event.summamutikka {
+  background-color: #d96666;
+}
+
+.rbc-event.summamutikka .rbc-event-label {
+  width: 100%;
+  background-color: #a32929;
+}
+
+.rbc-event.fotoni {
+  background-color: #8c66d9;
+}
+
+.rbc-event.fotoni .rbc-event-label {
+  width: 100%;
+  background-color: #5229a3;
+}
+
+.rbc-event.linkki {
+  background-color: #8cbf40;
+}
+
+.rbc-event.linkki .rbc-event-label {
+  width: 100%;
+  background-color: #528800;
+}
+
+.rbc-event.geopiste {
+  background-color: #80b7e7;
+}
+
+.rbc-event.geopiste .rbc-event-label {
+  width: 100%;
+  background-color: #2d83d5;
+}
+
+.rbc-event.gadolin {
+  background-color: #f3c857;
+}
+
+.rbc-event.gadolin .rbc-event-label {
+  width: 100%;
+  background-color: #e7a732;
 }

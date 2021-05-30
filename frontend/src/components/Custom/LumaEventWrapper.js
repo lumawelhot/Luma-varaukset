@@ -1,6 +1,7 @@
 import React from 'react'
 import clsx from 'clsx'
 import * as dates from 'react-big-calendar/lib/utils/dates'
+import { resourceColors } from '../../helpers/styles'
 
 const LumaEventWrapper = (props) => {
 
@@ -25,15 +26,7 @@ const LumaEventWrapper = (props) => {
 
   console.log(props.components)
 
-  const resourceColours = [
-    '#A32929', // SUMMAMUTIKKA
-    '#5229A3', // FOTONI
-    '#528800', // LINKKI
-    '#2952A3', // GEOPISTE
-    '#E7A732', // GADOLIN
-  ]
-
-  const resourceStyle={ backgroundColor: resourceColours[event.resourceId-1] }
+  const resourceStyle={ backgroundColor: resourceColors[event.resourceId-1] }
 
   let title = accessors.title(event)
   let tooltip = accessors.tooltip(event)
