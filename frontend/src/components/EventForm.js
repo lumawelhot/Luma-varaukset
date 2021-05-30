@@ -20,7 +20,7 @@ const validate = values => {
   return errors
 }
 
-const EventForm = () => {
+const EventForm = ({ sendMessage }) => {
   const formik = useFormik({
     initialValues: {
       scienceClass: '',
@@ -29,9 +29,8 @@ const EventForm = () => {
     },
     validate,
     onSubmit: values => {
-
+      sendMessage('Vierailu luotu')
       alert(JSON.stringify(values, null, 2))
-
     },
   })
   return (

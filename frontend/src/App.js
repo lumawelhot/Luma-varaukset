@@ -81,7 +81,7 @@ const App = () => {
         </Route>
         <Route path='/event'>
           {currentUser && currentUser.isAdmin &&
-              <EventForm/>
+              <EventForm sendMessage={updateMessage}/>
           }
           {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
         </Route>
