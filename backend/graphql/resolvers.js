@@ -41,36 +41,36 @@ const resolvers = {
       const passwordCorrect = user === null
         ? false
         : await bcrypt.compare(args.password, user.passwordHash)
-      if ( !(user && passwordCorrect) ) {
+      if (!(user && passwordCorrect)) {
         throw new UserInputError('Wrong credentials!')
       }
 
       const userForToken = { username: user.username, id: user._id }
       return { value: jwt.sign(userForToken, 'huippusalainen') }
     },
-    createEvent: async (root, args, { currentUser }) =>{
+    createEvent: async (root, args, { currentUser }) => {
       if (!currentUser) {
-        throw new AuthenticationError('no credentials')
+        throw new AuthenticationError('not authenticated')
       }
       let resourceId = null
-      switch(args.class) {
-      case 'SUMMAMUTIKKA':
-        resourceId = 1
-        break
-      case 'FOTONI':
-        resourceId = 2
-        break
-      case 'LINKKI':
-        resourceId = 3
-        break
-      case 'GEOPISTE':
-        resourceId = 4
-        break
-      case 'GADOLIN':
-        resourceId = 5
-        break
-      default:
-        throw new UserInputError('Invalid class')
+      switch (args.class) {
+        case 'SUMMAMUTIKKA':
+          resourceId = 1
+          break
+        case 'FOTONI':
+          resourceId = 2
+          break
+        case 'LINKKI':
+          resourceId = 3
+          break
+        case 'GEOPISTE':
+          resourceId = 4
+          break
+        case 'GADOLIN':
+          resourceId = 5
+          break
+        default:
+          throw new UserInputError('Invalid class')
       }
       const newEvent = new Event({
         title: args.title,

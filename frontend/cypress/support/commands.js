@@ -23,3 +23,51 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('login', ({ username, password }) => {
+  cy.request({
+    url: 'http://localhost:3001/graphql',
+    method: 'POST',
+    body: {
+      query: `
+        mutation login {
+          login (
+            username: "${username}"
+            password: "${password}"
+          ) {
+            value
+          }
+        }
+      `
+    }
+  }).then(({ body }) => {
+    localStorage.setItem('app-token', body.data.login.value)
+  })
+
+  cy.visit('http://localhost:3000')
+})
+
+Cypress.Commands.add('containsUser', ({ username }) => {
+  cy.request({
+    url: 'http://localhost:3001/graphql',
+    method: 'POST',
+    body: {
+      query: `
+        query  {
+          getUsers {
+            username,
+            isAdmin
+          }
+        }
+      `
+    }
+  }).then(({ body }) => {
+    let find = false
+    body.data.getUsers.forEach(user => {
+      if (user.username === username) {
+        find = true
+      }
+    }, [find])
+    return find
+  })
+})
