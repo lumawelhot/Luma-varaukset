@@ -5,11 +5,9 @@ Sovellus käyttää [node.js](nodejs.org/) ympäristöä ja
 sen pakkausten hallintaan työkalua npm.
 Molempien tulee olla asennettuna, jotta sovellus voi toimia.
   * Kloonaa tämä github-repositio: ```git clone https://github.com/lumawelhot/Luma-varaukset```
-  * Asenna projektin `frontend` ja `backend` riippuvuudet:
-    1. siirry `frontend` hakemistoon ```cd frontend/``` ja
-    2. asenna tarvittavat riippuvuudet kirjoittamalla komennon ```npm install```
-    3. siirry `backend` hakemistoon ```cd backend/``` ja
-    4. asenna tarvittavat riippuvuudet kirjoittamalla komennon ```npm install```
+  * Asenna projektien `frontend` ja `backend` riippuvuudet:
+    1. Siirry `frontend` hakemistoon ```cd frontend/``` ja asenna tarvittavat riippuvuudet kirjoittamalla komennon ```npm install```
+    2. Siirry `backend` hakemistoon ```cd backend/``` ja asenna tarvittavat riippuvuudet kirjoittamalla komennon ```npm install```
 
 ## Käynnistys
 Frontendin ja backendin pitää olla samanaikaisesti päällä.
