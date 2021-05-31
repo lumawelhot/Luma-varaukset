@@ -78,6 +78,9 @@ const App = () => {
           {!currentUser &&
             <LoginForm getUser={getUser} />
           }
+          {currentUser &&
+            <div>You are already logged in</div>
+          }
         </Route>
         <Route path='/event'>
           {currentUser && currentUser.isAdmin &&
@@ -88,6 +91,9 @@ const App = () => {
         <Route path='/users/create'>
           {currentUser && currentUser.isAdmin &&
             <UserForm sendMessage={updateMessage} />
+          }
+          {!(currentUser && currentUser.isAdmin) &&
+            <div>Access denied</div>
           }
           {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
         </Route>
@@ -109,7 +115,7 @@ const App = () => {
               <button className="button is-link is-light" onClick={createEvent}>Luo uusi vierailu</button>
             </div>
           }
-          <MyCalendar events={events} />
+          <MyCalendar events={events} currentUser={currentUser} />
         </Route>
       </Switch>
     </div>

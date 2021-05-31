@@ -7,7 +7,7 @@
     "resourceId": 3
   },
   {
-    "title": "Maanjäristystysten alueellisuus ja niiden vaikutukset",
+    "title": "Maanjäristysten alueellisuus ja niiden vaikutukset",
     "start": "Mon Jun 07 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
     "end": "Thu Jun 10 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
     "resourceId": 4
@@ -20,20 +20,20 @@
   },
   {
     "title": "Kemian kokeelliset työt",
-    "start": "Tue Jul 06 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Tue Jul 13 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
+    "start": "Thu Jun 03 2021 09:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Thu Jun 03 2021 12:00:00 GMT+0300 (Eastern European Summer Time)",
     "resourceId": 4
   },
   {
     "title": "Python-ohjelmointikieli",
-    "start": "Wed Jun 09 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Thu Jun 10 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
-    "resourceId": 5
+    "start": "Thu Jun 03 2021 08:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Thu Jun 03 2021 14:00:00 GMT+0300 (Eastern European Summer Time)",
+    "resourceId": 3
   },
   {
-    "title": "Matematiikkan työpajat",
-    "start": "Fri Jun 11 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Sun Jun 13 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
+    "title": "Matematiikan työpaja",
+    "start": "Thu Jun 03 2021 09:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Thu Jun 03 2021 10:00:00 GMT+0300 (Eastern European Summer Time)",
     "desc": "Big conference for important people",
     "resourceId": 1
   },
