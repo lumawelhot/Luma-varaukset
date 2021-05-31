@@ -102,7 +102,7 @@ const App = () => {
               <button className="button is-link is-light" onClick={createEvent}>Luo uusi vierailu</button>
             </div>
           }
-          <MyCalendar events={events} />
+          <MyCalendar events={events} currentUser={currentUser} />
         </Route>
       </Switch>
     </div>
