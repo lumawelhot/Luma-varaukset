@@ -19,6 +19,7 @@ When('valid information are entered', () => {
 
 Then('a user is succesfully created', () => {
   cy.containsUser({ username: 'Tester' }).should('eq', true)
+  cy.get('#message').should('have.text', `Käyttäjätunnus 'Tester' luotu.`)
 })
 
 
