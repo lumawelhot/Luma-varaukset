@@ -45,6 +45,14 @@ const createAdmin = async () => {
   })
   await userObject.save()
 }
+const createEmployee = async () => {
+  const userObject = new User({
+    username: 'Employee',
+    passwordHash: await bcrypt.hash('emp', 10),
+    isAdmin: false,
+  })
+  await userObject.save()
+}
 
 
 const staticEvents = require('./events.json')
@@ -66,6 +74,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
       .then(() => {
         console.log('connected to MongoDB, initializing database')
         createAdmin()
+        createEmployee()
         createEvents()
       })
       .catch((error) => {

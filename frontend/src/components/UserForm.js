@@ -64,26 +64,26 @@ const UserForm = () => {
             <div className="field">
               <label className="label">Käyttäjänimi</label>
               <div className="control">
-                <input className="input" {...username.field} style={{ width: 500 }} />
+                <input id="username" className="input" {...username.field} style={{ width: 500 }} />
               </div>
             </div>
             <div className="field">
               <label className="label">Salasana</label>
               <div className="control">
-                <input className="input" {...password.field} style={{ width: 500 }} />
+                <input id="password" className="input" {...password.field} style={{ width: 500 }} />
               </div>
             </div>
             <div className="field">
               <label className="label">Käyttäjärooli</label>
               <div className="control">
-                <input type="radio" value="admin" name="permission" onChange={handlePermissionChange} /> Ylläpitäjä
+                <input id="admin" type="radio" value="admin" name="permission" onChange={handlePermissionChange} /> Ylläpitäjä
                 <p></p>
                 <input type="radio" value="employee" name="permission" onChange={handlePermissionChange} /> Työntekijä
               </div>
             </div>
             <div className="field is-grouped">
               <div className="control">
-                <button className="button is-link" type='submit'>Kirjaudu sisään</button>
+                <button id="create" className="button is-link" type='submit'>Luo uusi käyttäjä</button>
               </div>
               <div className="control">
                 <button className="button is-link is-light" onClick={cancel}>Poistu</button>
