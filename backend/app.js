@@ -51,7 +51,7 @@ const createEmployee = async () => {
     passwordHash: await bcrypt.hash('emp', 10),
     isAdmin: false,
   })
-  userObject.save()
+  await userObject.save()
 }
 
 
@@ -64,9 +64,6 @@ const createEvents = async () => {
   })
 }
 
-createAdmin()
-createEmployee()
-createEvents()
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   const { MongoMemoryServer } = require('mongodb-memory-server')
   const mongoServer = new MongoMemoryServer()
@@ -77,6 +74,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
       .then(() => {
         console.log('connected to MongoDB, initializing database')
         createAdmin()
+        createEmployee()
         createEvents()
       })
       .catch((error) => {
