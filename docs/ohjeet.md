@@ -1,24 +1,10 @@
 # Käyttöohjeet
 
-## Asennus
-Sovellus käyttää [node.js](nodejs.org/) ympäristöä ja
-sen pakkausten hallintaan työkalua npm.
-Molempien tulee olla asennettuna, jotta sovellus voi toimia.
-  * Kloonaa tämä github-repositio: ```git clone https://github.com/lumawelhot/Luma-varaukset```
-  * Asenna projektien `frontend` ja `backend` riippuvuudet:
-    1. Siirry `frontend` hakemistoon ```cd frontend/``` ja asenna tarvittavat riippuvuudet kirjoittamalla komennon ```npm install```
-    2. Siirry `backend` hakemistoon ```cd backend/``` ja asenna tarvittavat riippuvuudet kirjoittamalla komennon ```npm install```
-
-## Käynnistys
-Frontendin ja backendin pitää olla samanaikaisesti päällä.
-Siirry `frontend` hakemistoon ja käynnistä sovelluksen `frontend`  kirjoittamalla komennon ```yarn run```.
-Siirry sitten `backend` hakemistoon ja käynnistä sovelluksen `backend`  kirjoittamalla komennon ```npm run```.
-
-<img src="./img/front-page.png" height="300" />
-
 ## Tapahtumien katselu
 Sovelluseen rekisteröidyt tapahtumat ovat kaikkien nähtävillä ja
 näkyvät sovelluksen etusivulta sijaitsevassa kalenterissa.
+
+<img src="./img/front-page.png" height="300" />
 
 ## Kirjautuminen
 Ylläpitäjät ja työntekijät voivat kirjautua sovellukseen kirjautumis linkin kautta.
@@ -35,15 +21,12 @@ Sen jälkeen kun olet syöttänyt lomakkeeseen tarvittavat tiedot paina ```Talle
 
 <img src="./img/luo-uusi-vierailu.png" height="300" />
 
-
-## Ylläpitäjän ohjeet
-
-### Uuden käyttäjän luonti
+## Uuden käyttäjän luonti
 Ylläpitäjä voi luoda käyttäjän varausjärjestelmään siirtymällä osoitteelle ```/users/create```.
 Uuden käyttäjän käyttäjänimi ja salasana kirjoitetaan lomakkeeden kenttiin.
 Valintanapilla ```Käyttäjärooli``` voi valita onko uusi käyttäjä ylläpitäjä vai työntekijä.
 
 <img src="./img/users-create.png" height="300" />
 
-### Käyttäjien listaus
+## Käyttäjien listaus
 Ylläpitäjä voi nähdä sovelluseen rekisteröidyt käyttäjät siirtymällä osoitteelle ```/users```.

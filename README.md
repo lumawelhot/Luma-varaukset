@@ -9,6 +9,8 @@ The application has been created for the Helsinki University course Software Eng
 
 [Käyttöohjeet](./docs/ohjeet.md)
 
+[Sovelluskehityksen ohjeet](./docs/developer.md)
+
 [Definition of Done](./docs/definition_of_done.md)
 
 [Product Backlog](https://docs.google.com/spreadsheets/d/1jKcC4YyXZ3QNNSCfvvapEfwdzT-gH4OzLNnMJK1LMGA/edit?usp=sharing)
