@@ -7,9 +7,9 @@ The application has been created for the Helsinki University course Software Eng
 
 ## Dokumentaatio
 
-[Käyttöohjeet](https://github.com/lumawelhot/Luma-varaukset/blob/main/docs/ohjeet.md)
+[Käyttöohjeet](./docs/ohjeet.md)
 
-[Definition of Done](https://github.com/lumawelhot/Luma-varaukset/blob/main/docs/definition_of_done.md)
+[Definition of Done](./docs/definition_of_done.md)
 
 [Product Backlog](https://docs.google.com/spreadsheets/d/1jKcC4YyXZ3QNNSCfvvapEfwdzT-gH4OzLNnMJK1LMGA/edit?usp=sharing)
 
