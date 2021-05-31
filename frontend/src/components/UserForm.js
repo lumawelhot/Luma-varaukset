@@ -5,7 +5,7 @@ import { CREATE_USER } from '../graphql/queries'
 import { useField } from '../hooks'
 import Message from './Message'
 
-const UserForm = () => {
+const UserForm = ({ sendMessage }) => {
   const history = useHistory()
   const username = useField('')
   const password = useField('password')
@@ -25,6 +25,7 @@ const UserForm = () => {
 
   useEffect(() => {
     if (result.data) {
+      sendMessage(`Käyttäjätunnus '${result.data.createUser.username}' luotu.`)
       history.push('/')
     }
   }, [result])

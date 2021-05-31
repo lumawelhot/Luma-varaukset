@@ -1,5 +1,5 @@
 import React from 'react'
-import { useFormik , FormikProvider } from 'formik'
+import { useFormik, FormikProvider } from 'formik'
 import Message from './Message'
 import { useMutation } from '@apollo/client'
 import { CREATE_EVENT } from '../graphql/queries'
@@ -30,11 +30,10 @@ const validate = values => {
   return errors
 }
 
-const EventForm = () => {
+const EventForm = ({ sendMessage }) => {
   const [create,] = useMutation(CREATE_EVENT, {
     onError: (error) => console.log(error)
   })
-
   const formik = useFormik({
     initialValues: {
       title: '',
@@ -56,7 +55,7 @@ const EventForm = () => {
         }
       })
       alert(JSON.stringify(values, null, 2))
-
+      sendMessage('Vierailu luotu')
     },
   })
   return (
@@ -81,21 +80,21 @@ const EventForm = () => {
               </div>
             </div>
             {formik.touched.title && formik.errors.title ? (
-              <Message message={formik.errors.title}/>
+              <Message message={formik.errors.title} />
             ) : null}
 
             <div className="field">
 
               <label htmlFor="scienceClass">Tiedeluokka </label>
               <div className="control">
-                <FormikProvider value ={formik}>
+                <FormikProvider value={formik}>
                   <select
                     name="scienceClass"
                     value={formik.values.scienceClass}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     style={{ display: 'block', width: 300 }}
-                  ><option value="" label="Valitse tiedeluokka"  />
+                  ><option value="" label="Valitse tiedeluokka" />
                     <option value="SUMMAMUTIKKA" label="SUMMAMUTIKKA" />
                     <option value="FOTONI" label="FOTONI" />
                     <option value="LINKKI" label="LINKKI" />
@@ -108,7 +107,7 @@ const EventForm = () => {
               </div>
             </div>
             {formik.touched.scienceClass && formik.errors.scienceClass ? (
-              <Message message={formik.errors.scienceClass}/>
+              <Message message={formik.errors.scienceClass} />
             ) : null}
 
 
@@ -128,12 +127,12 @@ const EventForm = () => {
               </div>
             </div>
             {formik.touched.date && formik.errors.date ? (
-              <Message message={formik.errors.date}/>
+              <Message message={formik.errors.date} />
             ) : null}
 
             <div className="field">
 
-              <label htmlFor="startTime">Aloitus kellonaika</label>
+              <label htmlFor="startTime">Aloituskellonaika</label>
               <div className="control">
 
                 <input style={{ width: 300 }}
@@ -147,12 +146,12 @@ const EventForm = () => {
               </div>
             </div>
             {formik.touched.startTime && formik.errors.startTime ? (
-              <Message message={formik.errors.startTime}/>
+              <Message message={formik.errors.startTime} />
             ) : null}
 
             <div className="field">
 
-              <label htmlFor="endTime">Lopetus kellonaika</label>
+              <label htmlFor="endTime">Lopetuskellonaika</label>
               <div className="control">
 
                 <input style={{ width: 300 }}
@@ -166,7 +165,7 @@ const EventForm = () => {
               </div>
             </div>
             {formik.touched.endTime && formik.errors.endTime ? (
-              <Message message={formik.errors.endTime}/>
+              <Message message={formik.errors.endTime} />
             ) : null}
 
 

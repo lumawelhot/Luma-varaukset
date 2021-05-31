@@ -9,10 +9,12 @@ import UserForm from './components/UserForm'
 import { CURRENT_USER } from './graphql/queries'
 import UserList from './components/UserList'
 import EventForm from './components/EventForm'
+import Message from './components/Message'
 
 const App = () => {
   const history = useHistory()
   const [events, setEvents] = useState([])
+  const [message, setMessage] = useState('')
   const client = useApolloClient()
   const result = useQuery(EVENTS)
   const [getUser, { loading, data }] = useLazyQuery(CURRENT_USER, {
@@ -51,7 +53,6 @@ const App = () => {
   const createEvent = (event) => {
     event.preventDefault()
     history.push('/event')
-
   }
 
   const logout = (event) => {
@@ -62,10 +63,16 @@ const App = () => {
     history.push('/')
   }
 
+  const updateMessage = (msg) => {
+    setMessage(msg)
+    setTimeout(()  => setMessage(''), 5000)
+  }
+
   if (loading) return <div></div>
 
   return (
     <div className="App">
+      <Message message={message} />
       <Switch>
         <Route path='/admin'>
           {!currentUser &&
@@ -77,13 +84,13 @@ const App = () => {
         </Route>
         <Route path='/event'>
           {currentUser && currentUser.isAdmin &&
-              <EventForm/>
+              <EventForm sendMessage={updateMessage}/>
           }
           {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
         </Route>
         <Route path='/users/create'>
           {currentUser && currentUser.isAdmin &&
-            <UserForm setUser={setUser} />
+            <UserForm sendMessage={updateMessage} />
           }
           {!(currentUser && currentUser.isAdmin) &&
             <div>Access denied</div>
