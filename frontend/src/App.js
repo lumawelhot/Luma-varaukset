@@ -65,7 +65,7 @@ const App = () => {
 
   const updateMessage = (msg) => {
     setMessage(msg)
-    setTimeout(()  => setMessage(''), 5000)
+    setTimeout(() => setMessage(''), 5000)
   }
 
   if (loading) return <div></div>
@@ -83,8 +83,8 @@ const App = () => {
           }
         </Route>
         <Route path='/event'>
-          {currentUser && currentUser.isAdmin &&
-              <EventForm sendMessage={updateMessage}/>
+          {currentUser &&
+            <EventForm sendMessage={updateMessage} />
           }
           {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
         </Route>
@@ -95,13 +95,13 @@ const App = () => {
           {!(currentUser && currentUser.isAdmin) &&
             <div>Access denied</div>
           }
-          {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
+          {!(currentUser && currentUser.isAdmin) && <p>Sinulla ei ole tarvittavia oikeuksia.</p>}
         </Route>
         <Route path='/users'>
           {currentUser && currentUser.isAdmin &&
             <UserList />
           }
-          {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
+          {!(currentUser && currentUser.isAdmin) && <p>Sinulla ei ole tarvittavia oikeuksia.</p>}
         </Route>
         <Route path='/'>
           {!currentUser &&

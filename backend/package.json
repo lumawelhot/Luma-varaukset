@@ -6,7 +6,8 @@
     "start": "NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "build:ui": "rm -rf build && cd ../frontend && npm run build --prod && cp -r build ../backend",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "NODE_ENV=test jest --verbose --runInBand --detectOpenHandles"
   },
   "dependencies": {
     "apollo-server": "^2.24.1",
@@ -15,20 +16,25 @@
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
-    "debug": "~2.6.9",
-    "express": "~4.16.1",
+    "debug": "^4.3.1",
+    "express": "^4.17.1",
     "graphql": "^15.5.0",
     "graphql-playground-middleware-express": "^1.7.22",
-    "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "mongoose": "^5.12.10",
     "mongoose-unique-validator": "^2.0.3",
-    "morgan": "~1.9.1",
+    "morgan": "^1.10.0",
     "nodemon": "^2.0.7"
   },
   "devDependencies": {
-    "mongodb-memory-server": "^6.9.6"
+    "@shelf/jest-mongodb": "^1.2.4",
+    "apollo-server-testing": "^2.24.1",
+    "jest": "^27.0.1",
+    "mongodb-memory-server": "^6.9.6",
+    "supertest": "^6.1.3"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
