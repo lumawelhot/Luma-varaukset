@@ -16,10 +16,20 @@ Siirry sitten `backend` hakemistoon.
 Voit käynnistä sovelluksen kehitysversion `backend` kirjoittamalla komennon ```npm run dev``` ja
 tuotantoversion `backend` kirjoittamalla komennon ```npm start``.
 
-## Dockerin käyttöohjeet
+## Kehitystyö Dockerin kanssa
 Asenna [docker](https://docs.docker.com/engine/install/) koneseen.
-Luo uusi docker image komennolla: ```docker build -t luma-varaukset . ``` ja
-käynnistä ohjelma komennolla ```docker run -p 3000:3000```.
+Kontin rakennus:
+```docker build -t luma-varaukset:latest .```
+
+Uuden kontin käyttöönotto:
+```docker-compose restart && docker-compose logs -f```
+
+Jos et havaitse muutosta:
+```docker-compose down && docker-compose up -d && docker-compose logs -f```
+
+Frontendin kopioiminen konttiin ilman että konttia rakennetaan uudelleen (hyvä jos haluat nopeasti testata muutokset tuotantomoodissa):
+```cd frontend```
+```PUBLIC_URL=/luma-varaukset npm run build && docker cp build luma-varaukset-app:/app/backend```
 
 ## Cypress testaus
 Testit kirjoitetaan `.../frontend/cypress` kansioon.
