@@ -37,19 +37,3 @@ Asenna riippuvuudet ja käynnistä paikallisessa koneessa `frontend`- ja `backen
 Siirry `frontend`-kansioon ja suorita komento `npm run cypress:open`.
 Cypress-testien ajo-ohjelma käynnistyy uuteen ikkunaan.
 Ohjelman avulla voit ajaa Cypress-testit painamalla ```run all specs```-näppäintä.
-
-### Testien ajo fuksiläppärillä
-Jos Cypress-testit eivät onnistu esim. puuttuvan Xvfb:n takia, mutta sinulla on docker asennettuna, voit käyttää valmista cypress-konttia testien ajoon.
-
-```cd frontend```
-```docker run -it -v $PWD:/e2e -w /e2e cypress/included:7.4.0```
-
-Jos ei onnistu, niin voi olla ettei dockeria voi ajaa ilman sudo-oikeuksia. Kirjoita siinä tapauksessa vielä sudo!!
-
-Jos Cypress-testien ajo ei onnistu, koska cypress/videos/tests-hakemistoon ei ole oikeuksia:
-```Error: EACCES: permission denied, rmdir 'Luma-varaukset/frontend/cypress/videos/tests'```
-
-Tarkista, kuka on omistajana projektin hakemistoissa ja muuta omistajuus tarvittaessa itsellesi komennolla (fuksiläppäri)
-```chown -R omatunnus .```
-
-Voit joutua ajamaan komennon sudo-oikeuksilla. Nyt testien ajon pitäisi onnistua!
