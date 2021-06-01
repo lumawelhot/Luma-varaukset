@@ -46,6 +46,7 @@ const EventForm = () => {
               <div className="control">
                 <FormikProvider value ={formik}>
                   <select
+                    id="scienceClass"
                     name="scienceClass"
                     value={formik.values.scienceClass}
                     onChange={formik.handleChange}
@@ -108,7 +109,7 @@ const EventForm = () => {
             ) : null}
 
 
-            <button className="button is-link" type='submit'>Tallenna</button>
+            <button id="create" className="button is-link" type='submit'>Tallenna</button>
           </form>
         </div>
       </div>

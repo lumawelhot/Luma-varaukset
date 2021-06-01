@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -65,6 +66,31 @@ Cypress.Commands.add('containsUser', ({ username }) => {
     let find = false
     body.data.getUsers.forEach(user => {
       if (user.username === username) {
+        find = true
+      }
+    }, [find])
+    return find
+  })
+})
+
+Cypress.Commands.add('containsEvent', ({ title, resourceId }) => {
+  cy.request({
+    url: 'http://localhost:3001/graphql',
+    method: 'POST',
+    body: {
+      query: `
+        query  {
+          getEvents {
+            title,
+            resourceId
+          }
+        }
+      `
+    }
+  }).then(({ body }) => {
+    let find = false
+    body.data.getEvents.forEach(event => {
+      if (event.title === title && event.resourceId === resourceId) {
         find = true
       }
     }, [find])
