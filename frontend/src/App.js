@@ -9,6 +9,8 @@ import UserForm from './components/UserForm'
 import { CURRENT_USER } from './graphql/queries'
 import UserList from './components/UserList'
 import EventForm from './components/EventForm'
+import { FcKey } from 'react-icons/fc'
+import UserPage from './components/UserPage'
 
 const App = () => {
   const history = useHistory()
@@ -48,12 +50,6 @@ const App = () => {
     history.push('/admin')
   }
 
-  const createEvent = (event) => {
-    event.preventDefault()
-    history.push('/event')
-
-  }
-
   const logout = (event) => {
     event.preventDefault()
     setUser(null)
@@ -91,18 +87,19 @@ const App = () => {
           {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
         </Route>
         <Route path='/'>
-          {!currentUser &&
-            <div className="control">
-              <button className="button is-link is-light" onClick={login}>Kirjaudu sisään</button>
-            </div>
-          }
           {currentUser &&
             <div className="control">
               <button className="button is-link is-light" onClick={logout}>Kirjaudu ulos</button>
-              <button className="button is-link is-light" onClick={createEvent}>Luo uusi vierailu</button>
+              <div style={{ position: 'absolute', top: 0, right: 0 }}>
+                Olet kirjautunut käyttäjänä: {currentUser.username}
+              </div>
             </div>
           }
           <MyCalendar events={events} currentUser={currentUser} />
+          {!currentUser &&
+            <FcKey onClick={login} style={{ position: 'absolute', bottom: 0, right: 0 }} />
+          }
+          <UserPage currentUser={currentUser} />
         </Route>
       </Switch>
     </div>
