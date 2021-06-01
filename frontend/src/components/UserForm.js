@@ -84,7 +84,7 @@ const UserForm = ({ sendMessage }) => {
             </div>
             <div className="field is-grouped">
               <div className="control">
-                <button id="create" className="button is-link" type='submit'>Luo uusi käyttäjä</button>
+                <button id="create" className="button is-link" type='submit'>Tallenna käyttäjä</button>
               </div>
               <div className="control">
                 <button className="button is-link is-light" onClick={cancel}>Poistu</button>
