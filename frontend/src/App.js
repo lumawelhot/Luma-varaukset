@@ -9,10 +9,14 @@ import UserForm from './components/UserForm'
 import { CURRENT_USER } from './graphql/queries'
 import UserList from './components/UserList'
 import EventForm from './components/EventForm'
+import { FcKey } from 'react-icons/fc'
+import UserPage from './components/UserPage'
+import Message from './components/Message'
 
 const App = () => {
   const history = useHistory()
   const [events, setEvents] = useState([])
+  const [message, setMessage] = useState('')
   const client = useApolloClient()
   const result = useQuery(EVENTS)
   const [getUser, { loading, data }] = useLazyQuery(CURRENT_USER, {
@@ -48,12 +52,6 @@ const App = () => {
     history.push('/admin')
   }
 
-  const createEvent = (event) => {
-    event.preventDefault()
-    history.push('/event')
-
-  }
-
   const logout = (event) => {
     event.preventDefault()
     setUser(null)
@@ -62,10 +60,16 @@ const App = () => {
     history.push('/')
   }
 
+  const updateMessage = (msg) => {
+    setMessage(msg)
+    setTimeout(() => setMessage(''), 5000)
+  }
+
   if (loading) return <div></div>
 
   return (
     <div className="App">
+      <Message message={message} />
       <Switch>
         <Route path='/admin'>
           {!currentUser &&
@@ -76,39 +80,40 @@ const App = () => {
           }
         </Route>
         <Route path='/event'>
-          {currentUser && currentUser.isAdmin &&
-              <EventForm/>
+          {currentUser &&
+            <EventForm sendMessage={updateMessage} />
           }
           {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
         </Route>
         <Route path='/users/create'>
           {currentUser && currentUser.isAdmin &&
-            <UserForm setUser={setUser} />
+            <UserForm sendMessage={updateMessage} />
           }
           {!(currentUser && currentUser.isAdmin) &&
             <div>Access denied</div>
           }
-          {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
+          {!(currentUser && currentUser.isAdmin) && <p>Sinulla ei ole tarvittavia oikeuksia.</p>}
         </Route>
         <Route path='/users'>
           {currentUser && currentUser.isAdmin &&
             <UserList />
           }
-          {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
+          {!(currentUser && currentUser.isAdmin) && <p>Sinulla ei ole tarvittavia oikeuksia.</p>}
         </Route>
         <Route path='/'>
-          {!currentUser &&
-            <div className="control">
-              <button className="button is-link is-light" onClick={login}>Kirjaudu sisään</button>
-            </div>
-          }
           {currentUser &&
             <div className="control">
               <button className="button is-link is-light" onClick={logout}>Kirjaudu ulos</button>
-              <button className="button is-link is-light" onClick={createEvent}>Luo uusi vierailu</button>
+              <div style={{ position: 'absolute', top: 0, right: 0 }}>
+                Olet kirjautunut käyttäjänä: {currentUser.username}
+              </div>
             </div>
           }
           <MyCalendar events={events} currentUser={currentUser} />
+          {!currentUser &&
+            <FcKey onClick={login} style={{ position: 'absolute', bottom: 0, right: 0 }} />
+          }
+          <UserPage currentUser={currentUser} />
         </Route>
       </Switch>
     </div>

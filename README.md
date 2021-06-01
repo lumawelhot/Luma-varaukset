@@ -9,33 +9,20 @@ LUMA-varaukset is an online reservation system for arranging visits to the LUMA 
 
 The application has been created for the Helsinki University course Software Engineering Lab (summer 2021). Final publication is planned for the end of June 2021.
 
-## Table of Contents
 
-[Installation](#installation)
+## Dokumentaatio
 
-[Documentation](#documentation)
+[Käyttöohjeet](./docs/ohjeet.md)
 
-[Usage](#usage)
+[Sovelluskehityksen ohjeet](./docs/developer.md)
 
-[Contributing](#contributing)
+[Definition of Done](./docs/definition_of_done.md)
 
-[Credits](#credits)
+[Product Backlog](https://docs.google.com/spreadsheets/d/1jKcC4YyXZ3QNNSCfvvapEfwdzT-gH4OzLNnMJK1LMGA/edit?usp=sharing)
 
-[Project Documentation](#project-documentation)
+[Sprint Backlog and time sheets](https://docs.google.com/spreadsheets/d/1QTQyVfhW5SEzO3SSph0t2J4dzxE0-PgdmP1BX4H8VZk/edit?usp=sharing)
 
-[Licence](#licence)
-
-## Installation
-
-_To be added._
-
-## Documentation
-
-[High-level software architecture](./docs/architecture.png)
-
-## Usage
-
-_To be added._
+[Ohjelmiston arkkitehtuuri](./docs/img/architecture.png)
 
 ## Contributing
 
@@ -46,12 +33,6 @@ _To be added._
 _To be added._
 
 ## Project Documentation
-
-[Definition of Done](https://github.com/lumawelhot/Luma-varaukset/blob/main/docs/definition_of_done.md)
-
-[Product Backlog](https://docs.google.com/spreadsheets/d/1jKcC4YyXZ3QNNSCfvvapEfwdzT-gH4OzLNnMJK1LMGA/edit?usp=sharing)
-
-[Sprint Backlog and time sheets](https://docs.google.com/spreadsheets/d/1QTQyVfhW5SEzO3SSph0t2J4dzxE0-PgdmP1BX4H8VZk/edit?usp=sharing)
 
 ## License
 
