@@ -9,26 +9,32 @@ import { useHistory } from 'react-router'
 
 
 const validate = values => {
+
+  const defErrorMessage = 'Vaaditaan!'
   const errors = {}
 
   if (!values.title) {
-    errors.title = 'Vaaditaan!'
+    errors.title = defErrorMessage
+  }
+
+  if(!values.grade){
+    errors.grade = defErrorMessage
   }
 
   if (!values.scienceClass) {
-    errors.scienceClass = 'Vaaditaan!'
+    errors.scienceClass = defErrorMessage
   }
 
   if (!values.date) {
-    errors.date = 'Vaaditaan!'
+    errors.date = defErrorMessage
   }
 
   if (!values.startTime) {
-    errors.time = 'Vaaditaan!'
+    errors.startTime = defErrorMessage
   }
 
   if (!values.endTime) {
-    errors.time = 'Vaaditaan!'
+    errors.endTime = defErrorMessage
   }
 
   return errors
@@ -49,11 +55,12 @@ const EventForm = ({ sendMessage }) => {
 
   const formik = useFormik({
     initialValues: {
+      grade: '',
       title: '',
       scienceClass: '',
       date: '',
       startTime: '',
-      endTime: '',
+      endTime: ''
     },
     validate,
     onSubmit: values => {
@@ -61,6 +68,7 @@ const EventForm = ({ sendMessage }) => {
       const end = new Date(`${values.date}:${values.endTime}`)
       create({
         variables: {
+          grade: values.grade,
           title: values.title,
           start,
           end,
@@ -95,6 +103,34 @@ const EventForm = ({ sendMessage }) => {
             {formik.touched.title && formik.errors.title ? (
               <Message message={formik.errors.title} />
             ) : null}
+
+            <div className="field">
+
+              <label htmlFor="grade">Luokka-aste </label>
+              <div className="control">
+                <FormikProvider value={formik}>
+                  <select
+                    name="grade"
+                    value={formik.values.grade}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    style={{ display: 'block', width: 300 }}
+                  ><option value="" label="Valitse luokka-aste" />
+                    <option value="Varhaiskasvatus" label="Varhaiskasvatus" />
+                    <option value="1.-2. luokka" label="1.-2. luokka" />
+                    <option value="3.-6. luokka" label="3.-6. luokka" />
+                    <option value="7.-9 luokka" label="7.-9 luokka" />
+                    <option value="toinen aste" label="toinen aste" />
+                  </select>
+
+
+                </FormikProvider>
+              </div>
+            </div>
+            {formik.touched.grade && formik.errors.grade ? (
+              <Message message={formik.errors.grade} />
+            ) : null}
+
 
             <div className="field">
 
