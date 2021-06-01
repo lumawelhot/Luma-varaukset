@@ -48,6 +48,59 @@ Cypress.Commands.add('login', ({ username, password }) => {
   cy.visit('http://localhost:3000')
 })
 
+Cypress.Commands.add('createUser', ({ username, password, isAdmin }) => {
+  cy.request({
+    url: 'http://localhost:3001/graphql',
+    method: 'POST',
+    headers: {
+      authorization: `bearer ${localStorage.getItem('app-token')}`
+    },
+    body: {
+      query: `
+        mutation createUser {
+          createUser (
+            username: "${username}"
+            password: "${password}"
+            isAdmin: ${isAdmin}
+          ) {
+            username,
+            isAdmin
+          }
+        }
+      `
+    }
+  }).then(({ body }) => {
+    cy.log(body)
+  })
+})
+
+Cypress.Commands.add('createEvent', (props) => {
+  cy.request({
+    url: 'http://localhost:3001/graphql',
+    method: 'POST',
+    headers: {
+      authorization: `bearer ${localStorage.getItem('app-token')}`
+    },
+    body: {
+      query: `
+        mutation createEvent {
+          createEvent (
+            title: "${props.title}",
+            start: "${props.start}",
+            end: "${props.end}",
+            class: "${props.scienceClass}"
+          ) {
+            title
+            resourceId
+          }
+        }
+      `
+    }
+  }).then(({ body }) => {
+    cy.log(body)
+  })
+})
+
 Cypress.Commands.add('containsUser', ({ username }) => {
   cy.request({
     url: 'http://localhost:3001/graphql',
