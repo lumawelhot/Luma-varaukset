@@ -72,6 +72,9 @@ const resolvers = {
         default:
           throw new UserInputError('Invalid class')
       }
+      if (args.title.length < 5) {
+        throw new UserInputError('title too short')
+      }
       const newEvent = new Event({
         title: args.title,
         start: args.start,
