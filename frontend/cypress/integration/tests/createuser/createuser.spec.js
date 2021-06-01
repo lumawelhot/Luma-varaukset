@@ -46,11 +46,28 @@ Then('an error is shown', () => {
   cy.get('.App > div').should('have.text', 'Access denied')
 })
 
-When('I enter to the user list page', () => {
+Given('a user is created', () => {
+  cy.createUser({ username: 'xxxxx', password: 'supersecret', isAdmin: false })
+})
+
+Then('the created user xxxxx is listed', () => {
+  cy.get('thead > tr > :nth-child(2)').should('have.text', 'Account type')
+  cy.get('thead > tr > :nth-child(1)').should('have.text', 'Username')
+  cy.get(':nth-child(4) > :nth-child(1)').should('have.text', 'xxxxx')
+})
+
+When('I press the user list button', () => {
+  cy.get('.App > :nth-child(4) > :nth-child(2)').click()
+})
+
+Given('I am on the user list page', () => {
   cy.visit('http://localhost:3000/users')
 })
 
-Then('the user list is shown', () => {
-  cy.get('thead > tr > :nth-child(2)').should('have.text', 'Account type')
-  cy.get('thead > tr > :nth-child(1)').should('have.text', 'Username')
+When('I press create user button', () => {
+  cy.get('.button').click()
+})
+
+Then('the user creation page is shown', () => {
+  cy.get(':nth-child(3) > .label').should('have.text', 'Käyttäjärooli')
 })
