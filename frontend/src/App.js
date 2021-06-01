@@ -10,6 +10,7 @@ import { CURRENT_USER } from './graphql/queries'
 import UserList from './components/UserList'
 import EventForm from './components/EventForm'
 import Message from './components/Message'
+import TagInput from './components/TagInput/TagInput'
 
 const App = () => {
   const history = useHistory()
@@ -74,6 +75,9 @@ const App = () => {
     <div className="App">
       <Message message={message} />
       <Switch>
+        <Route path='/taginput'>
+          <TagInput data={['Matikka', 'Fysiikka']}/>
+        </Route>
         <Route path='/admin'>
           {!currentUser &&
             <LoginForm getUser={getUser} />
