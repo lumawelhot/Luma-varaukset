@@ -51,3 +51,17 @@ export const CURRENT_USER = gql `
     }
   }
 `
+
+export const CREATE_EVENT = gql `
+  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!) {
+    createEvent (
+      title: $title,
+      start: $start,
+      end: $end,
+      class: $scienceClass
+    ) {
+      title
+      resourceId
+    }
+  }
+`

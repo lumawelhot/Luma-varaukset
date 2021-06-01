@@ -35,20 +35,6 @@ const server = new ApolloServer({
 server.applyMiddleware({ app })
 
 const mongoose = require('mongoose')
-if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
-  const { MongoMemoryServer } = require('mongodb-memory-server')
-  const mongoServer = new MongoMemoryServer()
-  mongoose.set('useFindAndModify', false)
-  mongoose.set('useCreateIndex', true)
-  mongoServer.getUri().then(uri => {
-    mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-    console.log('connected to mongodb')
-  })
-} else { // production mode
-  mongoose.set('useFindAndModify', false)
-  mongoose.set('useCreateIndex', true)
-  mongoose.connect('mongodb://luma-varaukset-db:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
-}
 
 const createAdmin = async () => {
   await User.deleteMany({})
@@ -57,7 +43,7 @@ const createAdmin = async () => {
     passwordHash: await bcrypt.hash('salainen', 10),
     isAdmin: true,
   })
-  userObject.save()
+  await userObject.save()
 }
 const createEmployee = async () => {
   const userObject = new User({
@@ -65,7 +51,7 @@ const createEmployee = async () => {
     passwordHash: await bcrypt.hash('emp', 10),
     isAdmin: false,
   })
-  userObject.save()
+  await userObject.save()
 }
 
 
@@ -78,9 +64,47 @@ const createEvents = async () => {
   })
 }
 
-createAdmin()
-createEmployee()
-createEvents()
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+  const { MongoMemoryServer } = require('mongodb-memory-server')
+  const mongoServer = new MongoMemoryServer()
+  mongoose.set('useFindAndModify', false)
+  mongoose.set('useCreateIndex', true)
+  mongoServer.getUri().then(uri => {
+    mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+      .then(() => {
+        console.log('connected to MongoDB, initializing database')
+        createAdmin()
+        createEmployee()
+        createEvents()
+      })
+      .catch((error) => {
+        console.log('error connecting to MongoDB: ', error.message)
+      })
+  })
+} else if (process.env.NODE_ENV === 'production'){ // production mode
+  mongoose.set('useFindAndModify', false)
+  mongoose.set('useCreateIndex', true)
+  mongoose.connect('mongodb://luma-varaukset-db:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+      console.log('connected to MongoDB, initializing database')
+      createAdmin()
+      createEvents()
+    })
+    .catch((error) => {
+      console.log('error connecting to MongoDB: ', error.message)
+    })
+} else {
+  mongoose.set('useFindAndModify', false)
+  mongoose.set('useCreateIndex', true)
+  mongoose.connect('mongodb://localhost:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+      console.log('connected to MongoDB, initializing database')
+      createAdmin()
+      createEvents()
+    })
+  const db = mongoose.connection
+  db.on('error', console.error.bind(console, 'MongoDB connection error:'))
+}
 
 app.use(logger('dev'))
 app.use(cors())
