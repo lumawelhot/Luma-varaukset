@@ -9,7 +9,7 @@ module.exports = {
   'extends': [
     'eslint:recommended',
     'plugin:react/recommended',
-    //'plugin:cypress/recommended'
+    'plugin:cypress/recommended'
   ],
   'parserOptions': {
     'ecmaFeatures': {
@@ -36,7 +36,7 @@ module.exports = {
   },
   'plugins': [
     'react',
-    //'cypress',
+    'cypress',
     //'jest'
   ],
   'rules': {
