@@ -3,6 +3,10 @@ import { useFormik, FormikProvider } from 'formik'
 import Message from './Message'
 import { useMutation } from '@apollo/client'
 import { CREATE_EVENT } from '../graphql/queries'
+import { useHistory } from 'react-router'
+
+
+
 
 const validate = values => {
   const errors = {}
@@ -34,6 +38,15 @@ const EventForm = ({ sendMessage }) => {
   const [create,] = useMutation(CREATE_EVENT, {
     onError: (error) => console.log(error)
   })
+
+  const history = useHistory()
+
+  const cancel = (event) => {
+    event.preventDefault()
+
+    history.push('/')
+  }
+
   const formik = useFormik({
     initialValues: {
       title: '',
@@ -89,6 +102,7 @@ const EventForm = ({ sendMessage }) => {
               <div className="control">
                 <FormikProvider value={formik}>
                   <select
+                    id="scienceClass"
                     name="scienceClass"
                     value={formik.values.scienceClass}
                     onChange={formik.handleChange}
@@ -169,7 +183,12 @@ const EventForm = ({ sendMessage }) => {
             ) : null}
 
 
+
             <button className="button is-link" type='submit'>Tallenna</button>
+            <button className="button is-link is-light" onClick={cancel}>Poistu</button>
+
+            <button id="create" className="button is-link" type='submit'>Tallenna</button>
+
           </form>
         </div>
       </div>

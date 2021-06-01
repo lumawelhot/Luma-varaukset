@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps'
 
 Given('Admin is logged in', () => {
@@ -13,7 +14,6 @@ When('valid information are entered', () => {
   cy.get('#password').type('secret')
   cy.get('#admin').click()
   cy.get('#create').click()
-  // eslint-disable-next-line cypress/no-unnecessary-waiting
   cy.wait(2000)
 })
 

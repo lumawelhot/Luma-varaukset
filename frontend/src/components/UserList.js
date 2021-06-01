@@ -1,15 +1,18 @@
 import { useQuery } from '@apollo/client'
 import React from 'react'
+import { useHistory } from 'react-router'
 import { USERS } from '../graphql/queries'
 
 const UserList = () => {
   const result = useQuery(USERS)
+  const history = useHistory()
 
-  if (result.loading) {
-    return <>loading...</>
+  if (result.loading) return <></>
+
+  const create = (event) => {
+    event.preventDefault()
+    history.push('/users/create')
   }
-
-  console.log(result.data.getUsers)
 
   return (
     <div>
@@ -30,6 +33,7 @@ const UserList = () => {
           )}
         </tbody>
       </table>
+      <button className="button is-link is-light" onClick={create}>Luo uusi käyttäjä</button>
     </div>
   )
 }
