@@ -10,6 +10,7 @@ const typeDefs = gql `
     id: ID!
     title: String!
     resourceId: Int
+    gradeId: Int
     start: String!
     end: String!
   }
@@ -34,6 +35,7 @@ const typeDefs = gql `
     createEvent(
       title: String!
       class: String!
+      grade: String!
       start: String!
       end: String!
     ): Event
