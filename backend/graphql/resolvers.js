@@ -2,6 +2,7 @@ const { UserInputError, AuthenticationError } = require('apollo-server-errors')
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
 const Event = require('../models/event')
+const Visit = require('../models/visit')
 const jwt = require('jsonwebtoken')
 
 const resolvers = {
@@ -14,9 +15,19 @@ const resolvers = {
       const events = await Event.find({})
       return events
     },
+    findVisit: async (root, args) => {
+      const visit = await Visit.findById(args.id)
+      return visit
+    },
     me: (root, args, context) => {
       return context.currentUser
     }
+  },
+  Visit: {
+    event: async (root, args, { currentUser }) => {
+      const event = await Event.findById(root.event)
+      return event
+    },
   },
   Mutation: {
     createUser: async (root, args, { currentUser }) => {
@@ -105,7 +116,24 @@ const resolvers = {
       })
       await newEvent.save()
       return newEvent
-    }
+    },
+    createVisit: async (root, args) => {
+      const pin = 1234 //luodaan pin
+      const event = await Event.findById(args.event)
+      const visit = new Visit({
+        ...args,
+        event: event,
+        pin: pin,
+      })
+      try {
+        const savedVisit = await visit.save()
+        return savedVisit
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
+    },
   }
 }
 

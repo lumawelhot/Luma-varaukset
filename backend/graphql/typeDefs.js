@@ -1,5 +1,6 @@
 const { gql } = require('apollo-server-express')
 
+//Visit-tyypin kentät gradeId ja online muutettava pakollisiksi
 const typeDefs = gql `
   type User {
     id: ID!
@@ -14,6 +15,17 @@ const typeDefs = gql `
     start: String!
     end: String!
   }
+  type Visit {
+    id: ID!
+    event: Event!
+    pin: Int!
+    gradeId: Int
+    online: Boolean
+    extra: [Int]
+    clientName: String!
+    clientEmail: String!
+    clientPhone: String!
+  }
   type Token {
     value: String!
   }
@@ -21,6 +33,8 @@ const typeDefs = gql `
     getUsers: [User]!
     me: User!
     getEvents: [Event]!
+    findVisit(id: ID!): Visit!
+    getVisits: [Visit]
   }
   type Mutation {
     createUser(
@@ -39,6 +53,16 @@ const typeDefs = gql `
       start: String!
       end: String!
     ): Event
+    createVisit(
+      event: ID!
+      gradeId: Int
+      online: Boolean
+      extra: [Int]
+      clientName: String!
+      clientEmail: String!
+      clientPhone: String!
+    ): Visit
+    cancelVisit(id: ID!, pin: Int!): Visit
   }
 `
 
