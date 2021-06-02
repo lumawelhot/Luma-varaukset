@@ -20,8 +20,16 @@ Given Employee is logged in
 When the employee enters to correct URL
 Then an error is shown
 
-Scenario: An user list is shown to an admin
+Scenario: An added user is shown on the user list
 
 Given Admin is logged in
-When I enter to the user list page
-Then the user list is shown
+And a user is created
+When I press the user list button
+Then the created user xxxxx is listed
+
+Scenario: An admin can enter to the user creation page from user list page
+
+Given Admin is logged in
+And I am on the user list page
+When I press create user button
+Then the user creation page is shown

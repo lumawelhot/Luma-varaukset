@@ -1,6 +1,18 @@
 /* eslint-disable no-undef */
 import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps'
 
+Given('I am on the main page', () => {
+  cy.visit('http://localhost:3000')
+})
+
+When('the user presses login key icon', () => {
+  cy.get('svg').click()
+})
+
+Then('the user is on the login page', () => {
+  cy.get('.title').should('have.text', 'Luma varaukset kirjautuminen')
+})
+
 Given('I am on the login page', () => {
   cy.visit('http://localhost:3000/admin')
 })
@@ -36,4 +48,12 @@ When('I am on the login page', () => {
 
 Then('an error is shown', () => {
   cy.get('.App > div').should('have.text', 'You are already logged in')
+})
+
+When('I am on the main page', () => {
+  cy.visit('http://localhost:3000')
+})
+
+Then('correct username is shown', () => {
+  cy.contains('Olet kirjautunut käyttäjänä: Admin')
 })

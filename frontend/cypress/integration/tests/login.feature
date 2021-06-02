@@ -17,3 +17,15 @@ Scenario: Login page is not shown if an user is logged
 Given Admin is logged in
 When I am on the login page
 Then an error is shown
+
+Scenario: A user can enter to the login page
+
+Given I am on the main page
+When the user presses login key icon
+Then the user is on the login page
+
+Scenario: The username of the logged in user is displayed
+
+Given Admin is logged in
+When I am on the main page
+Then correct username is shown
