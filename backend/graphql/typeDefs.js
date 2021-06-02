@@ -1,6 +1,7 @@
 const { gql } = require('apollo-server-express')
 
-//Visit-tyypin kentät gradeId ja online muutettava pakollisiksi
+//Visit- ja Event-tyyppien kentät gradeId ja online tarkistettava
+//Visit-tyypin pin-kentän palautus frontendiin estettävä sitten, kun pin palautetaan sähköpostitse
 const typeDefs = gql `
   type User {
     id: ID!
@@ -11,7 +12,6 @@ const typeDefs = gql `
     id: ID!
     title: String!
     resourceId: Int
-    gradeId: Int
     start: String!
     end: String!
   }
@@ -49,7 +49,6 @@ const typeDefs = gql `
     createEvent(
       title: String!
       class: String!
-      grade: String!
       start: String!
       end: String!
     ): Event

@@ -55,7 +55,6 @@ const resolvers = {
       if (!(user && passwordCorrect)) {
         throw new UserInputError('Wrong credentials!')
       }
-
       const userForToken = { username: user.username, id: user._id }
       return { value: jwt.sign(userForToken, 'huippusalainen') }
     },
@@ -83,8 +82,7 @@ const resolvers = {
         default:
           throw new UserInputError('Invalid class')
       }
-
-      let gradeId = null
+      /* let gradeId = null
       switch (args.grade) {
         case 'Varhaiskasvatus':
           gradeId = 1
@@ -103,7 +101,7 @@ const resolvers = {
           break
         default:
           throw new UserInputError('Invalid grade')
-      }
+      } */
       if (args.title.length < 5) {
         throw new UserInputError('title too short')
       }
@@ -112,13 +110,13 @@ const resolvers = {
         start: args.start,
         end: args.end,
         resourceId,
-        gradeId
+        //gradeId
       })
       await newEvent.save()
       return newEvent
     },
     createVisit: async (root, args) => {
-      const pin = 1234 //luodaan pin
+      const pin = Math.floor(1000 + Math.random() * 9000)
       const event = await Event.findById(args.event)
       const visit = new Visit({
         ...args,
@@ -133,6 +131,21 @@ const resolvers = {
           invalidArgs: args,
         })
       }
+    },
+    cancelVisit: async (root, args) => {
+      const visit = await Visit.findById(args.id)
+      if (visit.pin === args.pin) {
+        try {
+          return Visit.findByIdAndRemove(visit.id)
+        } catch (error) {
+          throw new UserInputError(error.message, {
+            invalidArgs: args,
+          })
+        }
+      } else {
+        throw new UserInputError('Wrong pin!')
+      }
+      
     },
   }
 }
