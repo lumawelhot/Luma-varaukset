@@ -12,6 +12,7 @@ const typeDefs = gql `
     resourceId: Int
     start: String!
     end: String!
+    description: String
   }
   type Token {
     value: String!
@@ -36,6 +37,7 @@ const typeDefs = gql `
       class: String!
       start: String!
       end: String!
+      description: String
     ): Event
   }
 `

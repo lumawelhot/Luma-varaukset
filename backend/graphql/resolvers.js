@@ -79,6 +79,7 @@ const resolvers = {
         title: args.title,
         start: args.start,
         end: args.end,
+        description: args.description,
         resourceId
       })
       await newEvent.save()
