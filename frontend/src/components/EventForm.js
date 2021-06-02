@@ -5,9 +5,6 @@ import { useMutation } from '@apollo/client'
 import { CREATE_EVENT } from '../graphql/queries'
 import { useHistory } from 'react-router'
 
-
-
-
 const validate = values => {
 
   const defErrorMessage = 'Vaaditaan!'
@@ -60,7 +57,8 @@ const EventForm = ({ sendMessage }) => {
       scienceClass: '',
       date: '',
       startTime: '',
-      endTime: ''
+      endTime: '',
+      description: ''
     },
     validate,
     onSubmit: values => {
@@ -72,7 +70,8 @@ const EventForm = ({ sendMessage }) => {
           title: values.title,
           start,
           end,
-          scienceClass: values.scienceClass
+          scienceClass: values.scienceClass,
+          description: values.description
         }
       })
       alert(JSON.stringify(values, null, 2))
@@ -214,17 +213,29 @@ const EventForm = ({ sendMessage }) => {
                 />
               </div>
             </div>
+
             {formik.touched.endTime && formik.errors.endTime ? (
               <Message message={formik.errors.endTime} />
             ) : null}
 
+            <div className="field">
+              <label htmlFor="description">Kuvaus</label>
+              <div className="control">
+                <textarea className="textarea" style={{ width: 300 }}
+                  id="description" name="description"
+                  placeholder="Kirjoita tähän lyhyt kuvaus vierailusta."
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.description}>
+                </textarea>
+              </div>
+            </div>
+            {formik.touched.description && formik.errors.description ? (
+              <Message message={formik.errors.description} />
+            ) : null}
 
-
-            <button className="button is-link" type='submit'>Tallenna</button>
             <button className="button is-link is-light" onClick={cancel}>Poistu</button>
-
             <button id="create" className="button is-link" type='submit'>Tallenna</button>
-
           </form>
         </div>
       </div>

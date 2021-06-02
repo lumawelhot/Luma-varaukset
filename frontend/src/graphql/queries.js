@@ -40,6 +40,7 @@ export const EVENTS = gql `
       resourceId
       start
       end
+      description
     }
   }
 `
@@ -53,12 +54,13 @@ export const CURRENT_USER = gql `
 `
 
 export const CREATE_EVENT = gql `
-  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!) {
+  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!, $description: String) {
     createEvent (
       title: $title,
       start: $start,
       end: $end,
-      class: $scienceClass
+      class: $scienceClass,
+      description: $description
     ) {
       title
       resourceId
