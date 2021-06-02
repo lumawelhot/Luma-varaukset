@@ -49,6 +49,7 @@ const resolvers = {
       return { value: jwt.sign(userForToken, 'huippusalainen') }
     },
     createEvent: async (root, args, { currentUser }) => {
+      console.log(args)
       if (!currentUser) {
         throw new AuthenticationError('not authenticated')
       }
