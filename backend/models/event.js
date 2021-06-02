@@ -22,8 +22,8 @@ const eventSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
-  gradeId: {
-    type: Number,
+  gradeIds: {
+    type: [Number],
     required: true,
   },
   desc: String,
