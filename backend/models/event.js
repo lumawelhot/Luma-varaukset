@@ -22,7 +22,7 @@ const eventSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
-  desc: String,
+  description: String,
 })
 
 eventSchema.set('toJSON', {
