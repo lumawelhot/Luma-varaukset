@@ -5,11 +5,7 @@
     "start": "Tue Jun 01 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
     "end": "Wed Jun 02 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
     "resourceId": 3,
-<<<<<<< Updated upstream
-    "gradeIds": [1]
-=======
     "gradeId": [1]
->>>>>>> Stashed changes
   },
   {
     "title": "Maanjäristysten alueellisuus ja niiden vaikutukset",

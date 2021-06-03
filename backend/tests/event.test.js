@@ -98,15 +98,19 @@ describe('Event Server Test', () => {
           class: "LINKKI"
           start: "Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)"
           end: "Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)"
+          grades: ${JSON.stringify([1, 3, 4])}
         ){
           title,
           resourceId,
           start,
-          end
+          end,
+          gradeIds
         }
       }
     `
     let response = await mutate({ mutation: CREATE_EVENT })
+    expect(response.data.createEvent.title).toBe('Learn JavaScript!')
+    expect(response.data.createEvent.gradeIds).toEqual([1, 3, 4])
     expect(response.errors).toBeUndefined()
   })
 })
