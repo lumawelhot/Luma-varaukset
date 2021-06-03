@@ -11,12 +11,14 @@ Given('I am on the create event page', () => {
 
 When('valid information is entered', () => {
   cy.get('#title').type('Test event')
-  cy.get('.css-tj5bde-Svg').select('Varhaiskasvatus')
+  cy.get('.button > :nth-child(1)').click()
+  cy.get(':nth-child(3) > span').click()
+  cy.get('.button > :nth-child(1)').click()
   cy.get('#scienceClass').select('SUMMAMUTIKKA')
   cy.get('#date').type('2021-01-31')
   cy.get('#startTime').type('08:15')
   cy.get('#endTime').type('09:45')
-  cy.get('#create').click()
+  cy.get('[type="submit"]').click()
   cy.wait(2000)
 })
 
@@ -26,11 +28,14 @@ Then('an event is succesfully created', () => {
 
 When('too short a title is entered', () => {
   cy.get('#title').type('test')
+  cy.get('.button > :nth-child(1)').click()
+  cy.get(':nth-child(3) > span').click()
+  cy.get('.button > :nth-child(1)').click()
   cy.get('#scienceClass').select('SUMMAMUTIKKA')
   cy.get('#date').type('2021-01-31')
   cy.get('#startTime').type('08:15')
   cy.get('#endTime').type('09:45')
-  cy.get('#create').click()
+  cy.get('[type="submit"]').click()
   cy.wait(2000)
 })
 
