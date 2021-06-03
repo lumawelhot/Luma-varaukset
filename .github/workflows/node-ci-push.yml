@@ -26,18 +26,14 @@ jobs:
       - name: Run Jest tests
         run: npm run test -- --watchAll=false
         working-directory: frontend
-      - name: Start backend for Cypress
-        run: cd ../backend && nohup npm run dev &
-        env:
-          SECRET: ${{ secrets.SECRET }}
-          PORT: 3001
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          start: npm start
+          start: npm start, npm run dev --prefix ../backend
           working-directory: frontend
           wait-on: http://localhost:3000
           wait-on-timeout: 300
+          record: true
         env:
           CYPRESS_RECORD_KEY: ${{secrets.CYPRESS_KEY}}
           #MONGODB_TEST_URI: ${{secrets.MONGODB_TEST_URI}}
