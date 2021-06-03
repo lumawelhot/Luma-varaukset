@@ -1,8 +1,9 @@
 import React from 'react'
+import { resourceColors } from '../../helpers/styles'
 
 const LumaEvent = ({ event }) => {
   return (
-    <span style={{ backgroundColor:resourceColours[event.resourceId-1] }}>
+    <span style={{ backgroundColor:resourceColors[event.resourceId-1] }}>
       <strong style={{ color: 'white' }}>{event.title}</strong>
     </span>
   )

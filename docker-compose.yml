@@ -28,8 +28,3 @@ services:
     ports:
       - 80:80
     container_name: nginx
-
-networks:
-  default:
-    external:
-      name: ohtup

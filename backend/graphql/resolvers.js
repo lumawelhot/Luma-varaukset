@@ -59,6 +59,7 @@ const resolvers = {
       return { value: jwt.sign(userForToken, 'huippusalainen') }
     },
     createEvent: async (root, args, { currentUser }) => {
+      console.log(args)
       if (!currentUser) {
         throw new AuthenticationError('not authenticated')
       }
@@ -82,26 +83,9 @@ const resolvers = {
         default:
           throw new UserInputError('Invalid class')
       }
-      /* let gradeId = null
-      switch (args.grade) {
-        case 'Varhaiskasvatus':
-          gradeId = 1
-          break
-        case '1.-2. luokka':
-          gradeId = 2
-          break
-        case '3.-6. luokka':
-          gradeId = 3
-          break
-        case '7.-9 luokka':
-          gradeId = 4
-          break
-        case 'toinen aste':
-          gradeId = 5
-          break
-        default:
-          throw new UserInputError('Invalid grade')
-      } */
+
+      let grades = args.grades
+
       if (args.title.length < 5) {
         throw new UserInputError('title too short')
       }
@@ -110,7 +94,7 @@ const resolvers = {
         start: args.start,
         end: args.end,
         resourceId,
-        //gradeId
+        grades
       })
       await newEvent.save()
       return newEvent
