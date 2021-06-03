@@ -7,9 +7,10 @@ const EventModel = require('../models/event')
 const UserModel = require('../models/user')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
+let server = null
 
 beforeAll(async () => {
-  
+
   await mongoose.connect(process.env.MONGO_URL,
     { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true })
     .then(() => {
@@ -21,7 +22,7 @@ beforeAll(async () => {
   await UserModel.deleteMany({})
 
   const userPassword = await bcrypt.hash('password', 10)
-  userData = { username: 'employee', passwordHash: userPassword, isAdmin: false }
+  const userData = { username: 'employee', passwordHash: userPassword, isAdmin: false }
 
   const user = new UserModel(userData)
   const savedUser = await user.save()
@@ -30,7 +31,7 @@ beforeAll(async () => {
   server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: async ({ req }) => {
+    context: async () => {
       const currentUser = savedUser
       return { currentUser }
     }
@@ -62,7 +63,7 @@ beforeEach(async () => {
 
 describe('Event Server Test', () => {
 
-  it("get all events", async () => {
+  it('get all events', async () => {
     const { query } = createTestClient(server)
     const GET_ALL_EVENTS = gql`
     query {
@@ -89,7 +90,7 @@ describe('Event Server Test', () => {
     expect(getEvents.length).toBe(2)
   })
 
-  it("employee can create new event successfully", async () => {
+  it('employee can create new event successfully', async () => {
     const { mutate } = createTestClient(server)
     const CREATE_EVENT = gql`
       mutation {
@@ -119,10 +120,11 @@ describe('Event Model Test', () => {
 
   it('create & save new event successfully', async () => {
     const eventData = {
-        title: 'New-event',
-        resourceId: 2,
-        start: 'Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)',
-        end: 'Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)' }
+      title: 'New-event',
+      resourceId: 2,
+      start: 'Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)',
+      end: 'Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)'
+    }
     const validEvent = new EventModel(eventData)
     const savedEvent = await validEvent.save()
     expect(savedEvent._id).toBeDefined()
@@ -134,11 +136,12 @@ describe('Event Model Test', () => {
 
   it('insert event successfully, but the field not defined in schema should be "undefined"', async () => {
     const eventWithInvalidField = new EventModel({
-        title: 'New-event',
-        resourceId: 2,
-        start: 'Tue Jun 01 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
-        end: 'Wed Jun 02 2021 15:00:00 GMT+0300 (Eastern European Summer Time)',
-        fieldNotInSchema: 'Tiedeluokka Linkki' })
+      title: 'New-event',
+      resourceId: 2,
+      start: 'Tue Jun 01 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
+      end: 'Wed Jun 02 2021 15:00:00 GMT+0300 (Eastern European Summer Time)',
+      fieldNotInSchema: 'Tiedeluokka Linkki'
+    })
     const savedEventWithInvalidField = await eventWithInvalidField.save()
     expect(savedEventWithInvalidField._id).toBeDefined()
     expect(savedEventWithInvalidField.fieldNotInSchema).toBeUndefined()
@@ -149,7 +152,7 @@ describe('Event Model Test', () => {
     let err
     try {
       const savedEventWithoutRequiredField = await eventWithoutRequiredField.save()
-      error = savedEventWithoutRequiredField
+      err = savedEventWithoutRequiredField
     } catch (error) {
       err = error
     }

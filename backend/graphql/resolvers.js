@@ -75,7 +75,7 @@ const resolvers = {
       }
 
       let gradeIds = args.grades
-      
+
       if (args.title.length < 5) {
         throw new UserInputError('title too short')
       }

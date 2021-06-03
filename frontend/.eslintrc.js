@@ -4,7 +4,7 @@ module.exports = {
     'browser': true,
     'es6': true,
     //'cypress/globals': true,
-    //'jest/globals': true
+    'jest/globals': true
   },
   'extends': [
     'eslint:recommended',
@@ -37,7 +37,7 @@ module.exports = {
   'plugins': [
     'react',
     //'cypress',
-    //'jest'
+    'jest'
   ],
   'rules': {
     'indent': [
