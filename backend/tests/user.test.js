@@ -42,7 +42,7 @@ beforeAll(async () => {
   serverAdmin = new ApolloServer({
     typeDefs,
     resolvers,
-    context: async ({ req }) => {
+    context: async () => {
       const currentUser = savedAdminUser
       return { currentUser }
     }
@@ -52,7 +52,7 @@ beforeAll(async () => {
   serverBasic = new ApolloServer({
     typeDefs,
     resolvers,
-    context: async ({ req }) => {
+    context: async () => {
       const currentUser = savedBasicUser
       return { currentUser }
     }
@@ -181,12 +181,12 @@ describe('User Model Test', () => {
     let err
     try {
       const savedUserWithoutRequiredField = await userWithoutRequiredField.save()
-      error = savedUserWithoutRequiredField
+      err = savedUserWithoutRequiredField
     } catch (error) {
       err = error
     }
     expect(err).toBeInstanceOf(mongoose.Error.ValidationError)
-    expect(err.errors.passwordHash).toBeDefined();
+    expect(err.errors.passwordHash).toBeDefined()
   })
 })
 

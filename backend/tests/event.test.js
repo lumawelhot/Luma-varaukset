@@ -153,10 +153,9 @@ describe('Event Model Test', () => {
 
   it('cannot create event without required field', async () => {
     const eventWithoutRequiredField = new EventModel({ allDay: false })
-    let savedEventWithInvalidField
     let err
     try {
-      savedEventWithInvalidField = await eventWithoutRequiredField.save()
+      await eventWithoutRequiredField.save()
     } catch (error) {
       err = error
     }

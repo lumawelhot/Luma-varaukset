@@ -38,7 +38,7 @@ export const EVENTS = gql`
     getEvents {
       title
       resourceId
-      gradeIds
+      grades
       start
       end
     }
@@ -64,7 +64,7 @@ export const CREATE_EVENT = gql`
     ) {
       title
       resourceId
-      gradeIds
+      grades
     }
   }
 `
