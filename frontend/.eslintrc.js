@@ -40,10 +40,10 @@ module.exports = {
     //'jest'
   ],
   'rules': {
-    'indent': [
+    /* 'indent': [
       'error',
       2
-    ],
+    ], */
     'quotes': [
       'error',
       'single'

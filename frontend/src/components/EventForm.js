@@ -218,12 +218,8 @@ const EventForm = ({ sendMessage }) => {
               <Message message={formik.errors.endTime} />
             ) : null}
 
-
-
-            <button className="button is-link" type='submit'>Tallenna</button>
-            <button className="button is-link is-light" onClick={cancel}>Poistu</button>
-
             <button id="create" className="button is-link" type='submit'>Tallenna</button>
+            <button className="button is-link is-light" onClick={cancel}>Poistu</button>
 
           </form>
         </div>

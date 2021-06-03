@@ -9,6 +9,7 @@ import UserForm from './components/UserForm'
 import { CURRENT_USER } from './graphql/queries'
 import UserList from './components/UserList'
 import EventForm from './components/EventForm'
+import VisitForm from './components/VisitForm'
 import { FcKey } from 'react-icons/fc'
 import UserPage from './components/UserPage'
 import Message from './components/Message'
@@ -74,6 +75,9 @@ const App = () => {
     <div className="App">
       <Message message={message} />
       <Switch>
+        <Route path='/event/book'>
+          <VisitForm/>
+        </Route>
         <Route path='/taginput'>
           <LumaTagInput
             label='Tagit'
