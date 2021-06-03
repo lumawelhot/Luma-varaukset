@@ -30,6 +30,8 @@
   "devDependencies": {
     "@shelf/jest-mongodb": "^1.2.4",
     "apollo-server-testing": "^2.24.1",
+    "eslint": "^7.27.0",
+    "eslint-plugin-jest": "^24.3.6",
     "jest": "^27.0.1",
     "mongodb-memory-server": "^6.9.6",
     "supertest": "^6.1.3"
