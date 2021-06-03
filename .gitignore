@@ -106,3 +106,6 @@ dist
 globalConfig.json
 # MongoDB data
 data
+
+# Code coverage files
+coverage
