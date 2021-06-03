@@ -4,7 +4,8 @@ const uniqueValidator = require('mongoose-unique-validator')
 const visitSchema = mongoose.Schema({
   event: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Event'
+    ref: 'Event',
+    required: true,
   },
   pin: {
     type: Number,

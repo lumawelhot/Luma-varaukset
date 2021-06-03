@@ -90,6 +90,24 @@ describe('Visit Model Test', () => {
         expect(savedVisit.clientEmail).toBe(newVisitData.clientEmail)
         expect(savedVisit.clientPhone).toBe(newVisitData.clientPhone)
     })
+
+    it('cannot create visit without required field', async () => {
+      const visitWithoutRequiredField = new VisitModel({ pin: 1234 })
+      let err
+      try {
+        const savedVisitWithoutRequiredField = await visitWithoutRequiredField.save()
+      } catch (error) {
+        err = error
+      }
+      console.log(err)
+      expect(err).toBeInstanceOf(mongoose.Error.ValidationError)
+      expect(err.errors.event).toBeDefined()
+      expect(err.errors.gradeId).toBeDefined()
+      expect(err.errors.online).toBeDefined()
+      expect(err.errors.clientName).toBeDefined()
+      expect(err.errors.clientEmail).toBeDefined()
+      expect(err.errors.clientPhone).toBeDefined()
+    })
 })
 
 describe('Visit server test', () => {
@@ -137,10 +155,6 @@ describe('Visit server test', () => {
           cancelVisit(id: $id, pin: $pin) {
             id
             pin
-            event {
-              title
-            }
-            clientName
           }
         }
         `
@@ -149,10 +163,34 @@ describe('Visit server test', () => {
           variables: { id: id, pin: pin }
         })
         const { cancelVisit } = data
+        expect(cancelVisit.id).toBe(savedTestVisit.id)
         expect(cancelVisit.pin).toBe(savedTestVisit.pin)
 
         const cancelledVisit = await VisitModel.findById(savedTestVisit.id)
         expect(cancelledVisit).toBe(null)
+    })
+
+    it("don't cancel visit by id and invalid pin", async () => {
+      const { mutate } = createTestClient(server)
+      const id = savedTestVisit.id
+      const pin = 4321
+      const CANCEL_VISIT = gql`
+        mutation cancelVisit($id: ID!, $pin: Int!) {
+          cancelVisit(id: $id, pin: $pin) {
+            id
+            pin
+          }
+        }
+        `
+      const  data  = await mutate({
+        mutation: CANCEL_VISIT,
+        variables: { id: id, pin: pin }
+      })
+      
+      expect(data.errors[0].message).toBe('Wrong pin!')
+
+      const cancelledVisit = await VisitModel.findById(savedTestVisit.id)
+      expect(cancelledVisit.id).toBe(savedTestVisit.id)
     })
 })
 
