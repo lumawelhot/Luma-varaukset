@@ -823,3 +823,45 @@ button.rbc-input::-moz-focus-inner {
   width: 100%;
   background-color: #e7a732;
 }
+
+.taginput .taginput-container.is-focusable,
+.taginput .taginput-container:not(.is-focusable) {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  height: auto;
+}
+
+.taginput .taginput-container > .tag,
+.taginput .taginput-container > .tags {
+  display: inline-flex;
+  margin-left: 0.275rem;
+  margin-bottom: calc(0.275em - 1px);
+  font-size: 0.9em;
+  height: calc(2em - 1px);
+}
+
+.taginput .taginput-container .autocomplete {
+  position: static;
+  flex: 1;
+}
+
+.taginput.control .taginput-container.is-focusable {
+  background-color: #fff;
+  border-color: #dbdbdb;
+  border-radius: 4px;
+  border-width: 1px;
+  border-style: solid;
+  color: #363636;
+}
+
+.taginput .taginput-container .autocomplete input {
+  height: calc(2em - 1px);
+  margin-bottom: calc(0.275em - 1px);
+  padding-top: 0;
+  padding-bottom: 0;
+  border: none;
+  box-shadow: none;
+  min-width: 8em;
+}

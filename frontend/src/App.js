@@ -12,6 +12,7 @@ import EventForm from './components/EventForm'
 import { FcKey } from 'react-icons/fc'
 import UserPage from './components/UserPage'
 import Message from './components/Message'
+import LumaTagInput from './components/LumaTagInput/LumaTagInput'
 
 const App = () => {
   const history = useHistory()
@@ -65,12 +66,21 @@ const App = () => {
     setTimeout(() => setMessage(''), 5000)
   }
 
+  const [tags, setTags] = useState([])
+
   if (loading) return <div></div>
 
   return (
     <div className="App">
       <Message message={message} />
       <Switch>
+        <Route path='/taginput'>
+          <LumaTagInput
+            label='Tagit'
+            suggestedTags={['Matikka', 'Fysiikka']}
+            tags={tags}
+            setTags={setTags}/>
+        </Route>
         <Route path='/admin'>
           {!currentUser &&
             <LoginForm getUser={getUser} />
