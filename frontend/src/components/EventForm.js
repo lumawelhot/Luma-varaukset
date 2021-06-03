@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useFormik, FormikProvider } from 'formik'
 import Message from './Message'
-import { useMutation } from '@apollo/client'
-import { CREATE_EVENT } from '../graphql/queries'
+import { useMutation, useQuery } from '@apollo/client'
+import { CREATE_EVENT, TAGS } from '../graphql/queries'
 import { useHistory } from 'react-router'
+import LumaTagInput from './LumaTagInput/LumaTagInput'
 
 const validate = values => {
 
@@ -35,10 +36,18 @@ const validate = values => {
 
 const EventForm = ({ sendMessage }) => {
   const history = useHistory()
+  const [suggestedTags, setSuggestedTags] = useState([])
   const [showDropdownMenu, setShowDropdownMenu] = useState(false)
   const [create, result] = useMutation(CREATE_EVENT, {
     onError: (error) => console.log(error)
   })
+  const tags = useQuery(TAGS)
+
+  useEffect(() => {
+    if (tags.data) {
+      setSuggestedTags(tags.data.getTags.map(tag => tag.name))
+    }
+  }, [tags.data])
 
   useEffect(() => {
     if (result.data) {
@@ -76,7 +85,8 @@ const EventForm = ({ sendMessage }) => {
       scienceClass: '',
       date: '',
       startTime: '',
-      endTime: ''
+      endTime: '',
+      tags: []
     },
     validate,
     onSubmit: values => {
@@ -88,12 +98,22 @@ const EventForm = ({ sendMessage }) => {
           title: values.title,
           start,
           end,
-          scienceClass: values.scienceClass
+          scienceClass: values.scienceClass,
+          tags: values.tags.map(tag =>
+            Object(
+              {
+                id: tags.data.getTags.find(t => t.name === tag)?.id || null,
+                name: tag
+              }
+            )
+          )
         }
       })
+      console.log(tags.data.getTags)
       alert(JSON.stringify(values, null, 2))
     },
   })
+
   return (
     <div className="container">
       <div className="columns is-centered">
@@ -118,6 +138,16 @@ const EventForm = ({ sendMessage }) => {
             {formik.touched.title && formik.errors.title ? (
               <Message message={formik.errors.title} />
             ) : null}
+
+            <FormikProvider value={formik}>
+              <LumaTagInput
+                label='Tagit'
+                tags={formik.values.tags}
+                setTags={(tags) => {formik.setFieldValue('tags',  tags)}}
+                suggestedTags={suggestedTags}
+                style={{ width: 300 }}
+              />
+            </FormikProvider>
 
             <div className="field">
 

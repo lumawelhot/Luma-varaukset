@@ -12,6 +12,7 @@ const jwt = require('jsonwebtoken')
 
 const User = require('./models/user')
 const Event = require('./models/event')
+const Tag = require('./models/tag')
 
 const { ApolloServer } = require('apollo-server-express')
 const resolvers = require('./graphql/resolvers')
@@ -44,6 +45,7 @@ const createAdmin = async () => {
     isAdmin: true,
   })
   await userObject.save()
+  console.log('Admin initialized')
 }
 const createEmployee = async () => {
   const userObject = new User({
@@ -52,16 +54,36 @@ const createEmployee = async () => {
     isAdmin: false,
   })
   await userObject.save()
+  console.log('Employee initialized')
 }
 
+const createTags = async () => {
+  await Tag.deleteMany({})
+  const tag1 = new Tag({
+    name: 'Matematiikka'
+  })
+  const tag2 = new Tag({
+    name: 'Fysiikka'
+  })
+  const tag3 = new Tag({
+    name: 'Maantiede'
+  })
+
+  await tag1.save()
+  await tag2.save()
+  await tag3.save()
+  console.log('Tags initialized')
+}
 
 const staticEvents = require('./events.json')
 const createEvents = async () => {
   await Event.deleteMany({})
+  const exampleTag = await Tag.findOne({ name: 'Maantiede' })
   staticEvents.forEach(event => {
-    const newEvent = new Event(event)
+    const newEvent = new Event({ ...event, tags: [exampleTag] })
     newEvent.save()
   })
+  console.log('Events initialized')
 }
 
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
@@ -71,11 +93,12 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   mongoose.set('useCreateIndex', true)
   mongoServer.getUri().then(uri => {
     mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-      .then(() => {
+      .then(async () => {
         console.log('connected to MongoDB, initializing database')
-        createAdmin()
-        createEmployee()
-        createEvents()
+        await createAdmin()
+        await createEmployee()
+        await createTags()
+        await createEvents()
       })
       .catch((error) => {
         console.log('error connecting to MongoDB: ', error.message)

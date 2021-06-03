@@ -39,11 +39,25 @@ export const EVENTS = gql`
       title
       resourceId
       grades
+      tags {
+        id
+        name
+      }
       start
       end
     }
   }
 `
+
+export const TAGS = gql`
+  query getTags {
+    getTags {
+      name
+      id
+    }
+  }
+`
+
 export const CURRENT_USER = gql`
   query me {
     me {
@@ -53,18 +67,23 @@ export const CURRENT_USER = gql`
   }
 `
 
-export const CREATE_EVENT = gql`
-  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!, $grades: [Int]!) {
+export const CREATE_EVENT = gql `
+  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!, $grades: [Int]!, $tags: [Tag]) {
     createEvent (
       title: $title,
       start: $start,
       end: $end,
       class: $scienceClass,
-      grades: $grades
+      grades: $grades,
+      tags: $tags
     ) {
       title
       resourceId
       grades
+      tags {
+        name,
+        id
+      }
     }
   }
 `

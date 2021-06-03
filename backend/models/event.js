@@ -31,6 +31,12 @@ const eventSchema = mongoose.Schema({
     validate: [arrayLimit, 'vähintään yksi luokka-aste valittava'],
   },
   desc: String,
+  tags: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Tag'
+    }
+  ]
 })
 
 eventSchema.set('toJSON', {

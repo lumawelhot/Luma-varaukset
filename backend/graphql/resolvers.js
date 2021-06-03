@@ -4,6 +4,7 @@ const User = require('../models/user')
 const Event = require('../models/event')
 const Visit = require('../models/visit')
 const jwt = require('jsonwebtoken')
+const Tag = require('../models/tag')
 
 const resolvers = {
   Query: {
@@ -12,8 +13,12 @@ const resolvers = {
       return users
     },
     getEvents: async () => {
-      const events = await Event.find({})
+      const events = await Event.find({}).populate('tags', { name: 1, id: 1 })
       return events
+    },
+    getTags: async () => {
+      const tags = await Tag.find({})
+      return tags
     },
     findVisit: async (root, args) => {
       const visit = await Visit.findById(args.id)
@@ -59,8 +64,9 @@ const resolvers = {
       return { value: jwt.sign(userForToken, 'huippusalainen') }
     },
     createEvent: async (root, args, { currentUser }) => {
+      console.log(args)
       if (!currentUser) {
-        throw new AuthenticationError('not authenticated')
+        //throw new AuthenticationError('not authenticated')
       }
       let resourceId = null
       switch (args.class) {
@@ -91,6 +97,26 @@ const resolvers = {
       if (args.title.length < 5) {
         throw new UserInputError('title too short')
       }
+
+      let eventTags = JSON.parse(JSON.stringify(args.tags))
+
+      eventTags.forEach(tag => {
+        console.log('Processing tag with name: ' + tag.name)
+        if (!tag.id) {
+          const newTag = new Tag({ name: tag.name })
+          console.log('Saving new tag')
+          tag = newTag.save()
+          console.log('Saved')
+        } else {
+          console.log('Tag should be ok')
+        }
+      })
+      console.log('done')
+      const eventTagsNames = eventTags.map(e => e.name)
+      console.log(eventTagsNames)
+
+      const mongoTags = Tag.find({ name: { $in: [eventTagsNames] } })
+      console.log(mongoTags)
       const newEvent = new Event({
         title: args.title,
         start: args.start,
@@ -98,6 +124,8 @@ const resolvers = {
         resourceId,
         grades
       })
+      newEvent.tags = mongoTags
+      console.log(newEvent)
       await newEvent.save()
       return newEvent
     },
