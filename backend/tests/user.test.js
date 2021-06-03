@@ -30,14 +30,14 @@ beforeAll(async () => {
 
   adminUserData = { username: 'admin', passwordHash: adminPassword, isAdmin: true }
   basicUserData = { username: 'basic', passwordHash: basicPassword, isAdmin: false }
-  
+
   const adminUser = new UserModel(adminUserData)
   const savedAdminUser = await adminUser.save()
   expect(savedAdminUser.isAdmin).toBe(adminUser.isAdmin)
   const basicUser = new UserModel(basicUserData)
   const savedBasicUser = await basicUser.save()
   expect(savedBasicUser.isAdmin).toBe(basicUser.isAdmin)
-  
+
   // create test server for context "currentUser = admin"
   serverAdmin = new ApolloServer({
     typeDefs,
@@ -61,7 +61,7 @@ beforeAll(async () => {
 
 describe('Server Test (currentUser = admin)', () => {
 
-  it("get all users", async () => {
+  it('get all users', async () => {
     const { query } = createTestClient(serverAdmin)
     const GET_ALL_USERS = gql`
       query {
@@ -81,8 +81,8 @@ describe('Server Test (currentUser = admin)', () => {
     })
     expect(getUsers.length).toBe(2)
   })
-  
-  it("login successfully", async () => {
+
+  it('login successfully', async () => {
     const { mutate } = createTestClient(serverAdmin)
     const LOGIN = gql`
       mutation {
@@ -97,8 +97,8 @@ describe('Server Test (currentUser = admin)', () => {
     let response = await mutate({ mutation: LOGIN })
     expect(response.errors).toBeUndefined()
   })
-  
-  it("admin can create new user successfully", async () => {
+
+  it('admin can create new user successfully', async () => {
     const { mutate } = createTestClient(serverAdmin)
     const CREATE_USER = gql`
       mutation {
@@ -119,7 +119,7 @@ describe('Server Test (currentUser = admin)', () => {
 
 describe('Server Test (currentUser = basic)', () => {
 
-  it("basic user cannot create new user", async () => {
+  it('basic user cannot create new user', async () => {
     const { mutate } = createTestClient(serverBasic)
     const CREATE_USER = gql`
       mutation {
@@ -137,7 +137,7 @@ describe('Server Test (currentUser = basic)', () => {
     expect(response.errors).toBeDefined()
   })
 
-  it("return current user data correctly", async () => {
+  it('return current user data correctly', async () => {
     const { query } = createTestClient(serverBasic)
     const ME = gql`
       query {
@@ -181,7 +181,7 @@ describe('User Model Test', () => {
     let err
     try {
       const savedUserWithoutRequiredField = await userWithoutRequiredField.save()
-      error = savedUserWithoutRequiredField;
+      error = savedUserWithoutRequiredField
     } catch (error) {
       err = error
     }

@@ -22,7 +22,13 @@ const eventSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
+  gradeIds: {
+    type: [Number],
+    required: true,
+  },
   desc: String,
+
+
 })
 
 eventSchema.set('toJSON', {
