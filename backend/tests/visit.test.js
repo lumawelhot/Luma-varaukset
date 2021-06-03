@@ -38,6 +38,7 @@ beforeEach(async () => {
     start: 'Mon Jun 07 2021 09:30:00 GMT+0300 (Eastern European Summer Time)',
     end: 'Thu Jun 10 2021 12:00:00 GMT+0300 (Eastern European Summer Time)'
   }
+  
   const testEventData2 = {
     title: 'Up-And-Atom!',
     resourceId: 2,
@@ -94,34 +95,64 @@ describe('Visit Model Test', () => {
 describe('Visit server test', () => {
     it("find by visit id", async () => {
         const { query } = createTestClient(server)
-        const id = savedTestVisit.id // tämä on objekti, pitää muuttaa stringiksi
-        console.log(id)
+        const id = savedTestVisit.id
         const FIND_VISIT = gql`
-        query {
-          findVisit(id: id) {
+        query findVisit($id: ID!) {
+          findVisit(id: $id) {
             id
             pin
-            event
+            event {
+              id
+            }
             clientName
             clientEmail
             clientPhone
+            gradeId
+            online
           }
         }
         `
-        const { data } = await query({
-          query: FIND_VISIT
+        const  { data } = await query({
+          query: FIND_VISIT,
+          variables: { id: id }
         })
         const { findVisit } = data
-
-        expect(findVisit._id).toBeDefined()
-        expect(findVisit.event).toBe(savedTestVisit.event)
+        
+        expect(findVisit.id).toBeDefined()
+        expect(findVisit.event.id).toBe(savedTestVisit.event.id)
         expect(findVisit.pin).toBe(savedTestVisit.pin)
         expect(findVisit.gradeId).toBe(savedTestVisit.gradeId)
         expect(findVisit.online).toBe(savedTestVisit.online)
         expect(findVisit.clientName).toBe(savedTestVisit.clientName)
         expect(findVisit.clientEmail).toBe(savedTestVisit.clientEmail)
         expect(findVisit.clientPhone).toBe(savedTestVisit.clientPhone)
-        
+    })
+
+    it("cancel visit by id and valid pin", async () => {
+      const { mutate } = createTestClient(server)
+      const id = savedTestVisit.id
+      const pin = savedTestVisit.pin
+      const CANCEL_VISIT = gql`
+        mutation cancelVisit($id: ID!, $pin: Int!) {
+          cancelVisit(id: $id, pin: $pin) {
+            id
+            pin
+            event {
+              title
+            }
+            clientName
+          }
+        }
+        `
+        const  { data } = await mutate({
+          mutation: CANCEL_VISIT,
+          variables: { id: id, pin: pin }
+        })
+        const { cancelVisit } = data
+        expect(cancelVisit.pin).toBe(savedTestVisit.pin)
+
+        const cancelledVisit = await VisitModel.findById(savedTestVisit.id)
+        expect(cancelledVisit).toBe(null)
     })
 })
 
