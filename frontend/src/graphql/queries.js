@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 
-export const LOGIN = gql `
+export const LOGIN = gql`
   mutation login($username: String!, $password: String!) {
     login(
       username: $username,
@@ -11,7 +11,7 @@ export const LOGIN = gql `
   }
 `
 
-export const CREATE_USER = gql `
+export const CREATE_USER = gql`
   mutation createUser($username: String!, $password: String!, $isAdmin: Boolean!) {
     createUser(
       username: $username,
@@ -24,7 +24,7 @@ export const CREATE_USER = gql `
   }
 `
 
-export const USERS = gql `
+export const USERS = gql`
   query getUsers {
     getUsers {
       username,
@@ -33,17 +33,18 @@ export const USERS = gql `
   }
 `
 
-export const EVENTS = gql `
+export const EVENTS = gql`
   query getEvents {
     getEvents {
       title
       resourceId
+      gradeIds
       start
       end
     }
   }
 `
-export const CURRENT_USER = gql `
+export const CURRENT_USER = gql`
   query me {
     me {
       username,
@@ -52,16 +53,18 @@ export const CURRENT_USER = gql `
   }
 `
 
-export const CREATE_EVENT = gql `
-  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!) {
+export const CREATE_EVENT = gql`
+  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!, $grades: [Int]!) {
     createEvent (
       title: $title,
       start: $start,
       end: $end,
-      class: $scienceClass
+      class: $scienceClass,
+      grades: $grades
     ) {
       title
       resourceId
+      gradeIds
     }
   }
 `
