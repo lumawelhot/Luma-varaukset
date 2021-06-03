@@ -11,26 +11,22 @@ const visitSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
-  gradeId: {
+  grade: {
     type: Number,
     required: true,
   },
-  online: {
-    type: Boolean,
-    required: true,
-  },
   clientName: {
-      type: String,
-      required: true,
-      minLength: 5
+    type: String,
+    required: true,
+    minLength: 5
   },
   clientEmail: {
-      type: String,
-      required: true,
+    type: String,
+    required: true,
   },
   clientPhone: {
-      type: String,
-      required: true,
+    type: String,
+    required: true,
   }
 })
 

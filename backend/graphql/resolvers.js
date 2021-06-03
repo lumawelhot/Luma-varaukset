@@ -24,7 +24,7 @@ const resolvers = {
     }
   },
   Visit: {
-    event: async (root, args, { currentUser }) => {
+    event: async (root) => {
       const event = await Event.findById(root.event)
       return event
     },
@@ -59,7 +59,6 @@ const resolvers = {
       return { value: jwt.sign(userForToken, 'huippusalainen') }
     },
     createEvent: async (root, args, { currentUser }) => {
-      console.log(args)
       if (!currentUser) {
         throw new AuthenticationError('not authenticated')
       }
@@ -84,6 +83,10 @@ const resolvers = {
           throw new UserInputError('Invalid class')
       }
       let grades = args.grades
+
+      if (grades.length < 1) {
+        throw new UserInputError('At least one grade must be selected!')
+      }
 
       if (args.title.length < 5) {
         throw new UserInputError('title too short')
@@ -128,7 +131,7 @@ const resolvers = {
       } else {
         throw new UserInputError('Wrong pin!')
       }
-      
+
     },
   }
 }

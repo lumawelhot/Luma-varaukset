@@ -55,7 +55,7 @@ const typeDefs = gql `
     ): Event
     createVisit(
       event: ID!
-      grade: Int
+      grade: Int!
       extra: [Int]
       clientName: String!
       clientEmail: String!

@@ -35,6 +35,7 @@ beforeEach(async () => {
   const testEventData1 = {
     title: 'All About Algebra',
     resourceId: 1,
+    grades: [1],
     start: 'Mon Jun 07 2021 09:30:00 GMT+0300 (Eastern European Summer Time)',
     end: 'Thu Jun 10 2021 12:00:00 GMT+0300 (Eastern European Summer Time)'
   }
@@ -42,6 +43,7 @@ beforeEach(async () => {
   const testEventData2 = {
     title: 'Up-And-Atom!',
     resourceId: 2,
+    grades: [1],
     start: 'Fri May 21 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
     end: 'Fri May 21 2021 11:00:00 GMT+0300 (Eastern European Summer Time)'
   }
@@ -55,8 +57,7 @@ beforeEach(async () => {
   const testVisitData = {
     event: testEvent1,
     pin: 1234,
-    gradeId: 1,
-    online: true,
+    grade: 1,
     clientName: "Teacher",
     clientEmail: "teacher@school.com",
     clientPhone: "040-1234567"
@@ -73,8 +74,7 @@ describe('Visit Model Test', () => {
         const newVisitData = {
             event: testEvent2,
             pin: 5678,
-            gradeId: 4,
-            online: false,
+            grade: 1,
             clientName: "Teacher 2",
             clientEmail: "teacher2@someschool.com",
             clientPhone: "050-8912345"
@@ -84,8 +84,7 @@ describe('Visit Model Test', () => {
         expect(savedVisit._id).toBeDefined()
         expect(savedVisit.event).toBe(newVisitData.event)
         expect(savedVisit.pin).toBe(newVisitData.pin)
-        expect(savedVisit.gradeId).toBe(newVisitData.gradeId)
-        expect(savedVisit.online).toBe(newVisitData.online)
+        expect(savedVisit.grade).toBe(newVisitData.grade)
         expect(savedVisit.clientName).toBe(newVisitData.clientName)
         expect(savedVisit.clientEmail).toBe(newVisitData.clientEmail)
         expect(savedVisit.clientPhone).toBe(newVisitData.clientPhone)
@@ -95,15 +94,13 @@ describe('Visit Model Test', () => {
       const visitWithoutRequiredField = new VisitModel({ pin: 1234 })
       let err
       try {
-        const savedVisitWithoutRequiredField = await visitWithoutRequiredField.save()
+        await visitWithoutRequiredField.save()
       } catch (error) {
         err = error
       }
-      console.log(err)
       expect(err).toBeInstanceOf(mongoose.Error.ValidationError)
       expect(err.errors.event).toBeDefined()
-      expect(err.errors.gradeId).toBeDefined()
-      expect(err.errors.online).toBeDefined()
+      expect(err.errors.grade).toBeDefined()
       expect(err.errors.clientName).toBeDefined()
       expect(err.errors.clientEmail).toBeDefined()
       expect(err.errors.clientPhone).toBeDefined()
@@ -125,8 +122,7 @@ describe('Visit server test', () => {
             clientName
             clientEmail
             clientPhone
-            gradeId
-            online
+            grade
           }
         }
         `
@@ -139,8 +135,7 @@ describe('Visit server test', () => {
         expect(findVisit.id).toBeDefined()
         expect(findVisit.event.id).toBe(savedTestVisit.event.id)
         expect(findVisit.pin).toBe(savedTestVisit.pin)
-        expect(findVisit.gradeId).toBe(savedTestVisit.gradeId)
-        expect(findVisit.online).toBe(savedTestVisit.online)
+        expect(findVisit.grade).toBe(savedTestVisit.grade)
         expect(findVisit.clientName).toBe(savedTestVisit.clientName)
         expect(findVisit.clientEmail).toBe(savedTestVisit.clientEmail)
         expect(findVisit.clientPhone).toBe(savedTestVisit.clientPhone)
