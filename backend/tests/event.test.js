@@ -105,13 +105,13 @@ describe('Event Server Test', () => {
           resourceId,
           start,
           end,
-          gradeIds
+          grades
         }
       }
     `
     let response = await mutate({ mutation: CREATE_EVENT })
     expect(response.data.createEvent.title).toBe('Learn JavaScript!')
-    expect(response.data.createEvent.gradeIds).toEqual([1, 3, 4])
+    expect(response.data.createEvent.grades).toEqual([1, 3, 4])
     expect(response.errors).toBeUndefined()
   })
 })

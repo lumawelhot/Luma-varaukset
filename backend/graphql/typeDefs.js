@@ -12,10 +12,7 @@ const typeDefs = gql `
     id: ID!
     title: String!
     resourceId: Int
-<<<<<<< HEAD
-=======
-    gradeIds: [Int]
->>>>>>> main
+    grades: [Int]!
     start: String!
     end: String!
   }
@@ -23,8 +20,7 @@ const typeDefs = gql `
     id: ID!
     event: Event!
     pin: Int!
-    gradeId: Int
-    online: Boolean
+    grade: Int!
     extra: [Int]
     clientName: String!
     clientEmail: String!
@@ -53,17 +49,13 @@ const typeDefs = gql `
     createEvent(
       title: String!
       class: String!
-<<<<<<< HEAD
-=======
       grades: [Int]!
->>>>>>> main
       start: String!
       end: String!
     ): Event
     createVisit(
       event: ID!
-      gradeId: Int
-      online: Boolean
+      grade: Int
       extra: [Int]
       clientName: String!
       clientEmail: String!

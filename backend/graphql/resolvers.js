@@ -83,32 +83,8 @@ const resolvers = {
         default:
           throw new UserInputError('Invalid class')
       }
-<<<<<<< HEAD
-      /* let gradeId = null
-      switch (args.grade) {
-        case 'Varhaiskasvatus':
-          gradeId = 1
-          break
-        case '1.-2. luokka':
-          gradeId = 2
-          break
-        case '3.-6. luokka':
-          gradeId = 3
-          break
-        case '7.-9 luokka':
-          gradeId = 4
-          break
-        case 'toinen aste':
-          gradeId = 5
-          break
-        default:
-          throw new UserInputError('Invalid grade')
-      } */
-=======
+      let grades = args.grades
 
-      let gradeIds = args.grades
-
->>>>>>> main
       if (args.title.length < 5) {
         throw new UserInputError('title too short')
       }
@@ -117,11 +93,7 @@ const resolvers = {
         start: args.start,
         end: args.end,
         resourceId,
-<<<<<<< HEAD
-        //gradeId
-=======
-        gradeIds
->>>>>>> main
+        grades
       })
       await newEvent.save()
       return newEvent
