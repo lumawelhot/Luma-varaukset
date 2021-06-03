@@ -93,7 +93,6 @@ Cypress.Commands.add('createEvent', (props) => {
           ) {
             title
             resourceId
-            gradeIds
           }
         }
       `

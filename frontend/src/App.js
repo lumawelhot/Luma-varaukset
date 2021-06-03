@@ -34,7 +34,7 @@ const App = () => {
           resourceId: event.resourceId,
           start: new Date(event.start),
           end: new Date(event.end),
-          gradeIds: event.gradeIds
+          grades: event.grades
         }
       })
       setEvents(events)

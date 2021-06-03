@@ -44,12 +44,14 @@ beforeEach(async () => {
   const testData1 = {
     title: 'All About Algebra',
     resourceId: 1,
+    grades: [1, 2],
     start: 'Mon Jun 07 2021 09:30:00 GMT+0300 (Eastern European Summer Time)',
     end: 'Thu Jun 10 2021 12:00:00 GMT+0300 (Eastern European Summer Time)'
   }
   const testData2 = {
     title: 'Up-And-Atom!',
     resourceId: 2,
+    grades: [4],
     start: 'Fri May 21 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
     end: 'Fri May 21 2021 11:00:00 GMT+0300 (Eastern European Summer Time)'
   }
@@ -68,11 +70,11 @@ describe('Event Server Test', () => {
     const GET_ALL_EVENTS = gql`
     query {
       getEvents {
-      id
-      title
-      resourceId
-      start
-      end
+        id
+        title
+        resourceId
+        start
+        end
       }
     }
     `
@@ -105,13 +107,13 @@ describe('Event Server Test', () => {
           resourceId,
           start,
           end,
-          gradeIds
+          grades
         }
       }
     `
     let response = await mutate({ mutation: CREATE_EVENT })
     expect(response.data.createEvent.title).toBe('Learn JavaScript!')
-    expect(response.data.createEvent.gradeIds).toEqual([1, 3, 4])
+    expect(response.data.createEvent.grades).toEqual([1, 3, 4])
     expect(response.errors).toBeUndefined()
   })
 })
@@ -122,6 +124,7 @@ describe('Event Model Test', () => {
     const eventData = {
       title: 'New-event',
       resourceId: 2,
+      grades: [3, 4],
       start: 'Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)',
       end: 'Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)'
     }
@@ -138,6 +141,7 @@ describe('Event Model Test', () => {
     const eventWithInvalidField = new EventModel({
       title: 'New-event',
       resourceId: 2,
+      grades: [1],
       start: 'Tue Jun 01 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
       end: 'Wed Jun 02 2021 15:00:00 GMT+0300 (Eastern European Summer Time)',
       fieldNotInSchema: 'Tiedeluokka Linkki'
@@ -151,8 +155,7 @@ describe('Event Model Test', () => {
     const eventWithoutRequiredField = new EventModel({ allDay: false })
     let err
     try {
-      const savedEventWithoutRequiredField = await eventWithoutRequiredField.save()
-      err = savedEventWithoutRequiredField
+      await eventWithoutRequiredField.save()
     } catch (error) {
       err = error
     }
@@ -161,6 +164,7 @@ describe('Event Model Test', () => {
     expect(err.errors.start).toBeDefined()
     expect(err.errors.resourceId).toBeDefined()
     expect(err.errors.title).toBeDefined()
+    expect(err.errors.grades).toBeDefined()
   })
 
   /* it('cannot create event with end time before start time', async () => {
