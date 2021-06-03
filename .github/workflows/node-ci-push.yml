@@ -38,6 +38,10 @@ jobs:
           working-directory: frontend
           wait-on: http://localhost:3000
           wait-on-timeout: 300
+        env:
+          CYPRESS_RECORD_KEY: ${{secrets.CYPRESS_KEY}}
+          #MONGODB_TEST_URI: ${{secrets.MONGODB_TEST_URI}}
+          SECRET: ${{secrets.SECRET}}
 
   backend:
     runs-on: ubuntu-latest
