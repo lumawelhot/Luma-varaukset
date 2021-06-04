@@ -26,7 +26,7 @@ When('valid information is entered', () => {
 })
 
 Then('an event is succesfully created', () => {
-  cy.log(  cy.get('#title').type('Test event'))
+  //cy.log(  cy.get('#title').type('Test event'))
   cy.containsEvent({ title: 'Test event', resourceId: 1 }).should('eq', true)
 })
 
