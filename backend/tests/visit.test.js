@@ -108,7 +108,7 @@ describe('Visit Model Test', () => {
 })
 
 describe('Visit server test', () => {
-  
+
   it('create visit successfully', async () => {
     const { mutate } = createTestClient(server)
     const event = savedTestEvent2.id
@@ -135,10 +135,10 @@ describe('Visit server test', () => {
       `
     const { data } = await mutate({
       mutation: CREATE_VISIT,
-      variables: { event: event, clientName: 'Teacher', clientEmail: 'teacher@school.com', clientPhone: '040-1234567', grade: 1}
+      variables: { event: event, clientName: 'Teacher', clientEmail: 'teacher@school.com', clientPhone: '040-1234567', grade: 1 }
     })
 
-    const { createVisit}  = data
+    const { createVisit }  = data
 
     expect(createVisit.id).toBeDefined()
     expect(createVisit.pin).toBeDefined()
@@ -171,7 +171,7 @@ describe('Visit server test', () => {
       query: FIND_VISIT,
       variables: { id: id }
     })
-    
+
     const { findVisit } = data
 
     expect(findVisit.id).toBeDefined()
