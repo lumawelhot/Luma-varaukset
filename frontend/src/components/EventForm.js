@@ -77,7 +77,7 @@ const EventForm = ({ sendMessage }) => {
       date: '',
       startTime: '',
       endTime: '',
-      description: ''
+      desc: ''
     },
     validate,
     onSubmit: values => {
@@ -90,7 +90,7 @@ const EventForm = ({ sendMessage }) => {
           start,
           end,
           scienceClass: values.scienceClass,
-          description: values.description
+          desc: values.desc
         }
       })
       alert(JSON.stringify(values, null, 2))
@@ -252,28 +252,23 @@ const EventForm = ({ sendMessage }) => {
             ) : null}
 
             <div className="field">
-              <label htmlFor="description">Kuvaus</label>
+              <label htmlFor="desc">Kuvaus</label>
               <div className="control">
                 <textarea className="textarea" style={{ width: 300 }}
-                  id="description" name="description"
+                  id="desc" name="desc"
                   placeholder="Kirjoita tähän lyhyt kuvaus vierailusta."
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.description}>
+                  value={formik.values.desc}>
                 </textarea>
               </div>
             </div>
-            {formik.touched.description && formik.errors.description ? (
-              <Message message={formik.errors.description} />
+            {formik.touched.desc && formik.errors.desc ? (
+              <Message message={formik.errors.desc} />
             ) : null}
 
             <button className="button is-link is-light" onClick={cancel}>Poistu</button>
-<<<<<<< HEAD
             <button id="create" className="button is-link" type='submit'>Tallenna</button>
-=======
-
-
->>>>>>> origin/main
           </form>
         </div>
       </div>

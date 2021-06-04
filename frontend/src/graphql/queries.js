@@ -41,7 +41,7 @@ export const EVENTS = gql`
       grades
       start
       end
-      description
+      desc
     }
   }
 `
@@ -54,23 +54,15 @@ export const CURRENT_USER = gql`
   }
 `
 
-<<<<<<< HEAD
-export const CREATE_EVENT = gql `
-  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!, $description: String) {
-=======
 export const CREATE_EVENT = gql`
-  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!, $grades: [Int]!) {
->>>>>>> origin/main
+  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!, $grades: [Int]!, $desc: String) {
     createEvent (
       title: $title,
       start: $start,
       end: $end,
       class: $scienceClass,
-<<<<<<< HEAD
-      description: $description
-=======
+      desc: $desc,
       grades: $grades
->>>>>>> origin/main
     ) {
       title
       resourceId
