@@ -5,6 +5,7 @@ import { useMutation, useQuery } from '@apollo/client'
 import { CREATE_EVENT, TAGS } from '../graphql/queries'
 import { useHistory } from 'react-router'
 import LumaTagInput from './LumaTagInput/LumaTagInput'
+import moment from 'moment'
 
 const validate = values => {
 
@@ -34,7 +35,7 @@ const validate = values => {
   return errors
 }
 
-const EventForm = ({ sendMessage }) => {
+const EventForm = ({ sendMessage, addEvent, newEventTimeRange=[null,null], closeEventForm }) => {
   const history = useHistory()
   const [suggestedTags, setSuggestedTags] = useState([])
   const [showDropdownMenu, setShowDropdownMenu] = useState(false)
@@ -51,6 +52,8 @@ const EventForm = ({ sendMessage }) => {
 
   useEffect(() => {
     if (result.data) {
+      console.log(result.data)
+      addEvent(result.data.createEvent)
       sendMessage('Vierailu luotu')
       history.push('/')
     }
@@ -63,12 +66,6 @@ const EventForm = ({ sendMessage }) => {
     { value: 4, label:'7.-9 luokka' },
     { value: 5, label:  'toinen aste' }
   ]
-
-  const cancel = (event) => {
-    event.preventDefault()
-
-    history.push('/')
-  }
 
   const toggleItem = (item, formikValues) => {
     if (formikValues.includes(item)) {
@@ -83,9 +80,9 @@ const EventForm = ({ sendMessage }) => {
       grades: [],
       title: '',
       scienceClass: '',
-      date: '',
-      startTime: '',
-      endTime: '',
+      date: moment(newEventTimeRange[0]).format('YYYY-MM-DD'),
+      startTime: moment(newEventTimeRange[0]).format('HH:mm'),
+      endTime: moment(newEventTimeRange[1]).format('HH:mm'),
       tags: []
     },
     validate,
@@ -115,9 +112,9 @@ const EventForm = ({ sendMessage }) => {
   })
 
   return (
-    <div className="container">
+    <div className="section">
       <div className="columns is-centered">
-        <div className="section">
+        <div className="section luma-eventform">
           <div className="title">Luo uusi vierailu</div>
           <form onSubmit={formik.handleSubmit}>
             <div className="field">
@@ -281,7 +278,7 @@ const EventForm = ({ sendMessage }) => {
 
 
             <button className="button is-link" type='submit'>Tallenna</button>
-            <button className="button is-link is-light" onClick={cancel}>Poistu</button>
+            <button className="button is-link is-light" onClick={closeEventForm}>Poistu</button>
 
 
           </form>

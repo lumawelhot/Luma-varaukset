@@ -866,3 +866,9 @@ button.rbc-input::-moz-focus-inner {
   box-shadow: none;
   min-width: 8em;
 }
+
+.modal-content,
+.luma-eventform {
+  background: antiquewhite;
+  border-radius: 20px;
+}

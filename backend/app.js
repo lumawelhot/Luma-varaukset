@@ -45,7 +45,6 @@ const createAdmin = async () => {
     isAdmin: true,
   })
   await userObject.save()
-  console.log('Admin initialized')
 }
 const createEmployee = async () => {
   const userObject = new User({
@@ -54,7 +53,6 @@ const createEmployee = async () => {
     isAdmin: false,
   })
   await userObject.save()
-  console.log('Employee initialized')
 }
 
 const createTags = async () => {
@@ -72,7 +70,6 @@ const createTags = async () => {
   await tag1.save()
   await tag2.save()
   await tag3.save()
-  console.log('Tags initialized')
 }
 
 const staticEvents = require('./events.json')
@@ -83,7 +80,6 @@ const createEvents = async () => {
     const newEvent = new Event({ ...event, tags: [exampleTag] })
     newEvent.save()
   })
-  console.log('Events initialized')
 }
 
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {

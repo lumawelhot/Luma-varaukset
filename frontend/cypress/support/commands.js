@@ -89,10 +89,13 @@ Cypress.Commands.add('createEvent', (props) => {
             start: "${props.start}",
             end: "${props.end}",
             class: "${props.scienceClass}",
-            grades: ${JSON.stringify(props.grades)}
+            grades: ${JSON.stringify(props.grades)},
+            tags: ${JSON.stringify(props.tags)}
           ) {
             title
             resourceId
+            start
+            end
           }
         }
       `

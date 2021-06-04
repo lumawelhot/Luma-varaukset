@@ -64,9 +64,8 @@ const resolvers = {
       return { value: jwt.sign(userForToken, 'huippusalainen') }
     },
     createEvent: async (root, args, { currentUser }) => {
-      console.log(args)
       if (!currentUser) {
-        //throw new AuthenticationError('not authenticated')
+        throw new AuthenticationError('not authenticated')
       }
       let resourceId = null
       switch (args.class) {
@@ -100,23 +99,17 @@ const resolvers = {
 
       let eventTags = JSON.parse(JSON.stringify(args.tags))
 
+      const eventTagsNames = eventTags.map(e => e.name)
+      let mongoTags = await Tag.find({ name: { $in: eventTagsNames } })
+      const foundTagNames = mongoTags.map(t => t.name)
       eventTags.forEach(tag => {
-        console.log('Processing tag with name: ' + tag.name)
-        if (!tag.id) {
+        if (!foundTagNames.includes(tag.name)) {
           const newTag = new Tag({ name: tag.name })
-          console.log('Saving new tag')
+          mongoTags = mongoTags.concat(newTag)
           tag = newTag.save()
-          console.log('Saved')
-        } else {
-          console.log('Tag should be ok')
         }
       })
-      console.log('done')
-      const eventTagsNames = eventTags.map(e => e.name)
-      console.log(eventTagsNames)
 
-      const mongoTags = Tag.find({ name: { $in: [eventTagsNames] } })
-      console.log(mongoTags)
       const newEvent = new Event({
         title: args.title,
         start: args.start,
@@ -125,7 +118,6 @@ const resolvers = {
         grades
       })
       newEvent.tags = mongoTags
-      console.log(newEvent)
       await newEvent.save()
       return newEvent
     },
