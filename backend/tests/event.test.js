@@ -45,7 +45,7 @@ beforeEach(async () => {
     title: 'All About Algebra',
     resourceId: 1,
     grades: [1, 2],
-    desc: "Algebra is one of the broad areas of mathematics, together with number theory, geometry and analysis.",
+    desc: 'Algebra is one of the broad areas of mathematics, together with number theory, geometry and analysis.',
     start: 'Mon Jun 07 2021 09:30:00 GMT+0300 (Eastern European Summer Time)',
     end: 'Thu Jun 10 2021 12:00:00 GMT+0300 (Eastern European Summer Time)'
   }
@@ -53,7 +53,7 @@ beforeEach(async () => {
     title: 'Up-And-Atom!',
     resourceId: 2,
     grades: [4],
-    desc: "Atom is a programming text editor developed by GitHub.",
+    desc: 'Atom is a programming text editor developed by GitHub.',
     start: 'Fri May 21 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
     end: 'Fri May 21 2021 11:00:00 GMT+0300 (Eastern European Summer Time)'
   }
