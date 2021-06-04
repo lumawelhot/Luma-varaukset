@@ -1,9 +1,12 @@
 import React from 'react'
-import { useFormik, /* FormikProvider */ } from 'formik'
+import { useFormik, FormikProvider } from 'formik'
 import Message from './Message'
-//import { useMutation } from '@apollo/client'
-//import { CREATE_VISIT } from '../graphql/queries'
+import { useMutation } from '@apollo/client'
+import { CREATE_VISIT } from '../graphql/queries'
 import { useHistory } from 'react-router'
+import { useParams } from 'react-router-dom'
+//import format from 'date-fns/format'
+
 
 const validate = values => {
 
@@ -17,10 +20,50 @@ const validate = values => {
   return errors
 }
 
-const VisitForm = ({ sendMessage }) => {
-  /* const [create, result] = useMutation(CREATE_VISIT, { //kirjoita mutaatio!!!
-    onError: (error) => console.log(error)
-  }) */
+const VisitForm = ({ sendMessage, events }) => {
+  const id = useParams().id
+
+  const grades = [
+    { value: 1, label:'Varhaiskasvatus' },
+    { value: 2, label: '1.-2. luokka' },
+    { value: 3, label: '3.-6. luokka' },
+    { value: 4, label:'7.-9 luokka' },
+    { value: 5, label:  'toinen aste' }
+  ]
+
+  const filterEventGrades = (eventGrades) => {
+    const returnArray = []
+    eventGrades.forEach(availableGrade => {
+      grades.forEach(grade => {
+        if (availableGrade === grade.value) {
+          returnArray.push({ value: grade.value, label: grade.label })
+        }
+      })
+    })
+    return returnArray
+  }
+
+  const filterEventClass = (eventClass) => {
+    switch (eventClass) {
+      case 1:
+        return 'SUMMAMUTIKKA'
+      case 2:
+        return 'FOTONI'
+      case 3:
+        return 'LINKKI'
+      case 4:
+        return 'GEOPISTE'
+      case 5:
+        return 'GADOLIN'
+      default:
+        console.log('Error!')
+        break
+    }
+  }
+
+  const [create/* , result */] = useMutation(CREATE_VISIT, {
+    onError: (error) => console.log('virheviesti: ', error)
+  })
 
   const history = useHistory()
 
@@ -32,6 +75,7 @@ const VisitForm = ({ sendMessage }) => {
 
   const formik = useFormik({
     initialValues: {
+      visitGrade: '',
       clientName: '',
       clientEmail: '',
       clientPhone: '',
@@ -39,29 +83,67 @@ const VisitForm = ({ sendMessage }) => {
     validate,
     onSubmit: values => {
       try {
+        const event = events.find(e => e.id === id)
         console.log(values)
-        /* create({
+        console.log(typeof ObjectId.parse(event.id))
+        create({
           variables: {
             clientName: values.clientName,
             clientEmail: values.clientEmail,
-            clientPhone: values.clientPhone
+            clientPhone: values.clientPhone,
+            grade: values.visitGrade.value,
+            event: event.id
           }
         })
-        alert(JSON.stringify(values, null, 2))
-        sendMessage('Olet tehnyt varauksen onnistuneesti!') */
+        //alert(JSON.stringify(values, null, 2))
+        sendMessage('Olet tehnyt varauksen onnistuneesti!')
       } catch (error) {
         sendMessage('Varauksen teko epäonnistui.')
       }
     },
   })
+  if (events.length > 0) {
+    const event = events.find(e => e.id === id)
+    const eventGrades = filterEventGrades(event.grades)
+    const eventClass = filterEventClass(event.resourceId)
   return (
     <div className="container">
       <div className="columns is-centered">
         <div className="section">
-          <div className="title">Varaa vierailu</div>
+          <div className="title">Varaa vierailu </div>
+          <div>
+            <p>Tapahtuman tiedot:</p>
+            <p>Nimi: {event.title}</p>
+            <p>Kuvaus: [Tähän tapahtuman kuvaus]</p>
+            <p>Tiedeluokka: {eventClass}</p>
+            <p>Valittavissa olevat lisäpalvelut: [Tähän ekstrat]</p>
+            <div>Tarjolla seuraaville luokka-asteille: {eventGrades.map(g =>
+              <div key={g.value}>{g.label}</div>)}
+            </div>
+            <p>Tapahtuma alkaa: {event.start.toString()}</p>
+            <p>Tapahtuma päättyy: {event.end.toString()}</p>
+          </div>
+
           <form onSubmit={formik.handleSubmit}>
             <div className="field">
+              <label htmlFor="scienceClass">Tiedeluokka </label>
+              <div className="control">
+                <FormikProvider value={formik}>
+                  <select
+                    id="visitGrade"
+                    name="visitGrade"
+                    value={formik.values.visitGrade}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    style={{ display: 'block', width: 300 }}
+                  > <option value="" label="Valitse luokka-aste" />
+                    {eventGrades.map(g => <option key={g.value} value={g.label} label={g.label}/>)}
+                  </select>
+                </FormikProvider>
+              </div>
+            </div>
 
+            <div className="field">
               <label htmlFor="clientName">Varaajan nimi </label>
               <div className="control">
 
@@ -124,130 +206,9 @@ const VisitForm = ({ sendMessage }) => {
         </div>
       </div>
     </div>
+  )}
+  return (
+    <div>Tapahtumaa haetaan...</div>
   )
 }
 export default VisitForm
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*import React from 'react'
-import { Formik, useField } from 'formik'
-
-const initialValues = {
-  mass: '',
-  height: '',
-}
-
-const getBodyMassIndex = (mass, height) => {
-  return Math.round(mass / Math.pow(height, 2))
-}
-
-const BodyMassIndexForm = ({ onSubmit }) => {
-  const [massField, massMeta, massHelpers] = useField('mass')
-  const [heightField, heightMeta, heightHelpers] = useField('height')
-
-  return (
-    <div>
-      <input
-        name='mass'
-        placeholder="Weight (kg)"
-        value={massField.value}
-        onChange={({ target }) => { massHelpers.setValue(target.value)}}
-      />
-      <input
-        name='height'
-        placeholder="Height (m)"
-        value={heightField.value}
-        onChange={({ target }) => { heightHelpers.setValue(target.value)}}
-      />
-      <button onSubmit={onSubmit}>Laske</button>
-    </div>
-  )
-}
-
-const VisitForm = () => {
-  const onSubmit = values => {
-    const mass = parseFloat(values.mass)
-    const height = parseFloat(values.height)
-
-    if (!isNaN(mass) && !isNaN(height) && height !== 0) {
-      console.log(`Your body mass index is: ${getBodyMassIndex(mass, height)}`)
-    }
-  }
-
-  return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit}>
-      {({ handleSubmit }) => <BodyMassIndexForm onSubmit={handleSubmit} />}
-    </Formik>
-  )
-}
-
-
- import React from 'react'
-import { Formik, useField, useFormikContext } from 'formik'
-
-const FormikInput = ({ name }) => {
-    const [field, meta, helpers] = useField(name)
-    const showError = meta.touched && meta.error
-
-    return (<>
-        <input
-          onChange={({ target }) => {
-            helpers.setValue(target.value)}}
-          onBlur={() => helpers.setTouched(true)}
-          value={field.value}
-          error={showError}
-        />
-        {showError && <div>{meta.error}</div>}
-    </>)
-}
-const VisitForm = () => {
-  const [field, meta, helpers] = useField('clientName')
-  const showError = meta.touched && meta.error
-
-  const onSubmit = () => {
-    console.log('Painoit nappia!')
-  }
-  /* const validationSchema = yup.object().shape({ //muista importata ja asentaa yup
-    //tähän tarkistukset
-    description: yup
-      .string()
-      .min(5)
-      .required('Kuvaus vaaditaan.')
-  })
-  return (
-    <Formik initialValues={{ clientName:'' }}
-      onSubmit={onSubmit} /* validationSchema={validationSchema} >
-
-      {() =>
-        <form>
-          <FormikInput
-            name='clientName'
-            onChange={({ target }) => {
-              helpers.setValue(target.value)
-            }}
-            onBlur={() => helpers.setTouched(true)}
-            value={field.value}
-            error={showError}
-          />
-        </form>
-      }
-    </Formik>
-  )
-}
-
-export default VisitForm*/

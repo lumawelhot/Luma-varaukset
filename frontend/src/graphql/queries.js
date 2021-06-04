@@ -69,3 +69,24 @@ export const CREATE_EVENT = gql`
     }
   }
 `
+
+export const CREATE_VISIT = gql`
+  mutation createVisit($event: ID!, $grade: Int!, $clientName: String!, $clientEmail: String!, $clientPhone: String!) {
+    createVisit(
+      event: $event,
+      grade: $grade,
+      clientName: $clientName,
+      clientEmail: $clientEmail,
+      clientPhone: $clientPhone
+    ) {
+      id
+      event {
+        id
+      }
+      grade
+      clientName
+      clientEmail
+      clientPhone
+    }
+  }
+`

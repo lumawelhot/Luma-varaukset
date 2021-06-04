@@ -5,6 +5,7 @@ import 'moment/locale/fi'
 import { messages } from './helpers/calendar-messages-fi'
 import { resourceColors } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
+import { useHistory } from 'react-router-dom'
 //import LumaEventWrapper from './components/Custom/LumaEventWrapper'
 
 const localizer = momentLocalizer(moment)
@@ -20,6 +21,7 @@ const resourceMap = [
 const MyCalendar = ({ events, currentUser }) => {
 
   const [localEvents, setEvents] = useState([])
+  const history = useHistory()
 
   useEffect(() => {
     setEvents(events)
@@ -37,6 +39,11 @@ const MyCalendar = ({ events, currentUser }) => {
           resourceId:1
         }]
       )
+  }
+
+  const handleEventClick = (event) => {
+    console.log(event.id)
+    history.push(`/event/${event.id}/book`)
   }
 
   const customDayPropGetter = date => {
@@ -89,7 +96,7 @@ const MyCalendar = ({ events, currentUser }) => {
         //resourceIdAccessor="resourceId"
         //resourceTitleAccessor="resourceTitle"
         selectable={currentUser?.isAdmin}
-        onSelectEvent={event => alert(JSON.stringify(event))}
+        onSelectEvent={ (event) => handleEventClick(event)/* alert(JSON.stringify(event)) */}
         onSelectSlot={handleSelect}
         components={{
           //eventWrapper: LumaEventWrapper,

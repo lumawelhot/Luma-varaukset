@@ -109,6 +109,7 @@ const resolvers = {
         event: event,
         pin: pin,
       })
+      console.log('frontista lähetetty visit: ', visit)
       try {
         const savedVisit = await visit.save()
         return savedVisit

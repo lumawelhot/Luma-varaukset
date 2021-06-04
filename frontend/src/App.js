@@ -31,6 +31,7 @@ const App = () => {
     if (result.data) {
       const events = result.data.getEvents.map(event => {
         return {
+          id: event.id,
           title: event.title,
           resourceId: event.resourceId,
           start: new Date(event.start),
@@ -76,8 +77,8 @@ const App = () => {
     <div className="App">
       <Message message={message} />
       <Switch>
-        <Route path='/event/book'>
-          <VisitForm/>
+        <Route path='/event/:id/book'>
+          <VisitForm events={events} sendMessage={updateMessage}/>
         </Route>
         <Route path='/taginput'>
           <LumaTagInput
