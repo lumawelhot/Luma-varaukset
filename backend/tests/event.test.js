@@ -174,7 +174,6 @@ describe('Event Model Test', () => {
     expect(err.errors.resourceId).toBeDefined()
     expect(err.errors.title).toBeDefined()
     expect(err.errors.grades).toBeDefined()
-    expect(err.errors.desc).toBeDefined()
   })
 
   /* it('cannot create event with end time before start time', async () => {
