@@ -81,7 +81,7 @@ export const CREATE_VISIT = gql`
     ) {
       id
       event {
-        id
+        title
       }
       grade
       clientName

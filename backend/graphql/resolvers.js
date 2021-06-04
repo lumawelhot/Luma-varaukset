@@ -114,6 +114,7 @@ const resolvers = {
         const savedVisit = await visit.save()
         return savedVisit
       } catch (error) {
+        console.log('Catchiin mentiin')
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })

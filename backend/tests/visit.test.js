@@ -164,7 +164,7 @@ describe('Visit server test', () => {
     expect(cancelledVisit).toBe(null)
   })
 
-  it('don\'t cancel visit by id and invalid pin', async () => {
+  it('do not cancel visit by id and invalid pin', async () => {
     const { mutate } = createTestClient(server)
     const id = savedTestVisit.id
     const pin = 4321
