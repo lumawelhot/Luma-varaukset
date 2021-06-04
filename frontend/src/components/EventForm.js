@@ -1,12 +1,9 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useFormik, FormikProvider } from 'formik'
 import Message from './Message'
 import { useMutation } from '@apollo/client'
 import { CREATE_EVENT } from '../graphql/queries'
 import { useHistory } from 'react-router'
-
-
-
 
 const validate = values => {
 
@@ -15,10 +12,6 @@ const validate = values => {
 
   if (!values.title) {
     errors.title = defErrorMessage
-  }
-
-  if(!values.grade){
-    errors.grade = defErrorMessage
   }
 
   if (!values.scienceClass) {
@@ -41,11 +34,26 @@ const validate = values => {
 }
 
 const EventForm = ({ sendMessage }) => {
-  const [create,] = useMutation(CREATE_EVENT, {
+  const history = useHistory()
+  const [showDropdownMenu, setShowDropdownMenu] = useState(false)
+  const [create, result] = useMutation(CREATE_EVENT, {
     onError: (error) => console.log(error)
   })
 
-  const history = useHistory()
+  useEffect(() => {
+    if (result.data) {
+      sendMessage('Vierailu luotu')
+      history.push('/')
+    }
+  }, [result.data])
+
+  const options = [
+    { value: 1, label:'Varhaiskasvatus'  },
+    { value: 2, label: '1.-2. luokka' },
+    { value: 3, label: '3.-6. luokka' },
+    { value: 4, label:'7.-9 luokka' },
+    { value: 5, label:  'toinen aste' }
+  ]
 
   const cancel = (event) => {
     event.preventDefault()
@@ -53,9 +61,17 @@ const EventForm = ({ sendMessage }) => {
     history.push('/')
   }
 
+  const toggleItem = (item, formikValues) => {
+    if (formikValues.includes(item)) {
+      return formikValues.filter(e => e !== item)
+    } else {
+      return formikValues.concat(item)
+    }
+  }
+
   const formik = useFormik({
     initialValues: {
-      grade: '',
+      grades: [],
       title: '',
       scienceClass: '',
       date: '',
@@ -68,7 +84,7 @@ const EventForm = ({ sendMessage }) => {
       const end = new Date(`${values.date}:${values.endTime}`)
       create({
         variables: {
-          grade: values.grade,
+          grades: values.grades,
           title: values.title,
           start,
           end,
@@ -76,7 +92,6 @@ const EventForm = ({ sendMessage }) => {
         }
       })
       alert(JSON.stringify(values, null, 2))
-      sendMessage('Vierailu luotu')
     },
   })
   return (
@@ -106,26 +121,41 @@ const EventForm = ({ sendMessage }) => {
 
             <div className="field">
 
-              <label htmlFor="grade">Luokka-aste </label>
-              <div className="control">
-                <FormikProvider value={formik}>
-                  <select
-                    name="grade"
-                    value={formik.values.grade}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    style={{ display: 'block', width: 300 }}
-                  ><option value="" label="Valitse luokka-aste" />
-                    <option value="Varhaiskasvatus" label="Varhaiskasvatus" />
-                    <option value="1.-2. luokka" label="1.-2. luokka" />
-                    <option value="3.-6. luokka" label="3.-6. luokka" />
-                    <option value="7.-9 luokka" label="7.-9 luokka" />
-                    <option value="toinen aste" label="toinen aste" />
-                  </select>
-
-
-                </FormikProvider>
-              </div>
+              <div htmlFor="grade">Luokka-aste </div>
+              <FormikProvider value={formik}>
+                <div className={`dropdown ${showDropdownMenu && 'is-active'}`}>
+                  <div role="button" aria-haspopup="true" className="dropdown-trigger">
+                    <button type="button"
+                      className={`button ${formik.values.grades.length ? 'is-success' : 'is-danger'}`}
+                      onClick={() => setShowDropdownMenu(!showDropdownMenu)}
+                    >
+                      <span>Valittu ({formik.values.grades.length})</span>
+                      <span className="icon">
+                        <i className="fas fa-angle-down"></i>
+                      </span>
+                    </button>
+                  </div>
+                  <div className="dropdown-menu" style={{ display: showDropdownMenu ? 'block' : 'none' }}>
+                    <div role="list" className="dropdown-content">
+                      {options.map(option => (
+                        <a
+                          key={option.value}
+                          role="listitem"
+                          tabIndex="0"
+                          className={`dropdown-item ${formik.values.grades.includes(option.value) && 'is-active'}`}
+                          onClick={() => {
+                            const newValues = [...toggleItem(option.value, formik.values.grades)]
+                            formik.setFieldValue('grades',  newValues)
+                          }
+                          }
+                        >
+                          <span>{option.label}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </FormikProvider>
             </div>
             {formik.touched.grade && formik.errors.grade ? (
               <Message message={formik.errors.grade} />

@@ -2,6 +2,7 @@ const { UserInputError, AuthenticationError } = require('apollo-server-errors')
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
 const Event = require('../models/event')
+const Visit = require('../models/visit')
 const jwt = require('jsonwebtoken')
 
 const resolvers = {
@@ -14,9 +15,19 @@ const resolvers = {
       const events = await Event.find({})
       return events
     },
+    findVisit: async (root, args) => {
+      const visit = await Visit.findById(args.id)
+      return visit
+    },
     me: (root, args, context) => {
       return context.currentUser
     }
+  },
+  Visit: {
+    event: async (root) => {
+      const event = await Event.findById(root.event)
+      return event
+    },
   },
   Mutation: {
     createUser: async (root, args, { currentUser }) => {
@@ -44,7 +55,6 @@ const resolvers = {
       if (!(user && passwordCorrect)) {
         throw new UserInputError('Wrong credentials!')
       }
-
       const userForToken = { username: user.username, id: user._id }
       return { value: jwt.sign(userForToken, 'huippusalainen') }
     },
@@ -72,6 +82,12 @@ const resolvers = {
         default:
           throw new UserInputError('Invalid class')
       }
+      let grades = args.grades
+
+      if (grades.length < 1) {
+        throw new UserInputError('At least one grade must be selected!')
+      }
+
       if (args.title.length < 5) {
         throw new UserInputError('title too short')
       }
@@ -79,11 +95,44 @@ const resolvers = {
         title: args.title,
         start: args.start,
         end: args.end,
-        resourceId
+        resourceId,
+        grades
       })
       await newEvent.save()
       return newEvent
-    }
+    },
+    createVisit: async (root, args) => {
+      const pin = Math.floor(1000 + Math.random() * 9000)
+      const event = await Event.findById(args.event)
+      const visit = new Visit({
+        ...args,
+        event: event,
+        pin: pin,
+      })
+      try {
+        const savedVisit = await visit.save()
+        return savedVisit
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
+    },
+    cancelVisit: async (root, args) => {
+      const visit = await Visit.findById(args.id)
+      if (visit.pin === args.pin) {
+        try {
+          return Visit.findByIdAndRemove(visit.id)
+        } catch (error) {
+          throw new UserInputError(error.message, {
+            invalidArgs: args,
+          })
+        }
+      } else {
+        throw new UserInputError('Wrong pin!')
+      }
+
+    },
   }
 }
 

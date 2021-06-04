@@ -81,7 +81,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
         console.log('error connecting to MongoDB: ', error.message)
       })
   })
-} else if (process.env.NODE_ENV === 'production'){ // production mode
+} else if (process.env.NODE_ENV === 'production') { // production mode
   mongoose.set('useFindAndModify', false)
   mongoose.set('useCreateIndex', true)
   mongoose.connect('mongodb://luma-varaukset-db:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
@@ -120,7 +120,7 @@ app.use((req, res, next) => {
 })
 
 // error handler
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   // set locals, only providing error in development
   res.locals.message = err.message
   res.locals.error = req.app.get('env') === 'development' ? err : {}

@@ -1,6 +1,9 @@
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 
+const arrayLimit = (val) => {
+  return val.length > 0
+}
 const eventSchema = mongoose.Schema({
   title: {
     type: String,
@@ -21,6 +24,11 @@ const eventSchema = mongoose.Schema({
   resourceId: {
     type: Number,
     required: true,
+  },
+  grades: {
+    type: [Number],
+    required: true,
+    validate: [arrayLimit, 'vähintään yksi luokka-aste valittava'],
   },
   desc: String,
 })

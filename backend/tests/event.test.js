@@ -7,9 +7,10 @@ const EventModel = require('../models/event')
 const UserModel = require('../models/user')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
+let server = null
 
 beforeAll(async () => {
-  
+
   await mongoose.connect(process.env.MONGO_URL,
     { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true })
     .then(() => {
@@ -21,7 +22,7 @@ beforeAll(async () => {
   await UserModel.deleteMany({})
 
   const userPassword = await bcrypt.hash('password', 10)
-  userData = { username: 'employee', passwordHash: userPassword, isAdmin: false }
+  const userData = { username: 'employee', passwordHash: userPassword, isAdmin: false }
 
   const user = new UserModel(userData)
   const savedUser = await user.save()
@@ -30,7 +31,7 @@ beforeAll(async () => {
   server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: async ({ req }) => {
+    context: async () => {
       const currentUser = savedUser
       return { currentUser }
     }
@@ -43,12 +44,14 @@ beforeEach(async () => {
   const testData1 = {
     title: 'All About Algebra',
     resourceId: 1,
+    grades: [1, 2],
     start: 'Mon Jun 07 2021 09:30:00 GMT+0300 (Eastern European Summer Time)',
     end: 'Thu Jun 10 2021 12:00:00 GMT+0300 (Eastern European Summer Time)'
   }
   const testData2 = {
     title: 'Up-And-Atom!',
     resourceId: 2,
+    grades: [4],
     start: 'Fri May 21 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
     end: 'Fri May 21 2021 11:00:00 GMT+0300 (Eastern European Summer Time)'
   }
@@ -62,16 +65,16 @@ beforeEach(async () => {
 
 describe('Event Server Test', () => {
 
-  it("get all events", async () => {
+  it('get all events', async () => {
     const { query } = createTestClient(server)
     const GET_ALL_EVENTS = gql`
     query {
       getEvents {
-      id
-      title
-      resourceId
-      start
-      end
+        id
+        title
+        resourceId
+        start
+        end
       }
     }
     `
@@ -89,7 +92,7 @@ describe('Event Server Test', () => {
     expect(getEvents.length).toBe(2)
   })
 
-  it("employee can create new event successfully", async () => {
+  it('employee can create new event successfully', async () => {
     const { mutate } = createTestClient(server)
     const CREATE_EVENT = gql`
       mutation {
@@ -98,15 +101,19 @@ describe('Event Server Test', () => {
           class: "LINKKI"
           start: "Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)"
           end: "Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)"
+          grades: ${JSON.stringify([1, 3, 4])}
         ){
           title,
           resourceId,
           start,
-          end
+          end,
+          grades
         }
       }
     `
     let response = await mutate({ mutation: CREATE_EVENT })
+    expect(response.data.createEvent.title).toBe('Learn JavaScript!')
+    expect(response.data.createEvent.grades).toEqual([1, 3, 4])
     expect(response.errors).toBeUndefined()
   })
 })
@@ -115,10 +122,12 @@ describe('Event Model Test', () => {
 
   it('create & save new event successfully', async () => {
     const eventData = {
-        title: 'New-event',
-        resourceId: 2,
-        start: 'Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)',
-        end: 'Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)' }
+      title: 'New-event',
+      resourceId: 2,
+      grades: [3, 4],
+      start: 'Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)',
+      end: 'Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)'
+    }
     const validEvent = new EventModel(eventData)
     const savedEvent = await validEvent.save()
     expect(savedEvent._id).toBeDefined()
@@ -130,11 +139,13 @@ describe('Event Model Test', () => {
 
   it('insert event successfully, but the field not defined in schema should be "undefined"', async () => {
     const eventWithInvalidField = new EventModel({
-        title: 'New-event',
-        resourceId: 2,
-        start: 'Tue Jun 01 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
-        end: 'Wed Jun 02 2021 15:00:00 GMT+0300 (Eastern European Summer Time)',
-        fieldNotInSchema: 'Tiedeluokka Linkki' })
+      title: 'New-event',
+      resourceId: 2,
+      grades: [1],
+      start: 'Tue Jun 01 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
+      end: 'Wed Jun 02 2021 15:00:00 GMT+0300 (Eastern European Summer Time)',
+      fieldNotInSchema: 'Tiedeluokka Linkki'
+    })
     const savedEventWithInvalidField = await eventWithInvalidField.save()
     expect(savedEventWithInvalidField._id).toBeDefined()
     expect(savedEventWithInvalidField.fieldNotInSchema).toBeUndefined()
@@ -144,8 +155,7 @@ describe('Event Model Test', () => {
     const eventWithoutRequiredField = new EventModel({ allDay: false })
     let err
     try {
-      const savedEventWithoutRequiredField = await eventWithoutRequiredField.save()
-      error = savedEventWithoutRequiredField
+      await eventWithoutRequiredField.save()
     } catch (error) {
       err = error
     }
@@ -154,6 +164,7 @@ describe('Event Model Test', () => {
     expect(err.errors.start).toBeDefined()
     expect(err.errors.resourceId).toBeDefined()
     expect(err.errors.title).toBeDefined()
+    expect(err.errors.grades).toBeDefined()
   })
 
   /* it('cannot create event with end time before start time', async () => {
