@@ -85,7 +85,7 @@ const VisitForm = ({ sendMessage, events }) => {
       try {
         const event = events.find(e => e.id === id)
         const grade = parseInt(values.visitGrade)
-        const createdVisit = create({
+        create({
           variables: {
             clientName: values.clientName,
             clientEmail: values.clientEmail,
