@@ -154,7 +154,7 @@ const App = () => {
           </div>}
           <MyCalendar events={events} currentUser={currentUser} showNewEventForm={showEventFormHandler} />
           {!currentUser &&
-            <FcKey onClick={login} style={{ position: 'absolute', bottom: 0, right: 0 }} />
+            <FcKey onClick={login} className="admin-button" />
           }
           <UserPage currentUser={currentUser} />
         </Route>
