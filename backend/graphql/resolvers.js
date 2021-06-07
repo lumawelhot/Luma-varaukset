@@ -114,6 +114,7 @@ const resolvers = {
         title: args.title,
         start: args.start,
         end: args.end,
+        desc: args.desc,
         resourceId,
         grades
       })

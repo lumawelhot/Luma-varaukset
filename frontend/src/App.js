@@ -145,6 +145,11 @@ const App = () => {
           {!(currentUser && currentUser.isAdmin) && <p>Sinulla ei ole tarvittavia oikeuksia.</p>}
         </Route>
         <Route path='/'>
+          {!currentUser &&
+            <div className="control">
+              <button className="button is-link is-light" onClick={login}>Kirjaudu sisään</button>
+            </div>
+          }
           {currentUser &&
             <div className="control">
               <button className="button is-link is-light" onClick={logout}>Kirjaudu ulos</button>
@@ -167,7 +172,7 @@ const App = () => {
           </div>}
           <MyCalendar events={events} currentUser={currentUser} showNewEventForm={showEventFormHandler} handleEventClick={handleEventClick}/>
           {!currentUser &&
-            <FcKey onClick={login} style={{ position: 'absolute', bottom: 0, right: 0 }} />
+            <FcKey onClick={login} className="admin-button" />
           }
           <UserPage currentUser={currentUser} />
         </Route>

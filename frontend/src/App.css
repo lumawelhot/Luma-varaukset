@@ -872,3 +872,10 @@ button.rbc-input::-moz-focus-inner {
   background: antiquewhite;
   border-radius: 20px;
 }
+
+.admin-button {
+  cursor: pointer;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}

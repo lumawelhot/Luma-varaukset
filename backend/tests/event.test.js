@@ -49,6 +49,7 @@ beforeEach(async () => {
     title: 'All About Algebra',
     resourceId: 1,
     grades: [1, 2],
+    desc: 'Algebra is one of the broad areas of mathematics, together with number theory, geometry and analysis.',
     tags: newTags,
     start: 'Mon Jun 07 2021 09:30:00 GMT+0300 (Eastern European Summer Time)',
     end: 'Thu Jun 10 2021 12:00:00 GMT+0300 (Eastern European Summer Time)'
@@ -57,6 +58,7 @@ beforeEach(async () => {
     title: 'Up-And-Atom!',
     resourceId: 2,
     grades: [4],
+    desc: 'Atom is a programming text editor developed by GitHub.',
     tags: newTags,
     start: 'Fri May 21 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
     end: 'Fri May 21 2021 11:00:00 GMT+0300 (Eastern European Summer Time)'
@@ -86,6 +88,7 @@ describe('Event Server Test', () => {
         }
         start
         end
+        desc
       }
     }
     `
@@ -101,6 +104,7 @@ describe('Event Server Test', () => {
       expect(event.resourceId).toBeDefined()
       expect(event.start).toBeDefined()
       expect(event.end).toBeDefined()
+      expect(event.desc).toBeDefined()
     })
     expect(getEvents.length).toBe(2)
   })
@@ -114,6 +118,7 @@ it('employee can create new event successfully', async () => {
           class: "LINKKI"
           start: "Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)"
           end: "Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)"
+          desc: "JavaScript is the programming language of the Web."
           grades: [1, 3, 4]
           tags: [{ name: "Matematiikka" }, { name: "Fysiikka" }, { name: "Ohjelmointi" }, { name: "Maantiede" }, { name: "Kemia" } ]
         ){
@@ -122,6 +127,7 @@ it('employee can create new event successfully', async () => {
           start,
           end,
           grades,
+          desc
           tags {
             name
           }
@@ -146,7 +152,8 @@ describe('Event Model Test', () => {
       grades: [3, 4],
       tags: tags,
       start: 'Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)',
-      end: 'Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)'
+      end: 'Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)',
+      desc: 'Test event desc.'
     }
     const validEvent = new EventModel(eventData)
     const savedEvent = await validEvent.save()
@@ -157,6 +164,7 @@ describe('Event Model Test', () => {
     expect(savedEvent.resourceId).toBe(eventData.resourceId)
     expect(savedEvent.start).toBe(eventData.start)
     expect(savedEvent.end).toBe(eventData.end)
+    expect(savedEvent.desc).toBe(eventData.desc)
   })
 
   it('insert event successfully, but the field not defined in schema should be "undefined"', async () => {
@@ -166,7 +174,8 @@ describe('Event Model Test', () => {
       grades: [1],
       start: 'Tue Jun 01 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
       end: 'Wed Jun 02 2021 15:00:00 GMT+0300 (Eastern European Summer Time)',
-      fieldNotInSchema: 'Tiedeluokka Linkki'
+      fieldNotInSchema: 'Tiedeluokka Linkki',
+      desc: 'Test event desc.'
     })
     const savedEventWithInvalidField = await eventWithInvalidField.save()
     expect(savedEventWithInvalidField._id).toBeDefined()
