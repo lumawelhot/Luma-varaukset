@@ -5,7 +5,7 @@ import 'moment/locale/fi'
 import { messages } from './helpers/calendar-messages-fi'
 import { resourceColors } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
-import { useHistory } from 'react-router-dom'
+
 //import LumaEventWrapper from './components/Custom/LumaEventWrapper'
 
 const localizer = momentLocalizer(moment)
@@ -18,10 +18,9 @@ const resourceMap = [
   { resourceId: 5, resourceTitle: 'Gadolin' },
 ]
 
-const MyCalendar = ({ events, currentUser, showNewEventForm }) => {
+const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick }) => {
 
   const [localEvents, setEvents] = useState([])
-  const history = useHistory()
 
   useEffect(() => {
     setEvents(events)
@@ -31,10 +30,10 @@ const MyCalendar = ({ events, currentUser, showNewEventForm }) => {
     showNewEventForm(start, end)
   }
 
-  const handleEventClick = (event) => {
+  /* const handleEventClick = (event) => {
     console.log(event.id)
     history.push(`/event/${event.id}/book`)
-  }
+  } */
 
   const customDayPropGetter = date => {
     if (date.getDay() === 0 || date.getDay() === 6)

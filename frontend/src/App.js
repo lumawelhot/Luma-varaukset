@@ -26,11 +26,13 @@ const App = () => {
   const [getUser, { loading, data }] = useLazyQuery(CURRENT_USER, {
     fetchPolicy: 'cache-and-network'
   })
+  const [clickedEvent, setClickedEvent] = useState(null)
 
   const [currentUser, setUser] = useState(null)
 
   const parseEvent = (event) => {
     return {
+      id: event.id,
       title: event.title,
       resourceId: event.resourceId,
       start: new Date(event.start),
@@ -88,6 +90,13 @@ const App = () => {
     history.push('/')
   }
 
+  const handleEventClick = (event) => {
+    //console.log(event)
+    const selectedEvent = events.find(e => e.id === event.id)
+    setClickedEvent(selectedEvent)
+    history.push('/book')
+  }
+
   const [tags, setTags] = useState([])
 
   if (loading) return <div></div>
@@ -96,8 +105,8 @@ const App = () => {
     <div className="App">
       <Message message={message} />
       <Switch>
-        <Route path='/event/:id/book'>
-          <VisitForm events={events} sendMessage={updateMessage}/>
+        <Route path='/book'>
+          <VisitForm event={clickedEvent} sendMessage={updateMessage}/>
         </Route>
         <Route path='/taginput'>
           <LumaTagInput
@@ -156,7 +165,7 @@ const App = () => {
               />
             </div>
           </div>}
-          <MyCalendar events={events} currentUser={currentUser} showNewEventForm={showEventFormHandler} />
+          <MyCalendar events={events} currentUser={currentUser} showNewEventForm={showEventFormHandler} handleEventClick={handleEventClick}/>
           {!currentUser &&
             <FcKey onClick={login} style={{ position: 'absolute', bottom: 0, right: 0 }} />
           }
