@@ -80,7 +80,7 @@ const EventForm = ({ sendMessage, addEvent, newEventTimeRange=[null,null], close
       grades: [],
       title: '',
       scienceClass: '',
-      desc: ''
+      desc: '',
       date: moment(newEventTimeRange[0]).format('YYYY-MM-DD'),
       startTime: moment(newEventTimeRange[0]).format('HH:mm'),
       endTime: moment(newEventTimeRange[1]).format('HH:mm'),
@@ -97,7 +97,7 @@ const EventForm = ({ sendMessage, addEvent, newEventTimeRange=[null,null], close
           start,
           end,
           scienceClass: values.scienceClass,
-          desc: values.desc
+          desc: values.desc,
           tags: values.tags.map(tag =>
             Object(
               {
