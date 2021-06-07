@@ -80,6 +80,7 @@ const EventForm = ({ sendMessage, addEvent, newEventTimeRange=[null,null], close
       grades: [],
       title: '',
       scienceClass: '',
+      desc: '',
       date: moment(newEventTimeRange[0]).format('YYYY-MM-DD'),
       startTime: moment(newEventTimeRange[0]).format('HH:mm'),
       endTime: moment(newEventTimeRange[1]).format('HH:mm'),
@@ -96,6 +97,7 @@ const EventForm = ({ sendMessage, addEvent, newEventTimeRange=[null,null], close
           start,
           end,
           scienceClass: values.scienceClass,
+          desc: values.desc,
           tags: values.tags.map(tag =>
             Object(
               {
@@ -271,15 +273,29 @@ const EventForm = ({ sendMessage, addEvent, newEventTimeRange=[null,null], close
                 />
               </div>
             </div>
+
             {formik.touched.endTime && formik.errors.endTime ? (
               <Message message={formik.errors.endTime} />
             ) : null}
 
+            <div className="field">
+              <label htmlFor="desc">Kuvaus</label>
+              <div className="control">
+                <textarea className="textarea" style={{ width: 300 }}
+                  id="desc" name="desc"
+                  placeholder="Kirjoita tähän lyhyt kuvaus vierailusta."
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.desc}>
+                </textarea>
+              </div>
+            </div>
+            {formik.touched.desc && formik.errors.desc ? (
+              <Message message={formik.errors.desc} />
+            ) : null}
 
-
-            <button className="button is-link" type='submit'>Tallenna</button>
+            <button id="create" className="button is-link" type='submit'>Tallenna</button>
             <button className="button is-link is-light" onClick={closeEventForm}>Poistu</button>
-
 
           </form>
         </div>

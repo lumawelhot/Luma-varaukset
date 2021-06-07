@@ -5,8 +5,15 @@ Given('Employee is logged in', () => {
   cy.login({ username: 'Admin', password: 'salainen' })
 })
 
-Given('I am on the create event page', () => {
+When('I am on the create event page', () => {
   cy.visit('http://localhost:3000/event')
+})
+
+Then('event form has a description field', () => {
+  cy.get('textarea#desc')
+    .should('exist')
+    .and('be.visible')
+    .and('have.attr', 'placeholder', 'Kirjoita tähän lyhyt kuvaus vierailusta.')
 })
 
 When('valid information is entered', () => {
@@ -21,6 +28,7 @@ When('valid information is entered', () => {
   cy.get('#date').type('2021-01-31')
   cy.get('#startTime').type('08:15')
   cy.get('#endTime').type('09:45')
+  cy.get('#desc').type('Test description')
   cy.get('[type="submit"]').click()
   cy.wait(2000)
 })
@@ -41,6 +49,7 @@ When('too short a title is entered', () => {
   cy.get('#date').type('2021-01-31')
   cy.get('#startTime').type('08:15')
   cy.get('#endTime').type('09:45')
+  cy.get('#desc').type('Test description')
   cy.get('[type="submit"]').click()
   cy.wait(2000)
 })

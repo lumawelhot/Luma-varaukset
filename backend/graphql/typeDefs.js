@@ -19,6 +19,7 @@ const typeDefs = gql `
     grades: [Int]!
     start: String!
     end: String!
+    desc: String
     tags: [Tag]!
   }
   type Visit {
@@ -62,6 +63,7 @@ const typeDefs = gql `
       grades: [Int]!
       start: String!
       end: String!
+      desc: String
       tags: [TagInput]
     ): Event
     createVisit(

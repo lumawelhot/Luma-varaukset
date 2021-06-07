@@ -45,6 +45,7 @@ export const EVENTS = gql`
       }
       start
       end
+      desc
     }
   }
 `
@@ -67,13 +68,14 @@ export const CURRENT_USER = gql`
   }
 `
 
-export const CREATE_EVENT = gql `
-  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!, $grades: [Int]!, $tags: [TagInput]) {
+export const CREATE_EVENT = gql`
+  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!, $grades: [Int]!, $desc: String, $tags: [TagInput]) {
     createEvent (
       title: $title,
       start: $start,
       end: $end,
       class: $scienceClass,
+      desc: $desc,
       grades: $grades,
       tags: $tags
     ) {
