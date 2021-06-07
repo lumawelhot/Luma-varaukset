@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useFormik, FormikProvider } from 'formik'
 import Message from './Message'
-import { useMutation } from '@apollo/client'
-import { CREATE_EVENT } from '../graphql/queries'
+import { useMutation, useQuery } from '@apollo/client'
+import { CREATE_EVENT, TAGS } from '../graphql/queries'
 import { useHistory } from 'react-router'
+import LumaTagInput from './LumaTagInput/LumaTagInput'
+import moment from 'moment'
 
 const validate = values => {
 
@@ -33,15 +35,25 @@ const validate = values => {
   return errors
 }
 
-const EventForm = ({ sendMessage }) => {
+const EventForm = ({ sendMessage, addEvent, newEventTimeRange=[null,null], closeEventForm }) => {
   const history = useHistory()
+  const [suggestedTags, setSuggestedTags] = useState([])
   const [showDropdownMenu, setShowDropdownMenu] = useState(false)
   const [create, result] = useMutation(CREATE_EVENT, {
     onError: (error) => console.log(error)
   })
+  const tags = useQuery(TAGS)
+
+  useEffect(() => {
+    if (tags.data) {
+      setSuggestedTags(tags.data.getTags.map(tag => tag.name))
+    }
+  }, [tags.data])
 
   useEffect(() => {
     if (result.data) {
+      console.log(result.data)
+      addEvent(result.data.createEvent)
       sendMessage('Vierailu luotu')
       history.push('/')
     }
@@ -54,12 +66,6 @@ const EventForm = ({ sendMessage }) => {
     { value: 4, label:'7.-9 luokka' },
     { value: 5, label:  'toinen aste' }
   ]
-
-  const cancel = (event) => {
-    event.preventDefault()
-
-    history.push('/')
-  }
 
   const toggleItem = (item, formikValues) => {
     if (formikValues.includes(item)) {
@@ -74,9 +80,10 @@ const EventForm = ({ sendMessage }) => {
       grades: [],
       title: '',
       scienceClass: '',
-      date: '',
-      startTime: '',
-      endTime: ''
+      date: moment(newEventTimeRange[0]).format('YYYY-MM-DD'),
+      startTime: moment(newEventTimeRange[0]).format('HH:mm'),
+      endTime: moment(newEventTimeRange[1]).format('HH:mm'),
+      tags: []
     },
     validate,
     onSubmit: values => {
@@ -88,16 +95,26 @@ const EventForm = ({ sendMessage }) => {
           title: values.title,
           start,
           end,
-          scienceClass: values.scienceClass
+          scienceClass: values.scienceClass,
+          tags: values.tags.map(tag =>
+            Object(
+              {
+                id: tags.data.getTags.find(t => t.name === tag)?.id || null,
+                name: tag
+              }
+            )
+          )
         }
       })
+      console.log(tags.data.getTags)
       alert(JSON.stringify(values, null, 2))
     },
   })
+
   return (
-    <div className="container">
+    <div className="section">
       <div className="columns is-centered">
-        <div className="section">
+        <div className="section luma-eventform">
           <div className="title">Luo uusi vierailu</div>
           <form onSubmit={formik.handleSubmit}>
             <div className="field">
@@ -118,6 +135,16 @@ const EventForm = ({ sendMessage }) => {
             {formik.touched.title && formik.errors.title ? (
               <Message message={formik.errors.title} />
             ) : null}
+
+            <FormikProvider value={formik}>
+              <LumaTagInput
+                label='Tagit'
+                tags={formik.values.tags}
+                setTags={(tags) => {formik.setFieldValue('tags',  tags)}}
+                suggestedTags={suggestedTags}
+                style={{ width: 300 }}
+              />
+            </FormikProvider>
 
             <div className="field">
 
@@ -248,8 +275,8 @@ const EventForm = ({ sendMessage }) => {
               <Message message={formik.errors.endTime} />
             ) : null}
 
-            <button id="create" className="button is-link" type='submit'>Tallenna</button>
-            <button className="button is-link is-light" onClick={cancel}>Poistu</button>
+            <button className="button is-link" type='submit'>Tallenna</button>
+            <button className="button is-link is-light" onClick={closeEventForm}>Poistu</button>
 
           </form>
         </div>

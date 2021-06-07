@@ -18,7 +18,7 @@ const resourceMap = [
   { resourceId: 5, resourceTitle: 'Gadolin' },
 ]
 
-const MyCalendar = ({ events, currentUser }) => {
+const MyCalendar = ({ events, currentUser, showNewEventForm }) => {
 
   const [localEvents, setEvents] = useState([])
   const history = useHistory()
@@ -28,17 +28,7 @@ const MyCalendar = ({ events, currentUser }) => {
   },[events])
 
   const handleSelect = ({ start, end }) => {
-    const title = window.prompt('New Event name')
-    if (title)
-      setEvents([
-        ...localEvents,
-        {
-          start,
-          end,
-          title,
-          resourceId:1
-        }]
-      )
+    showNewEventForm(start, end)
   }
 
   const handleEventClick = (event) => {
