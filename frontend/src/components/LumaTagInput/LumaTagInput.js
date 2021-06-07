@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import Tags from './Tags'
 
-const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[], setTags }) => {
+const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[], setTags, style }) => {
 
   const [newTag, setNewTag] = useState('')
   const [focused, setFocused] = useState(false)
@@ -33,69 +33,73 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
   }
 
   const handleKeyUp = (event) => {
-    switch (event.key) {
-    case 'Escape': { // Blur
+    if (event.key === 'Escape') { // Blur
       setNewTag('')
       setFocused(false)
-      break
-    }
     }
   }
 
   const handleKeyDown = (event, items) => {
     switch (event.key) {
-    case 'Backspace': { // Remove last tag if input is empty
-      if (newTag === '') {
+      case 'Backspace': { // Remove last tag if input is empty
+        if (newTag === '') {
+          event.preventDefault()
+          setNewTag('')
+          removeLastTag()
+          setSelected(-1)
+        }
+        break
+      }
+      case 'Tab': {
         event.preventDefault()
         setNewTag('')
-        removeLastTag()
+        const value = items.length ? items[selected === -1 ? 0 : selected] : newTag
+        addTagIfNotExist(value)
         setSelected(-1)
+        break
       }
-      break
-    }
-    case 'Enter': // Add new tag on Enter, Tab or ,
-    case 'Tab': {
-      event.preventDefault()
-      setNewTag('')
-      const value = selected > -1 ? items[selected] : newTag
-      addTagIfNotExist(value)
-      setSelected(-1)
-      break
-    }
-    case ',': {
-      event.preventDefault()
-      setNewTag('')
-      if (newTag !== '') {
+      case 'Enter': {
+        event.preventDefault()
+        setNewTag('')
         const value = selected > -1 ? items[selected] : newTag
         addTagIfNotExist(value)
         setSelected(-1)
+        break
       }
-      break
-    }
-    case 'ArrowDown': { // Move down in autocomplete list
-      if (!focused) {
-        setFocused(true)
-        setSelected(0)
+      case ',': {
+        event.preventDefault()
+        setNewTag('')
+        if (newTag !== '') {
+          const value = selected > -1 ? items[selected] : newTag
+          addTagIfNotExist(value)
+          setSelected(-1)
+        }
+        break
       }
-      if (selected < items.length-1) {
-        setSelected(selected+1)
+      case 'ArrowDown': { // Move down in autocomplete list
+        if (!focused) {
+          setFocused(true)
+          setSelected(0)
+        }
+        if (selected < items.length-1) {
+          setSelected(selected+1)
+        }
+        break
       }
-      break
-    }
-    case 'ArrowUp': { // Move up in autocomplete list
-      if (selected > -1) {
-        setSelected(selected-1)
+      case 'ArrowUp': { // Move up in autocomplete list
+        if (selected > -1) {
+          setSelected(selected-1)
+        }
+        break
       }
-      break
-    }
-    default: {
-      if (newTag !== '') {
-        setFocused(true)
+      default: {
+        if (newTag !== '') {
+          setFocused(true)
+        }
+        else {
+          setSelected(-1)
+        }
       }
-      else {
-        setSelected(-1)
-      }
-    }
     }
   }
 
@@ -103,10 +107,21 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
     console.log(event)
   }
 
-  const dropdownItems = newTag === '' ? suggestedTags : suggestedTags.filter(element => element.toLowerCase().includes(newTag.toLowerCase()))
+  const dropdownItems = newTag === '' ?
+    suggestedTags.filter(element => !tags.includes(element))
+    :
+    suggestedTags.filter(element => !tags.includes(element)).filter(element => element.toLowerCase().includes(newTag.toLowerCase()))
+
+  /*useEffect(() => {
+    if (dropdownItems.length) {
+      setSelected(0)
+    } else {
+      setSelected(-1)
+    }
+  }, [dropdownItems])*/
 
   return (
-    <div className='field'>
+    <div className='field' style={style}>
       <label className='label'>{label}</label>
       <div className='taginput control'>
         <div className={`taginput-container is-focusable ${focused && 'is-focused'}`}>
@@ -115,7 +130,7 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
             removeTag={(index) => handleRemoveTag(index)}
           />
           <div className='autocomplete control'>
-            <div className='control has-icons-left is-clearfix'>
+            <div className='control is-clearfix'>
               <input
                 ref={field}
                 value={newTag}
@@ -132,7 +147,7 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
             </div>
             <div className='dropdown-menu' style={{ display: focused && dropdownItems.length > 0 ? 'block' : 'none' }}>
               <div className='dropdown-content'>
-                {dropdownItems.map((suggestion,index) =>
+                {dropdownItems.sort().map((suggestion,index) =>
                   <a
                     key={index}
                     className={`dropdown-item ${selected === index ? 'is-hovered' : ''}`}

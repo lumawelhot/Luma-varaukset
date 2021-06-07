@@ -4,6 +4,7 @@ const User = require('../models/user')
 const Event = require('../models/event')
 const Visit = require('../models/visit')
 const jwt = require('jsonwebtoken')
+const Tag = require('../models/tag')
 
 const resolvers = {
   Query: {
@@ -12,8 +13,12 @@ const resolvers = {
       return users
     },
     getEvents: async () => {
-      const events = await Event.find({})
+      const events = await Event.find({}).populate('tags', { name: 1, id: 1 })
       return events
+    },
+    getTags: async () => {
+      const tags = await Tag.find({})
+      return tags
     },
     findVisit: async (root, args) => {
       const visit = await Visit.findById(args.id)
@@ -91,6 +96,20 @@ const resolvers = {
       if (args.title.length < 5) {
         throw new UserInputError('title too short')
       }
+
+      let eventTags = JSON.parse(JSON.stringify(args.tags))
+
+      const eventTagsNames = eventTags.map(e => e.name)
+      let mongoTags = await Tag.find({ name: { $in: eventTagsNames } })
+      const foundTagNames = mongoTags.map(t => t.name)
+      eventTags.forEach(tag => {
+        if (!foundTagNames.includes(tag.name)) {
+          const newTag = new Tag({ name: tag.name })
+          mongoTags = mongoTags.concat(newTag)
+          tag = newTag.save()
+        }
+      })
+
       const newEvent = new Event({
         title: args.title,
         start: args.start,
@@ -98,6 +117,7 @@ const resolvers = {
         resourceId,
         grades
       })
+      newEvent.tags = mongoTags
       await newEvent.save()
       return newEvent
     },
