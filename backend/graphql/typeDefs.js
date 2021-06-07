@@ -3,6 +3,10 @@ const { gql } = require('apollo-server-express')
 //Visit- ja Event-tyyppien kentät gradeId ja online tarkistettava
 //Visit-tyypin pin-kentän palautus frontendiin estettävä sitten, kun pin palautetaan sähköpostitse
 const typeDefs = gql `
+  type Tag {
+    id: ID
+    name: String!
+  }
   type User {
     id: ID!
     username: String!
@@ -16,6 +20,7 @@ const typeDefs = gql `
     start: String!
     end: String!
     desc: String
+    tags: [Tag]!
   }
   type Visit {
     id: ID!
@@ -36,6 +41,11 @@ const typeDefs = gql `
     getEvents: [Event]!
     findVisit(id: ID!): Visit!
     getVisits: [Visit]
+    getTags: [Tag]!
+  }
+  input TagInput {
+    id: String
+    name: String!
   }
   type Mutation {
     createUser(
@@ -54,6 +64,7 @@ const typeDefs = gql `
       start: String!
       end: String!
       desc: String
+      tags: [TagInput]
     ): Event
     createVisit(
       event: ID!

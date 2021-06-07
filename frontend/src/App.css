@@ -831,6 +831,7 @@ button.rbc-input::-moz-focus-inner {
   flex-wrap: wrap;
   justify-content: flex-start;
   height: auto;
+  width: 100%;
 }
 
 .taginput .taginput-container > .tag,
@@ -838,7 +839,7 @@ button.rbc-input::-moz-focus-inner {
   display: inline-flex;
   margin-left: 0.275rem;
   margin-bottom: calc(0.275em - 1px);
-  font-size: 0.9em;
+  font-size: 0.8em;
   height: calc(2em - 1px);
 }
 
@@ -864,4 +865,10 @@ button.rbc-input::-moz-focus-inner {
   border: none;
   box-shadow: none;
   min-width: 8em;
+}
+
+.modal-content,
+.luma-eventform {
+  background: antiquewhite;
+  border-radius: 20px;
 }

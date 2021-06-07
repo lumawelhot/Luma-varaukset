@@ -20,24 +20,27 @@ const App = () => {
   const [message, setMessage] = useState('')
   const client = useApolloClient()
   const result = useQuery(EVENTS)
+  const [showEventForm, setShowEventForm] = useState(false)
+  const [newEventTimeRange, setNewEventTimeRange] = useState([])
   const [getUser, { loading, data }] = useLazyQuery(CURRENT_USER, {
     fetchPolicy: 'cache-and-network'
   })
 
   const [currentUser, setUser] = useState(null)
 
+  const parseEvent = (event) => {
+    return {
+      title: event.title,
+      resourceId: event.resourceId,
+      start: new Date(event.start),
+      end: new Date(event.end),
+      grades: event.grades
+    }
+  }
+
   useEffect(() => {
     if (result.data) {
-      const events = result.data.getEvents.map(event => {
-        return {
-          title: event.title,
-          resourceId: event.resourceId,
-          start: new Date(event.start),
-          end: new Date(event.end),
-          grades: event.grades,
-          desc: event.desc,
-        }
-      })
+      const events = result.data.getEvents.map(event => parseEvent(event))
       setEvents(events)
     }
   }, [result])
@@ -68,6 +71,22 @@ const App = () => {
     setTimeout(() => setMessage(''), 5000)
   }
 
+  const addEvent = (event) => {
+    setEvents(events.concat(parseEvent(event)))
+    setShowEventForm(false)
+  }
+
+  const showEventFormHandler = (start, end) => {
+    setNewEventTimeRange([start,end])
+    setShowEventForm(true)
+  }
+
+  const closeEventForm = (event) => {
+    event.preventDefault()
+    setShowEventForm(false)
+    history.push('/')
+  }
+
   const [tags, setTags] = useState([])
 
   if (loading) return <div></div>
@@ -93,7 +112,7 @@ const App = () => {
         </Route>
         <Route path='/event'>
           {currentUser &&
-            <EventForm sendMessage={updateMessage} />
+            <EventForm sendMessage={updateMessage} addEvent={addEvent} closeEventForm={closeEventForm}/>
           }
           {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
         </Route>
@@ -126,7 +145,19 @@ const App = () => {
               </div>
             </div>
           }
-          <MyCalendar events={events} currentUser={currentUser} />
+          {showEventForm &&
+          <div className="modal is-active">
+            <div className="modal-background"></div>
+            <div className="modal-content">
+              <EventForm
+                sendMessage={updateMessage}
+                addEvent={addEvent}
+                newEventTimeRange={newEventTimeRange}
+                closeEventForm={closeEventForm}
+              />
+            </div>
+          </div>}
+          <MyCalendar events={events} currentUser={currentUser} showNewEventForm={showEventFormHandler} />
           {!currentUser &&
             <FcKey onClick={login} style={{ position: 'absolute', bottom: 0, right: 0 }} />
           }

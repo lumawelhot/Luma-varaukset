@@ -27,14 +27,14 @@ LumaWorkWeek.range = date => {
 
 LumaWorkWeek.navigate = (date, action) => {
   switch (action) {
-  case Navigate.PREVIOUS:
-    return moment(date).subtract(1, 'week').toDate()
+    case Navigate.PREVIOUS:
+      return moment(date).subtract(1, 'week').toDate()
 
-  case Navigate.NEXT:
-    return moment(date).add(1,'week').toDate()
+    case Navigate.NEXT:
+      return moment(date).add(1,'week').toDate()
 
-  default:
-    return date
+    default:
+      return date
   }
 }
 

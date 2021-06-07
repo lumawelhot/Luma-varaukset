@@ -7,7 +7,10 @@ const EventModel = require('../models/event')
 const UserModel = require('../models/user')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
+const Tag = require('../models/tag')
 let server = null
+let newTags = []
+
 
 beforeAll(async () => {
 
@@ -20,6 +23,8 @@ beforeAll(async () => {
       console.log('connection error: ', error.message)
     })
   await UserModel.deleteMany({})
+  await EventModel.deleteMany()
+  newTags = await Tag.insertMany({ name: 'Matematiikka' }, { name: 'Fysiikka' })
 
   const userPassword = await bcrypt.hash('password', 10)
   const userData = { username: 'employee', passwordHash: userPassword, isAdmin: false }
@@ -39,13 +44,13 @@ beforeAll(async () => {
 })
 
 beforeEach(async () => {
-  await EventModel.deleteMany()
 
   const testData1 = {
     title: 'All About Algebra',
     resourceId: 1,
     grades: [1, 2],
     desc: 'Algebra is one of the broad areas of mathematics, together with number theory, geometry and analysis.',
+    tags: newTags,
     start: 'Mon Jun 07 2021 09:30:00 GMT+0300 (Eastern European Summer Time)',
     end: 'Thu Jun 10 2021 12:00:00 GMT+0300 (Eastern European Summer Time)'
   }
@@ -54,6 +59,7 @@ beforeEach(async () => {
     resourceId: 2,
     grades: [4],
     desc: 'Atom is a programming text editor developed by GitHub.',
+    tags: newTags,
     start: 'Fri May 21 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
     end: 'Fri May 21 2021 11:00:00 GMT+0300 (Eastern European Summer Time)'
   }
@@ -75,6 +81,11 @@ describe('Event Server Test', () => {
         id
         title
         resourceId
+        grades
+        tags {
+          id
+          name
+        }
         start
         end
         desc
@@ -88,6 +99,8 @@ describe('Event Server Test', () => {
     getEvents.map(event => {
       expect(event.id).toBeDefined()
       expect(event.title).toBeDefined()
+      expect(event.grades).toBeDefined()
+      expect(event.tags).toBeDefined()
       expect(event.resourceId).toBeDefined()
       expect(event.start).toBeDefined()
       expect(event.end).toBeDefined()
@@ -95,18 +108,19 @@ describe('Event Server Test', () => {
     })
     expect(getEvents.length).toBe(2)
   })
-
-  it('employee can create new event successfully', async () => {
-    const { mutate } = createTestClient(server)
-    const CREATE_EVENT = gql`
+})
+it('employee can create new event successfully', async () => {
+  const { mutate } = createTestClient(server)
+  const CREATE_EVENT = gql`
       mutation {
         createEvent(
           title: "Learn JavaScript!"
           class: "LINKKI"
           start: "Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)"
           end: "Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)"
-          grades: ${JSON.stringify([1, 3, 4])}
           desc: "JavaScript is the programming language of the Web."
+          grades: [1, 3, 4]
+          tags: [{ name: "Matematiikka" }, { name: "Fysiikka" }, { name: "Ohjelmointi" }, { name: "Maantiede" }, { name: "Kemia" } ]
         ){
           title,
           resourceId,
@@ -114,23 +128,29 @@ describe('Event Server Test', () => {
           end,
           grades,
           desc
+          tags {
+            name
+          }
         }
       }
     `
-    let response = await mutate({ mutation: CREATE_EVENT })
-    expect(response.data.createEvent.title).toBe('Learn JavaScript!')
-    expect(response.data.createEvent.grades).toEqual([1, 3, 4])
-    expect(response.errors).toBeUndefined()
-  })
+  let response = await mutate({ mutation: CREATE_EVENT })
+  expect(response.data.createEvent.title).toBe('Learn JavaScript!')
+  expect(response.data.createEvent.grades).toEqual([1, 3, 4])
+  expect(response.data.createEvent.tags).toEqual([{ name: 'Matematiikka' }, { name: 'Fysiikka' }, { name: 'Ohjelmointi' }, { name: 'Maantiede' }, { name: 'Kemia' } ])
+  expect(response.errors).toBeUndefined()
 })
+
 
 describe('Event Model Test', () => {
 
   it('create & save new event successfully', async () => {
+    const tags = await Tag.find({ name: { $in: ['Matematiikka', 'Fysiikka'] } })
     const eventData = {
       title: 'New-event',
       resourceId: 2,
       grades: [3, 4],
+      tags: tags,
       start: 'Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)',
       end: 'Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)',
       desc: 'Test event desc.'
@@ -139,6 +159,8 @@ describe('Event Model Test', () => {
     const savedEvent = await validEvent.save()
     expect(savedEvent._id).toBeDefined()
     expect(savedEvent.title).toBe(eventData.title)
+    expect(savedEvent.grades.toObject()).toEqual(eventData.grades)
+    expect(savedEvent.tags.toObject().map(tag => tag.name)).toEqual(['Fysiikka','Matematiikka'])
     expect(savedEvent.resourceId).toBe(eventData.resourceId)
     expect(savedEvent.start).toBe(eventData.start)
     expect(savedEvent.end).toBe(eventData.end)
@@ -176,7 +198,7 @@ describe('Event Model Test', () => {
     expect(err.errors.grades).toBeDefined()
   })
 
-  /* it('cannot create event with end time before start time', async () => {
+/* it('cannot create event with end time before start time', async () => {
     const eventWithEndBeforeStart = new EventModel({
         title: 'New-event',
         resourceId: 2,

@@ -5,7 +5,6 @@ import 'moment/locale/fi'
 import { messages } from './helpers/calendar-messages-fi'
 import { resourceColors } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
-//import LumaEventWrapper from './components/Custom/LumaEventWrapper'
 
 const localizer = momentLocalizer(moment)
 
@@ -17,7 +16,7 @@ const resourceMap = [
   { resourceId: 5, resourceTitle: 'Gadolin' },
 ]
 
-const MyCalendar = ({ events, currentUser }) => {
+const MyCalendar = ({ events, currentUser, showNewEventForm }) => {
 
   const [localEvents, setEvents] = useState([])
 
@@ -26,17 +25,7 @@ const MyCalendar = ({ events, currentUser }) => {
   },[events])
 
   const handleSelect = ({ start, end }) => {
-    const title = window.prompt('New Event name')
-    if (title)
-      setEvents([
-        ...localEvents,
-        {
-          start,
-          end,
-          title,
-          resourceId:1
-        }]
-      )
+    showNewEventForm(start, end)
   }
 
   const customDayPropGetter = date => {
