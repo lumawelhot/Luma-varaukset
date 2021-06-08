@@ -6,6 +6,8 @@ import { messages } from './helpers/calendar-messages-fi'
 import { resourceColors } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
 
+//import LumaEventWrapper from './components/Custom/LumaEventWrapper'
+
 const localizer = momentLocalizer(moment)
 
 const resourceMap = [
@@ -16,7 +18,7 @@ const resourceMap = [
   { resourceId: 5, resourceTitle: 'Gadolin' },
 ]
 
-const MyCalendar = ({ events, currentUser, showNewEventForm }) => {
+const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick }) => {
 
   const [localEvents, setEvents] = useState([])
 
@@ -27,6 +29,11 @@ const MyCalendar = ({ events, currentUser, showNewEventForm }) => {
   const handleSelect = ({ start, end }) => {
     showNewEventForm(start, end)
   }
+
+  /* const handleEventClick = (event) => {
+    console.log(event.id)
+    history.push(`/event/${event.id}/book`)
+  } */
 
   const customDayPropGetter = date => {
     if (date.getDay() === 0 || date.getDay() === 6)
@@ -78,7 +85,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm }) => {
         //resourceIdAccessor="resourceId"
         //resourceTitleAccessor="resourceTitle"
         selectable={currentUser?.isAdmin}
-        onSelectEvent={event => alert(JSON.stringify(event))}
+        onSelectEvent={ (event) => handleEventClick(event)/* alert(JSON.stringify(event)) */}
         onSelectSlot={handleSelect}
         components={{
           //eventWrapper: LumaEventWrapper,

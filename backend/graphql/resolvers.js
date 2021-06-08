@@ -130,10 +130,12 @@ const resolvers = {
         event: event,
         pin: pin,
       })
+      console.log('frontista lähetetty visit: ', visit)
       try {
         const savedVisit = await visit.save()
         return savedVisit
       } catch (error) {
+        console.log('Catchiin mentiin')
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })

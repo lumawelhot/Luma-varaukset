@@ -9,6 +9,7 @@ import UserForm from './components/UserForm'
 import { CURRENT_USER } from './graphql/queries'
 import UserList from './components/UserList'
 import EventForm from './components/EventForm'
+import VisitForm from './components/VisitForm'
 import { FcKey } from 'react-icons/fc'
 import UserPage from './components/UserPage'
 import Message from './components/Message'
@@ -25,11 +26,13 @@ const App = () => {
   const [getUser, { loading, data }] = useLazyQuery(CURRENT_USER, {
     fetchPolicy: 'cache-and-network'
   })
+  const [clickedEvent, setClickedEvent] = useState(null)
 
   const [currentUser, setUser] = useState(null)
 
   const parseEvent = (event) => {
     return {
+      id: event.id,
       title: event.title,
       resourceId: event.resourceId,
       start: new Date(event.start),
@@ -87,6 +90,13 @@ const App = () => {
     history.push('/')
   }
 
+  const handleEventClick = (event) => {
+    //console.log(event)
+    const selectedEvent = events.find(e => e.id === event.id)
+    setClickedEvent(selectedEvent)
+    history.push('/book')
+  }
+
   const [tags, setTags] = useState([])
 
   if (loading) return <div></div>
@@ -95,6 +105,9 @@ const App = () => {
     <div className="App">
       <Message message={message} />
       <Switch>
+        <Route path='/book'>
+          <VisitForm event={clickedEvent} sendMessage={updateMessage}/>
+        </Route>
         <Route path='/taginput'>
           <LumaTagInput
             label='Tagit'
@@ -157,7 +170,7 @@ const App = () => {
               />
             </div>
           </div>}
-          <MyCalendar events={events} currentUser={currentUser} showNewEventForm={showEventFormHandler} />
+          <MyCalendar events={events} currentUser={currentUser} showNewEventForm={showEventFormHandler} handleEventClick={handleEventClick}/>
           {!currentUser &&
             <FcKey onClick={login} className="admin-button" />
           }

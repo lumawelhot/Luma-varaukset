@@ -36,6 +36,7 @@ export const USERS = gql`
 export const EVENTS = gql`
   query getEvents {
     getEvents {
+      id
       title
       resourceId
       grades
@@ -88,6 +89,27 @@ export const CREATE_EVENT = gql`
         name,
         id
       }
+    }
+  }
+`
+
+export const CREATE_VISIT = gql`
+  mutation createVisit($event: ID!, $grade: Int!, $clientName: String!, $clientEmail: String!, $clientPhone: String!) {
+    createVisit(
+      event: $event,
+      grade: $grade,
+      clientName: $clientName,
+      clientEmail: $clientEmail,
+      clientPhone: $clientPhone
+    ) {
+      id
+      event {
+        title
+      }
+      grade
+      clientName
+      clientEmail
+      clientPhone
     }
   }
 `

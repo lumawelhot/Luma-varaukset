@@ -8,6 +8,7 @@ const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
 
 let testEvent2
+let savedTestEvent2
 let savedTestVisit
 let server
 
@@ -52,7 +53,7 @@ beforeEach(async () => {
   testEvent2 = new EventModel(testEventData2)
 
   await testEvent1.save()
-  await testEvent2.save()
+  savedTestEvent2 = await testEvent2.save()
 
   const testVisitData = {
     event: testEvent1,
@@ -107,6 +108,47 @@ describe('Visit Model Test', () => {
 })
 
 describe('Visit server test', () => {
+
+  it('create visit successfully', async () => {
+    const { mutate } = createTestClient(server)
+    const event = savedTestEvent2.id
+    const CREATE_VISIT = gql`
+      mutation createVisit($event: ID!, $clientName: String!, $clientEmail: String!, $clientPhone: String!, $grade: Int!) {
+        createVisit(
+          event: $event
+          clientName: $clientName
+          clientEmail: $clientEmail
+          clientPhone: $clientPhone
+          grade: $grade
+        ) {
+          id
+          event {
+            title
+          }
+          clientName
+          clientEmail
+          clientPhone
+          grade
+          pin
+        }
+      }
+      `
+    const { data } = await mutate({
+      mutation: CREATE_VISIT,
+      variables: { event: event, clientName: 'Teacher', clientEmail: 'teacher@school.com', clientPhone: '040-1234567', grade: 1 }
+    })
+
+    const { createVisit }  = data
+
+    expect(createVisit.id).toBeDefined()
+    expect(createVisit.pin).toBeDefined()
+    expect(createVisit.event.title).toBe(savedTestEvent2.title)
+    expect(createVisit.clientName).toBe('Teacher')
+    expect(createVisit.clientEmail).toBe('teacher@school.com')
+    expect(createVisit.clientPhone).toBe('040-1234567')
+    expect(createVisit.grade).toBe(1)
+  })
+
   it('find by visit id', async () => {
     const { query } = createTestClient(server)
     const id = savedTestVisit.id
@@ -125,10 +167,11 @@ describe('Visit server test', () => {
           }
         }
         `
-    const  { data } = await query({
+    const { data }  = await query({
       query: FIND_VISIT,
       variables: { id: id }
     })
+
     const { findVisit } = data
 
     expect(findVisit.id).toBeDefined()
@@ -152,7 +195,7 @@ describe('Visit server test', () => {
           }
         }
         `
-    const  { data } = await mutate({
+    const { data } = await mutate({
       mutation: CANCEL_VISIT,
       variables: { id: id, pin: pin }
     })
@@ -164,7 +207,7 @@ describe('Visit server test', () => {
     expect(cancelledVisit).toBe(null)
   })
 
-  it('don\'t cancel visit by id and invalid pin', async () => {
+  it('do not cancel visit by id and invalid pin', async () => {
     const { mutate } = createTestClient(server)
     const id = savedTestVisit.id
     const pin = 4321
