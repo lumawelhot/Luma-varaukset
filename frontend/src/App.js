@@ -12,7 +12,6 @@ import EventForm from './components/EventForm'
 import VisitForm from './components/VisitForm'
 import { FcKey } from 'react-icons/fc'
 import UserPage from './components/UserPage'
-import LumaTagInput from './components/LumaTagInput/LumaTagInput'
 import Toasts from './components/Toasts'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -91,8 +90,6 @@ const App = () => {
     history.push('/book')
   }
 
-  const [tags, setTags] = useState([])
-
   const [toasts, setToasts] = useState([])
 
   const notify = (message, type='info') => {
@@ -121,13 +118,6 @@ const App = () => {
       <Switch>
         <Route path='/book'>
           <VisitForm event={clickedEvent} sendMessage={notify}/>
-        </Route>
-        <Route path='/taginput'>
-          <LumaTagInput
-            label='Tagit'
-            suggestedTags={['Matikka', 'Fysiikka']}
-            tags={tags}
-            setTags={setTags}/>
         </Route>
         <Route path='/admin'>
           {!currentUser &&
@@ -180,10 +170,10 @@ const App = () => {
             </div>
           </div>}
           <MyCalendar events={events} currentUser={currentUser} showNewEventForm={showEventFormHandler} handleEventClick={handleEventClick}/>
-          {!currentUser &&
-            <FcKey onClick={login} className="admin-button" />
-          }
           <UserPage currentUser={currentUser} />
+          {!currentUser &&
+            <span className='icon is-pulled-right'><FcKey onClick={login}/></span>
+          }
         </Route>
       </Switch>
     </div>

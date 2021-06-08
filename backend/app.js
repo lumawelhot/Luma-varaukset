@@ -13,6 +13,7 @@ const jwt = require('jsonwebtoken')
 const User = require('./models/user')
 const Event = require('./models/event')
 const Tag = require('./models/tag')
+const config = require('./utils/config')
 
 const { ApolloServer } = require('apollo-server-express')
 const resolvers = require('./graphql/resolvers')
@@ -26,7 +27,7 @@ const server = new ApolloServer({
     const auth = req ? req.headers.authorization : null
     if (auth && auth.toLowerCase().startsWith('bearer ')) {
       const decodedToken = jwt.verify(
-        auth.substring(7), 'huippusalainen'
+        auth.substring(7), config.SECRET
       )
       const currentUser = await User.findById(decodedToken.id)
       return { currentUser }

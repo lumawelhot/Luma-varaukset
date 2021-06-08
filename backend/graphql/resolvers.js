@@ -6,6 +6,7 @@ const Visit = require('../models/visit')
 const jwt = require('jsonwebtoken')
 const Tag = require('../models/tag')
 const mailer = require('../services/mailer')
+const config = require('../utils/config')
 
 const resolvers = {
   Query: {
@@ -62,7 +63,7 @@ const resolvers = {
         throw new UserInputError('Wrong credentials!')
       }
       const userForToken = { username: user.username, id: user._id }
-      return { value: jwt.sign(userForToken, 'huippusalainen') }
+      return { value: jwt.sign(userForToken, config.SECRET) }
     },
     createEvent: async (root, args, { currentUser }) => {
       if (!currentUser) {
