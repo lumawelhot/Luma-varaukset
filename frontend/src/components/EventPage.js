@@ -1,5 +1,6 @@
 import React from 'react'
 import { useHistory } from 'react-router'
+import moment from 'moment'
 
 const EventPage = ({ event, handleBookingButtonClick }) => {
 
@@ -50,6 +51,7 @@ const EventPage = ({ event, handleBookingButtonClick }) => {
   if (event) {
     const eventClass = filterEventClass(event.resourceId)
     const eventGrades = filterEventGrades(event.grades)
+
     return (
       <div className="container">
         <div className="columns is-centered">
@@ -62,10 +64,10 @@ const EventPage = ({ event, handleBookingButtonClick }) => {
               <div>Tarjolla seuraaville luokka-asteille: {eventGrades.map(g =>
                 <div key={g.value}>{g.label}</div>)}
               </div>
-              <p>Tapahtuma alkaa: {event.start.toString()}</p>
-              <p>Tapahtuma päättyy: {event.end.toString()}</p>
-              {event.booked
-                ? <p><b>Valitettavasti tämä tapahtuma on jo varattu.</b></p>
+              <p>Tapahtuma alkaa: {moment(event.start).format('DD.MM.YYYY, HH:mm')}</p>
+              <p>Tapahtuma päättyy: {moment(event.end).format('DD.MM.YYYY, HH:mm')}</p>
+              {event.booked || moment(event.start).diff(new Date(), 'days') < 14
+                ? <p><b>Valitettavasti tämä tapahtuma ei ole varattavissa.</b></p>
                 : <button className="button is-link is-light" onClick={() => handleBookingButtonClick()}>Varaa tapahtuma</button>}
               <button className="button is-link is-light" onClick={cancel}>Poistu</button>
             </div>

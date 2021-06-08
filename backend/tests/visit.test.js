@@ -90,7 +90,7 @@ describe('Visit Model Test', () => {
     expect(savedVisit.clientPhone).toBe(newVisitData.clientPhone)
   })
 
-  it('cannot create visit without required field', async () => {
+  it('teacher cannot create visit without required field', async () => {
     const visitWithoutRequiredField = new VisitModel({ pin: 1234 })
     let err
     try {
@@ -124,6 +124,7 @@ describe('Visit server test', () => {
           id
           event {
             title
+            booked
           }
           clientName
           clientEmail
@@ -147,6 +148,7 @@ describe('Visit server test', () => {
     expect(createVisit.clientEmail).toBe('teacher@school.com')
     expect(createVisit.clientPhone).toBe('040-1234567')
     expect(createVisit.grade).toBe(1)
+    expect(createVisit.event.booked).toBe(true)
   })
 
   it('find by visit id', async () => {

@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useFormik, FormikProvider } from 'formik'
 import Message from './Message'
 import { useMutation } from '@apollo/client'
 import { CREATE_VISIT } from '../graphql/queries'
 import { useHistory } from 'react-router'
-//import format from 'date-fns/format'
+import moment from 'moment'
 
 
 const validate = values => {
@@ -69,7 +69,7 @@ const VisitForm = ({ sendMessage, event }) => {
   }
 
   const [create, result] = useMutation(CREATE_VISIT, {
-    onError: (error) => console.log('virheviesti: ', error, result)
+    onError: (error) => console.log('virheviesti: ', error, result),
   })
 
   const history = useHistory()
@@ -101,13 +101,21 @@ const VisitForm = ({ sendMessage, event }) => {
             event: event.id
           }
         })
-        sendMessage('Olet tehnyt varauksen onnistuneesti!')
-        history.push('/')
+        sendMessage('Olet tehnyt varauksen onnistuneesti! PIN-koodisi tulostuu konsoliin.')
       } catch (error) {
         sendMessage('Varauksen teko epäonnistui.')
       }
     },
   })
+
+  useEffect(() => {
+    if (result.data) {
+      console.log('Pin-koodisi: ', result.data.createVisit.pin)
+      history.push('/')
+
+    }
+  }, [result.data])
+
   if (event) {
     const eventGrades = filterEventGrades(event.grades)
     const eventClass = filterEventClass(event.resourceId)
@@ -125,8 +133,8 @@ const VisitForm = ({ sendMessage, event }) => {
               <div>Tarjolla seuraaville luokka-asteille: {eventGrades.map(g =>
                 <div key={g.value}>{g.label}</div>)}
               </div>
-              <p>Tapahtuma alkaa: {event.start.toString()}</p>
-              <p>Tapahtuma päättyy: {event.end.toString()}</p>
+              <p>Tapahtuma alkaa: {moment(event.start).format('DD.MM.YYYY, HH:mm')}</p>
+              <p>Tapahtuma päättyy: {moment(event.end).format('DD.MM.YYYY, HH:mm')}</p>
             </div>
 
             <br/>

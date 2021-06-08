@@ -106,6 +106,7 @@ export const CREATE_VISIT = gql`
     ) {
       id
       event {
+        id
         title
         booked
       }
@@ -113,6 +114,7 @@ export const CREATE_VISIT = gql`
       clientName
       clientEmail
       clientPhone
+      pin
     }
   }
 `
