@@ -30,11 +30,6 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
     showNewEventForm(start, end)
   }
 
-  /* const handleEventClick = (event) => {
-    console.log(event.id)
-    history.push(`/event/${event.id}/book`)
-  } */
-
   const customDayPropGetter = date => {
     if (date.getDay() === 0 || date.getDay() === 6)
       return {
@@ -47,13 +42,18 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
   }
 
   const customEventPropGetter = event => {
+    if (event.booked) {
+      return { className: resourceMap[event.resourceId-1]?.resourceTitle.toLowerCase() || '', style: {
+        backgroundColor: bookedEventColor[0]
+      }, }
+    }
     return { className: resourceMap[event.resourceId-1]?.resourceTitle.toLowerCase() || '' }
   }
 
   const AgendaEvent = ({ event }) => {
     const resourceName = resourceMap[event.resourceId-1]?.resourceTitle || null
     console.log(event.booked)
-    /* if (event.booked) {
+    if (event.booked) {
       console.log(event.booked)
       return (
         <div className="block">
@@ -64,7 +64,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
           <p>{event.desc}</p>
         </div>
       )
-    } */
+    }
     return (
       <div className="block">
         {resourceName &&

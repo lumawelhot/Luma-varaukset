@@ -21,7 +21,7 @@ const typeDefs = gql `
     end: String!
     desc: String
     tags: [Tag]!
-    booked: Boolean!
+    booked: Boolean
   }
   type Visit {
     id: ID!

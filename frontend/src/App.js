@@ -14,6 +14,7 @@ import { FcKey } from 'react-icons/fc'
 import UserPage from './components/UserPage'
 import Message from './components/Message'
 import LumaTagInput from './components/LumaTagInput/LumaTagInput'
+import EventPage from './components/EventPage'
 
 const App = () => {
   const history = useHistory()
@@ -37,7 +38,8 @@ const App = () => {
       resourceId: event.resourceId,
       start: new Date(event.start),
       end: new Date(event.end),
-      grades: event.grades
+      grades: event.grades,
+      booked: event.booked
     }
   }
 
@@ -91,9 +93,12 @@ const App = () => {
   }
 
   const handleEventClick = (event) => {
-    //console.log(event)
     const selectedEvent = events.find(e => e.id === event.id)
     setClickedEvent(selectedEvent)
+    history.push('/event')
+  }
+
+  const handleBookingButtonClick = () => {
     history.push('/book')
   }
 
@@ -105,6 +110,9 @@ const App = () => {
     <div className="App">
       <Message message={message} />
       <Switch>
+        <Route path='/event'>
+          <EventPage handleBookingButtonClick={handleBookingButtonClick} event={clickedEvent} sendMessage={updateMessage}/>
+        </Route>
         <Route path='/book'>
           <VisitForm event={clickedEvent} sendMessage={updateMessage}/>
         </Route>
