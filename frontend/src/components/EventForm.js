@@ -75,6 +75,25 @@ const EventForm = ({ sendMessage, addEvent, newEventTimeRange=[null,null], close
     }
   }
 
+  const focusInCurrentTarget = ({ relatedTarget, currentTarget }) => {
+    if (relatedTarget === null) return false
+
+    var node = relatedTarget.parentNode
+
+    while (node !== null) {
+      if (node === currentTarget) return true
+      node = node.parentNode
+    }
+
+    return false
+  }
+
+  const onBlur = (e) => {
+    if (!focusInCurrentTarget(e)) {
+      setShowDropdownMenu(false)
+    }
+  }
+
   const formik = useFormik({
     initialValues: {
       grades: [],
@@ -152,7 +171,7 @@ const EventForm = ({ sendMessage, addEvent, newEventTimeRange=[null,null], close
 
               <div htmlFor="grade">Luokka-aste </div>
               <FormikProvider value={formik}>
-                <div className={`dropdown ${showDropdownMenu && 'is-active'}`}>
+                <div className={`dropdown ${showDropdownMenu && 'is-active'}`} onBlur={onBlur}>
                   <div role="button" aria-haspopup="true" className="dropdown-trigger">
                     <button type="button"
                       className={`button ${formik.values.grades.length ? 'is-success' : 'is-danger'}`}
@@ -163,6 +182,9 @@ const EventForm = ({ sendMessage, addEvent, newEventTimeRange=[null,null], close
                         <i className="fas fa-angle-down"></i>
                       </span>
                     </button>
+                  </div>
+                  <div className="level tags">
+                    {formik.values.grades.map((grade,index) => <span key={index} className="tag">{options[grade-1].label}</span>)}
                   </div>
                   <div className="dropdown-menu" style={{ display: showDropdownMenu ? 'block' : 'none' }}>
                     <div role="list" className="dropdown-content">

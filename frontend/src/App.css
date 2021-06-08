@@ -875,9 +875,6 @@ button.rbc-input::-moz-focus-inner {
 
 .admin-button {
   cursor: pointer;
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
 }
 
 .notices {
@@ -899,38 +896,43 @@ button.rbc-input::-moz-focus-inner {
 
 .notices .toast {
   display: inline-flex;
-  animation-duration: .5s;
-  margin: .5em 0;
+  animation-duration: 0.5s;
+  margin: 0.5em 0;
   text-align: center;
-  box-shadow: 0 1px 4px rgba(0,0,0,.12),0 0 6px rgba(0,0,0,.04);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   border-radius: 4px;
-  padding: .75em 0.9em;
+  padding: 0.75em 0.9em;
   pointer-events: auto;
-  opacity: .92;
+  opacity: 0.92;
 }
 
-.notices .notification.is-bottom, .notices .notification.is-top, .notices .snackbar.is-bottom, .notices .snackbar.is-top, .notices .toast.is-bottom, .notices .toast.is-top {
+.notices .notification.is-bottom,
+.notices .notification.is-top,
+.notices .snackbar.is-bottom,
+.notices .snackbar.is-top,
+.notices .toast.is-bottom,
+.notices .toast.is-top {
   align-self: flex-end;
   min-width: 300px;
 }
 
 .notices .toast.is-warning {
-  color: rgba(0,0,0,.7);
+  color: rgba(0, 0, 0, 0.7);
   background: #ffdd57;
 }
 
 .notices .toast.is-danger {
-  color: rgba(0,0,0,.7);
+  color: rgba(0, 0, 0, 0.7);
   background: #f14668;
 }
 
 .notices .toast.is-success {
-  color: rgba(0,0,0,.7);
+  color: rgba(0, 0, 0, 0.7);
   background: #48c774;
 }
 
 .notices .toast.is-info {
-  color: rgba(0,0,0,.7);
+  color: rgba(0, 0, 0, 0.7);
   background: wheat;
 }
 
@@ -940,12 +942,12 @@ button.rbc-input::-moz-focus-inner {
 
 @keyframes fadeInRight {
   from {
-      opacity: 0;
-      transform: translate3d(100%, 0, 0);
+    opacity: 0;
+    transform: translate3d(100%, 0, 0);
   }
   to {
-      opacity: 1;
-      transform: none;
+    opacity: 1;
+    transform: none;
   }
 }
 .fadeInRight {
@@ -954,10 +956,10 @@ button.rbc-input::-moz-focus-inner {
 
 @keyframes fadeOut {
   from {
-      opacity: 1;
+    opacity: 1;
   }
   to {
-      opacity: 0;
+    opacity: 0;
   }
 }
 .fadeOut {

@@ -29,6 +29,7 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
   const handleAddTag = (tag) => {
     setNewTag('')
     addTagIfNotExist(tag)
+    setFocused(true)
     field.current.focus()
   }
 
@@ -103,8 +104,24 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
     }
   }
 
-  const handleBlur = (event) => {
-    console.log(event)
+  const focusInCurrentTarget = ({ relatedTarget, currentTarget=field }) => {
+    if (relatedTarget === null) return false
+
+    var node = relatedTarget.parentNode
+
+    while (node !== null) {
+      if (node === currentTarget) return true
+      node = node.parentNode
+    }
+
+    return false
+  }
+
+  const handleBlur = (e) => {
+    if (!focusInCurrentTarget(e)) {
+      console.log('Clicked outside taginput')
+      setFocused(false)
+    }
   }
 
   const dropdownItems = newTag === '' ?
@@ -112,16 +129,8 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
     :
     suggestedTags.filter(element => !tags.includes(element)).filter(element => element.toLowerCase().includes(newTag.toLowerCase()))
 
-  /*useEffect(() => {
-    if (dropdownItems.length) {
-      setSelected(0)
-    } else {
-      setSelected(-1)
-    }
-  }, [dropdownItems])*/
-
   return (
-    <div className='field' style={style}>
+    <div className='field' style={style} onBlur={handleBlur}>
       <label className='label'>{label}</label>
       <div className='taginput control'>
         <div className={`taginput-container is-focusable ${focused && 'is-focused'}`}>
@@ -139,7 +148,6 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
                 placeholder={prompt}
                 className="input"
                 onChange={(e) => setNewTag(e.target.value)}
-                onBlur={(e) => handleBlur(e)}
                 onKeyUp={e => handleKeyUp(e)}
                 onKeyDown={e => handleKeyDown(e, dropdownItems)}
                 onFocus={() => setFocused(true)}
@@ -152,7 +160,7 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
                     key={index}
                     className={`dropdown-item ${selected === index ? 'is-hovered' : ''}`}
                     style={{ background: selected === index ? '#f5f5f5' : '' }}
-                    onClick={(e) => handleAddTag(suggestion,e)}
+                    onMouseDown={(e) => handleAddTag(suggestion,e)}
                   >
                     <span>{suggestion}</span>
                   </a>

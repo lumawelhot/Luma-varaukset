@@ -172,7 +172,7 @@ const App = () => {
           <MyCalendar events={events} currentUser={currentUser} showNewEventForm={showEventFormHandler} handleEventClick={handleEventClick}/>
           <UserPage currentUser={currentUser} />
           {!currentUser &&
-            <span className='icon is-pulled-right'><FcKey onClick={login}/></span>
+            <span className='icon is-pulled-right'><FcKey onClick={login} className='admin-button'/></span>
           }
         </Route>
       </Switch>
