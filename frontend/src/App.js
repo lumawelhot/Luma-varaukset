@@ -95,7 +95,7 @@ const App = () => {
   const handleEventClick = (event) => {
     const selectedEvent = events.find(e => e.id === event.id)
     setClickedEvent(selectedEvent)
-    history.push('/event')
+    history.push('/event-page')
   }
 
   const handleBookingButtonClick = () => {
@@ -110,7 +110,7 @@ const App = () => {
     <div className="App">
       <Message message={message} />
       <Switch>
-        <Route path='/event'>
+        <Route path='/event-page'>
           <EventPage handleBookingButtonClick={handleBookingButtonClick} event={clickedEvent} sendMessage={updateMessage}/>
         </Route>
         <Route path='/book'>

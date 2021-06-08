@@ -68,7 +68,7 @@ const EventPage = ({ event, handleBookingButtonClick }) => {
               <p>Tapahtuma päättyy: {moment(event.end).format('DD.MM.YYYY, HH:mm')}</p>
               {event.booked || moment(event.start).diff(new Date(), 'days') < 14
                 ? <p><b>Valitettavasti tämä tapahtuma ei ole varattavissa.</b></p>
-                : <button className="button is-link is-light" onClick={() => handleBookingButtonClick()}>Varaa tapahtuma</button>}
+                : <button id="booking-button" className="button is-link is-light" onClick={() => handleBookingButtonClick()}>Varaa tapahtuma</button>}
               <button className="button is-link is-light" onClick={cancel}>Poistu</button>
             </div>
           </div>
