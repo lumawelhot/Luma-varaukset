@@ -1,7 +1,7 @@
 # Ohjeet
 
 ## Paikallinen asennus
-Sovellus käyttää [node.js](nodejs.org/) ympäristöä ja
+Sovellus käyttää [node.js](https://nodejs.org/) ympäristöä ja
 sen pakkausten hallintaan työkalua npm.
 Molempien tulee olla asennettuna, jotta sovellus voi toimia.
   * Kloonaa tämä github-repositio: ```git clone https://github.com/lumawelhot/Luma-varaukset```
