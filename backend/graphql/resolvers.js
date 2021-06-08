@@ -116,7 +116,8 @@ const resolvers = {
         end: args.end,
         desc: args.desc,
         resourceId,
-        grades
+        grades,
+        booked: false
       })
       newEvent.tags = mongoTags
       await newEvent.save()
@@ -125,6 +126,8 @@ const resolvers = {
     createVisit: async (root, args) => {
       const pin = Math.floor(1000 + Math.random() * 9000)
       const event = await Event.findById(args.event)
+      event.booked = true
+      await event.save()
       const visit = new Visit({
         ...args,
         event: event,

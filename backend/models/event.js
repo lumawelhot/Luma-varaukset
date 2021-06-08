@@ -36,7 +36,8 @@ const eventSchema = mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Tag'
     }
-  ]
+  ],
+  booked: Boolean
 })
 
 eventSchema.set('toJSON', {
