@@ -2,7 +2,7 @@ import React from 'react'
 
 const EventsList = ({ events }) =>
   <div>
-    <h1 className="title">Events</h1>
+    <h1 className="title">Tapahtumat</h1>
     <table className="table">
       <thead>
         <tr>

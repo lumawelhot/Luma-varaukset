@@ -14,6 +14,8 @@ import { FcKey } from 'react-icons/fc'
 import UserPage from './components/UserPage'
 import Message from './components/Message'
 import LumaTagInput from './components/LumaTagInput/LumaTagInput'
+import EventList from './components/EventList'
+import EventPage from './components/EventPage'
 
 const App = () => {
   const history = useHistory()
@@ -126,6 +128,18 @@ const App = () => {
         <Route path='/event'>
           {currentUser &&
             <EventForm sendMessage={updateMessage} addEvent={addEvent} closeEventForm={closeEventForm}/>
+          }
+          {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
+        </Route>
+        <Route path='/events/:id'>
+          {currentUser &&
+            <EventPage events={events} />
+          }
+          {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
+        </Route>
+        <Route path='/events'>
+          {currentUser &&
+            <EventList events={events} />
           }
           {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
         </Route>
