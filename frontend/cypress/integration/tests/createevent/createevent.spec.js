@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps'
+import { Given, When, Then, And } from 'cypress-cucumber-preprocessor/steps'
 
 Given('Employee is logged in', () => {
   cy.login({ username: 'Admin', password: 'salainen' })
@@ -55,7 +55,6 @@ When('too short a title is entered', () => {
 })
 
 Then('no event is created and an error message is shown', () => {
-
   cy.containsEvent({ title: 'test', resourceId: 1 }).should('eq', false)
   //tähän luotava virheviestin tarkistus sitten, kun backend on korjattu se lähettämään
 })

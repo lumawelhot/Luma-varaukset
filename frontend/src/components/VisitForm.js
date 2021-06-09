@@ -29,7 +29,10 @@ const validate = values => {
 }
 
 const VisitForm = ({ sendMessage, event }) => {
-  //console.log(event)
+  const history = useHistory()
+  if (!event) {
+    history.push('/')
+  }
   const grades = [
     { value: 1, label:'Varhaiskasvatus' },
     { value: 2, label: '1.-2. luokka' },
@@ -71,8 +74,6 @@ const VisitForm = ({ sendMessage, event }) => {
   const [create, result] = useMutation(CREATE_VISIT, {
     onError: (error) => console.log('virheviesti: ', error, result),
   })
-
-  const history = useHistory()
 
   const cancel = (event) => {
     event.preventDefault()

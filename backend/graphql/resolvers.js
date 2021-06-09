@@ -5,6 +5,7 @@ const Event = require('../models/event')
 const Visit = require('../models/visit')
 const jwt = require('jsonwebtoken')
 const Tag = require('../models/tag')
+const moment = require('moment')
 
 const resolvers = {
   Query: {
@@ -133,12 +134,14 @@ const resolvers = {
         event: event,
         pin: pin,
       })
-      console.log('frontista lähetetty visit: ', visit)
       try {
-        const savedVisit = await visit.save()
-        return savedVisit
+        const now = moment(new Date())
+        const start = moment(event.start)
+        if (start.diff(now, 'days') >= 14) {
+          const savedVisit = await visit.save()
+          return savedVisit
+        }
       } catch (error) {
-        console.log('Catchiin mentiin')
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
