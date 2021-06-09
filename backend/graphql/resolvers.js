@@ -5,6 +5,8 @@ const Event = require('../models/event')
 const Visit = require('../models/visit')
 const jwt = require('jsonwebtoken')
 const Tag = require('../models/tag')
+const mailer = require('../services/mailer')
+const config = require('../utils/config')
 
 const resolvers = {
   Query: {
@@ -61,7 +63,7 @@ const resolvers = {
         throw new UserInputError('Wrong credentials!')
       }
       const userForToken = { username: user.username, id: user._id }
-      return { value: jwt.sign(userForToken, 'huippusalainen') }
+      return { value: jwt.sign(userForToken, config.SECRET) }
     },
     createEvent: async (root, args, { currentUser }) => {
       if (!currentUser) {
@@ -130,12 +132,17 @@ const resolvers = {
         event: event,
         pin: pin,
       })
-      console.log('frontista lähetetty visit: ', visit)
       try {
         const savedVisit = await visit.save()
+        mailer.sendMail({
+          from: 'Luma-Varaukset <noreply@helsinki.fi>',
+          to: visit.clientEmail,
+          subject: 'Tervetuloa!',
+          text: `Linkki varaukseesi: http://localhost:3000/${savedVisit.id} ja PIN: ${savedVisit.pin}`,
+          html: `<p><a href="http://localhost:3000/${savedVisit.id}">Linkki varaukseesi</a> ja PIN: ${savedVisit.pin}</p>`
+        })
         return savedVisit
       } catch (error) {
-        console.log('Catchiin mentiin')
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })

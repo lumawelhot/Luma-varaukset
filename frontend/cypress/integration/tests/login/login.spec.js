@@ -35,7 +35,7 @@ When('valid username and invalid password are entered', () => {
 })
 
 Then('user is not logged in and error message is shown', () => {
-  cy.get('div.label').should('have.text', 'Wrong credentials!')
+  cy.get('.toast > div').should('have.text', 'Wrong credentials!')
 })
 
 Given('Admin is logged in', () => {
