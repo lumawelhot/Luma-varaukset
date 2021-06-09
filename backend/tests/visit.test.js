@@ -43,26 +43,16 @@ beforeEach(async () => {
     title: 'All About Algebra',
     resourceId: 1,
     grades: [1],
-<<<<<<< HEAD
     start: unavailableDate,
     end: unavailableDate
-=======
-    start: 'Mon Jun 07 3021 09:30:00 GMT+0300 (Eastern European Summer Time)',
-    end: 'Thu Jun 10 3021 12:00:00 GMT+0300 (Eastern European Summer Time)'
->>>>>>> visit-booking-form
   }
 
   const availableEventData = {
     title: 'Up-And-Atom!',
     resourceId: 2,
     grades: [1],
-<<<<<<< HEAD
     start: availableDate,
     end: availableDate
-=======
-    start: 'Fri May 21 3021 09:00:00 GMT+0300 (Eastern European Summer Time)',
-    end: 'Fri May 21 3021 11:00:00 GMT+0300 (Eastern European Summer Time)'
->>>>>>> visit-booking-form
   }
 
   unavailableEvent = new EventModel(unavailableEventData)
@@ -193,10 +183,10 @@ describe('Visit server test', () => {
       `
     const { data } = await mutate({
       mutation: CREATE_VISIT,
-      variables: { event: event, clientName: 'Teacher', clientEmail: 'teacher@school.com', clientPhone: '040-1234567', grade: 1}
+      variables: { event: event, clientName: 'Teacher', clientEmail: 'teacher@school.com', clientPhone: '040-1234567', grade: 1 }
     })
 
-    const { createVisit}  = data
+    const { createVisit }  = data
 
     expect(createVisit).toBe(null)
   })
