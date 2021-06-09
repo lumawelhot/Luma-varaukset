@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken')
 const Tag = require('../models/tag')
 const mailer = require('../services/mailer')
 const config = require('../utils/config')
+const { readMessage } = require('../services/fileReader')
 
 const resolvers = {
   Query: {
@@ -134,12 +135,22 @@ const resolvers = {
       })
       try {
         const savedVisit = await visit.save()
+        const details = [{
+          name: 'link',
+          value: `http://localhost:3000/${savedVisit.id}`
+        },
+        {
+          name: 'pin',
+          value: savedVisit.pin
+        }]
+        const text = await readMessage('welcome.txt', details)
+        const html = await readMessage('welcome.html', details)
         mailer.sendMail({
           from: 'Luma-Varaukset <noreply@helsinki.fi>',
           to: visit.clientEmail,
           subject: 'Tervetuloa!',
-          text: `Linkki varaukseesi: http://localhost:3000/${savedVisit.id} ja PIN: ${savedVisit.pin}`,
-          html: `<p><a href="http://localhost:3000/${savedVisit.id}">Linkki varaukseesi</a> ja PIN: ${savedVisit.pin}</p>`
+          text,
+          html
         })
         return savedVisit
       } catch (error) {
