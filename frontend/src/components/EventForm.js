@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useFormik, FormikProvider } from 'formik'
+import { Field, useFormik, FormikProvider } from 'formik'
 import Message from './Message'
 import { useMutation, useQuery } from '@apollo/client'
 import { CREATE_EVENT, TAGS } from '../graphql/queries'
@@ -8,7 +8,6 @@ import LumaTagInput from './LumaTagInput/LumaTagInput'
 import moment from 'moment'
 
 const validate = values => {
-
   const defErrorMessage = 'Vaaditaan!'
   const errors = {}
 
@@ -18,6 +17,10 @@ const validate = values => {
 
   if (!values.scienceClass) {
     errors.scienceClass = defErrorMessage
+  }
+
+  if (values.location.length === 0) {
+    errors.location = 'Valitse joko etä- tai lähivierailu'
   }
 
   if (!values.date) {
@@ -78,6 +81,7 @@ const EventForm = ({ sendMessage, addEvent, newEventTimeRange=[null,null], close
   const formik = useFormik({
     initialValues: {
       grades: [],
+      location: [],
       title: '',
       scienceClass: '',
       desc: '',
@@ -85,6 +89,7 @@ const EventForm = ({ sendMessage, addEvent, newEventTimeRange=[null,null], close
       startTime: moment(newEventTimeRange[0]).format('HH:mm'),
       endTime: moment(newEventTimeRange[1]).format('HH:mm'),
       tags: []
+
     },
     validate,
     onSubmit: values => {
@@ -93,6 +98,7 @@ const EventForm = ({ sendMessage, addEvent, newEventTimeRange=[null,null], close
       create({
         variables: {
           grades: values.grades,
+          location: values.location,
           title: values.title,
           start,
           end,
@@ -148,6 +154,26 @@ const EventForm = ({ sendMessage, addEvent, newEventTimeRange=[null,null], close
               />
             </FormikProvider>
 
+
+            <FormikProvider value ={formik}>
+              <div id="checkbox-group">Valitse etä- tai lähivierailu</div>
+              <div role="group" aria-labelledby="checkbox-group">
+                <label>
+                  <p>Etävierailu<Field type="checkbox" name="location" value="Etävierailu" />
+                  </p>
+                </label>
+                <label>
+                Lähivierailu
+                  <Field type="checkbox" name="location" value="Lähivierailu"/>
+
+                </label>
+
+              </div>
+            </FormikProvider>
+            {formik.touched.location && formik.errors.location ? (
+              <Message message={formik.errors.location} />
+            ) : null}
+
             <div className="field">
 
               <div htmlFor="grade">Luokka-aste </div>
@@ -158,7 +184,10 @@ const EventForm = ({ sendMessage, addEvent, newEventTimeRange=[null,null], close
                       className={`button ${formik.values.grades.length ? 'is-success' : 'is-danger'}`}
                       onClick={() => setShowDropdownMenu(!showDropdownMenu)}
                     >
-                      <span>Valittu ({formik.values.grades.length})</span>
+                      <span>{ formik.values.grades.length === 0 ? 'Ei valintoja' : formik.values.grades.map(t =>  (
+                        options[t-1].label + ' ')
+
+                      )}</span>
                       <span className="icon">
                         <i className="fas fa-angle-down"></i>
                       </span>
