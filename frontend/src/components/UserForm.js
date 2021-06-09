@@ -3,29 +3,20 @@ import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { CREATE_USER } from '../graphql/queries'
 import { useField } from '../hooks'
-import Message from './Message'
 
 const UserForm = ({ sendMessage }) => {
   const history = useHistory()
   const username = useField('')
   const password = useField('password')
-  const [error, setError] = useState('')
   const [isAdmin, setPermissions] = useState(null)
 
-  const setMessage = ({ message }) => {
-    setError(message)
-    setTimeout(() => {
-      setError(null)
-    }, 5000)
-  }
-
   const [createUser, result] = useMutation(CREATE_USER, {
-    onError: (error) => setMessage({ message: error.graphQLErrors[0].message })
+    onError: (error) => sendMessage(error.graphQLErrors[0].message, 'danger')
   })
 
   useEffect(() => {
     if (result.data) {
-      sendMessage(`Käyttäjätunnus '${result.data.createUser.username}' luotu.`)
+      sendMessage(`Käyttäjätunnus '${result.data.createUser.username}' luotu.`, 'success')
       history.push('/')
     }
   }, [result])
@@ -38,7 +29,7 @@ const UserForm = ({ sendMessage }) => {
         password: password.field.value,
         isAdmin
       }
-    }).catch(() => setMessage({ message: 'Virheellinen syöte!' }))
+    }).catch(() => sendMessage('Virheellinen syöte!', 'danger'))
     username.clear()
     password.clear()
   }
@@ -59,7 +50,6 @@ const UserForm = ({ sendMessage }) => {
     <div className="container">
       <div className="columns is-centered">
         <div className="section">
-          <Message message={error} />
           <div className="title">Luo uusi käyttäjä</div>
           <form onSubmit={submit} >
             <div className="field">

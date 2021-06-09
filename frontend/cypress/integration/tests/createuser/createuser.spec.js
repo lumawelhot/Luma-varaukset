@@ -19,7 +19,7 @@ When('valid information are entered', () => {
 
 Then('a user is succesfully created', () => {
   cy.containsUser({ username: 'Tester' }).should('eq', true)
-  cy.get('#message').should('have.text', `Käyttäjätunnus 'Tester' luotu.`)
+  cy.get('.toast > div').should('have.text', 'Käyttäjätunnus \'Tester\' luotu.')
 })
 
 
@@ -32,7 +32,7 @@ When('too short username is entered', () => {
 
 Then('a user is not created and an error message is shown', () => {
   cy.containsUser({ username: 'Test' }).should('eq', false)
-  cy.get('div.label').should('have.text', 'username too short')
+  cy.get('.toast > div').should('have.text', 'username too short')
 })
 
 Given('Employee is logged in', () => {

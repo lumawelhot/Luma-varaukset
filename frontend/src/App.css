@@ -428,11 +428,11 @@ button.rbc-input::-moz-focus-inner {
 }
 
 .rbc-agenda-time-cell .rbc-continues-after:after {
-  content: ' »';
+  content: " »";
 }
 
 .rbc-agenda-time-cell .rbc-continues-prior:before {
-  content: '« ';
+  content: "« ";
 }
 
 .rbc-agenda-date-cell,
@@ -857,7 +857,7 @@ button.rbc-input::-moz-focus-inner {
   color: #363636;
 }
 
-.taginput .taginput-container .autocomplete input {
+/*.taginput .taginput-container .autocomplete input {
   height: calc(2em - 1px);
   margin-bottom: calc(0.275em - 1px);
   padding-top: 0;
@@ -865,7 +865,7 @@ button.rbc-input::-moz-focus-inner {
   border: none;
   box-shadow: none;
   min-width: 8em;
-}
+}*/
 
 .modal-content,
 .luma-eventform {

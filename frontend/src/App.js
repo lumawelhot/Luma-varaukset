@@ -92,7 +92,7 @@ const App = () => {
 
   const [toasts, setToasts] = useState([])
 
-  const notify = (message, type='info') => {
+  const notify = (message, type) => {
     const toastID = uuidv4()
     const newToasts = toasts.concat({ id: toastID, message, type })
     setToasts(newToasts)
@@ -121,7 +121,7 @@ const App = () => {
         </Route>
         <Route path='/admin'>
           {!currentUser &&
-            <LoginForm getUser={getUser} />
+            <LoginForm getUser={getUser} sendMessage={notify} />
           }
           {currentUser &&
             <div>You are already logged in</div>
