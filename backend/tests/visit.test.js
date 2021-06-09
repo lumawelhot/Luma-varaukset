@@ -183,10 +183,10 @@ describe('Visit server test', () => {
       `
     const { data } = await mutate({
       mutation: CREATE_VISIT,
-      variables: { event: event, clientName: 'Teacher', clientEmail: 'teacher@school.com', clientPhone: '040-1234567', grade: 1}
+      variables: { event: event, clientName: 'Teacher', clientEmail: 'teacher@school.com', clientPhone: '040-1234567', grade: 1 }
     })
 
-    const { createVisit}  = data
+    const { createVisit }  = data
 
     expect(createVisit).toBe(null)
   })
