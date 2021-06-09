@@ -4,6 +4,8 @@ const User = require('../models/user')
 const Event = require('../models/event')
 const Visit = require('../models/visit')
 const jwt = require('jsonwebtoken')
+const Tag = require('../models/tag')
+const moment = require('moment')
 
 const resolvers = {
   Query: {
@@ -12,8 +14,12 @@ const resolvers = {
       return users
     },
     getEvents: async () => {
-      const events = await Event.find({})
+      const events = await Event.find({}).populate('tags', { name: 1, id: 1 })
       return events
+    },
+    getTags: async () => {
+      const tags = await Tag.find({})
+      return tags
     },
     findVisit: async (root, args) => {
       const visit = await Visit.findById(args.id)
@@ -91,27 +97,50 @@ const resolvers = {
       if (args.title.length < 5) {
         throw new UserInputError('title too short')
       }
+
+      let eventTags = JSON.parse(JSON.stringify(args.tags))
+
+      const eventTagsNames = eventTags.map(e => e.name)
+      let mongoTags = await Tag.find({ name: { $in: eventTagsNames } })
+      const foundTagNames = mongoTags.map(t => t.name)
+      eventTags.forEach(tag => {
+        if (!foundTagNames.includes(tag.name)) {
+          const newTag = new Tag({ name: tag.name })
+          mongoTags = mongoTags.concat(newTag)
+          tag = newTag.save()
+        }
+      })
+
       const newEvent = new Event({
         title: args.title,
         start: args.start,
         end: args.end,
+        desc: args.desc,
         resourceId,
-        grades
+        grades,
+        booked: false
       })
+      newEvent.tags = mongoTags
       await newEvent.save()
       return newEvent
     },
     createVisit: async (root, args) => {
       const pin = Math.floor(1000 + Math.random() * 9000)
       const event = await Event.findById(args.event)
+      event.booked = true
+      await event.save()
       const visit = new Visit({
         ...args,
         event: event,
         pin: pin,
       })
       try {
-        const savedVisit = await visit.save()
-        return savedVisit
+        const now = moment(new Date())
+        const start = moment(event.start)
+        if (start.diff(now, 'days') >= 14) {
+          const savedVisit = await visit.save()
+          return savedVisit
+        }
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,

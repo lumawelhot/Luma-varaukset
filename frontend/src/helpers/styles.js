@@ -14,4 +14,8 @@ export const resourceColorsLight = [
   '#F3C857', // GADOLIN
 ]
 
-export default { resourceColors, resourceColorsLight }
+export const bookedEventColor = [
+  '#DCDCDC', // HARMAA
+]
+
+export default { resourceColors, resourceColorsLight, bookedEventColor }

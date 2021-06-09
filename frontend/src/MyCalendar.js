@@ -3,8 +3,9 @@ import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import 'moment/locale/fi'
 import { messages } from './helpers/calendar-messages-fi'
-import { resourceColors } from './helpers/styles'
+import { bookedEventColor, resourceColors } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
+
 //import LumaEventWrapper from './components/Custom/LumaEventWrapper'
 
 const localizer = momentLocalizer(moment)
@@ -17,7 +18,7 @@ const resourceMap = [
   { resourceId: 5, resourceTitle: 'Gadolin' },
 ]
 
-const MyCalendar = ({ events, currentUser }) => {
+const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick }) => {
 
   const [localEvents, setEvents] = useState([])
 
@@ -26,17 +27,7 @@ const MyCalendar = ({ events, currentUser }) => {
   },[events])
 
   const handleSelect = ({ start, end }) => {
-    const title = window.prompt('New Event name')
-    if (title)
-      setEvents([
-        ...localEvents,
-        {
-          start,
-          end,
-          title,
-          resourceId:1
-        }]
-      )
+    showNewEventForm(start, end)
   }
 
   const customDayPropGetter = date => {
@@ -51,11 +42,29 @@ const MyCalendar = ({ events, currentUser }) => {
   }
 
   const customEventPropGetter = event => {
+    if (event.booked || moment(event.start).diff(new Date(), 'days') < 14) {
+      return { className: resourceMap[event.resourceId-1]?.resourceTitle.toLowerCase() || '', style: {
+        backgroundColor: bookedEventColor[0]
+      }, }
+    }
     return { className: resourceMap[event.resourceId-1]?.resourceTitle.toLowerCase() || '' }
   }
 
   const AgendaEvent = ({ event }) => {
     const resourceName = resourceMap[event.resourceId-1]?.resourceTitle || null
+    console.log(event.booked)
+    if (event.booked) {
+      console.log(event.booked)
+      return (
+        <div className="block">
+          {resourceName &&
+            <span className='tag is-small is-link' style={{ backgroundColor:bookedEventColor[0] }}>{resourceName}</span>
+          }
+          <span> {event.title}</span>
+          <p>{event.desc}</p>
+        </div>
+      )
+    }
     return (
       <div className="block">
         {resourceName &&
@@ -89,7 +98,7 @@ const MyCalendar = ({ events, currentUser }) => {
         //resourceIdAccessor="resourceId"
         //resourceTitleAccessor="resourceTitle"
         selectable={currentUser?.isAdmin}
-        onSelectEvent={event => alert(JSON.stringify(event))}
+        onSelectEvent={ (event) => handleEventClick(event)/* alert(JSON.stringify(event)) */}
         onSelectSlot={handleSelect}
         components={{
           //eventWrapper: LumaEventWrapper,

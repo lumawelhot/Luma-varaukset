@@ -43,16 +43,26 @@ beforeEach(async () => {
     title: 'All About Algebra',
     resourceId: 1,
     grades: [1],
+<<<<<<< HEAD
     start: unavailableDate,
     end: unavailableDate
+=======
+    start: 'Mon Jun 07 3021 09:30:00 GMT+0300 (Eastern European Summer Time)',
+    end: 'Thu Jun 10 3021 12:00:00 GMT+0300 (Eastern European Summer Time)'
+>>>>>>> visit-booking-form
   }
 
   const availableEventData = {
     title: 'Up-And-Atom!',
     resourceId: 2,
     grades: [1],
+<<<<<<< HEAD
     start: availableDate,
     end: availableDate
+=======
+    start: 'Fri May 21 3021 09:00:00 GMT+0300 (Eastern European Summer Time)',
+    end: 'Fri May 21 3021 11:00:00 GMT+0300 (Eastern European Summer Time)'
+>>>>>>> visit-booking-form
   }
 
   unavailableEvent = new EventModel(unavailableEventData)
@@ -96,7 +106,7 @@ describe('Visit Model Test', () => {
     expect(savedVisit.clientPhone).toBe(newVisitData.clientPhone)
   })
 
-  it('cannot create visit without required field', async () => {
+  it('teacher cannot create visit without required field', async () => {
     const visitWithoutRequiredField = new VisitModel({ pin: 1234 })
     let err
     try {
@@ -114,7 +124,7 @@ describe('Visit Model Test', () => {
 })
 
 describe('Visit server test', () => {
-  
+
   it('create visit successfully', async () => {
     const { mutate } = createTestClient(server)
     const event = savedAvailableEvent.id
@@ -130,6 +140,7 @@ describe('Visit server test', () => {
           id
           event {
             title
+            booked
           }
           clientName
           clientEmail
@@ -141,10 +152,10 @@ describe('Visit server test', () => {
       `
     const { data } = await mutate({
       mutation: CREATE_VISIT,
-      variables: { event: event, clientName: 'Teacher', clientEmail: 'teacher@school.com', clientPhone: '040-1234567', grade: 1}
+      variables: { event: event, clientName: 'Teacher', clientEmail: 'teacher@school.com', clientPhone: '040-1234567', grade: 1 }
     })
 
-    const { createVisit}  = data
+    const { createVisit }  = data
 
     expect(createVisit.id).toBeDefined()
     expect(createVisit.pin).toBeDefined()
@@ -153,6 +164,7 @@ describe('Visit server test', () => {
     expect(createVisit.clientEmail).toBe('teacher@school.com')
     expect(createVisit.clientPhone).toBe('040-1234567')
     expect(createVisit.grade).toBe(1)
+    expect(createVisit.event.booked).toBe(true)
   })
 
   it('cannot create visit for event less than two weeks ahead', async () => {
@@ -211,7 +223,7 @@ describe('Visit server test', () => {
       query: FIND_VISIT,
       variables: { id: id }
     })
-    
+
     const { findVisit } = data
 
     expect(findVisit.id).toBeDefined()
@@ -247,7 +259,7 @@ describe('Visit server test', () => {
     expect(cancelledVisit).toBe(null)
   })
 
-  it('don\'t cancel visit by id and invalid pin', async () => {
+  it('do not cancel visit by id and invalid pin', async () => {
     const { mutate } = createTestClient(server)
     const id = savedTestVisit.id
     const pin = 4321
