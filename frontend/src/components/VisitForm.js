@@ -9,20 +9,24 @@ import moment from 'moment'
 
 const validate = values => {
 
-  const defErrorMessage = 'Vaaditaan!'
+  const messageIfMissing = 'Vaaditaan!'
+  const messageIfTooShort = 'Liian lyhyt!'
   const errors = {}
 
   if (!values.visitGrade) {
-    errors.visitGrade = defErrorMessage
+    errors.visitGrade = messageIfMissing
   }
   if (!values.clientName) {
-    errors.clientName = defErrorMessage
+    errors.clientName = messageIfMissing
+  }
+  if (values.clientName.length<5) {
+    errors.clientName = messageIfTooShort
   }
   if (!values.clientEmail) {
-    errors.clientEmail = defErrorMessage
+    errors.clientEmail = messageIfMissing
   }
   if (!values.clientPhone) {
-    errors.clientPhone = defErrorMessage
+    errors.clientPhone = messageIfMissing
   }
 
   return errors
@@ -102,7 +106,6 @@ const VisitForm = ({ sendMessage, event }) => {
             event: event.id
           }
         })
-        sendMessage('Olet tehnyt varauksen onnistuneesti! PIN-koodisi tulostuu konsoliin.')
       } catch (error) {
         sendMessage('Varauksen teko epäonnistui.')
       }
@@ -111,6 +114,7 @@ const VisitForm = ({ sendMessage, event }) => {
 
   useEffect(() => {
     if (result.data) {
+      sendMessage(`Olet tehnyt varauksen tapahtumaan ${result.data.createVisit.event.title} onnistuneesti! PIN-koodisi tulostuu konsoliin.`)
       console.log('Pin-koodisi: ', result.data.createVisit.pin)
       history.push('/')
 

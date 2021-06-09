@@ -142,6 +142,8 @@ const resolvers = {
           return savedVisit
         }
       } catch (error) {
+        event.booked = false
+        await event.save()
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })

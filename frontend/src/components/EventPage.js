@@ -1,8 +1,12 @@
 import React from 'react'
-import { useHistory } from 'react-router'
 import moment from 'moment'
+import { useHistory } from 'react-router'
 
 const EventPage = ({ event, handleBookingButtonClick }) => {
+  const history = useHistory()
+  if (!event) {
+    history.push('/')
+  }
 
   const filterEventClass = (eventClass) => {
     switch (eventClass) {
@@ -42,7 +46,6 @@ const EventPage = ({ event, handleBookingButtonClick }) => {
     { value: 5, label: 'toinen aste' }
   ]
 
-  const history = useHistory()
   const cancel = (event) => {
     event.preventDefault()
     history.push('/')
