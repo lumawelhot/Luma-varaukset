@@ -18,13 +18,14 @@ Then('event form has a description field', () => {
 
 When('valid information is entered', () => {
   cy.get('#title').type('Test event')
-  cy.get('.input').type('Uusi tagi').type('{enter}')
-  cy.get('.autocomplete > .dropdown-menu > .dropdown-content > :nth-child(2) > span').click().type('{esc}')
+  cy.get('.autocomplete > .control > .input').type('Uusi tagi').type('{enter}')
   cy.wait(100)
-  cy.get('.button > :nth-child(1)').click()
-  cy.get('.dropdown > .dropdown-menu > .dropdown-content > :nth-child(3) > span').click()
-  cy.get('.button > :nth-child(1)').click()
-  cy.get('#scienceClass').select('SUMMAMUTIKKA')
+  cy.get('.autocomplete > .dropdown-menu > .dropdown-content > :nth-child(2) > span').click()
+  cy.get('.dropdown-trigger > .button').click()
+  cy.get('#grade .dropdown-content > :nth-child(4)').click()
+  cy.get('.dropdown-trigger > .button').click()
+  cy.wait(100)
+  cy.get('#scienceClass').select('LINKKI')
   cy.get('#date').type('2021-01-31')
   cy.get('#startTime').type('08:15')
   cy.get('#endTime').type('09:45')
@@ -35,17 +36,19 @@ When('valid information is entered', () => {
 
 Then('an event is succesfully created', () => {
   //cy.log(  cy.get('#title').type('Test event'))
-  cy.containsEvent({ title: 'Test event', resourceId: 1 }).should('eq', true)
+  cy.containsEvent({ title: 'Test event', resourceId: 3 }).should('eq', true)
 })
 
 When('too short a title is entered', () => {
   cy.get('#title').type('test')
-  cy.get('.input').type('Uusi tagi').type('{enter}').type('{esc}')
+  cy.get('.autocomplete > .control > .input').type('Uusi tagi').type('{enter}')
   cy.wait(100)
-  cy.get('.button > :nth-child(1)').click()
-  cy.get('.dropdown > .dropdown-menu > .dropdown-content > :nth-child(4) > span').click()
-  cy.get('.button > :nth-child(1)').click()
-  cy.get('#scienceClass').select('SUMMAMUTIKKA')
+  cy.get('.autocomplete > .dropdown-menu > .dropdown-content > :nth-child(2) > span').click()
+  cy.get('.dropdown-trigger > .button').click()
+  cy.get('#grade .dropdown-content > :nth-child(4)').click()
+  cy.get('.dropdown-trigger > .button').click()
+  cy.wait(100)
+  cy.get('#scienceClass').select('LINKKI')
   cy.get('#date').type('2021-01-31')
   cy.get('#startTime').type('08:15')
   cy.get('#endTime').type('09:45')
@@ -55,6 +58,7 @@ When('too short a title is entered', () => {
 })
 
 Then('no event is created and an error message is shown', () => {
-  cy.containsEvent({ title: 'test', resourceId: 1 }).should('eq', false)
+
+  cy.containsEvent({ title: 'test', resourceId: 3 }).should('eq', false)
   //tähän luotava virheviestin tarkistus sitten, kun backend on korjattu se lähettämään
 })

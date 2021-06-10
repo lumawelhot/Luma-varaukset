@@ -12,14 +12,15 @@ import EventForm from './components/EventForm'
 import VisitForm from './components/VisitForm'
 import { FcKey } from 'react-icons/fc'
 import UserPage from './components/UserPage'
-import Message from './components/Message'
-import LumaTagInput from './components/LumaTagInput/LumaTagInput'
+/* import Message from './components/Message'
+import LumaTagInput from './components/LumaTagInput/LumaTagInput' */
 import EventPage from './components/EventPage'
+import Toasts from './components/Toasts'
+import { v4 as uuidv4 } from 'uuid'
 
 const App = () => {
   const history = useHistory()
   const [events, setEvents] = useState([])
-  const [message, setMessage] = useState('')
   const client = useApolloClient()
   const result = useQuery(EVENTS)
   const [showEventForm, setShowEventForm] = useState(false)
@@ -71,11 +72,6 @@ const App = () => {
     history.push('/')
   }
 
-  const updateMessage = (msg) => {
-    setMessage(msg)
-    setTimeout(() => setMessage(''), 5000)
-  }
-
   const addEvent = (event) => {
     setEvents(events.concat(parseEvent(event)))
     setShowEventForm(false)
@@ -102,30 +98,41 @@ const App = () => {
     history.push('/book')
   }
 
-  const [tags, setTags] = useState([])
+  const [toasts, setToasts] = useState([])
+
+  const notify = (message, type) => {
+    const toastID = uuidv4()
+    const newToasts = toasts.concat({ id: toastID, message, type })
+    setToasts(newToasts)
+  }
+
+  useEffect(() => {
+    if (toasts.length) {
+      const timeoutID = setTimeout(() => {
+        const toastID = toasts.pop().id
+        const filteredToasts = toasts.filter(t => t.id !== toastID)
+        setToasts(filteredToasts)
+      }, toasts.length > 2 ? 1000 : 4000)
+
+      return () => clearTimeout(timeoutID)
+    }
+  }, [toasts])
 
   if (loading) return <div></div>
 
   return (
     <div className="App">
-      <Message message={message} />
+      <Toasts toasts={toasts} />
       <Switch>
         <Route path='/event-page'>
           <EventPage handleBookingButtonClick={handleBookingButtonClick} event={clickedEvent} sendMessage={updateMessage}/>
         </Route>
         <Route path='/book'>
-          <VisitForm event={clickedEvent} sendMessage={updateMessage}/>
-        </Route>
-        <Route path='/taginput'>
-          <LumaTagInput
-            label='Tagit'
-            suggestedTags={['Matikka', 'Fysiikka']}
-            tags={tags}
-            setTags={setTags}/>
+          <VisitForm event={clickedEvent} sendMessage={notify}/>
         </Route>
         <Route path='/admin'>
           {!currentUser &&
-            <LoginForm getUser={getUser} />
+            <LoginForm getUser={getUser} sendMessage={notify} />
           }
           {currentUser &&
             <div>You are already logged in</div>
@@ -133,13 +140,13 @@ const App = () => {
         </Route>
         <Route path='/event'>
           {currentUser &&
-            <EventForm sendMessage={updateMessage} addEvent={addEvent} closeEventForm={closeEventForm}/>
+            <EventForm sendMessage={notify} addEvent={addEvent} closeEventForm={closeEventForm}/>
           }
           {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
         </Route>
         <Route path='/users/create'>
           {currentUser && currentUser.isAdmin &&
-            <UserForm sendMessage={updateMessage} />
+            <UserForm sendMessage={notify} />
           }
           {!(currentUser && currentUser.isAdmin) &&
             <div>Access denied</div>
@@ -153,11 +160,6 @@ const App = () => {
           {!(currentUser && currentUser.isAdmin) && <p>Sinulla ei ole tarvittavia oikeuksia.</p>}
         </Route>
         <Route path='/'>
-          {!currentUser &&
-            <div className="control">
-              <button className="button is-link is-light" onClick={login}>Kirjaudu sisään</button>
-            </div>
-          }
           {currentUser &&
             <div className="control">
               <button className="button is-link is-light" onClick={logout}>Kirjaudu ulos</button>
@@ -171,7 +173,7 @@ const App = () => {
             <div className="modal-background"></div>
             <div className="modal-content">
               <EventForm
-                sendMessage={updateMessage}
+                sendMessage={notify}
                 addEvent={addEvent}
                 newEventTimeRange={newEventTimeRange}
                 closeEventForm={closeEventForm}
@@ -179,10 +181,10 @@ const App = () => {
             </div>
           </div>}
           <MyCalendar events={events} currentUser={currentUser} showNewEventForm={showEventFormHandler} handleEventClick={handleEventClick}/>
-          {!currentUser &&
-            <FcKey onClick={login} className="admin-button" />
-          }
           <UserPage currentUser={currentUser} />
+          {!currentUser &&
+            <span className='icon is-pulled-right'><FcKey onClick={login} className='admin-button'/></span>
+          }
         </Route>
       </Switch>
     </div>

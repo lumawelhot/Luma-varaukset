@@ -106,15 +106,16 @@ const VisitForm = ({ sendMessage, event }) => {
             event: event.id
           }
         })
+        history.push('/')
       } catch (error) {
-        sendMessage('Varauksen teko epäonnistui.')
+        sendMessage('Varauksen teko epäonnistui.', 'danger')
       }
     },
   })
 
   useEffect(() => {
     if (result.data) {
-      sendMessage(`Olet tehnyt varauksen tapahtumaan ${result.data.createVisit.event.title} onnistuneesti! PIN-koodisi tulostuu konsoliin.`)
+      sendMessage(`Olet tehnyt varauksen tapahtumaan ${result.data.createVisit.event.title} onnistuneesti! PIN-koodisi tulostuu konsoliin.`, 'success')
       console.log('Pin-koodisi: ', result.data.createVisit.pin)
       history.push('/')
     }
