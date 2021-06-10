@@ -2,61 +2,69 @@
   {
     "title": "Scratch-ohjelmointikieli",
     "allDay": true,
-    "start": "Tue Jun 01 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Wed Jun 02 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
+    "start": "Tue Jul 01 2021 09:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Wed Jul 02 2021 13:00:00 GMT+0300 (Eastern European Summer Time)",
     "resourceId": 3,
-    "grades": [1, 2, 3]
+    "grades": [1, 2, 3],
+    "booked": false
   },
   {
     "title": "Maanjäristysten alueellisuus ja niiden vaikutukset",
-    "start": "Mon Jun 07 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Thu Jun 10 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
+    "start": "Mon Jul 07 2021 09:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Mon Jul 07 2021 10:00:00 GMT+0300 (Eastern European Summer Time)",
     "resourceId": 4,
-    "grades": [1]
+    "grades": [1],
+    "booked": false
   },
   {
     "title": "Lämpösäteily ja ilmastonmuutos",
-    "start": "Sun Jun 13 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Sun Jun 20 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
+    "start": "Tue Jun 15 2021 08:30:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Tue Jun 15 2021 12:00:00 GMT+0300 (Eastern European Summer Time)",
     "resourceId": 4,
-    "grades": [1]
+    "grades": [1],
+    "booked": false
   },
   {
     "title": "Kemian kokeelliset työt",
-    "start": "Thu Jun 03 2021 09:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Thu Jun 03 2021 12:00:00 GMT+0300 (Eastern European Summer Time)",
+    "start": "Thu Jul 03 2021 09:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Thu Jul 03 2021 12:00:00 GMT+0300 (Eastern European Summer Time)",
     "resourceId": 4,
-    "grades": [1]
+    "grades": [1],
+    "booked": false
   },
   {
     "title": "Python-ohjelmointikieli",
-    "start": "Thu Jun 03 2021 08:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Thu Jun 03 2021 14:00:00 GMT+0300 (Eastern European Summer Time)",
+    "start": "Thu Jul 03 2021 08:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Thu Jul 03 2021 14:00:00 GMT+0300 (Eastern European Summer Time)",
     "resourceId": 3,
-    "grades": [1]
+    "grades": [1],
+    "booked": false
   },
   {
     "title": "Matematiikan työpaja",
-    "start": "Thu Jun 03 2021 09:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Thu Jun 03 2021 10:00:00 GMT+0300 (Eastern European Summer Time)",
-    "desc": "Big conference for important people",
+    "start": "Thu Jul 03 2021 09:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Thu Jul 03 2021 10:00:00 GMT+0300 (Eastern European Summer Time)",
+    "desc": "kuvaus",
     "resourceId": 1,
-    "grades": [1]
+    "grades": [1],
+    "booked": false
   },
   {
-    "title": "Meeting",
-    "start": "Sat Jun 12 2021 10:30:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Sat Jun 12 2021 12:30:00 GMT+0300 (Eastern European Summer Time)",
-    "desc": "Pre-meeting meeting, to prepare for the meeting",
-    "resourceId": 2,
-    "grades": [1]
-  },
-  {
-    "title": "Lunch",
-    "start": "Sat Jun 12 2021 12:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Sat Jun 12 2021 13:00:00 GMT+0300 (Eastern European Summer Time)",
-    "desc": "Power lunch",
+    "title": "Scratch-ohjelointikieli",
+    "start": "Mon Jun 14 2021 10:30:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Mon Jun 14 2021 12:30:00 GMT+0300 (Eastern European Summer Time)",
+    "desc": "kuvaus",
     "resourceId": 3,
-    "grades": [1]
+    "grades": [1, 2],
+    "booked": false
+  },
+  {
+    "title": "Lämpösäteily ja ilmastonmuutos",
+    "start": "Wed Jun 16 2021 12:00:00 GMT+0300 (Eastern European Summer Time)",
+    "end": "Wed Jun 16 2021 13:00:00 GMT+0300 (Eastern European Summer Time)",
+    "desc": "kuvaus",
+    "resourceId": 4,
+    "grades": [3, 4],
+    "booked": false
   }
 ]

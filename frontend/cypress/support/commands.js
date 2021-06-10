@@ -74,7 +74,7 @@ Cypress.Commands.add('createUser', ({ username, password, isAdmin }) => {
   })
 })
 
-Cypress.Commands.add('createEvent', (props) => {
+Cypress.Commands.add('createEvent', ({ title, scienceClass, start, end, desc }) => {
   cy.request({
     url: 'http://localhost:3001/graphql',
     method: 'POST',
@@ -83,25 +83,34 @@ Cypress.Commands.add('createEvent', (props) => {
     },
     body: {
       query: `
-        mutation createEvent {
-          createEvent (
-            title: "${props.title}",
-            start: "${props.start}",
-            end: "${props.end}",
-            class: "${props.scienceClass}",
-            grades: ${JSON.stringify(props.grades)},
-            tags: ${JSON.stringify(props.tags)}
-          ) {
-            title
-            resourceId
-            start
-            end
+      mutation {
+        createEvent(
+          title: "${title}"
+          class: "${scienceClass}"
+          start: "${start}"
+          end: "${end}"
+          desc: "${desc}"
+          grades: [1, 2]
+          tags: [{ name: "Matematiikka" }, { name: "Fysiikka" }]
+        ){
+          title,
+          resourceId,
+          start,
+          end,
+          grades,
+          desc
+          tags {
+            name
           }
+          booked
         }
-      `
+      }
+    `
     }
   }).then(({ body }) => {
+    console.log(body)
     cy.log(body)
+    cy.visit('http://localhost:3000')
   })
 })
 

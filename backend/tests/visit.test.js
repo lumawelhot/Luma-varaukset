@@ -7,8 +7,10 @@ const VisitModel = require('../models/visit')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
 
-let testEvent2
-let savedTestEvent2
+let availableEvent
+let unavailableEvent
+let savedAvailableEvent
+let savedUnavailableEvent
 let savedTestVisit
 let server
 
@@ -33,30 +35,34 @@ beforeEach(async () => {
   await EventModel.deleteMany({})
   await VisitModel.deleteMany({})
 
-  const testEventData1 = {
+  const availableDate = new Date()
+  availableDate.setDate(new Date().getDate() + 16) // varmistetaan, että testitapahtuma on yli kahden viikon päässä
+  const unavailableDate = new Date()
+
+  const unavailableEventData = {
     title: 'All About Algebra',
     resourceId: 1,
     grades: [1],
-    start: 'Mon Jun 07 2021 09:30:00 GMT+0300 (Eastern European Summer Time)',
-    end: 'Thu Jun 10 2021 12:00:00 GMT+0300 (Eastern European Summer Time)'
+    start: unavailableDate,
+    end: unavailableDate
   }
 
-  const testEventData2 = {
+  const availableEventData = {
     title: 'Up-And-Atom!',
     resourceId: 2,
     grades: [1],
-    start: 'Fri May 21 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
-    end: 'Fri May 21 2021 11:00:00 GMT+0300 (Eastern European Summer Time)'
+    start: availableDate,
+    end: availableDate
   }
 
-  const testEvent1 = new EventModel(testEventData1)
-  testEvent2 = new EventModel(testEventData2)
+  unavailableEvent = new EventModel(unavailableEventData)
+  availableEvent = new EventModel(availableEventData)
 
-  await testEvent1.save()
-  savedTestEvent2 = await testEvent2.save()
+  savedUnavailableEvent = await unavailableEvent.save()
+  savedAvailableEvent = await availableEvent.save()
 
   const testVisitData = {
-    event: testEvent1,
+    event: availableEvent,
     pin: 1234,
     grade: 1,
     clientName: 'Teacher',
@@ -72,7 +78,7 @@ describe('Visit Model Test', () => {
 
   it('teacher can create new visit successfully', async () => {
     const newVisitData = {
-      event: testEvent2,
+      event: availableEvent,
       pin: 5678,
       grade: 1,
       clientName: 'Teacher 2',
@@ -90,7 +96,7 @@ describe('Visit Model Test', () => {
     expect(savedVisit.clientPhone).toBe(newVisitData.clientPhone)
   })
 
-  it('cannot create visit without required field', async () => {
+  it('teacher cannot create visit without required field', async () => {
     const visitWithoutRequiredField = new VisitModel({ pin: 1234 })
     let err
     try {
@@ -111,7 +117,49 @@ describe('Visit server test', () => {
 
   it('create visit successfully', async () => {
     const { mutate } = createTestClient(server)
-    const event = savedTestEvent2.id
+    const event = savedAvailableEvent.id
+    const CREATE_VISIT = gql`
+      mutation createVisit($event: ID!, $clientName: String!, $clientEmail: String!, $clientPhone: String!, $grade: Int!) {
+        createVisit(
+          event: $event
+          clientName: $clientName
+          clientEmail: $clientEmail
+          clientPhone: $clientPhone
+          grade: $grade
+        ) {
+          id
+          event {
+            title
+            booked
+          }
+          clientName
+          clientEmail
+          clientPhone
+          grade
+          pin
+        }
+      }
+      `
+    const { data } = await mutate({
+      mutation: CREATE_VISIT,
+      variables: { event: event, clientName: 'Teacher', clientEmail: 'teacher@school.com', clientPhone: '040-1234567', grade: 1 }
+    })
+
+    const { createVisit }  = data
+
+    expect(createVisit.id).toBeDefined()
+    expect(createVisit.pin).toBeDefined()
+    expect(createVisit.event.title).toBe(savedAvailableEvent.title)
+    expect(createVisit.clientName).toBe('Teacher')
+    expect(createVisit.clientEmail).toBe('teacher@school.com')
+    expect(createVisit.clientPhone).toBe('040-1234567')
+    expect(createVisit.grade).toBe(1)
+    expect(createVisit.event.booked).toBe(true)
+  })
+
+  it('cannot create visit for event less than two weeks ahead', async () => {
+    const { mutate } = createTestClient(server)
+    const event = savedUnavailableEvent.id
     const CREATE_VISIT = gql`
       mutation createVisit($event: ID!, $clientName: String!, $clientEmail: String!, $clientPhone: String!, $grade: Int!) {
         createVisit(
@@ -140,13 +188,7 @@ describe('Visit server test', () => {
 
     const { createVisit }  = data
 
-    expect(createVisit.id).toBeDefined()
-    expect(createVisit.pin).toBeDefined()
-    expect(createVisit.event.title).toBe(savedTestEvent2.title)
-    expect(createVisit.clientName).toBe('Teacher')
-    expect(createVisit.clientEmail).toBe('teacher@school.com')
-    expect(createVisit.clientPhone).toBe('040-1234567')
-    expect(createVisit.grade).toBe(1)
+    expect(createVisit).toBe(null)
   })
 
   it('find by visit id', async () => {
