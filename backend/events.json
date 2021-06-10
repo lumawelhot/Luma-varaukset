@@ -5,35 +5,46 @@
     "start": "Tue Jun 01 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
     "end": "Wed Jun 02 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
     "resourceId": 3,
-    "grades": [1, 2, 3]
+    "grades": [1, 2, 3],
+    "closeVisit": true,
+    "remoteVisit": false
   },
   {
     "title": "Maanjäristysten alueellisuus ja niiden vaikutukset",
     "start": "Mon Jun 07 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
     "end": "Thu Jun 10 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
     "resourceId": 4,
-    "grades": [1]
+    "grades": [1],
+    "closeVisit": true,
+    "remoteVisit": false
   },
   {
     "title": "Lämpösäteily ja ilmastonmuutos",
     "start": "Sun Jun 13 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
     "end": "Sun Jun 20 2021 00:00:00 GMT+0300 (Eastern European Summer Time)",
     "resourceId": 4,
-    "grades": [1]
+    "grades": [1],
+    "closeVisit": true,
+    "remoteVisit": false
   },
   {
     "title": "Kemian kokeelliset työt",
     "start": "Thu Jun 03 2021 09:00:00 GMT+0300 (Eastern European Summer Time)",
     "end": "Thu Jun 03 2021 12:00:00 GMT+0300 (Eastern European Summer Time)",
     "resourceId": 4,
-    "grades": [1]
+    "grades": [1],
+    "closeVisit": true,
+    "remoteVisit": false,
+    "location": ["remoteVisit"]
   },
   {
     "title": "Python-ohjelmointikieli",
     "start": "Thu Jun 03 2021 08:00:00 GMT+0300 (Eastern European Summer Time)",
     "end": "Thu Jun 03 2021 14:00:00 GMT+0300 (Eastern European Summer Time)",
     "resourceId": 3,
-    "grades": [1]
+    "grades": [1],
+    "closeVisit": true,
+    "remoteVisit": false
   },
   {
     "title": "Matematiikan työpaja",
@@ -41,7 +52,9 @@
     "end": "Thu Jun 03 2021 10:00:00 GMT+0300 (Eastern European Summer Time)",
     "desc": "Big conference for important people",
     "resourceId": 1,
-    "grades": [1]
+    "grades": [1],
+    "closeVisit": true,
+    "remoteVisit": false
   },
   {
     "title": "Meeting",
@@ -49,7 +62,9 @@
     "end": "Sat Jun 12 2021 12:30:00 GMT+0300 (Eastern European Summer Time)",
     "desc": "Pre-meeting meeting, to prepare for the meeting",
     "resourceId": 2,
-    "grades": [1]
+    "grades": [1],
+    "closeVisit": true,
+    "remoteVisit": true
   },
   {
     "title": "Lunch",
@@ -57,6 +72,8 @@
     "end": "Sat Jun 12 2021 13:00:00 GMT+0300 (Eastern European Summer Time)",
     "desc": "Power lunch",
     "resourceId": 3,
-    "grades": [1]
+    "grades": [1],
+    "closeVisit": true,
+    "remoteVisit": false
   }
 ]

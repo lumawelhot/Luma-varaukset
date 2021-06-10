@@ -148,7 +148,8 @@ const EventForm = ({
           ),
         },
       })
-      console.log(tags.data.getTags)
+
+
       alert(JSON.stringify(values, null, 2))
     },
   })
@@ -196,12 +197,12 @@ const EventForm = ({
               <div id="checkbox-group">Valitse etä- tai lähivierailu</div>
               <div role="group" aria-labelledby="checkbox-group">
                 <label>
-                  <p>Etävierailu<Field type="checkbox" name="location" value="Etävierailu" />
+                  <p>Etävierailu<Field type="checkbox" name="location" value="remoteVisit" />
                   </p>
                 </label>
                 <label>
                 Lähivierailu
-                  <Field type="checkbox" name="location" value="Lähivierailu"/>
+                  <Field type="checkbox" name="location" value="closeVisit"/>
 
                 </label>
 

@@ -30,6 +30,11 @@ const eventSchema = mongoose.Schema({
     required: true,
     validate: [arrayLimit, 'vähintään yksi luokka-aste valittava'],
   },
+  location: {
+    type: [String],
+    required: true
+  },
+
   desc: String,
   tags: [
     {
