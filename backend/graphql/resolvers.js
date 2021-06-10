@@ -92,7 +92,7 @@ const resolvers = {
         throw new UserInputError('Either remote or close visit must be selected!')
       }
 
-
+      let location = args.location
       let grades = args.grades
 
       if (grades.length < 1) {
@@ -123,7 +123,7 @@ const resolvers = {
         desc: args.desc,
         resourceId,
         grades,
-        location: args.location
+        location
       })
       newEvent.tags = mongoTags
       await newEvent.save()
