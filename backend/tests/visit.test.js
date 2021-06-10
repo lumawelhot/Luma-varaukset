@@ -37,16 +37,16 @@ beforeEach(async () => {
     title: 'All About Algebra',
     resourceId: 1,
     grades: [1],
-    start: 'Mon Jun 07 2021 09:30:00 GMT+0300 (Eastern European Summer Time)',
-    end: 'Thu Jun 10 2021 12:00:00 GMT+0300 (Eastern European Summer Time)'
+    start: '2021-06-07:09:30:00',
+    end: '2021-06-10:12:00:00'
   }
 
   const testEventData2 = {
     title: 'Up-And-Atom!',
     resourceId: 2,
     grades: [1],
-    start: 'Fri May 21 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
-    end: 'Fri May 21 2021 11:00:00 GMT+0300 (Eastern European Summer Time)'
+    start: '2021-05-21:09:00:00',
+    end: '2021-05-21:11:00:00'
   }
 
   const testEvent1 = new EventModel(testEventData1)
