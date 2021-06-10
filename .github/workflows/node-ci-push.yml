@@ -59,7 +59,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
       - name: Run backend Jest tests
-        run: npm run test
+        run: npm run test -- --detectOpenHandles=false
         working-directory: backend
         env:
           #MONGODB_TEST_URI: ${{secrets.MONGODB_TEST_URI}}

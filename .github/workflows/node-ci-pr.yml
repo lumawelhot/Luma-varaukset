@@ -71,7 +71,7 @@ jobs:
         run: npm run lint
         working-directory: backend
       - name: Run backend Jest tests
-        run: npm run test -- --coverage
+        run: npm run test -- --coverage --detectOpenHandles=false
         working-directory: backend
         env:
           #MONGODB_TEST_URI: ${{secrets.MONGODB_TEST_URI}}
