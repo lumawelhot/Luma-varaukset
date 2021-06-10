@@ -125,7 +125,7 @@ const App = () => {
       <Toasts toasts={toasts} />
       <Switch>
         <Route path='/event-page'>
-          <EventPage handleBookingButtonClick={handleBookingButtonClick} event={clickedEvent} sendMessage={updateMessage}/>
+          <EventPage handleBookingButtonClick={handleBookingButtonClick} event={clickedEvent} sendMessage={notify}/>
         </Route>
         <Route path='/book'>
           <VisitForm event={clickedEvent} sendMessage={notify}/>

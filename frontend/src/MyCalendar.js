@@ -43,9 +43,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
 
   const customEventPropGetter = event => {
     if (event.booked || moment(event.start).diff(new Date(), 'days') < 14) {
-      return { className: resourceMap[event.resourceId-1]?.resourceTitle.toLowerCase() || '', style: {
-        backgroundColor: bookedEventColor[0]
-      }, }
+      return { className: 'booked' , }
     }
     return { className: resourceMap[event.resourceId-1]?.resourceTitle.toLowerCase() || '' }
   }

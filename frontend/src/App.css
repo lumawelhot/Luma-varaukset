@@ -824,6 +824,15 @@ button.rbc-input::-moz-focus-inner {
   background-color: #e7a732;
 }
 
+.rbc-event.booked {
+  background-color: #DCDCDC;
+}
+
+.rbc-event.booked .rbc-event-label {
+  width: 100%;
+  background-color: #DCDCDC;
+}
+
 .taginput .taginput-container.is-focusable,
 .taginput .taginput-container:not(.is-focusable) {
   display: inline-flex;
