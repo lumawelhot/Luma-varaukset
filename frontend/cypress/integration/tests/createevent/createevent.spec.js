@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { Given, When, Then, And } from 'cypress-cucumber-preprocessor/steps'
+import { Given, When, Then/* , And */ } from 'cypress-cucumber-preprocessor/steps'
 
 Given('Employee is logged in', () => {
   cy.login({ username: 'Admin', password: 'salainen' })

@@ -22,3 +22,14 @@ Scenario: Event cannot be booked if it is less than two weeks ahead
     Then unavailable event page has the correct title
     And unavailable event page has the correct start date
     And unavailable event page contains correct info text
+
+Scenario: An event is succesfully booked by a teacher with valid information
+    Given teacher is on the booking page
+    When valid information is entered
+    Then a visit is succesfully created
+    And booked event turns grey in calendar view
+
+Scenario: An event is not booked by a teacher if client name is invalid
+    Given teacher is on the booking page
+    When invalid client name is entered
+    Then no visit is created and an error message is shown

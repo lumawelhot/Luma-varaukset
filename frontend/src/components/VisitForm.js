@@ -117,7 +117,6 @@ const VisitForm = ({ sendMessage, event }) => {
       sendMessage(`Olet tehnyt varauksen tapahtumaan ${result.data.createVisit.event.title} onnistuneesti! PIN-koodisi tulostuu konsoliin.`)
       console.log('Pin-koodisi: ', result.data.createVisit.pin)
       history.push('/')
-
     }
   }, [result.data])
 

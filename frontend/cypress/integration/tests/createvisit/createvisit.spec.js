@@ -44,15 +44,15 @@ And('available event page has the correct start date', () => {
 })
 
 And('available event page contains booking button', () => {
-    cy.contains('Varaa tapahtuma')
+  cy.contains('Varaa tapahtuma')
 })
 
 And('I click the booking button', () => {
-    cy.contains('Varaa tapahtuma').click()
+  cy.contains('Varaa tapahtuma').click()
 })
 
 Then('booking form opens', () => {
-    cy.get('#clientName')
+  cy.get('#clientName')
     .should('exist')
     .and('be.visible')
 })
