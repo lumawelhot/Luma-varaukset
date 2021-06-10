@@ -36,6 +36,10 @@ jobs:
       - name: Start backend for Cypress
         run: cd ../backend && nohup npm run dev &
         env:
+          EMAILHOST: smtp.ethereal.email
+          EMAILUSER: clarabelle.terry@ethereal.email
+          EMAILPASSWORD: ${{secrets.EMAILPASSWORD}}
+          EMAILPORT: 587
           SECRET: ${{ secrets.SECRET }}
           PORT: 3001
       - name: Cypress run
@@ -71,10 +75,14 @@ jobs:
         run: npm run lint
         working-directory: backend
       - name: Run backend Jest tests
-        run: npm run test -- --coverage
+        run: npm run test -- --coverage --detectOpenHandles=false
         working-directory: backend
         env:
           #MONGODB_TEST_URI: ${{secrets.MONGODB_TEST_URI}}
+          EMAILHOST: smtp.ethereal.email
+          EMAILUSER: clarabelle.terry@ethereal.email
+          EMAILPASSWORD: ${{secrets.EMAILPASSWORD}}
+          EMAILPORT: 587
           SECRET: ${{secrets.SECRET}}
       - uses: codecov/codecov-action@v1
         with:
