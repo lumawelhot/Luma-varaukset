@@ -106,7 +106,6 @@ const VisitForm = ({ sendMessage, event }) => {
             event: event.id
           }
         })
-        history.push('/')
       } catch (error) {
         sendMessage('Varauksen teko epäonnistui.', 'danger')
       }
