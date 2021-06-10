@@ -63,6 +63,10 @@ jobs:
         working-directory: backend
         env:
           #MONGODB_TEST_URI: ${{secrets.MONGODB_TEST_URI}}
+          EMAILHOST: smtp.ethereal.email
+          EMAILUSER: clarabelle.terry@ethereal.email
+          EMAILPASSWORD: ${{secrets.EMAILPASSWORD}}
+          EMAILPORT: 587
           SECRET: ${{secrets.SECRET}}
 
   build:
