@@ -141,3 +141,12 @@ export const FIND_VISIT = gql`
           }
         }
 `
+
+export const CANCEL_VISIT = gql`
+mutation cancelVisit($id: ID!, $pin: Int!) {
+  cancelVisit(id: $id, pin: $pin) {
+    id
+    pin
+  }
+}
+`
