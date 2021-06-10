@@ -5,6 +5,7 @@ const Event = require('../models/event')
 const Visit = require('../models/visit')
 const jwt = require('jsonwebtoken')
 const Tag = require('../models/tag')
+const moment = require ('moment')
 const mailer = require('../services/mailer')
 const config = require('../utils/config')
 const { readMessage } = require('../services/fileReader')
@@ -119,7 +120,8 @@ const resolvers = {
         end: args.end,
         desc: args.desc,
         resourceId,
-        grades
+        grades,
+        booked: false
       })
       newEvent.tags = mongoTags
       await newEvent.save()
@@ -128,32 +130,42 @@ const resolvers = {
     createVisit: async (root, args) => {
       const pin = Math.floor(1000 + Math.random() * 9000)
       const event = await Event.findById(args.event)
+      event.booked = true
+      await event.save()
       const visit = new Visit({
         ...args,
         event: event,
         pin: pin,
       })
+      let savedVisit
       try {
-        const savedVisit = await visit.save()
-        const details = [{
-          name: 'link',
-          value: `http://localhost:3000/${savedVisit.id}`
-        },
-        {
-          name: 'pin',
-          value: savedVisit.pin
-        }]
-        const text = await readMessage('welcome.txt', details)
-        const html = await readMessage('welcome.html', details)
-        mailer.sendMail({
-          from: 'Luma-Varaukset <noreply@helsinki.fi>',
-          to: visit.clientEmail,
-          subject: 'Tervetuloa!',
-          text,
-          html
-        })
-        return savedVisit
+        const now = moment(new Date())
+        const start = moment(event.start)
+        if (start.diff(now, 'days') >= 14) {
+          savedVisit = await visit.save()
+          const details = [{
+            name: 'link',
+            value: `${config.HOST_URI}/${savedVisit.id}`
+          },
+          {
+            name: 'pin',
+            value: savedVisit.pin
+          }]
+          const text = await readMessage('welcome.txt', details)
+          const html = await readMessage('welcome.html', details)
+          mailer.sendMail({
+            from: 'Luma-Varaukset <noreply@helsinki.fi>',
+            to: visit.clientEmail,
+            subject: 'Tervetuloa!',
+            text,
+            html
+          })
+          return savedVisit
+        }
       } catch (error) {
+        event.booked = false
+        await event.save()
+        await savedVisit.delete()
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })

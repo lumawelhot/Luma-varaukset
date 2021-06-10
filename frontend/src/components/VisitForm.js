@@ -1,35 +1,42 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useFormik, FormikProvider } from 'formik'
 import Message from './Message'
 import { useMutation } from '@apollo/client'
 import { CREATE_VISIT } from '../graphql/queries'
 import { useHistory } from 'react-router'
-//import format from 'date-fns/format'
+import moment from 'moment'
 
 
 const validate = values => {
 
-  const defErrorMessage = 'Vaaditaan!'
+  const messageIfMissing = 'Vaaditaan!'
+  const messageIfTooShort = 'Liian lyhyt!'
   const errors = {}
 
   if (!values.visitGrade) {
-    errors.visitGrade = defErrorMessage
+    errors.visitGrade = messageIfMissing
   }
   if (!values.clientName) {
-    errors.clientName = defErrorMessage
+    errors.clientName = messageIfMissing
+  }
+  if (values.clientName.length<5) {
+    errors.clientName = messageIfTooShort
   }
   if (!values.clientEmail) {
-    errors.clientEmail = defErrorMessage
+    errors.clientEmail = messageIfMissing
   }
   if (!values.clientPhone) {
-    errors.clientPhone = defErrorMessage
+    errors.clientPhone = messageIfMissing
   }
 
   return errors
 }
 
 const VisitForm = ({ sendMessage, event }) => {
-  //console.log(event)
+  const history = useHistory()
+  if (!event) {
+    history.push('/')
+  }
   const grades = [
     { value: 1, label:'Varhaiskasvatus' },
     { value: 2, label: '1.-2. luokka' },
@@ -69,10 +76,8 @@ const VisitForm = ({ sendMessage, event }) => {
   }
 
   const [create, result] = useMutation(CREATE_VISIT, {
-    onError: (error) => console.log('virheviesti: ', error, result)
+    onError: (error) => console.log('virheviesti: ', error, result),
   })
-
-  const history = useHistory()
 
   const cancel = (event) => {
     event.preventDefault()
@@ -101,13 +106,20 @@ const VisitForm = ({ sendMessage, event }) => {
             event: event.id
           }
         })
-        sendMessage('Olet tehnyt varauksen onnistuneesti!', 'success')
-        history.push('/')
       } catch (error) {
         sendMessage('Varauksen teko epäonnistui.', 'danger')
       }
     },
   })
+
+  useEffect(() => {
+    if (result.data) {
+      sendMessage(`Olet tehnyt varauksen tapahtumaan ${result.data.createVisit.event.title} onnistuneesti! PIN-koodisi tulostuu konsoliin.`, 'success')
+      console.log('Pin-koodisi: ', result.data.createVisit.pin)
+      history.push('/')
+    }
+  }, [result.data])
+
   if (event) {
     const eventGrades = filterEventGrades(event.grades)
     const eventClass = filterEventClass(event.resourceId)
@@ -125,8 +137,8 @@ const VisitForm = ({ sendMessage, event }) => {
               <div>Tarjolla seuraaville luokka-asteille: {eventGrades.map(g =>
                 <div key={g.value}>{g.label}</div>)}
               </div>
-              <p>Tapahtuma alkaa: {event.start.toString()}</p>
-              <p>Tapahtuma päättyy: {event.end.toString()}</p>
+              <p>Tapahtuma alkaa: {moment(event.start).format('DD.MM.YYYY, HH:mm')}</p>
+              <p>Tapahtuma päättyy: {moment(event.end).format('DD.MM.YYYY, HH:mm')}</p>
             </div>
 
             <br/>
