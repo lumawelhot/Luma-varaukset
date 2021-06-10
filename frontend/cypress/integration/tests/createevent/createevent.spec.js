@@ -18,7 +18,7 @@ Then('event form has a description field', () => {
 
 When('valid information is entered', () => {
   cy.get('#title').type('Test event')
-  cy.get('.input').type('Uusi tagi').type('{enter}')
+  cy.get('.autocomplete > .control > .input').type('Uusi tagi').type('{enter}')
   cy.get('.autocomplete > .dropdown-menu > .dropdown-content > :nth-child(2) > span').click().type('{esc}')
   cy.wait(100)
   cy.get('p > input').click()
@@ -41,7 +41,8 @@ Then('an event is succesfully created', () => {
 
 When('too short a title is entered', () => {
   cy.get('#title').type('test')
-  cy.get('.input').type('Uusi tagi').type('{enter}').type('{esc}')
+  cy.get('.autocomplete > .control > .input').type('Uusi tagi').type('{enter}')
+  cy.get('.autocomplete > .dropdown-menu > .dropdown-content > :nth-child(2) > span').click().type('{esc}')
   cy.wait(100)
   cy.get('p > input').click()
   cy.get('.button > :nth-child(1)').click()
