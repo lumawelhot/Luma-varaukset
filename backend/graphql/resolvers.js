@@ -137,14 +137,15 @@ const resolvers = {
         event: event,
         pin: pin,
       })
+      let savedVisit
       try {
         const now = moment(new Date())
         const start = moment(event.start)
         if (start.diff(now, 'days') >= 14) {
-          const savedVisit = await visit.save()
+          savedVisit = await visit.save()
           const details = [{
             name: 'link',
-            value: `http://localhost:3000/${savedVisit.id}`
+            value: `${config.HOST_URI}/${savedVisit.id}`
           },
           {
             name: 'pin',
@@ -164,6 +165,7 @@ const resolvers = {
       } catch (error) {
         event.booked = false
         await event.save()
+        await savedVisit.delete()
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })

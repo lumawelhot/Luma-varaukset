@@ -115,13 +115,12 @@ And('valid information is entered', () => {
 Then('booked event turns grey in calendar view', () => {
   cy.get('.rbc-calendar').then(() => {
     if (cy.get('.rbc-calendar').contains(`${availableEvent1}`)) {
-      cy.contains(`${availableEvent1}`).parent().should('have.class', 'booked')
+      cy.get('.rbc-calendar').contains(`${availableEvent1}`).parent().should('have.class', 'booked')
     } else {
       cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
-      cy.contains(`${availableEvent1}`).parent().should('have.class', 'booked')
+      cy.get('.rbc-calendar').contains(`${availableEvent1}`).parent().should('have.class', 'booked')
     }
   })
-  
 })
 
 When('I click on available event 2', () => {
