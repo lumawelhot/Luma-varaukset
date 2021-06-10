@@ -58,7 +58,7 @@ const VisitPage = () => {
     }
   }, [result.data])
 
-  if (result.loading) {
+  if (result.loading || visit === null) {
     return (
       <div>
         <p>Varausta haetaan...</p>

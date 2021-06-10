@@ -34,7 +34,7 @@ const resolvers = {
   },
   Visit: {
     event: async (root) => {
-      const event = await Event.findById(root.event)
+      const event = await Event.findById(root.event).populate('tags', { name: 1, id: 1 })
       return event
     },
   },
