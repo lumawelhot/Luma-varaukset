@@ -106,7 +106,6 @@ const VisitForm = ({ sendMessage, event }) => {
             event: event.id
           }
         })
-        history.push('/')
       } catch (error) {
         sendMessage('Varauksen teko epäonnistui.', 'danger')
       }
@@ -117,6 +116,7 @@ const VisitForm = ({ sendMessage, event }) => {
     if (result.data) {
       sendMessage(`Olet tehnyt varauksen tapahtumaan ${result.data.createVisit.event.title} onnistuneesti! PIN-koodisi tulostuu konsoliin.`, 'success')
       console.log('Pin-koodisi: ', result.data.createVisit.pin)
+      console.log('Visitin id: ', result.data.createVisit.id)
       history.push('/')
     }
   }, [result.data])

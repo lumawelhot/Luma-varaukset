@@ -171,9 +171,12 @@ const resolvers = {
     },
     cancelVisit: async (root, args) => {
       const visit = await Visit.findById(args.id)
+      const event = await Event.findById(visit.event)
       if (visit.pin === args.pin) {
         try {
-          return Visit.findByIdAndRemove(visit.id)
+          event.booked = false
+          await event.save()
+          return visit
         } catch (error) {
           throw new UserInputError(error.message, {
             invalidArgs: args,

@@ -246,7 +246,10 @@ describe('Visit server test', () => {
     expect(cancelVisit.pin).toBe(savedTestVisit.pin)
 
     const cancelledVisit = await VisitModel.findById(savedTestVisit.id)
-    expect(cancelledVisit).toBe(null)
+    expect(cancelledVisit.id).toBeDefined()
+
+    const event = await EventModel.findById(cancelledVisit.event)
+    expect(event.booked).toBe(false)
   })
 
   it('do not cancel visit by id and invalid pin', async () => {

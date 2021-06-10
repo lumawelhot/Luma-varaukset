@@ -118,3 +118,26 @@ export const CREATE_VISIT = gql`
     }
   }
 `
+export const FIND_VISIT = gql`
+        query findVisit($id: ID!) {
+          findVisit(id: $id) {
+            id
+            pin
+            event {
+              id
+              title
+              resourceId
+              start
+              end
+              tags {
+                name,
+                id
+              }
+            }
+            clientName
+            clientEmail
+            clientPhone
+            grade
+          }
+        }
+`
