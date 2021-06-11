@@ -52,7 +52,9 @@ beforeEach(async () => {
     desc: 'Algebra is one of the broad areas of mathematics, together with number theory, geometry and analysis.',
     tags: newTags,
     start: 'Mon Jun 07 2021 09:30:00 GMT+0300 (Eastern European Summer Time)',
-    end: 'Thu Jun 10 2021 12:00:00 GMT+0300 (Eastern European Summer Time)'
+    end: 'Thu Jun 10 2021 12:00:00 GMT+0300 (Eastern European Summer Time)',
+    closeVisit: true,
+    remoteVisit: false
   }
   const testData2 = {
     title: 'Up-And-Atom!',
@@ -61,7 +63,9 @@ beforeEach(async () => {
     desc: 'Atom is a programming text editor developed by GitHub.',
     tags: newTags,
     start: 'Fri May 21 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
-    end: 'Fri May 21 2021 11:00:00 GMT+0300 (Eastern European Summer Time)'
+    end: 'Fri May 21 2021 11:00:00 GMT+0300 (Eastern European Summer Time)',
+    closeVisit: false,
+    remoteVisit: true
   }
 
   const testEvent1 = new EventModel(testData1)
@@ -119,6 +123,7 @@ it('employee can create new event successfully', async () => {
           start: "Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)"
           end: "Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)"
           desc: "JavaScript is the programming language of the Web."
+          location: ["remoteVisit"]
           grades: [1, 3, 4]
           tags: [{ name: "Matematiikka" }, { name: "Fysiikka" }, { name: "Ohjelmointi" }, { name: "Maantiede" }, { name: "Kemia" } ]
         ){
@@ -153,6 +158,8 @@ describe('Event Model Test', () => {
       tags: tags,
       start: 'Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)',
       end: 'Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)',
+      closeVisit: true,
+      remoteVisit: false,
       desc: 'Test event desc.'
     }
     const validEvent = new EventModel(eventData)
@@ -174,6 +181,8 @@ describe('Event Model Test', () => {
       grades: [1],
       start: 'Tue Jun 01 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
       end: 'Wed Jun 02 2021 15:00:00 GMT+0300 (Eastern European Summer Time)',
+      closeVisit: true,
+      remoteVisit: false,
       fieldNotInSchema: 'Tiedeluokka Linkki',
       desc: 'Test event desc.'
     })

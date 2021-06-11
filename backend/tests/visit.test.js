@@ -38,7 +38,9 @@ beforeEach(async () => {
     resourceId: 1,
     grades: [1],
     start: 'Mon Jun 07 2021 09:30:00 GMT+0300 (Eastern European Summer Time)',
-    end: 'Thu Jun 10 2021 12:00:00 GMT+0300 (Eastern European Summer Time)'
+    end: 'Thu Jun 10 2021 12:00:00 GMT+0300 (Eastern European Summer Time)',
+    closeVisit: true,
+    remoteVisit: false
   }
 
   const testEventData2 = {
@@ -46,7 +48,9 @@ beforeEach(async () => {
     resourceId: 2,
     grades: [1],
     start: 'Fri May 21 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
-    end: 'Fri May 21 2021 11:00:00 GMT+0300 (Eastern European Summer Time)'
+    end: 'Fri May 21 2021 11:00:00 GMT+0300 (Eastern European Summer Time)',
+    closeVisit: false,
+    remoteVisit: true
   }
 
   const testEvent1 = new EventModel(testEventData1)
