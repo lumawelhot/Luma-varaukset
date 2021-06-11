@@ -16,7 +16,8 @@ const typeDefs = gql `
     id: ID!
     title: String!
     resourceId: Int
-    location: [String]!
+    remoteVisit: Boolean!
+    closeVisit: Boolean!
     grades: [Int]!
     start: String!
     end: String!

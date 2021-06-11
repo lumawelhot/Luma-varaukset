@@ -88,11 +88,24 @@ const resolvers = {
           throw new UserInputError('Invalid class')
       }
 
+
+
+      let remoteVisit = false
+      let closeVisit = false
+
       if(args.location.length === 0){
         throw new UserInputError('Either remote or close visit must be selected!')
       }
 
-      let location = args.location
+      if(args.location.includes('remoteVisit')){
+        remoteVisit = true
+      }
+
+      if(args.location.includes('closeVisit')){
+        closeVisit = true
+      }
+
+
       let grades = args.grades
 
       if (grades.length < 1) {
@@ -123,7 +136,8 @@ const resolvers = {
         desc: args.desc,
         resourceId,
         grades,
-        location
+        remoteVisit,
+        closeVisit
       })
       newEvent.tags = mongoTags
       await newEvent.save()
