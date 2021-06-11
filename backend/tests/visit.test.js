@@ -44,7 +44,11 @@ beforeEach(async () => {
     resourceId: 1,
     grades: [1],
     start: unavailableDate,
-    end: unavailableDate
+    end: unavailableDate,
+    start: 'Mon Jun 07 2021 09:30:00 GMT+0300 (Eastern European Summer Time)',
+    end: 'Thu Jun 10 2021 12:00:00 GMT+0300 (Eastern European Summer Time)',
+    closeVisit: true,
+    remoteVisit: false
   }
 
   const availableEventData = {
@@ -52,7 +56,9 @@ beforeEach(async () => {
     resourceId: 2,
     grades: [1],
     start: availableDate,
-    end: availableDate
+    end: availableDate,
+    closeVisit: false,
+    remoteVisit: true
   }
 
   unavailableEvent = new EventModel(unavailableEventData)

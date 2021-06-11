@@ -16,10 +16,14 @@ Given('an event with title yyyyy is created', () => {
     title: 'yyyyy',
     scienceClass: 'FOTONI',
     grades: [1, 3, 4],
+    location: ['remoteVisit'],
     start,
     end,
     tags: []
+
   })
+
+
 })
 
 When('I am on the calendar page', () => {

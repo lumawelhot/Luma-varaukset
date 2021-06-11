@@ -67,7 +67,7 @@ const resolvers = {
       const userForToken = { username: user.username, id: user._id }
       return { value: jwt.sign(userForToken, config.SECRET) }
     },
-    createEvent: async (root, args, { currentUser }) => {
+    createEvent: async (root, args, { currentUser } ) => {
       if (!currentUser) {
         throw new AuthenticationError('not authenticated')
       }
@@ -91,6 +91,25 @@ const resolvers = {
         default:
           throw new UserInputError('Invalid class')
       }
+
+
+
+      let remoteVisit = false
+      let closeVisit = false
+
+      if(args.location.length === 0){
+        throw new UserInputError('Either remote or close visit must be selected!')
+      }
+
+      if(args.location.includes('remoteVisit')){
+        remoteVisit = true
+      }
+
+      if(args.location.includes('closeVisit')){
+        closeVisit = true
+      }
+
+
       let grades = args.grades
 
       if (grades.length < 1) {
@@ -121,7 +140,9 @@ const resolvers = {
         desc: args.desc,
         resourceId,
         grades,
-        booked: false
+        booked: false,
+        remoteVisit,
+        closeVisit
       })
       newEvent.tags = mongoTags
       await newEvent.save()

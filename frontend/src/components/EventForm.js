@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useFormik, FormikProvider } from 'formik'
+import { Field, useFormik, FormikProvider } from 'formik'
 import { useMutation, useQuery } from '@apollo/client'
 import { CREATE_EVENT, TAGS } from '../graphql/queries'
 import { useHistory } from 'react-router'
@@ -19,6 +19,10 @@ const validate = (values) => {
 
   if (!values.scienceClass) {
     errors.scienceClass = defErrorMessage
+  }
+
+  if (values.location.length === 0) {
+    errors.location = 'Valitse joko etä- tai lähivierailu'
   }
 
   if (String(values.date) === 'Invalid date') {
@@ -113,6 +117,7 @@ const EventForm = ({
   const formik = useFormik({
     initialValues: {
       grades: [],
+      location: [],
       title: '',
       scienceClass: '',
       desc: '',
@@ -128,6 +133,7 @@ const EventForm = ({
       create({
         variables: {
           grades: values.grades,
+          location: values.location,
           title: values.title,
           start,
           end,
@@ -141,7 +147,8 @@ const EventForm = ({
           ),
         },
       })
-      console.log(tags.data.getTags)
+
+
       alert(JSON.stringify(values, null, 2))
     },
   })
@@ -184,6 +191,26 @@ const EventForm = ({
                 style={{ width: 300 }}
               />
             </FormikProvider>
+
+            <FormikProvider value ={formik}>
+              <div id="checkbox-group">Valitse etä- tai lähivierailu</div>
+              <div role="group" aria-labelledby="checkbox-group">
+                <label>
+                  <p>Etävierailu<Field type="checkbox" name="location" value="remoteVisit" />
+                  </p>
+                </label>
+                <label>
+                Lähivierailu
+                  <Field type="checkbox" name="location" value="closeVisit"/>
+
+                </label>
+
+              </div>
+            </FormikProvider>
+            {formik.touched.location && formik.errors.location ? (
+              <p className="help is-danger">{formik.errors.location}</p>            ) : null}
+
+
 
             <div className="field" id="grade" >
               <div className="label" htmlFor="grade">

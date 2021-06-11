@@ -90,7 +90,8 @@ Cypress.Commands.add('createEvent', ({ title, scienceClass, start, end, desc }) 
           start: "${start}"
           end: "${end}"
           desc: "${desc}"
-          grades: [1, 2]
+          grades: [1, 2],
+          location: ${JSON.stringify(props.location)},
           tags: [{ name: "Matematiikka" }, { name: "Fysiikka" }]
         ){
           title,
