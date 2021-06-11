@@ -32,6 +32,7 @@ const typeDefs = gql `
     clientName: String!
     clientEmail: String!
     clientPhone: String!
+    status: Boolean!
   }
   type Token {
     value: String!
