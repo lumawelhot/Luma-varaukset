@@ -11,11 +11,7 @@ const availableEvent2 = 'Test event for invalid client name'
 const unavailableEventName = 'Unavailable event'
 const unavailableEventDate = new Date()
 
-Given('I am on the front page', () => {
-  cy.visit('http://localhost:3000')
-})
-
-And('there is an event 1 more than two weeks ahead', () => {
+it('Initialize tests', () => {
   cy.login({ username: 'Admin', password: 'salainen' })
   cy.createEvent({
     title: availableEvent1,
@@ -24,11 +20,6 @@ And('there is an event 1 more than two weeks ahead', () => {
     end: eventDate1,
     desc: 'Test event description'
   })
-  
-})
-
-And('there is an event 2 more than two weeks ahead', () => {
-  cy.login({ username: 'Admin', password: 'salainen' })
   cy.createEvent({
     title: availableEvent2,
     scienceClass: 'LINKKI',
@@ -38,13 +29,25 @@ And('there is an event 2 more than two weeks ahead', () => {
   })
 })
 
+Given('I am on the front page', () => {
+  cy.visit('http://localhost:3000')
+})
+
+And('there is an event 1 more than two weeks ahead', () => {
+
+})
+
+And('there is an event 2 more than two weeks ahead', () => {
+
+})
+
 When('I click on available event 1', () => {
   cy.get('.rbc-calendar').then(() => {
     if (cy.get('.rbc-calendar').contains(`${availableEvent1}`)) {
       cy.contains(`${availableEvent1}`).click()
     } else {
       cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
-    cy.contains(`${availableEvent1}`).click()
+      cy.contains(`${availableEvent1}`).click()
     }
   })
 })
@@ -103,7 +106,7 @@ And('unavailable event page contains correct info text', () => {
 And('valid information is entered', () => {
   cy.get('#visitGrade').select('1')
   cy.get('#clientName').type('Teacher')
-  cy.wait(100)
+  cy.wait(500)
   cy.get('#clientEmail').type('teacher@school.fi')
   cy.wait(100)
   cy.get('#clientPhone').type('040-1234567')

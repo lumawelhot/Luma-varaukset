@@ -11,8 +11,10 @@ services:
   luma-varaukset-app:
     image: lumawelhot/luma-varaukset:latest
     restart: unless-stopped
-    #env_file:
-    #  - .env
+    volumes:
+      - ./config:/app/config
+    env_file:
+      - .env
     depends_on:
       - luma-varaukset-db
     container_name: luma-varaukset-app
