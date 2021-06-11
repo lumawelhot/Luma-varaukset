@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { FIND_VISIT, CANCEL_VISIT } from '../graphql/queries'
-import { useMutation, useQuery } from '@apollo/client'
+import { useMutation, useLazyQuery } from '@apollo/client'
 import { useParams } from 'react-router'
-import moment from 'moment'
+//import moment from 'moment'
 import { useHistory } from 'react-router'
 
 /* const grades = [
@@ -49,15 +49,29 @@ const VisitPage = ({ sendMessage }) => {
   const id = useParams().id
   const [visit, setVisit] = useState(null)
 
-  const result = useQuery(FIND_VISIT, {
-    onError: (error) => console.log('virheviesti: ', error, result),
-    variables: { id: id }
+  const [findVisit, { loading, data }] = useLazyQuery(FIND_VISIT, {
+    onError: (error) => console.log('virheviesti: ', error),
   })
 
   const [cancelVisit, resultOfCancel] = useMutation(CANCEL_VISIT, {
-    onError: (error) => console.log(error),
-    variables: { id: id }
+    // tarkista backendin error
+    onError: () => {
+      sendMessage('Virheellinen pin', 'danger')
+    },
+    //fetchPolicy: 'cache-and-network'
   })
+
+  useEffect(() => {
+    console.log(data, loading)
+    if (!data) {
+      const pin = window.prompt('Anna pin-koodi:')
+      findVisit({ variables: { pin: Number(pin), id } })
+    }
+    else if (data) {
+      console.log(data)
+      setVisit(data.findVisit)
+    }
+  }, [data])
 
   useEffect(() => {
     if (resultOfCancel.data) {
@@ -67,14 +81,7 @@ const VisitPage = ({ sendMessage }) => {
     }
   }, [resultOfCancel.data])
 
-  useEffect(() => {
-    if (result.data) {
-      console.log(result.data)
-      setVisit(result.data.findVisit)
-    }
-  }, [result.data])
-
-  if (result.loading || visit === null) {
+  if (loading || visit === null) {
     return (
       <div>
         <p>Varausta haetaan...</p>
@@ -82,33 +89,29 @@ const VisitPage = ({ sendMessage }) => {
     )
   }
 
-  const handelCancel = () => {
-    const givenPin = window.prompt('Anna pin-koodi:')
-    if (String(visit.pin) === givenPin) {
-      cancelVisit({
-        variables: { pin: visit.pin }
-      })
-    } else {
-      alert('Virheellinen pin-koodi!')
-    }
+  const handelCancel = (event) => {
+    event.preventDefault()
+    const pin = window.prompt('Anna pin-koodi:')
+    cancelVisit({
+      variables: { pin: Number(pin), id }
+    })
   }
-
 
   return (
     <div className="container">
       <div className="columns is-centered">
         <div className="section">
-          <div className="title">{visit.event.title}</div>
-          {!visit.event.booked && <p className="subtitle">Peruttu</p>}
-          {visit.event.booked &&
-            <div>
-              <p>Kuvaus: [Tähän tapahtuman kuvaus]</p>
-              <p>Tiedeluokka: </p>
-              <p>Valittavissa olevat lisäpalvelut: [Tähän ekstrat]</p>
-              <div>Tarjolla seuraaville luokka-asteille:</div>
-              <p>Tapahtuma alkaa: {moment(visit.event.start).format('DD.MM.YYYY, HH:mm')}</p>
-              <button className="button is-danger" onClick={handelCancel}>Peru</button>
-            </div>}
+          <div className="title">{/* {visit.event.title} */}</div>
+          {/* {!visit.event.booked && <p className="subtitle">Peruttu</p>}
+          {visit.event.booked && */}
+          <div>
+            <p>Kuvaus: [Tähän tapahtuman kuvaus]</p>
+            <p>Tiedeluokka: </p>
+            <p>Valittavissa olevat lisäpalvelut: [Tähän ekstrat]</p>
+            <div>Tarjolla seuraaville luokka-asteille:</div>
+            {/* <p>Tapahtuma alkaa: {moment(visit.event.start).format('DD.MM.YYYY, HH:mm')}</p> */}
+            <button className="button is-danger" onClick={handelCancel}>Peru</button>
+          </div>{/* } */}
         </div>
       </div>
     </div>

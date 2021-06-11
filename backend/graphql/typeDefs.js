@@ -40,7 +40,7 @@ const typeDefs = gql `
     getUsers: [User]!
     me: User!
     getEvents: [Event]!
-    findVisit(id: ID!): Visit!
+    findVisit(id: ID!, pin: Int!): Visit!
     getVisits: [Visit]
     getTags: [Tag]!
   }

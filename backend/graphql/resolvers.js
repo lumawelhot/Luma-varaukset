@@ -25,8 +25,14 @@ const resolvers = {
       return tags
     },
     findVisit: async (root, args) => {
-      const visit = await Visit.findById(args.id)
-      return visit
+      try {
+        const visit = await Visit.findById(args.id)
+        if (visit.pin === args.pin) {
+          return { clientName: visit.clientName, clientEmail: visit.clientEmail, clientPhone: visit.clientPhone }
+        }
+      } catch (e) {
+        throw new UserInputError('Varausta ei löytynyt!')
+      }
     },
     me: (root, args, context) => {
       return context.currentUser
