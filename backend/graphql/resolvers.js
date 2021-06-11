@@ -149,6 +149,7 @@ const resolvers = {
         ...args,
         event: event,
         pin: pin,
+        status: true,
       })
       let savedVisit
       try {
@@ -189,7 +190,9 @@ const resolvers = {
       const event = await Event.findById(visit.event)
       if (visit.pin === args.pin) {
         try {
+          visit.status = false
           event.booked = false
+          await visit.save()
           await event.save()
           return visit
         } catch (error) {
