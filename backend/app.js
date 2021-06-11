@@ -106,12 +106,10 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   mongoose.set('useCreateIndex', true)
   mongoose.connect('mongodb://luma-varaukset-db:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
-      console.log('connected to MongoDB, initializing database')
-      createAdmin()
-      createEvents()
+      console.log('Connected to MongoDB')
     })
     .catch((error) => {
-      console.log('error connecting to MongoDB: ', error.message)
+      console.log('Error connecting to MongoDB: ', error.message)
     })
 } else {
   mongoose.set('useFindAndModify', false)

@@ -39,6 +39,10 @@ jobs:
         env:
           CYPRESS_RECORD_KEY: ${{secrets.CYPRESS_KEY}}
           #MONGODB_TEST_URI: ${{secrets.MONGODB_TEST_URI}}
+          EMAILHOST: smtp.ethereal.email
+          EMAILUSER: clarabelle.terry@ethereal.email
+          EMAILPASSWORD: ${{secrets.EMAILPASSWORD}}
+          EMAILPORT: 587
           SECRET: ${{secrets.SECRET}}
 
   backend:
