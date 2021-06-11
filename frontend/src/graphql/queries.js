@@ -124,6 +124,13 @@ export const FIND_VISIT = gql`
       clientName
       clientEmail
       clientPhone
+      event {
+        title
+        resourceId
+        start
+        end
+      }
+      grade
     }
   }
 `

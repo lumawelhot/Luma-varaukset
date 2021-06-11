@@ -2,30 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { FIND_VISIT, CANCEL_VISIT } from '../graphql/queries'
 import { useMutation, useLazyQuery } from '@apollo/client'
 import { useParams } from 'react-router'
-//import moment from 'moment'
+import moment from 'moment'
 import { useHistory } from 'react-router'
 
-/* const grades = [
-  { value: 1, label:'Varhaiskasvatus' },
-  { value: 2, label: '1.-2. luokka' },
-  { value: 3, label: '3.-6. luokka' },
-  { value: 4, label:'7.-9 luokka' },
-  { value: 5, label:  'toinen aste' }
-] */
-
-/* const filterEventGrades = (eventGrades) => {
-  const returnArray = []
-  eventGrades.forEach(availableGrade => {
-    grades.forEach(grade => {
-      if (availableGrade === grade.value) {
-        returnArray.push({ value: grade.value, label: grade.label })
-      }
-    })
-  })
-  return returnArray
-} */
-
-/* const filterEventClass = (eventClass) => {
+const filterEventClass = (eventClass) => {
   switch (eventClass) {
     case 1:
       return 'SUMMAMUTIKKA'
@@ -41,7 +21,26 @@ import { useHistory } from 'react-router'
       console.log('Error!')
       break
   }
-} */
+}
+
+const filterEventGrades = (visitGrade) => {
+  switch (visitGrade) {
+    case 1:
+      return 'Varhaiskasvatus'
+    case 2:
+      return '1.-2. luokka'
+    case 3:
+      return '3.-6. luokka'
+    case 4:
+      return '7.-9. luokka'
+    case 5:
+      return 'Toinen aste'
+    default:
+      console.log('Error!')
+      break
+  }
+}
+
 
 const VisitPage = ({ sendMessage }) => {
   const history = useHistory()
@@ -62,7 +61,6 @@ const VisitPage = ({ sendMessage }) => {
   })
 
   useEffect(() => {
-    console.log(data, loading)
     if (!data) {
       const pin = window.prompt('Anna pin-koodi:')
       findVisit({ variables: { pin: Number(pin), id } })
@@ -101,17 +99,17 @@ const VisitPage = ({ sendMessage }) => {
     <div className="container">
       <div className="columns is-centered">
         <div className="section">
-          <div className="title">{/* {visit.event.title} */}</div>
-          {/* {!visit.event.booked && <p className="subtitle">Peruttu</p>}
-          {visit.event.booked && */}
+          <div className="title">Olet varannut seuraavan tapahtuman:</div>
           <div>
+            <p><b>{visit.event.title}</b></p>
             <p>Kuvaus: [Tähän tapahtuman kuvaus]</p>
-            <p>Tiedeluokka: </p>
-            <p>Valittavissa olevat lisäpalvelut: [Tähän ekstrat]</p>
-            <div>Tarjolla seuraaville luokka-asteille:</div>
-            {/* <p>Tapahtuma alkaa: {moment(visit.event.start).format('DD.MM.YYYY, HH:mm')}</p> */}
+            <p>Tiedeluokka: {filterEventClass(visit.event.resourceId)}</p>
+            <p>Valitut lisäpalvelut: [Tähän ekstrat]</p>
+            <div>Valittu luokka-aste: {filterEventGrades(visit.grade)}</div>
+            <p>Tapahtuma alkaa: {moment(visit.event.start).format('DD.MM.YYYY, HH:mm')}</p>
+            <p>Tapahtuma päättyy: {moment(visit.event.end).format('DD.MM.YYYY, HH:mm')}</p>
             <button className="button is-danger" onClick={handelCancel}>Peru</button>
-          </div>{/* } */}
+          </div>
         </div>
       </div>
     </div>

@@ -28,7 +28,14 @@ const resolvers = {
       try {
         const visit = await Visit.findById(args.id)
         if (visit.pin === args.pin) {
-          return { clientName: visit.clientName, clientEmail: visit.clientEmail, clientPhone: visit.clientPhone }
+          return {
+            id: visit.id,
+            clientName: visit.clientName,
+            clientEmail: visit.clientEmail,
+            clientPhone: visit.clientPhone,
+            event: visit.event,
+            grade: visit.grade
+          }
         }
       } catch (e) {
         throw new UserInputError('Varausta ei löytynyt!')
