@@ -63,11 +63,12 @@ const typeDefs = gql `
     createEvent(
       title: String!
       class: String!
-      location: [String]!
       grades: [Int]!
       start: String!
       end: String!
       desc: String
+      closeVisit: Boolean!
+      remoteVisit: Boolean!
       tags: [TagInput]
     ): Event
     createVisit(

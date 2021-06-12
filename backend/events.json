@@ -1,16 +1,5 @@
 [
   {
-    "title": "Scratch-ohjelmointikieli",
-    "allDay": true,
-    "start": "Tue Jul 01 2021 09:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Wed Jul 02 2021 13:00:00 GMT+0300 (Eastern European Summer Time)",
-    "resourceId": 3,
-    "grades": [1, 2, 3],
-    "booked": false,
-    "closeVisit": true,
-    "remoteVisit": false
-  },
-  {
     "title": "Maanjäristysten alueellisuus ja niiden vaikutukset",
     "start": "Mon Jul 07 2021 09:00:00 GMT+0300 (Eastern European Summer Time)",
     "end": "Mon Jul 07 2021 10:00:00 GMT+0300 (Eastern European Summer Time)",
@@ -32,19 +21,18 @@
   },
   {
     "title": "Kemian kokeelliset työt",
-    "start": "Thu Jul 03 2021 09:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Thu Jul 03 2021 12:00:00 GMT+0300 (Eastern European Summer Time)",
+    "start": "2021-06-20T09:00:00+0300",
+    "end": "2021-06-20T12:00:00+0300",
     "resourceId": 4,
     "grades": [1],
     "booked": false,
     "closeVisit": true,
-    "remoteVisit": false,
-    "location": ["remoteVisit"]
+    "remoteVisit": false
   },
   {
     "title": "Python-ohjelmointikieli",
-    "start": "Thu Jul 03 2021 08:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Thu Jul 03 2021 14:00:00 GMT+0300 (Eastern European Summer Time)",
+    "start": "2021-06-20T08:00:00+0300",
+    "end": "2021-06-20T14:00:00+0300",
     "resourceId": 3,
     "grades": [1],
     "booked": false,
@@ -53,8 +41,8 @@
   },
   {
     "title": "Matematiikan työpaja",
-    "start": "Thu Jul 03 2021 09:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Thu Jul 03 2021 10:00:00 GMT+0300 (Eastern European Summer Time)",
+    "start": "2021-06-20T09:00:00+0300",
+    "end": "2021-06-20T10:00:00+0300",
     "desc": "kuvaus",
     "resourceId": 1,
     "grades": [1],
@@ -63,7 +51,7 @@
     "remoteVisit": false
   },
   {
-    "title": "Scratch-ohjelointikieli",
+    "title": "Scratch-ohjelmointikieli",
     "start": "Mon Jun 14 2021 10:30:00 GMT+0300 (Eastern European Summer Time)",
     "end": "Mon Jun 14 2021 12:30:00 GMT+0300 (Eastern European Summer Time)",
     "desc": "kuvaus",
@@ -81,26 +69,6 @@
     "resourceId": 4,
     "grades": [3, 4],
     "booked": false,
-    "closeVisit": true,
-    "remoteVisit": false
-  },
-  {
-    "title": "Meeting",
-    "start": "Sat Jun 12 2021 10:30:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Sat Jun 12 2021 12:30:00 GMT+0300 (Eastern European Summer Time)",
-    "desc": "Pre-meeting meeting, to prepare for the meeting",
-    "resourceId": 2,
-    "grades": [1],
-    "closeVisit": true,
-    "remoteVisit": true
-  },
-  {
-    "title": "Lunch",
-    "start": "Sat Jun 12 2021 12:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Sat Jun 12 2021 13:00:00 GMT+0300 (Eastern European Summer Time)",
-    "desc": "Power lunch",
-    "resourceId": 3,
-    "grades": [1],
     "closeVisit": true,
     "remoteVisit": false
   }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Field, useFormik, FormikProvider } from 'formik'
+import { useFormik, FormikProvider } from 'formik'
 import { useMutation, useQuery } from '@apollo/client'
 import { CREATE_EVENT, TAGS } from '../graphql/queries'
 import { useHistory } from 'react-router'
@@ -17,11 +17,15 @@ const validate = (values) => {
     errors.title = defErrorMessage
   }
 
+  if (!values.grades.length) {
+    errors.grades = 'Valitse vähintään yksi luokka-aste'
+  }
+
   if (!values.scienceClass) {
     errors.scienceClass = defErrorMessage
   }
 
-  if (values.location.length === 0) {
+  if (!(values.remoteVisit || values.closeVisit)) {
     errors.location = 'Valitse joko etä- tai lähivierailu'
   }
 
@@ -117,7 +121,8 @@ const EventForm = ({
   const formik = useFormik({
     initialValues: {
       grades: [],
-      location: [],
+      remoteVisit: true,
+      closeVisit: true,
       title: '',
       scienceClass: '',
       desc: '',
@@ -133,7 +138,8 @@ const EventForm = ({
       create({
         variables: {
           grades: values.grades,
-          location: values.location,
+          remoteVisit: values.remoteVisit,
+          closeVisit: values.closeVisit,
           title: values.title,
           start,
           end,
@@ -192,26 +198,36 @@ const EventForm = ({
               />
             </FormikProvider>
 
-            <FormikProvider value ={formik}>
-              <div id="checkbox-group">Valitse etä- tai lähivierailu</div>
-              <div role="group" aria-labelledby="checkbox-group">
-                <label>
-                  <p>Etävierailu<Field type="checkbox" name="location" value="remoteVisit" />
-                  </p>
+            <div className="field">
+              <div id="checkbox-group">Valitse etä- ja/tai lähivierailu</div>
+              <div className="control">
+                <label className="checkbox">
+                  <input
+                    type="checkbox" name="remoteVisit" checked={formik.values.remoteVisit}
+                    onChange={() => {
+                      formik.touched.remoteVisit = true
+                      formik.setFieldValue('remoteVisit', !formik.values.remoteVisit)
+                    }} />
+                  Etävierailu
                 </label>
-                <label>
-                Lähivierailu
-                  <Field type="checkbox" name="location" value="closeVisit"/>
-
-                </label>
-
               </div>
-            </FormikProvider>
-            {formik.touched.location && formik.errors.location ? (
-              <p className="help is-danger">{formik.errors.location}</p>            ) : null}
+              <div className="control">
+                <label className="checkbox">
+                  <input type="checkbox" name="closeVisit" checked={formik.values.closeVisit}
+                    onChange={() => {
+                      formik.touched.closeVisit = true
+                      formik.setFieldValue('closeVisit', !formik.values.closeVisit)
+                    }
+                    } />
+                  Lähivierailu
+                </label>
+              </div>
+            </div>
 
-
-
+            {formik.touched.closeVisit && formik.touched.remoteVisit && formik.errors.location
+              ?
+              <p className="help is-danger">{formik.errors.location}</p>
+              : null}
             <div className="field" id="grade" >
               <div className="label" htmlFor="grade">
                 Luokka-aste
@@ -254,7 +270,11 @@ const EventForm = ({
                       className={`button ${
                         formik.values.grades.length ? 'is-success' : 'is-danger'
                       }`}
-                      onClick={() => setShowDropdownMenu(!showDropdownMenu)}
+                      onClick={() => {
+                        setShowDropdownMenu(!showDropdownMenu)
+                        formik.touched.grades = true
+                      }
+                      }
                     >
                       <span>Valitse</span>
                       <span
@@ -293,6 +313,9 @@ const EventForm = ({
                   </div>
                 </div>
               </FormikProvider>
+              {formik.touched.grades && formik.errors.grades ? (
+                <p className="help is-danger">{formik.errors.grades}</p>
+              ) : null}
             </div>
 
             <div className="field">

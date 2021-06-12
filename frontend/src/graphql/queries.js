@@ -71,7 +71,7 @@ export const CURRENT_USER = gql`
 `
 
 export const CREATE_EVENT = gql`
-  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!, $grades: [Int]!, $location: [String]!, $desc: String, $tags: [TagInput]) {
+  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!, $grades: [Int]!, $remoteVisit: Boolean!, $closeVisit: Boolean!, $desc: String, $tags: [TagInput]) {
     createEvent (
       title: $title,
       start: $start,
@@ -79,7 +79,8 @@ export const CREATE_EVENT = gql`
       class: $scienceClass,
       desc: $desc,
       grades: $grades,
-      location: $location,
+      remoteVisit: $remoteVisit,
+      closeVisit: $closeVisit,
       tags: $tags
     ) {
       title
@@ -91,6 +92,9 @@ export const CREATE_EVENT = gql`
         name,
         id
       }
+      closeVisit
+      remoteVisit
+      desc
       booked
     }
   }
