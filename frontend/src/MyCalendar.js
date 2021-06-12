@@ -3,7 +3,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import 'moment/locale/fi'
 import { messages } from './helpers/calendar-messages-fi'
-import { bookedEventColor, resourceColors } from './helpers/styles'
+import { bookedEventColor, resourceColorsLUMA } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
 
 //import LumaEventWrapper from './components/Custom/LumaEventWrapper'
@@ -66,7 +66,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
     return (
       <div className="block">
         {resourceName &&
-          <span className='tag is-small is-link' style={{ backgroundColor:resourceColors[event.resourceId-1] }}>{resourceName}</span>
+          <span className='tag is-small is-link' style={{ backgroundColor:resourceColorsLUMA[event.resourceId-1] }}>{resourceName}</span>
         }
         <span> {event.title}</span>
         <p>{event.desc}</p>

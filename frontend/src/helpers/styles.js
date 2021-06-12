@@ -14,8 +14,24 @@ export const resourceColorsLight = [
   '#F3C857', // GADOLIN
 ]
 
+export const resourceColorsLUMA = [
+  '#F2634C', // SUMMAMUTIKKA
+  '#8E5993', // FOTONI
+  '#32A272', // LINKKI
+  '#00A2C0', // GEOPISTE
+  '#F9A354', // GADOLIN
+]
+
+export const resourceColorsLUMALight = [
+  '#F58B7A', // SUMMAMUTIKKA
+  '#AE80B3', // FOTONI
+  '#53CA97', // LINKKI
+  '#0ADAFF', // GEOPISTE
+  '#0ADAFF', // GADOLIN
+]
+
 export const bookedEventColor = [
   '#DCDCDC', // HARMAA
 ]
 
-export default { resourceColors, resourceColorsLight, bookedEventColor }
+export default { resourceColors, resourceColorsLight, resourceColorsLUMA, resourceColorsLUMALight, bookedEventColor }

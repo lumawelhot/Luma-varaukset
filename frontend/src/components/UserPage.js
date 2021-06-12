@@ -17,10 +17,14 @@ const UserPage = ({ currentUser }) => {
   if (!currentUser) return <div></div>
 
   return (
-    <div>
-      <button className="button is-link is-light" onClick={createEvent}>Luo uusi vierailu</button>
+    <div className="field is-grouped">
+      <p className="control">
+        <button className="button luma" onClick={createEvent}>Luo uusi vierailu</button>
+      </p>
       {currentUser.isAdmin &&
-        <button className="button is-link is-light" onClick={listUsers}>Käyttäjälista</button>
+        <p className="control">
+          <button className="button luma" onClick={listUsers}>Käyttäjälista</button>
+        </p>
       }
     </div>
   )

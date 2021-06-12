@@ -224,7 +224,7 @@ const EventForm = ({
                   >
                     <button
                       type="button"
-                      className={`button ${
+                      className={`button luma ${
                         formik.values.grades.length ? 'is-success' : 'is-danger'
                       }`}
                       onClick={() => setShowDropdownMenu(!showDropdownMenu)}
@@ -412,11 +412,11 @@ const EventForm = ({
               <p className="help is-danger">{formik.errors.desc}</p>
             ) : null}
 
-            <button id="create" className="button is-link" type="submit">
+            <button id="create" className="button luma primary" type="submit">
               Tallenna
             </button>
             <button
-              className="button is-link is-light"
+              className="button luma"
               onClick={closeEventForm}
             >
               Poistu

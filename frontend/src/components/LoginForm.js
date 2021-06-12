@@ -42,7 +42,7 @@ const LoginForm = ({ getUser, sendMessage }) => {
     <div className="container">
       <div className="columns is-centered">
         <div className="section">
-          <div className="title">Luma varaukset kirjautuminen</div>
+          <div className="title">Kirjautuminen (Luma-Varaukset)</div>
           <form onSubmit={submit}>
             <div className="field">
               <label className="label">Käyttäjänimi</label>
@@ -68,12 +68,12 @@ const LoginForm = ({ getUser, sendMessage }) => {
             </div>
             <div className="field is-grouped">
               <div className="control">
-                <button id="login" className="button is-link" type="submit">
+                <button id="login" className="button luma primary" type="submit">
                   Kirjaudu sisään
                 </button>
               </div>
               <div className="control">
-                <button className="button is-link is-light" onClick={cancel}>
+                <button className="button luma" onClick={cancel}>
                   Poistu
                 </button>
               </div>

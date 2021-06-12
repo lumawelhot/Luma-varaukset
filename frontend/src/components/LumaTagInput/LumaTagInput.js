@@ -146,7 +146,7 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
                 type="text"
                 autoComplete="off"
                 placeholder={prompt}
-                className="input"
+                className="input taginput"
                 onChange={(e) => setNewTag(e.target.value)}
                 onKeyUp={e => handleKeyUp(e)}
                 onKeyDown={e => handleKeyDown(e, dropdownItems)}
