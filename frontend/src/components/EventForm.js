@@ -17,8 +17,16 @@ const validate = (values) => {
     errors.title = defErrorMessage
   }
 
+  if (!values.grades.length) {
+    errors.grades = 'Valitse vähintään yksi luokka-aste'
+  }
+
   if (!values.scienceClass) {
     errors.scienceClass = defErrorMessage
+  }
+
+  if (!(values.remoteVisit || values.closeVisit)) {
+    errors.location = 'Valitse joko etä- tai lähivierailu'
   }
 
   if (String(values.date) === 'Invalid date') {
@@ -113,6 +121,8 @@ const EventForm = ({
   const formik = useFormik({
     initialValues: {
       grades: [],
+      remoteVisit: true,
+      closeVisit: true,
       title: '',
       scienceClass: '',
       desc: '',
@@ -128,6 +138,8 @@ const EventForm = ({
       create({
         variables: {
           grades: values.grades,
+          remoteVisit: values.remoteVisit,
+          closeVisit: values.closeVisit,
           title: values.title,
           start,
           end,
@@ -141,7 +153,8 @@ const EventForm = ({
           ),
         },
       })
-      console.log(tags.data.getTags)
+
+
       alert(JSON.stringify(values, null, 2))
     },
   })
@@ -185,6 +198,36 @@ const EventForm = ({
               />
             </FormikProvider>
 
+            <div className="field">
+              <div id="checkbox-group">Valitse etä- ja/tai lähivierailu</div>
+              <div className="control">
+                <label className="checkbox">
+                  <input
+                    type="checkbox" name="remoteVisit" checked={formik.values.remoteVisit}
+                    onChange={() => {
+                      formik.touched.remoteVisit = true
+                      formik.setFieldValue('remoteVisit', !formik.values.remoteVisit)
+                    }} />
+                  Etävierailu
+                </label>
+              </div>
+              <div className="control">
+                <label className="checkbox">
+                  <input type="checkbox" name="closeVisit" checked={formik.values.closeVisit}
+                    onChange={() => {
+                      formik.touched.closeVisit = true
+                      formik.setFieldValue('closeVisit', !formik.values.closeVisit)
+                    }
+                    } />
+                  Lähivierailu
+                </label>
+              </div>
+            </div>
+
+            {formik.touched.closeVisit && formik.touched.remoteVisit && formik.errors.location
+              ?
+              <p className="help is-danger">{formik.errors.location}</p>
+              : null}
             <div className="field" id="grade" >
               <div className="label" htmlFor="grade">
                 Luokka-aste
@@ -227,7 +270,11 @@ const EventForm = ({
                       className={`button ${
                         formik.values.grades.length ? 'is-success' : 'is-danger'
                       }`}
-                      onClick={() => setShowDropdownMenu(!showDropdownMenu)}
+                      onClick={() => {
+                        setShowDropdownMenu(!showDropdownMenu)
+                        formik.touched.grades = true
+                      }
+                      }
                     >
                       <span>Valitse</span>
                       <span
@@ -266,6 +313,9 @@ const EventForm = ({
                   </div>
                 </div>
               </FormikProvider>
+              {formik.touched.grades && formik.errors.grades ? (
+                <p className="help is-danger">{formik.errors.grades}</p>
+              ) : null}
             </div>
 
             <div className="field">

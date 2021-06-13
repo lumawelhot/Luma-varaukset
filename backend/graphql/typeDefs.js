@@ -16,6 +16,8 @@ const typeDefs = gql `
     id: ID!
     title: String!
     resourceId: Int
+    remoteVisit: Boolean!
+    closeVisit: Boolean!
     grades: [Int]!
     start: String!
     end: String!
@@ -65,6 +67,8 @@ const typeDefs = gql `
       start: String!
       end: String!
       desc: String
+      closeVisit: Boolean!
+      remoteVisit: Boolean!
       tags: [TagInput]
     ): Event
     createVisit(
