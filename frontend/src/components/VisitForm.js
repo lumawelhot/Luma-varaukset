@@ -76,7 +76,14 @@ const VisitForm = ({ sendMessage, event }) => {
   }
 
   const [create, result] = useMutation(CREATE_VISIT, {
-    onError: (error) => console.log('virheviesti: ', error, result),
+    onError: (error) => {
+      if (error.message === 'File not found') {
+        sendMessage('Vahvistus viestin lähettäminen epäonnistui! Vierailun varaaminen ei onnistunut.', 'danger')
+      } else {
+        sendMessage('Annetuissa tiedoissa on virhe! Vierailun varaaminen ei onnistunut.', 'danger')
+      }
+      // console.log('virheviesti: ', error, result)
+    },
   })
 
   const cancel = (event) => {
@@ -114,8 +121,10 @@ const VisitForm = ({ sendMessage, event }) => {
 
   useEffect(() => {
     if (result.data) {
-      sendMessage(`Olet tehnyt varauksen tapahtumaan ${result.data.createVisit.event.title} onnistuneesti! PIN-koodisi tulostuu konsoliin.`, 'success')
-      console.log('Pin-koodisi: ', result.data.createVisit.pin)
+      sendMessage(`Varaus on tehty onnistuneesti! Varauksen tiedot on lähetetty sähköpostiosoitteeseenne ${result.data.createVisit.clientEmail}.`, 'success')
+
+      //sendMessage(`Olet tehnyt varauksen tapahtumaan ${result.data.createVisit.event.title} onnistuneesti! PIN-koodisi tulostuu konsoliin.`, 'success')
+      //console.log('Pin-koodisi: ', result.data.createVisit.pin)
       history.push('/')
     }
   }, [result.data])
