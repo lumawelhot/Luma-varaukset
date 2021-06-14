@@ -74,7 +74,7 @@ Cypress.Commands.add('createUser', ({ username, password, isAdmin }) => {
   })
 })
 
-Cypress.Commands.add('createEvent', ({ title, scienceClass, start, end, desc }) => {
+Cypress.Commands.add('createEvent', ({ title, scienceClass, remoteVisit, closeVisit, start, end, desc }) => {
   cy.request({
     url: 'http://localhost:3001/graphql',
     method: 'POST',
@@ -91,6 +91,8 @@ Cypress.Commands.add('createEvent', ({ title, scienceClass, start, end, desc }) 
           end: "${end}"
           desc: "${desc}"
           grades: [1, 2]
+          remoteVisit: ${remoteVisit}
+          closeVisit: ${closeVisit}
           tags: [{ name: "Matematiikka" }, { name: "Fysiikka" }]
         ){
           title,
@@ -98,10 +100,12 @@ Cypress.Commands.add('createEvent', ({ title, scienceClass, start, end, desc }) 
           start,
           end,
           grades,
-          desc
+          remoteVisit,
+          closeVisit,
+          desc,
           tags {
             name
-          }
+          },
           booked
         }
       }
