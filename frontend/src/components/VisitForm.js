@@ -78,7 +78,7 @@ const VisitForm = ({ sendMessage, event }) => {
   const [create, result] = useMutation(CREATE_VISIT, {
     onError: (error) => {
       if (error.message === 'File not found') {
-        sendMessage('Vahvistus viestin lähettäminen epäonnistui! Vierailun varaaminen ei onnistunut.', 'danger')
+        sendMessage('Vahvistusviestin lähettäminen epäonnistui! Vierailun varaaminen ei onnistunut.', 'danger')
       } else {
         sendMessage('Annetuissa tiedoissa on virhe! Vierailun varaaminen ei onnistunut.', 'danger')
       }
