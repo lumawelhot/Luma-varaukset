@@ -232,8 +232,8 @@ const VisitForm = ({ sendMessage, event }) => {
                 <Message message={formik.errors.clientPhone} />
               ) : null}
 
-              <button id="create" className="button is-link" type='submit'>Tallenna</button>
-              <button className="button is-link is-light" onClick={cancel}>Poistu</button>
+              <button id="create" className="button luma primary" type='submit'>Tallenna</button>
+              <button className="button luma" onClick={cancel}>Poistu</button>
 
             </form>
           </div>

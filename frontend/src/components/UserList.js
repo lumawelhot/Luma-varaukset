@@ -14,6 +14,12 @@ const UserList = () => {
     history.push('/users/create')
   }
 
+  const cancel = (event) => {
+    event.preventDefault()
+
+    history.push('/')
+  }
+
   return (
     <div>
       <h1 className="title">Users</h1>
@@ -33,7 +39,14 @@ const UserList = () => {
           )}
         </tbody>
       </table>
-      <button className="button is-link is-light" onClick={create}>Luo uusi käyttäjä</button>
+      <div className="field is-grouped">
+        <div className="control">
+          <button className="button luma primary" onClick={create}>Luo uusi käyttäjä</button>
+        </div>
+        <div className="control">
+          <button className="button luma" onClick={cancel}>Poistu</button>
+        </div>
+      </div>
     </div>
   )
 }

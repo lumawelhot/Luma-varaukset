@@ -122,7 +122,7 @@ const App = () => {
   if (loading) return <div></div>
 
   return (
-    <div className="App">
+    <div className="App container">
       <Toasts toasts={toasts} />
       <Switch>
 
@@ -166,9 +166,9 @@ const App = () => {
         </Route>
         <Route path='/'>
           {currentUser &&
-            <div className="control">
-              <button className="button is-link is-light" onClick={logout}>Kirjaudu ulos</button>
-              <div style={{ position: 'absolute', top: 0, right: 0 }}>
+            <div className="level">
+              <button className="button luma" onClick={logout}>Kirjaudu ulos</button>
+              <div className="is-pulled-right">
                 Olet kirjautunut käyttäjänä: {currentUser.username}
               </div>
             </div>
