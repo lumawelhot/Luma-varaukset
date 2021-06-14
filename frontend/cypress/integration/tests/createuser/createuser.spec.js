@@ -66,7 +66,7 @@ Given('I am on the user list page', () => {
 })
 
 When('I press create user button', () => {
-  cy.get('.button').click()
+  cy.get(':nth-child(1) > .button').click()
 })
 
 Then('the user creation page is shown', () => {
