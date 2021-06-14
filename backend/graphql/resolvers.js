@@ -25,8 +25,21 @@ const resolvers = {
       return tags
     },
     findVisit: async (root, args) => {
-      const visit = await Visit.findById(args.id)
-      return visit
+      try {
+        const visit = await Visit.findById(args.id)
+        if (visit.pin === args.pin) {
+          return {
+            id: visit.id,
+            clientName: visit.clientName,
+            clientEmail: visit.clientEmail,
+            clientPhone: visit.clientPhone,
+            event: visit.event,
+            grade: visit.grade
+          }
+        }
+      } catch (e) {
+        throw new UserInputError('Varausta ei löytynyt!')
+      }
     },
     me: (root, args, context) => {
       return context.currentUser
@@ -34,7 +47,7 @@ const resolvers = {
   },
   Visit: {
     event: async (root) => {
-      const event = await Event.findById(root.event)
+      const event = await Event.findById(root.event).populate('tags', { name: 1, id: 1 })
       return event
     },
   },
@@ -139,6 +152,7 @@ const resolvers = {
         ...args,
         event: event,
         pin: pin,
+        status: true,
       })
       let savedVisit
       try {
@@ -176,9 +190,14 @@ const resolvers = {
     },
     cancelVisit: async (root, args) => {
       const visit = await Visit.findById(args.id)
+      const event = await Event.findById(visit.event)
       if (visit.pin === args.pin) {
         try {
-          return Visit.findByIdAndRemove(visit.id)
+          visit.status = false
+          event.booked = false
+          await visit.save()
+          await event.save()
+          return visit
         } catch (error) {
           throw new UserInputError(error.message, {
             invalidArgs: args,

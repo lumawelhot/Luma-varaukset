@@ -27,6 +27,10 @@ const visitSchema = mongoose.Schema({
   clientPhone: {
     type: String,
     required: true,
+  },
+  status: {
+    type: Boolean,
+    required: true,
   }
 })
 
