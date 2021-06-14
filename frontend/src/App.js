@@ -17,6 +17,7 @@ import LumaTagInput from './components/LumaTagInput/LumaTagInput' */
 import EventPage from './components/EventPage'
 import Toasts from './components/Toasts'
 import { v4 as uuidv4 } from 'uuid'
+import VisitPage from './components/VisitPage'
 
 const App = () => {
   const history = useHistory()
@@ -124,6 +125,7 @@ const App = () => {
     <div className="App container">
       <Toasts toasts={toasts} />
       <Switch>
+
         <Route path='/event-page'>
           <EventPage handleBookingButtonClick={handleBookingButtonClick} event={clickedEvent} sendMessage={notify}/>
         </Route>
@@ -158,6 +160,9 @@ const App = () => {
             <UserList />
           }
           {!(currentUser && currentUser.isAdmin) && <p>Sinulla ei ole tarvittavia oikeuksia.</p>}
+        </Route>
+        <Route path='/:id'>
+          <VisitPage sendMessage={notify}/>
         </Route>
         <Route path='/'>
           {currentUser &&

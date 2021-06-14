@@ -38,11 +38,11 @@ const VisitForm = ({ sendMessage, event }) => {
     history.push('/')
   }
   const grades = [
-    { value: 1, label:'Varhaiskasvatus' },
+    { value: 1, label: 'Varhaiskasvatus' },
     { value: 2, label: '1.-2. luokka' },
     { value: 3, label: '3.-6. luokka' },
-    { value: 4, label:'7.-9 luokka' },
-    { value: 5, label:  'toinen aste' }
+    { value: 4, label: '7.-9 luokka' },
+    { value: 5, label: 'toinen aste' }
   ]
 
   const filterEventGrades = (eventGrades) => {
@@ -78,7 +78,7 @@ const VisitForm = ({ sendMessage, event }) => {
   const [create, result] = useMutation(CREATE_VISIT, {
     onError: (error) => {
       if (error.message === 'File not found') {
-        sendMessage('Vahvistus viestin lähettäminen epäonnistui! Vierailun varaaminen ei onnistunut.', 'danger')
+        sendMessage('Vahvistusviestin lähettäminen epäonnistui! Vierailun varaaminen ei onnistunut.', 'danger')
       } else {
         sendMessage('Annetuissa tiedoissa on virhe! Vierailun varaaminen ei onnistunut.', 'danger')
       }
