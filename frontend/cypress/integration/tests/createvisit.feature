@@ -31,10 +31,10 @@ Scenario: An event is succesfully booked by a teacher with valid information
     And valid information is entered
     Then booked event turns grey in calendar view
 
-Scenario: An event is not booked by a teacher if client name is invalid
-    Given I am on the front page
-    And there is an event 2 more than two weeks ahead
-    When I click on available event 2
-    And I click the booking button
-    When invalid client name is entered
-    Then an error message is shown
+#Scenario: An event is not booked by a teacher if client name is invalid
+#    Given I am on the front page
+#    And there is an event 2 more than two weeks ahead
+#    When I click on available event 2
+#    And I click the booking button
+#    When invalid client name is entered
+#    Then an error message is shown

@@ -44,7 +44,9 @@ beforeEach(async () => {
     resourceId: 1,
     grades: [1],
     start: unavailableDate,
-    end: unavailableDate
+    end: unavailableDate,
+    closeVisit: true,
+    remoteVisit: false
   }
 
   const availableEventData = {
@@ -52,7 +54,9 @@ beforeEach(async () => {
     resourceId: 2,
     grades: [1],
     start: availableDate,
-    end: availableDate
+    end: availableDate,
+    closeVisit: false,
+    remoteVisit: true
   }
 
   unavailableEvent = new EventModel(unavailableEventData)

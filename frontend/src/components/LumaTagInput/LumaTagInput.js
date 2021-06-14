@@ -119,7 +119,6 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
 
   const handleBlur = (e) => {
     if (!focusInCurrentTarget(e)) {
-      console.log('Clicked outside taginput')
       setFocused(false)
     }
   }
