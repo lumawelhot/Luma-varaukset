@@ -83,6 +83,7 @@ export const CREATE_EVENT = gql`
       closeVisit: $closeVisit,
       tags: $tags
     ) {
+      id
       title
       resourceId
       grades
@@ -119,13 +120,12 @@ export const CREATE_VISIT = gql`
       clientName
       clientEmail
       clientPhone
-      pin
     }
   }
 `
 export const FIND_VISIT = gql`
-  query findVisit($id: ID!, $pin: Int!) {
-    findVisit(id: $id, pin: $pin) {
+  query findVisit($id: ID!) {
+    findVisit(id: $id) {
       clientName
       clientEmail
       clientPhone
@@ -141,8 +141,8 @@ export const FIND_VISIT = gql`
 `
 
 export const CANCEL_VISIT = gql`
-  mutation cancelVisit($id: ID!, $pin: Int!) {
-    cancelVisit(id: $id, pin: $pin) {
+  mutation cancelVisit($id: ID!) {
+    cancelVisit(id: $id) {
       id
     }
   }
