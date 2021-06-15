@@ -23,6 +23,7 @@ const typeDefs = gql `
     end: String!
     desc: String
     tags: [Tag]!
+    visits: [Visit]!
   }
   type Visit {
     id: ID!

@@ -17,7 +17,10 @@ const resolvers = {
       return users
     },
     getEvents: async () => {
-      const events = await Event.find({}).populate('tags', { name: 1, id: 1 })
+      const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits')
+
+      //säätöä
+      
       return events
     },
     getTags: async () => {
@@ -145,7 +148,6 @@ const resolvers = {
     createVisit: async (root, args) => {
       const pin = Math.floor(1000 + Math.random() * 9000)
       const event = await Event.findById(args.event)
-      await event.save()
       const visit = new Visit({
         ...args,
         event: event,
@@ -158,6 +160,7 @@ const resolvers = {
         const start = moment(event.start)
         if (start.diff(now, 'days') >= 14) {
           savedVisit = await visit.save()
+          console.log(savedVisit)
           const details = [{
             name: 'link',
             value: `${config.HOST_URI}/${savedVisit.id}`
@@ -175,6 +178,8 @@ const resolvers = {
             text,
             html
           })
+          event.visits = event.visits.concat(savedVisit._id)
+          await event.save()
           return savedVisit
         }
       } catch (error) {
@@ -191,6 +196,7 @@ const resolvers = {
       if (visit.pin === args.pin) {
         try {
           visit.status = false
+          event.visits = event.visits.filter(v => String(v) !== String(visit.id))
           await visit.save()
           await event.save()
           return visit
