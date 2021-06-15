@@ -2,7 +2,7 @@
 import { Given, When, Then, And } from 'cypress-cucumber-preprocessor/steps'
 
 const eventDate = new Date()
-eventDate.setDate(new Date().getDate() + 16)
+eventDate.setDate(new Date().getDate() + 15)
 const eventName = 'Cancel-visit'
 
 Given('employee is logged in', () => {
