@@ -104,8 +104,20 @@ const resolvers = {
         default:
           throw new UserInputError('Invalid class')
       }
+      let gradeList = args.grades
+      let grades = []
+      console.log(grades)
 
-      let grades = args.grades
+
+      gradeList.forEach((element,index) => {
+        if(element){
+          grades.push(index)
+        }
+      } )
+
+      console.log(grades)
+
+
 
       if (grades.length < 1) {
         throw new UserInputError('At least one grade must be selected!')
