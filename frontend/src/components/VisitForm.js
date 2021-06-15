@@ -122,10 +122,7 @@ const VisitForm = ({ sendMessage, event }) => {
   useEffect(() => {
     if (result.data) {
       sendMessage(`Varaus on tehty onnistuneesti! Varauksen tiedot on lähetetty sähköpostiosoitteeseenne ${result.data.createVisit.clientEmail}.`, 'success')
-
-      //sendMessage(`Olet tehnyt varauksen tapahtumaan ${result.data.createVisit.event.title} onnistuneesti! PIN-koodisi tulostuu konsoliin.`, 'success')
-      //console.log('Pin-koodisi: ', result.data.createVisit.pin)
-      history.push('/')
+      history.push('/' + result.data.createVisit.id)
     }
   }, [result.data])
 

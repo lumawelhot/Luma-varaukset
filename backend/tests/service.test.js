@@ -3,7 +3,6 @@ const reader = require('../services/fileReader')
 
 describe('Mailer', () => {
 
-
   it('success', () => {
     let error
     const details = {
@@ -21,30 +20,13 @@ describe('Mailer', () => {
     expect(error).toBe(undefined)
   })
 
-  it('', async () => {
-    let error
-    try {
-      await mailer.sendMail('wrong')
-    } catch (err) {
-      error = err
-    }
-    expect(error).toBeDefined()
-  })
-
-  afterAll(async () => {
-  })
-
 })
 
 describe('File reader', () => {
 
   let mailDetails = [{
     name: 'link',
-    value: 'YYYYY'
-  },
-  {
-    name: 'pin',
-    value: 3131
+    value: 'URL'
   }]
 
   it('reads the existing file correctly', async () => {
@@ -55,8 +37,7 @@ describe('File reader', () => {
     } catch (err) {
       error = err
     }
-    expect(data).toContain('YYYYY')
-    expect(data).toContain('3131')
+    expect(data).toContain('URL')
     expect(data).toContain('LumaWelhot')
     expect(error).toBe(undefined)
   })

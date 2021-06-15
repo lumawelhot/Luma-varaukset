@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps'
+import { Given, When, Then, And } from 'cypress-cucumber-preprocessor/steps'
 
 Given('Admin is logged in', () => {
   cy.login({ username: 'Admin', password: 'salainen' })
@@ -49,6 +49,10 @@ Then('an error is shown', () => {
 
 Given('a user is created', () => {
   cy.createUser({ username: 'xxxxx', password: 'supersecret', isAdmin: false })
+})
+
+And('I am on the list user page', () => {
+  cy.visit('http://localhost:3000/users')
 })
 
 Then('the created user xxxxx is listed', () => {
