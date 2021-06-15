@@ -1012,5 +1012,10 @@ button.button.luma {
 }
 
 input.hidden {
-  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: transparent;
+  background-color: transparent;
+  border: none;
 }
