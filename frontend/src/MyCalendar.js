@@ -3,7 +3,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import 'moment/locale/fi'
 import { messages } from './helpers/calendar-messages-fi'
-import { bookedEventColor, resourceColorsLUMA } from './helpers/styles'
+import { /* bookedEventColor, */ resourceColorsLUMA } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
 
 //import LumaEventWrapper from './components/Custom/LumaEventWrapper'
@@ -42,7 +42,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
   }
 
   const customEventPropGetter = event => {
-    if (event.booked || moment(event.start).diff(new Date(), 'days') < 14) {
+    if (moment(event.start).diff(new Date(), 'days') < 14) {
       return { className: 'booked' , }
     }
     return { className: resourceMap[event.resourceId-1]?.resourceTitle.toLowerCase() || '' }
@@ -50,19 +50,6 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
 
   const AgendaEvent = ({ event }) => {
     const resourceName = resourceMap[event.resourceId-1]?.resourceTitle || null
-    console.log(event.booked)
-    if (event.booked) {
-      console.log(event.booked)
-      return (
-        <div className="block">
-          {resourceName &&
-            <span className='tag is-small is-link' style={{ backgroundColor:bookedEventColor[0] }}>{resourceName}</span>
-          }
-          <span> {event.title}</span>
-          <p>{event.desc}</p>
-        </div>
-      )
-    }
     return (
       <div className="block">
         {resourceName &&

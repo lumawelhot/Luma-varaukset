@@ -47,7 +47,6 @@ export const EVENTS = gql`
       start
       end
       desc
-      booked
     }
   }
 `
@@ -95,7 +94,6 @@ export const CREATE_EVENT = gql`
       closeVisit
       remoteVisit
       desc
-      booked
     }
   }
 `
@@ -113,7 +111,6 @@ export const CREATE_VISIT = gql`
       event {
         id
         title
-        booked
       }
       grade
       clientName

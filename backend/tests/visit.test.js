@@ -137,7 +137,6 @@ describe('Visit server test', () => {
           id
           event {
             title
-            booked
           }
           clientName
           clientEmail
@@ -162,7 +161,6 @@ describe('Visit server test', () => {
     expect(createVisit.clientEmail).toBe('teacher@school.com')
     expect(createVisit.clientPhone).toBe('040-1234567')
     expect(createVisit.grade).toBe(1)
-    expect(createVisit.event.booked).toBe(true)
     expect(createVisit.status).toBe(true)
   })
 
@@ -259,7 +257,6 @@ describe('Visit server test', () => {
     expect(cancelledVisit.id).toBeDefined()
 
     const event = await EventModel.findById(cancelledVisit.event)
-    expect(event.booked).toBe(false)
   })
 
   it('do not cancel visit by id and invalid pin', async () => {

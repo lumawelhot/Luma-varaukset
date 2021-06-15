@@ -135,7 +135,6 @@ const resolvers = {
         desc: args.desc,
         resourceId,
         grades,
-        booked: false,
         remoteVisit: args.remoteVisit,
         closeVisit: args.closeVisit
       })
@@ -146,7 +145,6 @@ const resolvers = {
     createVisit: async (root, args) => {
       const pin = Math.floor(1000 + Math.random() * 9000)
       const event = await Event.findById(args.event)
-      event.booked = true
       await event.save()
       const visit = new Visit({
         ...args,
@@ -180,7 +178,6 @@ const resolvers = {
           return savedVisit
         }
       } catch (error) {
-        event.booked = false
         await event.save()
         await savedVisit.delete()
         throw new UserInputError(error.message, {
@@ -194,7 +191,6 @@ const resolvers = {
       if (visit.pin === args.pin) {
         try {
           visit.status = false
-          event.booked = false
           await visit.save()
           await event.save()
           return visit

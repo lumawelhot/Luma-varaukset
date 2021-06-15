@@ -5,7 +5,6 @@
     "end": "Mon Jul 07 2021 10:00:00 GMT+0300 (Eastern European Summer Time)",
     "resourceId": 4,
     "grades": [1],
-    "booked": false,
     "closeVisit": true,
     "remoteVisit": false
   },
@@ -15,7 +14,6 @@
     "end": "Tue Jun 15 2021 12:00:00 GMT+0300 (Eastern European Summer Time)",
     "resourceId": 4,
     "grades": [1],
-    "booked": false,
     "closeVisit": true,
     "remoteVisit": false
   },
@@ -25,7 +23,6 @@
     "end": "2021-06-20T12:00:00+0300",
     "resourceId": 4,
     "grades": [1],
-    "booked": false,
     "closeVisit": true,
     "remoteVisit": false
   },
@@ -35,7 +32,6 @@
     "end": "2021-06-20T14:00:00+0300",
     "resourceId": 3,
     "grades": [1],
-    "booked": false,
     "closeVisit": true,
     "remoteVisit": false
   },
@@ -46,7 +42,6 @@
     "desc": "kuvaus",
     "resourceId": 1,
     "grades": [1],
-    "booked": false,
     "closeVisit": true,
     "remoteVisit": false
   },
@@ -57,7 +52,6 @@
     "desc": "kuvaus",
     "resourceId": 3,
     "grades": [1, 2],
-    "booked": false,
     "closeVisit": true,
     "remoteVisit": false
   },
@@ -68,7 +62,6 @@
     "desc": "kuvaus",
     "resourceId": 4,
     "grades": [3, 4],
-    "booked": false,
     "closeVisit": true,
     "remoteVisit": false
   }
