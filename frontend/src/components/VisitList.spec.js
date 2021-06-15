@@ -1,6 +1,6 @@
 import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
-import { render, waitFor, fireEvent } from '@testing-library/react'
+import { render, waitFor, fireEvent, screen } from '@testing-library/react'
 import { createMemoryHistory } from 'history'
 import { Router } from 'react-router-dom'
 import { MockedProvider } from '@apollo/client/testing'
@@ -82,9 +82,10 @@ test('Renders without error with 1 item', async () => {
 
 test('URL is copied', async () => {
   document.execCommand = jest.fn()
+  const notify = jest.fn()
   const { container } = render(
     <MockedProvider mocks={singleItem} addTypename={false}>
-      <VisitList/>
+      <VisitList notify={notify}/>
     </MockedProvider>
   )
   await waitFor(() => new Promise((res) => setTimeout(res, 0))) // Allow component time to render
@@ -108,4 +109,31 @@ test('Return on clicking "Poistu"', async () => {
   const element = container.querySelector('.button.luma.primary')
   fireEvent.click(element)
   expect(history.location.pathname).toBe('/')
+})
+
+test('Filtering works as expected', async () => {
+  render(
+    <MockedProvider mocks={singleItem} addTypename={false}>
+      <VisitList/>
+    </MockedProvider>
+  )
+  await waitFor(() => new Promise((res) => setTimeout(res, 0))) // Allow component time to render
+  const element = screen.getByText('FOTONI')
+  fireEvent.click(element)
+  const field = screen.getByText('Varauksia ei löytynyt.')
+  expect(field).toBeDefined()
+})
+
+test('Status is displayed correctly', async () => {
+  let singleItemCancelled = [...singleItem]
+  singleItemCancelled[0].result.data.getVisits[0].status = false
+
+  render(
+    <MockedProvider mocks={singleItemCancelled} addTypename={false}>
+      <VisitList/>
+    </MockedProvider>
+  )
+  await waitFor(() => new Promise((res) => setTimeout(res, 0))) // Allow component time to render
+  const field = screen.getByText('PERUTTU')
+  expect(field).toBeDefined()
 })
