@@ -9,9 +9,9 @@ Given('an event with title yyyyy is created', () => {
   const start = new Date()
   const end = new Date()
   start.setHours(7)
-  start.setDate(15)
-  end.setHours(13)
-  end.setDate(15)
+  start.setDate(16)
+  end.setHours(23)
+  end.setDate(16)
   cy.createEvent({
     title: 'yyyyy',
     scienceClass: 'FOTONI',

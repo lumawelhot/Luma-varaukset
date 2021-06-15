@@ -3,9 +3,9 @@ import { Given, When, Then, And } from 'cypress-cucumber-preprocessor/steps'
 import moment from 'moment'
 
 const eventDate1 = new Date()
-eventDate1.setDate(new Date().getDate() + 20)
+eventDate1.setDate(new Date().getDate() + 16)
 const eventDate2 = new Date()
-eventDate2.setDate(new Date().getDate() + 21)
+eventDate2.setDate(new Date().getDate())
 const availableEvent1 = 'Test event'
 const availableEvent2 = 'Test event for invalid client name'
 const unavailableEventName = 'Unavailable event'
@@ -119,6 +119,7 @@ And('valid information is entered', () => {
   cy.wait(100)
   cy.get('#create').click()
   cy.wait(2000)
+  cy.visit('http://localhost:3000')
 })
 
 Then('booked event turns grey in calendar view', () => {
