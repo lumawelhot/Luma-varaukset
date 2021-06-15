@@ -19,12 +19,22 @@
   },
   {
     "title": "Kemian kokeelliset työt",
-    "start": "2021-06-20T09:00:00+0300",
-    "end": "2021-06-20T12:00:00+0300",
+    "start": "2021-07-20T08:00:00+0300",
+    "end": "2021-07-20T15:00:00+0300",
     "resourceId": 4,
     "grades": [1],
     "closeVisit": true,
-    "remoteVisit": false
+    "remoteVisit": false,
+    "availableTimes": [
+      {
+        "startTime": "2021-07-20T09:00:00+0300",
+        "endTime": "2021-07-20T11:00:00+0300"
+      },
+      {
+        "startTime": "2021-07-20T013:00:00+0300",
+        "endTime": "2021-07-20T014:00:00+0300"
+      } 
+    ]
   },
   {
     "title": "Python-ohjelmointikieli",

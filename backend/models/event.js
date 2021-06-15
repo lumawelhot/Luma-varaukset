@@ -38,6 +38,10 @@ const eventSchema = mongoose.Schema({
     type: Boolean,
     required: true
   },
+  availableTimes: {
+    type: [Object],
+    required: true
+  },
   desc: String,
   tags: [
     {

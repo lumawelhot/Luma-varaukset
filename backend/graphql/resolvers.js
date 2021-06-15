@@ -20,7 +20,7 @@ const resolvers = {
       const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits')
 
       //säätöä
-      
+
       return events
     },
     getTags: async () => {
@@ -145,14 +145,55 @@ const resolvers = {
       await newEvent.save()
       return newEvent
     },
+
+    /*
+--------S----------------E----
+-------------S--E------------- sallittu
+--------S---E----S-------E--- uudet mahdolliset
+*/
+
     createVisit: async (root, args) => {
       const pin = Math.floor(1000 + Math.random() * 9000)
       const event = await Event.findById(args.event)
+      const startTime = args.startTime
+      const endTime = args.endTime
+      const availableTimes = event.availableTimes
+      const start = event.start
+      const end = event.end
+
+      const check = (availableTimes) => {
+        let result = null
+        availableTimes.forEach(item => {
+          if (startTime > item.startTime && endTime < item.endTime) {
+            result = {
+              start: new Date(item.startTime),
+              end: new Date(item.endTime)
+            }
+          }
+        })
+        console.log(result)
+        return result
+      }
+
+      const availableTime = check(availableTimes)
+
+      if (startTime > start && startTime < endTime && endTime < end && availableTime) {
+        const s = new Date(startTime)
+        const e = new Date(endTime)
+        e.setTime(e.getTime() + 900000) //10.45
+        s.setTime(s.getTime() - 900000) //09.15
+        console.log(startTime, endTime)
+        console.log(s, e)
+        console.log('onnistuu!')
+      }
+
       const visit = new Visit({
         ...args,
         event: event,
         pin: pin,
         status: true,
+        startTime: args.startTime,
+        endTime: args.endTime,
       })
       let savedVisit
       try {
@@ -160,7 +201,6 @@ const resolvers = {
         const start = moment(event.start)
         if (start.diff(now, 'days') >= 14) {
           savedVisit = await visit.save()
-          console.log(savedVisit)
           const details = [{
             name: 'link',
             value: `${config.HOST_URI}/${savedVisit.id}`

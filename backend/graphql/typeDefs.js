@@ -35,6 +35,8 @@ const typeDefs = gql `
     clientEmail: String!
     clientPhone: String!
     status: Boolean!
+    startTime: String!
+    endTime: String!
   }
   type Token {
     value: String!
@@ -79,6 +81,8 @@ const typeDefs = gql `
       clientName: String!
       clientEmail: String!
       clientPhone: String!
+      startTime: String!
+      endTime: String!
     ): Visit
     cancelVisit(id: ID!, pin: Int!): Visit
   }
