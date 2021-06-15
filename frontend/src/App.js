@@ -164,7 +164,7 @@ const App = () => {
         </Route>
         <Route path='/visits'>
           {currentUser &&
-            <VisitList />
+            <VisitList notify={notify}/>
           }
           {!currentUser && <p>Et ole kirjautunut sisään.</p>}
         </Route>

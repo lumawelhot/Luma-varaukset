@@ -1,32 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { useHistory } from 'react-router'
 import { VISITS } from '../graphql/queries'
 import Filterform from './Filterform'
 
-const VisitList = () => {
+const VisitList = ({ notify }) => {
 
   const result = useQuery(VISITS)
   const [filters, setFilters] = useState([])
-  const [renderedVisits, setRenderedVisits] = useState([])
 
   const history = useHistory()
 
-  useEffect(() => {
-    if (result.data?.getVisits) {
-      const filteredVisits = result.data.getVisits
-        .filter(v => {
-          return filters.length ? filters.includes(Number(v.event.resourceId)) : true
-        })
-      return () => { setRenderedVisits(filteredVisits) }
-    }
-  }, [filters, result])
-
   if (result.loading) return <></>
-
-  const filter = (filteredResources) => {
-    setFilters(filteredResources)
-  }
 
   const cancel = (event) => {
     event.preventDefault()
@@ -38,12 +23,17 @@ const VisitList = () => {
     element.select()
     element.setSelectionRange(0, 99999)
     document.execCommand('copy')
-    console.log(element.value)
+    notify('URL kopioitu leikepöydälle!', 'success')
   }
+
+  const renderedVisits = result.data.getVisits.filter(visit => {
+    return filters.length ? filters.includes(visit.event.resourceId) : true
+  })
 
   return (
     <div className="section">
       <h1 className="title luma">Varaukset</h1>
+      <Filterform values={filters} setValues={setFilters} />
       <table className="table">
         <thead>
           <tr>
@@ -84,9 +74,6 @@ const VisitList = () => {
       </table>
       <div className="section">
         <button className="button luma primary" onClick={(e) => cancel(e)}>Poistu</button>
-      </div>
-      <div >
-        <Filterform filter={(resources) => filter(resources)} />
       </div>
     </div>
   )

@@ -973,6 +973,12 @@ button.button.luma {
   margin-right: 10px;
 }
 
+.button.luma.active {
+  background-color: #0479a5;
+  border-color: #0479a5;
+  color: #fff;
+}
+
 .button.luma.primary {
   background-color: #0479a5;
   border-color: #0479a5;
@@ -1003,4 +1009,8 @@ button.button.luma {
 .input.taginput:active {
   border-width: 0;
   box-shadow: none;
+}
+
+input.hidden {
+  display: none;
 }

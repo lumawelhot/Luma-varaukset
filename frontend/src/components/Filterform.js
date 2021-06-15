@@ -1,39 +1,52 @@
-import React, { useState } from 'react'
+import React from 'react'
 
-const Filterform = ({ filter }) => {
+const Filterform = ({ values, setValues }) => {
 
-  const [values, setValues] = useState([false, false, false, false, false])
-  const kasittelija = () => {
-    const arvot = []
-    values.forEach((value, index) => value ? arvot.push(index + 1) : null)
-    filter(arvot)
-  }
-
-  const muuta = (indeksi) => {
-    let uudet = [...values]
-    uudet[indeksi] = !uudet[indeksi]
-    setValues(uudet)
-    kasittelija()
-  }
-
-  const naytaKaikki = () => {
-    setValues([false, false, false, false, false])
-    filter([])
+  const muuta = (item) => {
+    const newValues = values.includes(item) ? values.filter(v => v !== item) : values.concat(item)
+    setValues(newValues)
   }
 
   return (
-    <div>
-      <button onClick={() => naytaKaikki()}>Näytä kaikki</button>
-      <input type="checkbox" name="class" checked={values[0]} onChange={() => muuta(0)} />
-      <label htmlFor="class1"> SUMMAMUTIKKA</label>
-      <input type="checkbox" name="class" checked={values[1]} onChange={() => muuta(1)} />
-      <label htmlFor="class2"> FOTONI</label>
-      <input type="checkbox" name="class" checked={values[2]} onChange={() => muuta(2)} />
-      <label htmlFor="class3"> LINKKI</label>
-      <input type="checkbox" name="class" checked={values[3]} onChange={() => muuta(3)} />
-      <label htmlFor="class3"> GEOPISTE</label>
-      <input type="checkbox" name="class" checked={values[4]} onChange={() => muuta(4)} />
-      <label htmlFor="class3"> GADOLIN</label>
+    <div className="field is-grouped">
+      <div className="field">
+        <button className="button luma" onClick={() => setValues([])}>Näytä kaikki</button>
+      </div>
+      <div className="field-label is-normal">
+        <label className="label">Suodata tiedeluokan mukaan: </label>
+      </div>
+      <div className="field is-grouped">
+        <button
+          className={`button luma ${values.includes(1) ? 'active' : ''}`}
+          onClick={() => muuta(1)}
+        >
+        SUMMAMUTIKKA
+        </button>
+        <button
+          className={`button luma ${values.includes(2) ? 'active' : ''}`}
+          onClick={() => muuta(2)}
+        >
+        FOTONI
+        </button>
+        <button
+          className={`button luma ${values.includes(3) ? 'active' : ''}`}
+          onClick={() => muuta(3)}
+        >
+        LINKKI
+        </button>
+        <button
+          className={`button luma ${values.includes(4) ? 'active' : ''}`}
+          onClick={() => muuta(4)}
+        >
+        GEOPISTE
+        </button>
+        <button
+          className={`button luma ${values.includes(5) ? 'active' : ''}`}
+          onClick={() => muuta(5)}
+        >
+        GADOLIN
+        </button>
+      </div>
     </div>
   )
 }
