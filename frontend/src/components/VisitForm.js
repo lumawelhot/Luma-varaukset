@@ -142,6 +142,7 @@ const VisitForm = ({ sendMessage, event }) => {
     },
   })
 
+  const style = { width: 500 }
   useEffect(() => {
     if (result.data) {
       sendMessage(`Varaus on tehty onnistuneesti! Varauksen tiedot on lähetetty sähköpostiosoitteeseenne ${result.data.createVisit.clientEmail}.`, 'success')
@@ -178,7 +179,8 @@ const VisitForm = ({ sendMessage, event }) => {
               <div className="field">
                 <label htmlFor="clientName">Varaajan nimi </label>
                 <div className="control">
-                  <input style={{ width: 300 }}
+
+                  <input style={style}
                     id="clientName"
                     name="clientName"
                     type="clientName"
@@ -226,7 +228,7 @@ const VisitForm = ({ sendMessage, event }) => {
               <div className="field">
                 <label htmlFor="clientEmail">Varaajan sähköpostiosoite </label>
                 <div className="control">
-                  <input style={{ width: 300 }}
+                  <input style={style}
                     id="clientEmail"
                     name="clientEmail"
                     type="email"
@@ -258,7 +260,8 @@ const VisitForm = ({ sendMessage, event }) => {
               <div className="field">
                 <label htmlFor="clientPhone">Varaajan puhelinnumero </label>
                 <div className="control">
-                  <input style={{ width: 300 }}
+
+                  <input style={style}
                     id="clientPhone"
                     name="clientPhone"
                     type="clientPhone"
