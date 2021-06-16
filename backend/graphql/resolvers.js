@@ -106,18 +106,9 @@ const resolvers = {
         default:
           throw new UserInputError('Invalid class')
       }
-      let gradeList = args.grades
-      let grades = []
-      console.log(grades)
 
 
-      gradeList.forEach((element,index) => {
-        if(element){
-          grades.push(index)
-        }
-      } )
-
-      console.log(grades)
+      let grades = args.grades
 
 
 

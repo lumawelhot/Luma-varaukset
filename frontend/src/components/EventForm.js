@@ -101,9 +101,17 @@ const EventForm = ({
     onSubmit: (values) => {
       const start = new Date(`${values.date}:${values.startTime}`)
       const end = new Date(`${values.date}:${values.endTime}`)
+      const gradelist = []
+      values.grades.forEach((element,index) => {
+        if(element){
+          gradelist.push(index + 1)
+        }
+      } )
       create({
+
+
         variables: {
-          grades: values.grades,
+          grades: gradelist,
           remoteVisit: values.remoteVisit,
           inPersonVisit: values.inPersonVisit,
           title: values.title,
