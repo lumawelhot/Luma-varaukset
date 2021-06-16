@@ -27,18 +27,20 @@ const resolvers = {
       const tags = await Tag.find({})
       return tags
     },
+    getVisits: async () => {
+      const visits = await Visit.find({}).populate('event', { id: 1, title: 1, resourceId: 1 })
+      return visits
+    },
     findVisit: async (root, args) => {
       try {
         const visit = await Visit.findById(args.id)
-        if (visit.pin === args.pin) {
-          return {
-            id: visit.id,
-            clientName: visit.clientName,
-            clientEmail: visit.clientEmail,
-            clientPhone: visit.clientPhone,
-            event: visit.event,
-            grade: visit.grade
-          }
+        return {
+          id: visit.id,
+          clientName: visit.clientName,
+          clientEmail: visit.clientEmail,
+          clientPhone: visit.clientPhone,
+          event: visit.event,
+          grade: visit.grade
         }
       } catch (e) {
         throw new UserInputError('Varausta ei löytynyt!')
@@ -139,7 +141,7 @@ const resolvers = {
         resourceId,
         grades,
         remoteVisit: args.remoteVisit,
-        closeVisit: args.closeVisit
+        inPersonVisit: args.inPersonVisit
       })
       newEvent.tags = mongoTags
       await newEvent.save()
@@ -165,7 +167,6 @@ const resolvers = {
       } */
 
     createVisit: async (root, args) => {
-      const pin = Math.floor(1000 + Math.random() * 9000)
       const event = await Event.findById(args.event)
       const visitStart = new Date(args.startTime)
       const visitEnd = new Date(args.endTime)
@@ -234,7 +235,6 @@ const resolvers = {
       const visit = new Visit({
         ...args,
         event: event,
-        pin: pin,
         status: true,
         startTime: args.startTime,
         endTime: args.endTime,
@@ -249,10 +249,6 @@ const resolvers = {
           const details = [{
             name: 'link',
             value: `${config.HOST_URI}/${savedVisit.id}`
-          },
-          {
-            name: 'pin',
-            value: savedVisit.pin
           }]
           const text = await readMessage('welcome.txt', details)
           const html = await readMessage('welcome.html', details)
@@ -279,22 +275,17 @@ const resolvers = {
     cancelVisit: async (root, args) => {
       const visit = await Visit.findById(args.id)
       const event = await Event.findById(visit.event)
-      if (visit.pin === args.pin) {
-        try {
-          visit.status = false
-          event.visits = event.visits.filter(v => String(v) !== String(visit.id))
-          await visit.save()
-          await event.save()
-          return visit
-        } catch (error) {
-          throw new UserInputError(error.message, {
-            invalidArgs: args,
-          })
-        }
-      } else {
-        throw new UserInputError('Wrong pin!')
+      try {
+        visit.status = false
+        event.booked = false
+        await visit.save()
+        await event.save()
+        return visit
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
       }
-
     },
   }
 }

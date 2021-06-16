@@ -34,7 +34,7 @@ const eventSchema = mongoose.Schema({
     type: Boolean,
     required: true
   },
-  closeVisit: {
+  inPersonVisit: {
     type: Boolean,
     required: true
   },

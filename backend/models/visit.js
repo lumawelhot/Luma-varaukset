@@ -7,10 +7,6 @@ const visitSchema = mongoose.Schema({
     ref: 'Event',
     required: true,
   },
-  pin: {
-    type: Number,
-    required: true,
-  },
   grade: {
     type: Number,
     required: true,

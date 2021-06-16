@@ -25,7 +25,7 @@ const validate = (values) => {
     errors.scienceClass = defErrorMessage
   }
 
-  if (!(values.remoteVisit || values.closeVisit)) {
+  if (!(values.remoteVisit || values.inPersonVisit)) {
     errors.location = 'Valitse joko etä- tai lähivierailu'
   }
 
@@ -122,7 +122,7 @@ const EventForm = ({
     initialValues: {
       grades: [],
       remoteVisit: true,
-      closeVisit: true,
+      inPersonVisit: true,
       title: '',
       scienceClass: '',
       desc: '',
@@ -139,7 +139,7 @@ const EventForm = ({
         variables: {
           grades: values.grades,
           remoteVisit: values.remoteVisit,
-          closeVisit: values.closeVisit,
+          inPersonVisit: values.inPersonVisit,
           title: values.title,
           start,
           end,
@@ -213,10 +213,10 @@ const EventForm = ({
               </div>
               <div className="control">
                 <label className="checkbox">
-                  <input type="checkbox" name="closeVisit" checked={formik.values.closeVisit}
+                  <input type="checkbox" name="inPersonVisit" checked={formik.values.inPersonVisit}
                     onChange={() => {
-                      formik.touched.closeVisit = true
-                      formik.setFieldValue('closeVisit', !formik.values.closeVisit)
+                      formik.touched.inPersonVisit = true
+                      formik.setFieldValue('inPersonVisit', !formik.values.inPersonVisit)
                     }
                     } />
                   Lähivierailu
@@ -224,7 +224,7 @@ const EventForm = ({
               </div>
             </div>
 
-            {formik.touched.closeVisit && formik.touched.remoteVisit && formik.errors.location
+            {formik.touched.inPersonVisit && formik.touched.remoteVisit && formik.errors.location
               ?
               <p className="help is-danger">{formik.errors.location}</p>
               : null}

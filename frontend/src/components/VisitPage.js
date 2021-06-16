@@ -54,16 +54,16 @@ const VisitPage = ({ sendMessage }) => {
 
   const [cancelVisit, resultOfCancel] = useMutation(CANCEL_VISIT, {
     // tarkista backendin error
-    onError: () => {
-      sendMessage('Virheellinen pin', 'danger')
+    onError: (e) => {
+      sendMessage('Virhe!', 'danger')
+      console.log(e)
     },
     //fetchPolicy: 'cache-and-network'
   })
 
   useEffect(() => {
     if (!data) {
-      const pin = window.prompt('Anna pin-koodi:')
-      findVisit({ variables: { pin: Number(pin), id } })
+      findVisit({ variables: { id } })
     }
     else if (data) {
       console.log(data)
@@ -89,9 +89,8 @@ const VisitPage = ({ sendMessage }) => {
 
   const handelCancel = (event) => {
     event.preventDefault()
-    const pin = window.prompt('Anna pin-koodi:')
     cancelVisit({
-      variables: { pin: Number(pin), id }
+      variables: { id }
     })
   }
 

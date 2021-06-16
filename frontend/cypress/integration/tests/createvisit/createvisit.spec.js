@@ -3,12 +3,12 @@ import { Given, When, Then, And } from 'cypress-cucumber-preprocessor/steps'
 import moment from 'moment'
 
 const eventDate1 = new Date()
-eventDate1.setDate(new Date().getDate() + 20)
+eventDate1.setDate(new Date().getDate() + 16)
 const eventDate2 = new Date()
-eventDate2.setDate(new Date().getDate() + 21)
-const availableEvent1 = 'Test event'
-const availableEvent2 = 'Test event for invalid client name'
-const unavailableEventName = 'Unavailable event'
+eventDate2.setDate(new Date().getDate() + 10)
+const availableEvent1 = 'Test available event 1'
+const availableEvent2 = 'Test available event 2 for invalid client name'
+const unavailableEventName = 'Test unavailable event'
 const unavailableEventDate = new Date()
 
 it('Initialize tests', () => {
@@ -19,7 +19,7 @@ it('Initialize tests', () => {
     start: eventDate1,
     end: eventDate1,
     remoteVisit: true,
-    closeVisit: false,
+    inPersonVisit: false,
     desc: 'Test event description'
   })
   cy.createEvent({
@@ -27,7 +27,7 @@ it('Initialize tests', () => {
     scienceClass: 'LINKKI',
     start: eventDate2,
     end: eventDate2,
-    closeVisit: true,
+    inPersonVisit: true,
     remoteVisit: false,
     desc: 'Test event description'
   })
@@ -84,7 +84,7 @@ And('there is an event less than two weeks ahead', () => {
   cy.createEvent({
     title: unavailableEventName,
     scienceClass: 'LINKKI',
-    closeVisit: true,
+    inPersonVisit: true,
     remoteVisit: false,
     start: unavailableEventDate,
     end: unavailableEventDate,
@@ -119,6 +119,7 @@ And('valid information is entered', () => {
   cy.wait(100)
   cy.get('#create').click()
   cy.wait(2000)
+  cy.visit('http://localhost:3000')
 })
 
 Then('booked event turns grey in calendar view', () => {
