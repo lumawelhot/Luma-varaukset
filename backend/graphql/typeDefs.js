@@ -27,11 +27,14 @@ const typeDefs = gql `
   type Visit {
     id: ID!
     event: Event!
-    grade: Int!
-    extra: [Int]
+    grade: String!
     clientName: String!
+    schoolName: String!
+    schoolLocation: String!
+    participants: Int!
     clientEmail: String!
     clientPhone: String!
+    extra: [Int]
     status: Boolean!
   }
   type Token {
@@ -72,11 +75,14 @@ const typeDefs = gql `
     ): Event
     createVisit(
       event: ID!
-      grade: Int!
-      extra: [Int]
+      grade: String!
       clientName: String!
+      schoolName: String!
+      schoolLocation: String!
+      participants: Int!
       clientEmail: String!
       clientPhone: String!
+      extra: [Int]
     ): Visit
     cancelVisit(id: ID!): Visit
   }
