@@ -38,5 +38,5 @@ Given('User is not logged in', () => {
 })
 
 Then('a specific event is shown', () => {
-  cy.get('.rbc-agenda-view').contains('Lämpösäteily ja ilmastonmuutos')
+  cy.get('.rbc-agenda-view').contains('yyyyy')
 })

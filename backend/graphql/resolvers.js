@@ -33,11 +33,15 @@ const resolvers = {
         const visit = await Visit.findById(args.id)
         return {
           id: visit.id,
+          event: visit.event,
+          grade: visit.grade,
           clientName: visit.clientName,
+          schoolName: visit.schoolName,
+          schoolLocation: visit.schoolLocation,
+          participants: visit.participants,
           clientEmail: visit.clientEmail,
           clientPhone: visit.clientPhone,
-          event: visit.event,
-          grade: visit.grade
+          status: visit.status
         }
       } catch (e) {
         throw new UserInputError('Varausta ei löytynyt!')
