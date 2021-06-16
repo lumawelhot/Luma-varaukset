@@ -7,10 +7,6 @@ const visitSchema = mongoose.Schema({
     ref: 'Event',
     required: true,
   },
-  grade: {
-    type: String,
-    required: true,
-  },
   clientName: {
     type: String,
     required: true,
@@ -25,10 +21,6 @@ const visitSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  participants: {
-    type: Number,
-    required: true
-  },
   clientEmail: {
     type: String,
     required: true,
@@ -36,6 +28,14 @@ const visitSchema = mongoose.Schema({
   clientPhone: {
     type: String,
     required: true,
+  },
+  grade: {
+    type: String,
+    required: true,
+  },
+  participants: {
+    type: Number,
+    required: true
   },
   status: {
     type: Boolean,

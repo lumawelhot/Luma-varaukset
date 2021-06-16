@@ -27,13 +27,13 @@ const typeDefs = gql `
   type Visit {
     id: ID!
     event: Event!
-    grade: String!
     clientName: String!
     schoolName: String!
     schoolLocation: String!
-    participants: Int!
     clientEmail: String!
     clientPhone: String!
+    grade: String!
+    participants: Int!
     extra: [Int]
     status: Boolean!
   }
@@ -75,13 +75,13 @@ const typeDefs = gql `
     ): Event
     createVisit(
       event: ID!
-      grade: String!
       clientName: String!
       schoolName: String!
       schoolLocation: String!
-      participants: Int!
       clientEmail: String!
       clientPhone: String!
+      grade: String!
+      participants: Int!
       extra: [Int]
     ): Visit
     cancelVisit(id: ID!): Visit
