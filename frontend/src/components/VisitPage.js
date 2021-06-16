@@ -111,6 +111,10 @@ const VisitPage = ({ sendMessage }) => {
             <p>Tiedeluokka: {filterEventClass(visit.event.resourceId)}</p>
             <p>Valitut lisäpalvelut: [Tähän ekstrat]</p>
             <p>Valittu luokka-aste: {visit.grade}</p>
+            <div>Tapahtuma tarjolla:
+              {visit.inPersonVisit ? <p>Lähiopetuksena</p> : <></>}
+              {visit.remoteVisit ? <p>Etäopetuksena</p> : <></>}
+            </div>
             <p>Ilmoitettu osallistujamäärä: {visit.participants}</p>
             <p>Tapahtuma alkaa: {moment(visit.event.start).format('DD.MM.YYYY, HH:mm')}</p>
             <p>Tapahtuma päättyy: {moment(visit.event.end).format('DD.MM.YYYY, HH:mm')}</p>

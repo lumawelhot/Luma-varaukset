@@ -25,7 +25,7 @@ const resolvers = {
       return tags
     },
     getVisits: async () => {
-      const visits = await Visit.find({}).populate('event', { id: 1, title: 1, resourceId: 1 })
+      const visits = await Visit.find({}).populate('event', { id: 1, title: 1, resourceId: 1, remoteVisit: 1, inPersonVisit : 1 })
       return visits
     },
     findVisit: async (root, args) => {
