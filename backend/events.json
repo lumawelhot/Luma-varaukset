@@ -60,16 +60,5 @@
     "booked": false,
     "inPersonVisit": true,
     "remoteVisit": false
-  },
-  {
-    "title": "Lämpösäteily ja ilmastonmuutos",
-    "start": "Wed Jun 16 2021 12:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Wed Jun 16 2021 13:00:00 GMT+0300 (Eastern European Summer Time)",
-    "desc": "kuvaus",
-    "resourceId": 4,
-    "grades": [3, 4],
-    "booked": false,
-    "inPersonVisit": true,
-    "remoteVisit": false
   }
 ]
