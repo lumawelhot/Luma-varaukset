@@ -147,44 +147,88 @@ const resolvers = {
     },
 
     /*
---------S----------------E----
--------------S--E------------- sallittu
+--------S----------------E---- availableTime
+-------------S--E------------- visitin s ja e
 --------S---E----S-------E--- uudet mahdolliset
 */
+
+    /* const atObject = {
+        availableStart: new Date(at.startTime),
+        availableEnd: new Date(at.endTime)
+        console.log('vistin aloitus: ', visitStart, 'visitin lopetus: ', visitEnd)
+        console.log(availableStart, availableEnd)
+        console.log('onnistuu!')
+        "endTime": "2021-07-20T11:00:00+0300"
+        },
+        {
+        "startTime": "2021-07-20T013:00:00+0300",
+      } */
 
     createVisit: async (root, args) => {
       const pin = Math.floor(1000 + Math.random() * 9000)
       const event = await Event.findById(args.event)
-      const startTime = args.startTime
-      const endTime = args.endTime
-      const availableTimes = event.availableTimes
-      const start = event.start
-      const end = event.end
+      const visitStart = new Date(args.startTime)
+      const visitEnd = new Date(args.endTime)
+      const availableTimes = event.availableTimes.map(time => ({
+        startTime: new Date(time.startTime),
+        endTime: new Date(time.endTime)
+      }))
+      const eventStart = new Date(event.start)
+      const eventEnd = new Date(event.end)
 
       const check = (availableTimes) => {
         let result = null
         availableTimes.forEach(item => {
-          if (startTime > item.startTime && endTime < item.endTime) {
+          if (visitStart >= item.startTime && visitEnd <= item.endTime) {
             result = {
-              start: new Date(item.startTime),
-              end: new Date(item.endTime)
+              availableStart: new Date(item.startTime),
+              availableEnd: new Date(item.endTime)
             }
           }
         })
-        console.log(result)
+        console.log('checkin result: ', result)
         return result
       }
 
-      const availableTime = check(availableTimes)
+      const generateAvailableTime = (start, end) => {
+        let result = null
+        console.log(start, end)
+        console.log(end - start, 'Hello world')
+        if (end - start >= 3600000) {
+          result = {
+            startTime: start,
+            endTime: end
+          }
+        }
+        return result
+      }
 
-      if (startTime > start && startTime < endTime && endTime < end && availableTime) {
-        const s = new Date(startTime)
-        const e = new Date(endTime)
-        e.setTime(e.getTime() + 900000) //10.45
-        s.setTime(s.getTime() - 900000) //09.15
-        console.log(startTime, endTime)
-        console.log(s, e)
-        console.log('onnistuu!')
+      const assignAvailableTimes = (before, after, availableTime) => {
+        const filteredAvailTimes = availableTimes.filter(at => at.startTime === availableTime.startTime && at.endTime === availableTime.endTime)
+        if (before) filteredAvailTimes.push(before)
+        if (after) filteredAvailTimes.push(after)
+
+        return filteredAvailTimes
+      }
+
+
+      const availableTime = check(availableTimes)
+      console.log(visitStart >= eventStart)
+      console.log(visitStart < visitEnd)
+      console.log(visitEnd <= eventEnd)
+
+      if (visitStart >= eventStart && visitStart < visitEnd && visitEnd <= eventEnd && availableTime) {
+        const availableEnd = new Date(visitStart)
+        const availableStart = new Date(visitEnd)
+        availableEnd.setTime(availableEnd.getTime() - 900000) //--> uuden mahdollisen aikaikkunan endTime
+        availableStart.setTime(availableStart.getTime() + 900000) //--> uuden mahdollisen aikaikkunan startTime
+
+        const availableBefore = generateAvailableTime(availableTime.availableStart, availableEnd)
+        const availableAfter = generateAvailableTime(availableStart, availableTime.availableEnd)
+        console.log('mahdollinen ennen visitiä: ', availableBefore, 'mahdollinen visitin jälkeen: ', availableAfter)
+        const newAvailableTimes = assignAvailableTimes(availableAfter, availableBefore, availableTime)
+        console.log('uusi taulukko: ', newAvailableTimes)
+        event.availableTimes = newAvailableTimes
       }
 
       const visit = new Visit({
@@ -195,6 +239,7 @@ const resolvers = {
         startTime: args.startTime,
         endTime: args.endTime,
       })
+
       let savedVisit
       try {
         const now = moment(new Date())
@@ -223,6 +268,7 @@ const resolvers = {
           return savedVisit
         }
       } catch (error) {
+        event.availableTimes = availableTimes
         await event.save()
         await savedVisit.delete()
         throw new UserInputError(error.message, {
