@@ -11,6 +11,10 @@ const typeDefs = gql `
     username: String!
     isAdmin: Boolean!
   }
+  type TimeSlot {
+    startTime: String!,
+    endTime: String!
+  }
   type Event {
     id: ID!
     title: String!
@@ -23,6 +27,7 @@ const typeDefs = gql `
     desc: String
     tags: [Tag]!
     visits: [Visit]!
+    availableTimes: [TimeSlot]!
   }
   type Visit {
     id: ID!

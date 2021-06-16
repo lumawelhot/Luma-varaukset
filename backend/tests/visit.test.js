@@ -71,7 +71,9 @@ beforeEach(async () => {
     clientName: 'Teacher',
     clientEmail: 'teacher@school.com',
     clientPhone: '040-1234567',
-    status: true
+    status: true,
+    startTime: availableEvent.start,
+    endTime: availableEvent.end
   }
 
   const testVisit = new VisitModel(testVisitData)
@@ -87,7 +89,9 @@ describe('Visit Model Test', () => {
       clientName: 'Teacher 2',
       clientEmail: 'teacher2@someschool.com',
       clientPhone: '050-8912345',
-      status: true
+      status: true,
+      startTime: availableEvent.start,
+      endTime: availableEvent.end
     }
     const validVisit = new VisitModel(newVisitData)
     const savedVisit = await validVisit.save()
@@ -119,17 +123,19 @@ describe('Visit Model Test', () => {
 
 describe('Visit server test', () => {
 
-  it('create visit successfully', async () => {
+  it('Create visit successfully', async () => {
     const { mutate } = createTestClient(server)
     const event = savedAvailableEvent.id
     const CREATE_VISIT = gql`
-      mutation createVisit($event: ID!, $clientName: String!, $clientEmail: String!, $clientPhone: String!, $grade: Int!) {
+      mutation createVisit($event: ID!, $clientName: String!, $clientEmail: String!, $clientPhone: String!, $grade: Int!, $startTime: String!, $endTime: String!) {
         createVisit(
           event: $event
           clientName: $clientName
           clientEmail: $clientEmail
           clientPhone: $clientPhone
           grade: $grade
+          startTime: $startTime
+          endTime: $endTime
         ) {
           id
           event {
@@ -145,7 +151,7 @@ describe('Visit server test', () => {
       `
     const  { data } = await mutate({
       mutation: CREATE_VISIT,
-      variables: { event: event, clientName: 'Teacher', clientEmail: 'teacher@school.com', clientPhone: '040-1234567', grade: 1 }
+      variables: { event: event, clientName: 'Teacher', clientEmail: 'teacher@school.com', clientPhone: '040-1234567', grade: 1, startTime: availableEvent.start, endTime: availableEvent.end }
     })
 
     const { createVisit }  = data
@@ -163,13 +169,15 @@ describe('Visit server test', () => {
     const { mutate } = createTestClient(server)
     const event = savedUnavailableEvent.id
     const CREATE_VISIT = gql`
-      mutation createVisit($event: ID!, $clientName: String!, $clientEmail: String!, $clientPhone: String!, $grade: Int!) {
+      mutation createVisit($event: ID!, $clientName: String!, $clientEmail: String!, $clientPhone: String!, $grade: Int!, $startTime: String!, $endTime: String!) {
         createVisit(
           event: $event
           clientName: $clientName
           clientEmail: $clientEmail
           clientPhone: $clientPhone
           grade: $grade
+          startTime: $startTime
+          endTime: $endTime
         ) {
           id
           event {
@@ -184,7 +192,7 @@ describe('Visit server test', () => {
       `
     const { data } = await mutate({
       mutation: CREATE_VISIT,
-      variables: { event: event, clientName: 'Teacher', clientEmail: 'teacher@school.com', clientPhone: '040-1234567', grade: 1 }
+      variables: { event: event, clientName: 'Teacher', clientEmail: 'teacher@school.com', clientPhone: '040-1234567', grade: 1, startTime: unavailableEvent.start, endTime: unavailableEvent.end }
     })
 
     const { createVisit }  = data
@@ -192,7 +200,7 @@ describe('Visit server test', () => {
     expect(createVisit).toBe(null)
   })
 
-  it('find by visit id', async () => {
+  it('Find visit by id', async () => {
     const { query } = createTestClient(server)
     const id = savedTestVisit.id
     const FIND_VISIT = gql`
@@ -223,7 +231,7 @@ describe('Visit server test', () => {
     expect(findVisit.clientPhone).toBe(savedTestVisit.clientPhone)
   })
 
-  it('cancel visit by id', async () => {
+  it('Cancel visit by id', async () => {
     const { mutate } = createTestClient(server)
     const id = savedTestVisit.id
     const CANCEL_VISIT = gql`
@@ -246,6 +254,7 @@ describe('Visit server test', () => {
     expect(cancelledVisit.id).toBeDefined()
 
     const event = await EventModel.findById(cancelledVisit.event)
+    console.log(event.visits)
   })
 })
 

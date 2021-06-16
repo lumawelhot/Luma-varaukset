@@ -1,13 +1,23 @@
 [
   {
     "title": "Maanjäristysten alueellisuus ja niiden vaikutukset",
-    "start": "Mon Jul 07 2021 09:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Mon Jul 07 2021 10:00:00 GMT+0300 (Eastern European Summer Time)",
+    "start": "2021-07-07T09:00:00+0300",
+    "end": "2021-07-07T14:00:00+0300",
     "resourceId": 4,
     "grades": [1],
     "booked": false,
     "inPersonVisit": true,
-    "remoteVisit": false
+    "remoteVisit": false,
+    "availableTimes": [
+      {
+        "startTime": "2021-07-07T10:00:00+0300",
+        "endTime": "2021-07-07T11:00:00+0300"
+      },
+      {
+        "startTime": "2021-07-07T13:00:00+0300",
+        "endTime": "2021-07-07T14:00:00+0300"
+      }
+    ]
   },
   {
     "title": "Lämpösäteily ja ilmastonmuutos",

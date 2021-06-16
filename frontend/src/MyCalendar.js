@@ -6,8 +6,6 @@ import { messages } from './helpers/calendar-messages-fi'
 import { /* bookedEventColor, */ resourceColorsLUMA } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
 
-//import LumaEventWrapper from './components/Custom/LumaEventWrapper'
-
 const localizer = momentLocalizer(moment)
 
 const resourceMap = [
@@ -42,7 +40,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
   }
 
   const customEventPropGetter = event => {
-    if (moment(event.start).diff(new Date(), 'days') < 14) {
+    if (event.booked || moment(event.start).diff(new Date(), 'days') < 14) {
       return { className: 'booked' , }
     }
     return { className: resourceMap[event.resourceId-1]?.resourceTitle.toLowerCase() || '' }
@@ -86,7 +84,6 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
         onSelectEvent={ (event) => handleEventClick(event)/* alert(JSON.stringify(event)) */}
         onSelectSlot={handleSelect}
         components={{
-          //eventWrapper: LumaEventWrapper,
           agenda: {
             event: AgendaEvent
           }

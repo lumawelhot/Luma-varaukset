@@ -12,8 +12,6 @@ import EventForm from './components/EventForm'
 import VisitForm from './components/VisitForm'
 import { FcKey } from 'react-icons/fc'
 import UserPage from './components/UserPage'
-/* import Message from './components/Message'
-import LumaTagInput from './components/LumaTagInput/LumaTagInput' */
 import EventPage from './components/EventPage'
 import Toasts from './components/Toasts'
 import { v4 as uuidv4 } from 'uuid'
@@ -35,19 +33,33 @@ const App = () => {
   const [currentUser, setUser] = useState(null)
 
   const parseEvent = (event) => {
-    return {
+    if (!event.availableTimes.length) { // Jos varattavia aikoja ei ole saatavilla
+      return {
+        id: event.id,
+        title: event.title,
+        resourceId: event.resourceId,
+        start: new Date(event.start),
+        end: new Date(event.end),
+        grades: event.grades,
+        tags: event.tags,
+        booked: true
+      }
+    }
+    return event.availableTimes.map(timeSlot => Object({ // Jos varattavia aikoja on
       id: event.id,
       title: event.title,
       resourceId: event.resourceId,
-      start: new Date(event.start),
-      end: new Date(event.end),
+      start: new Date(timeSlot.startTime),
+      end: new Date(timeSlot.endTime),
       grades: event.grades,
-    }
+      tags: event.tags,
+      booked: false
+    }))
   }
 
   useEffect(() => {
     if (result.data) {
-      const events = result.data.getEvents.map(event => parseEvent(event))
+      const events = result.data.getEvents.map(event => parseEvent(event)).flat() // Lisätty flat(), mikäli parseEvent palauttaa taulukon
       setEvents(events)
     }
   }, [result])
@@ -90,8 +102,8 @@ const App = () => {
   }
 
   const handleEventClick = (event) => {
-    const selectedEvent = events.find(e => e.id === event.id)
-    setClickedEvent(selectedEvent)
+    //const selectedEvent = events.find(e => e.id === event.id)
+    setClickedEvent(event) // <- event tulee suoraan klikatusta, ei tarvitse hakea eventseistä
     history.push('/event-page')
   }
 

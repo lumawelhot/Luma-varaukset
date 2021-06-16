@@ -47,6 +47,10 @@ export const EVENTS = gql`
       start
       end
       desc
+      availableTimes {
+        startTime
+        endTime
+      }
     }
   }
 `
