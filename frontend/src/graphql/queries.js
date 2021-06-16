@@ -61,6 +61,25 @@ export const TAGS = gql`
   }
 `
 
+export const VISITS = gql`
+  query getVisits {
+    getVisits {
+      id
+      event {
+        id
+        title
+        resourceId
+      }
+      grade
+      extra
+      clientName
+      clientEmail
+      clientPhone
+      status
+    }
+  }
+`
+
 export const CURRENT_USER = gql`
   query me {
     me {

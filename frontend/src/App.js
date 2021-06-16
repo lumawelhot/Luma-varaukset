@@ -18,6 +18,7 @@ import EventPage from './components/EventPage'
 import Toasts from './components/Toasts'
 import { v4 as uuidv4 } from 'uuid'
 import VisitPage from './components/VisitPage'
+import VisitList from './components/VisitList'
 
 const App = () => {
   const history = useHistory()
@@ -160,6 +161,12 @@ const App = () => {
             <UserList />
           }
           {!(currentUser && currentUser.isAdmin) && <p>Sinulla ei ole tarvittavia oikeuksia.</p>}
+        </Route>
+        <Route path='/visits'>
+          {currentUser &&
+            <VisitList notify={notify}/>
+          }
+          {!currentUser && <p>Et ole kirjautunut sisään.</p>}
         </Route>
         <Route path='/:id'>
           <VisitPage sendMessage={notify}/>
