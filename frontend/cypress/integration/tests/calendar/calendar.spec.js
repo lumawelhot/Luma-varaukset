@@ -17,7 +17,7 @@ Given('an event with title yyyyy is created', () => {
     scienceClass: 'FOTONI',
     grades: [1, 3, 4],
     remoteVisit: true,
-    closeVisit: false,
+    inPersonVisit: false,
     start,
     end,
     tags: []

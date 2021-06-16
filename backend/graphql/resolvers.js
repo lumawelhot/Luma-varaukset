@@ -139,7 +139,7 @@ const resolvers = {
         grades,
         booked: false,
         remoteVisit: args.remoteVisit,
-        closeVisit: args.closeVisit
+        inPersonVisit: args.inPersonVisit
       })
       newEvent.tags = mongoTags
       await newEvent.save()

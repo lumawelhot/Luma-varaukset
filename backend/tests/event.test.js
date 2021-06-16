@@ -54,7 +54,7 @@ beforeEach(async () => {
     start: '2021-07-07T09:30:00+0300',
     end: '2021-07-07T12:00:00+0300',
     booked: false,
-    closeVisit: true,
+    inPersonVisit: true,
     remoteVisit: false
   }
   const testData2 = {
@@ -66,7 +66,7 @@ beforeEach(async () => {
     start: '2021-05-21T09:00:00+0300',
     end: '2021-05-21T11:00:00+0300',
     booked: false,
-    closeVisit: false,
+    inPersonVisit: false,
     remoteVisit: true
   }
 
@@ -128,7 +128,7 @@ it('employee can create new event successfully', async () => {
           end: "Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)"
           desc: "JavaScript is the programming language of the Web."
           remoteVisit: true
-          closeVisit: false
+          inPersonVisit: false
           grades: [1, 3, 4]
           tags: [{ name: "Matematiikka" }, { name: "Fysiikka" }, { name: "Ohjelmointi" }, { name: "Maantiede" }, { name: "Kemia" } ]
         ){
@@ -165,7 +165,7 @@ describe('Event Model Test', () => {
       tags: tags,
       start: 'Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)',
       end: 'Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)',
-      closeVisit: true,
+      inPersonVisit: true,
       remoteVisit: false,
       desc: 'Test event desc.'
     }
@@ -188,7 +188,7 @@ describe('Event Model Test', () => {
       grades: [1],
       start: 'Tue Jun 01 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
       end: 'Wed Jun 02 2021 15:00:00 GMT+0300 (Eastern European Summer Time)',
-      closeVisit: true,
+      inPersonVisit: true,
       remoteVisit: false,
       fieldNotInSchema: 'Tiedeluokka Linkki',
       desc: 'Test event desc.'
