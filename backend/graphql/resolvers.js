@@ -39,6 +39,8 @@ const resolvers = {
           schoolName: visit.schoolName,
           schoolLocation: visit.schoolLocation,
           participants: visit.participants,
+          inPersonVisit: visit.inPersonVisit,
+          remoteVisit: visit.remoteVisit,
           clientEmail: visit.clientEmail,
           clientPhone: visit.clientPhone,
           status: visit.status
@@ -163,24 +165,26 @@ const resolvers = {
       })
       let savedVisit
       try {
-        const now = moment(new Date())
-        const start = moment(event.start)
-        if (start.diff(now, 'days') >= 14) {
-          savedVisit = await visit.save()
-          const details = [{
-            name: 'link',
-            value: `${config.HOST_URI}/${savedVisit.id}`
-          }]
-          const text = await readMessage('welcome.txt', details)
-          const html = await readMessage('welcome.html', details)
-          mailer.sendMail({
-            from: 'Luma-Varaukset <noreply@helsinki.fi>',
-            to: visit.clientEmail,
-            subject: 'Tervetuloa!',
-            text,
-            html
-          })
-          return savedVisit
+        if (visit.inPersonVisit !== visit.remoteVisit) {
+          const now = moment(new Date())
+          const start = moment(event.start)
+          if (start.diff(now, 'days') >= 14) {
+            savedVisit = await visit.save()
+            const details = [{
+              name: 'link',
+              value: `${config.HOST_URI}/${savedVisit.id}`
+            }]
+            const text = await readMessage('welcome.txt', details)
+            const html = await readMessage('welcome.html', details)
+            mailer.sendMail({
+              from: 'Luma-Varaukset <noreply@helsinki.fi>',
+              to: visit.clientEmail,
+              subject: 'Tervetuloa!',
+              text,
+              html
+            })
+            return savedVisit
+          }
         }
       } catch (error) {
         event.booked = false
