@@ -45,7 +45,7 @@ beforeEach(async () => {
     grades: [1],
     start: unavailableDate,
     end: unavailableDate,
-    closeVisit: true,
+    inPersonVisit: true,
     remoteVisit: false
   }
 
@@ -55,7 +55,7 @@ beforeEach(async () => {
     grades: [1],
     start: availableDate,
     end: availableDate,
-    closeVisit: false,
+    inPersonVisit: false,
     remoteVisit: true
   }
 
