@@ -107,7 +107,10 @@ const resolvers = {
           throw new UserInputError('Invalid class')
       }
 
+
       let grades = args.grades
+
+
 
       if (grades.length < 1) {
         throw new UserInputError('At least one grade must be selected!')
