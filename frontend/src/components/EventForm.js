@@ -5,7 +5,6 @@ import { CREATE_EVENT, TAGS } from '../graphql/queries'
 import { useHistory } from 'react-router'
 import LumaTagInput from './LumaTagInput/LumaTagInput'
 import moment from 'moment'
-import { FaAngleDown } from 'react-icons/fa'
 
 const validate = (values) => {
   const defErrorMessage = 'Vaaditaan!'
@@ -17,7 +16,7 @@ const validate = (values) => {
     errors.title = defErrorMessage
   }
 
-  if (!values.grades.length) {
+  if (!values.grades.includes(true)) {
     errors.grades = 'Valitse vähintään yksi luokka-aste'
   }
 
@@ -25,7 +24,7 @@ const validate = (values) => {
     errors.scienceClass = defErrorMessage
   }
 
-  if (!(values.remoteVisit || values.closeVisit)) {
+  if (!(values.remoteVisit || values.inPersonVisit)) {
     errors.location = 'Valitse joko etä- tai lähivierailu'
   }
 
@@ -62,7 +61,6 @@ const EventForm = ({
 }) => {
   const history = useHistory()
   const [suggestedTags, setSuggestedTags] = useState([])
-  const [showDropdownMenu, setShowDropdownMenu] = useState(false)
   const [create, result] = useMutation(CREATE_EVENT, {
     onError: (error) => console.log(error),
   })
@@ -83,46 +81,14 @@ const EventForm = ({
     }
   }, [result.data])
 
-  const options = [
-    { value: 1, label: 'Varhaiskasvatus' },
-    { value: 2, label: '1.-2. luokka' },
-    { value: 3, label: '3.-6. luokka' },
-    { value: 4, label: '7.-9 luokka' },
-    { value: 5, label: 'toinen aste' },
-  ]
 
-  const toggleItem = (item, formikValues) => {
-    if (formikValues.includes(item)) {
-      return formikValues.filter((e) => e !== item)
-    } else {
-      return formikValues.concat(item)
-    }
-  }
 
-  const focusInCurrentTarget = ({ relatedTarget, currentTarget }) => {
-    if (relatedTarget === null) return false
-
-    var node = relatedTarget.parentNode
-
-    while (node !== null) {
-      if (node === currentTarget) return true
-      node = node.parentNode
-    }
-
-    return false
-  }
-
-  const onBlur = (e) => {
-    if (!focusInCurrentTarget(e)) {
-      setShowDropdownMenu(false)
-    }
-  }
 
   const formik = useFormik({
     initialValues: {
-      grades: [],
+      grades: [false,false,false,false,false],
       remoteVisit: true,
-      closeVisit: true,
+      inPersonVisit: true,
       title: '',
       scienceClass: '',
       desc: '',
@@ -135,11 +101,19 @@ const EventForm = ({
     onSubmit: (values) => {
       const start = new Date(`${values.date}:${values.startTime}`)
       const end = new Date(`${values.date}:${values.endTime}`)
+      const gradelist = []
+      values.grades.forEach((element,index) => {
+        if(element){
+          gradelist.push(index + 1)
+        }
+      } )
       create({
+
+
         variables: {
-          grades: values.grades,
+          grades: gradelist,
           remoteVisit: values.remoteVisit,
-          closeVisit: values.closeVisit,
+          inPersonVisit: values.inPersonVisit,
           title: values.title,
           start,
           end,
@@ -203,9 +177,9 @@ const EventForm = ({
             <div className="field">
               <div id="checkbox-group">Valitse etä- ja/tai lähivierailu</div>
               <div className="control">
-                <label className="checkbox">
+                <label className="checkbox1">
                   <input
-                    type="checkbox" name="remoteVisit" checked={formik.values.remoteVisit}
+                    type="checkbox" name="remoteVisit" checked = {formik.values.remoteVisit}
                     onChange={() => {
                       formik.touched.remoteVisit = true
                       formik.setFieldValue('remoteVisit', !formik.values.remoteVisit)
@@ -214,11 +188,11 @@ const EventForm = ({
                 </label>
               </div>
               <div className="control">
-                <label className="checkbox">
-                  <input type="checkbox" name="closeVisit" checked={formik.values.closeVisit}
+                <label className="checkbox1">
+                  <input type="checkbox" name="inPersonVisit" checked={formik.values.inPersonVisit}
                     onChange={() => {
-                      formik.touched.closeVisit = true
-                      formik.setFieldValue('closeVisit', !formik.values.closeVisit)
+                      formik.touched.inPersonVisit = true
+                      formik.setFieldValue('inPersonVisit', !formik.values.inPersonVisit)
                     }
                     } />
                   Lähivierailu
@@ -226,99 +200,94 @@ const EventForm = ({
               </div>
             </div>
 
-            {formik.touched.closeVisit && formik.touched.remoteVisit && formik.errors.location
+            {formik.touched.inPersonVisit && formik.touched.remoteVisit && formik.errors.location
               ?
               <p className="help is-danger">{formik.errors.location}</p>
               : null}
-            <div className="field" id="grade" >
-              <div className="label" htmlFor="grade">
-                Luokka-aste
+
+
+            <div className="field">
+              <div id="checkbox-group">Valitse vierailulle sopivat luokka-asteet</div>
+              <div className="control">
+                <label className="checkbox2">
+                  <input
+                    type="checkbox"  value="0"
+                    onChange={() => {
+                      formik.touched.grades = true
+                      formik.values.grades[0] = !formik.values.grades[0]
+                    }} />
+                  Varhaiskasvatus
+                </label>
               </div>
-              <div
-                className="tags"
-                style={{ maxWidth: 'fit-content', marginBottom: 0 }}
-              >
-                {formik.values.grades.map((grade, index) => (
-                  <span key={index} className="tag">
-                    <span>{options[grade - 1].label}</span>
-                    <a
-                      role="button"
-                      className="delete is-small"
-                      onClick={() => {
-                        const newValues = [
-                          ...toggleItem(
-                            options[grade - 1].value,
-                            formik.values.grades
-                          ),
-                        ]
-                        formik.setFieldValue('grades', newValues)
-                      }}
-                    ></a>
-                  </span>
-                ))}
+              <div className="control">
+                <label className="checkbox2">
+                  <input type="checkbox" value="1"
+                    onChange={() => {
+                      formik.touched.grades = true
+
+                      formik.values.grades[1] = !formik.values.grades[1]
+
+
+                    }
+                    } />
+                  1.-2. luokka
+                </label>
               </div>
-              <FormikProvider value={formik}>
-                <div
-                  className={`dropdown ${showDropdownMenu && 'is-active'}`}
-                  onBlur={onBlur}
-                >
-                  <div
-                    role="button"
-                    aria-haspopup="true"
-                    className="dropdown-trigger"
-                  >
-                    <button
-                      type="button"
-                      className={`button luma ${
-                        formik.values.grades.length ? 'is-success' : 'is-danger'
-                      }`}
-                      onClick={() => {
-                        setShowDropdownMenu(!showDropdownMenu)
-                        formik.touched.grades = true
-                      }
-                      }
-                    >
-                      <span>Valitse</span>
-                      <span
-                        className="icon"
-                        style={{ borderLeft: '1px solid #ececec' }}
-                      >
-                        <FaAngleDown />
-                      </span>
-                    </button>
-                  </div>
-                  <div
-                    className="dropdown-menu"
-                    style={{ display: showDropdownMenu ? 'block' : 'none' }}
-                  >
-                    <div role="list" className="dropdown-content">
-                      {options.map((option) => (
-                        <a
-                          key={option.value}
-                          role="listitem"
-                          tabIndex="0"
-                          className={`dropdown-item ${
-                            formik.values.grades.includes(option.value) &&
-                            'is-active'
-                          }`}
-                          onClick={() => {
-                            const newValues = [
-                              ...toggleItem(option.value, formik.values.grades),
-                            ]
-                            formik.setFieldValue('grades', newValues)
-                          }}
-                        >
-                          <span>{option.label}</span>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </FormikProvider>
-              {formik.touched.grades && formik.errors.grades ? (
-                <p className="help is-danger">{formik.errors.grades}</p>
-              ) : null}
+              <div className="control">
+                <label className="checkbox2">
+                  <input type="checkbox" value="2"
+                    onChange={() => {
+                      formik.touched.grades = true
+
+                      formik.values.grades[2] = !formik.values.grades[2]
+
+
+                    }
+                    } />
+                  3.-6. luokka
+                </label>
+              </div>
+
+              <div className="control">
+                <label className="checkbox2">
+                  <input type="checkbox" value="3"
+                    onChange={() => {
+                      formik.touched.grades = true
+
+                      formik.values.grades[3] = !formik.values.grades[3]
+
+
+                    }
+                    } />
+                  7.-9. luokka
+                </label>
+              </div>
+
+              <div className="control">
+                <label className="checkbox2">
+                  <input type="checkbox" value="4"
+                    onChange={() => {
+                      formik.touched.grades = true
+
+                      formik.values.grades[4] = !formik.values.grades[4]
+
+
+                    }
+                    } />
+                  toinen aste
+                </label>
+              </div>
+
+
+
+
             </div>
+
+            {formik.touched.grades && formik.errors.grades
+              ?
+              <p className="help is-danger">{formik.errors.grades}</p>
+              : null}
+
 
             <div className="field">
               <label className="label" htmlFor="scienceClass">

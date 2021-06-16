@@ -16,7 +16,7 @@ And('there is an available event in more than two weeks ahead', () => {
     start: eventDate,
     end: eventDate,
     remoteVisit: true,
-    closeVisit: false,
+    inPersonVisit: false,
     desc: 'Test event description'
   })
 })

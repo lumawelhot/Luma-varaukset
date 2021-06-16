@@ -24,6 +24,10 @@ const resolvers = {
       const tags = await Tag.find({})
       return tags
     },
+    getVisits: async () => {
+      const visits = await Visit.find({}).populate('event', { id: 1, title: 1, resourceId: 1 })
+      return visits
+    },
     findVisit: async (root, args) => {
       try {
         const visit = await Visit.findById(args.id)
@@ -103,7 +107,10 @@ const resolvers = {
           throw new UserInputError('Invalid class')
       }
 
+
       let grades = args.grades
+
+
 
       if (grades.length < 1) {
         throw new UserInputError('At least one grade must be selected!')
@@ -135,7 +142,7 @@ const resolvers = {
         grades,
         booked: false,
         remoteVisit: args.remoteVisit,
-        closeVisit: args.closeVisit
+        inPersonVisit: args.inPersonVisit
       })
       newEvent.tags = mongoTags
       await newEvent.save()

@@ -19,7 +19,7 @@ it('Initialize tests', () => {
     start: eventDate1,
     end: eventDate1,
     remoteVisit: true,
-    closeVisit: false,
+    inPersonVisit: false,
     desc: 'Test event description'
   })
   cy.createEvent({
@@ -27,7 +27,7 @@ it('Initialize tests', () => {
     scienceClass: 'LINKKI',
     start: eventDate2,
     end: eventDate2,
-    closeVisit: true,
+    inPersonVisit: true,
     remoteVisit: false,
     desc: 'Test event description'
   })
@@ -84,7 +84,7 @@ And('there is an event less than two weeks ahead', () => {
   cy.createEvent({
     title: unavailableEventName,
     scienceClass: 'LINKKI',
-    closeVisit: true,
+    inPersonVisit: true,
     remoteVisit: false,
     start: unavailableEventDate,
     end: unavailableEventDate,

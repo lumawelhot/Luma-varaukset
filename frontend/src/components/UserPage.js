@@ -14,12 +14,20 @@ const UserPage = ({ currentUser }) => {
     history.push('/users')
   }
 
+  const listVisits = (event) => {
+    event.preventDefault()
+    history.push('/visits')
+  }
+
   if (!currentUser) return <div></div>
 
   return (
     <div className="field is-grouped">
       <p className="control">
         <button className="button luma" onClick={createEvent}>Luo uusi vierailu</button>
+      </p>
+      <p className="control">
+        <button className="button luma" onClick={listVisits}>Varaukset</button>
       </p>
       {currentUser.isAdmin &&
         <p className="control">
