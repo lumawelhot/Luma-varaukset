@@ -182,8 +182,8 @@ const resolvers = {
         availableTimes.forEach(item => {
           if (visitStart >= item.startTime && visitEnd <= item.endTime) {
             result = {
-              availableStart: new Date(item.startTime),
-              availableEnd: new Date(item.endTime)
+              startTime: new Date(item.startTime),
+              endTime: new Date(item.endTime)
             }
           }
         })
@@ -203,12 +203,21 @@ const resolvers = {
         }
         return result
       }
-
-      const assignAvailableTimes = (before, after, availableTime) => {
-        const filteredAvailTimes = availableTimes.filter(at => at.startTime === availableTime.startTime && at.endTime === availableTime.endTime)
+      /*
+---S-----------------------E---- availableTime
+---S--------------E____S---E---- visitin s ja e
+--SE____S---------EXXXXXXXXE---- uudet mahdolliset
+*/
+      const assignAvailableTimes = (before, after , availableTime) => {
+        /* console.log('The end of the beginning')
+        console.log(availableTime.startTime, availableTime.endTime) */
+        /* availableTimes.forEach(at => {
+          console.log(at.startTime, at.endTime)
+        }) */
+        console.log('vanha taulukko: ', availableTimes)
+        const filteredAvailTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime)
         if (before) filteredAvailTimes.push(before)
         if (after) filteredAvailTimes.push(after)
-
         return filteredAvailTimes
       }
 
@@ -224,9 +233,10 @@ const resolvers = {
         availableEnd.setTime(availableEnd.getTime() - 900000) //--> uuden mahdollisen aikaikkunan endTime
         availableStart.setTime(availableStart.getTime() + 900000) //--> uuden mahdollisen aikaikkunan startTime
 
-        const availableBefore = generateAvailableTime(availableTime.availableStart, availableEnd)
-        const availableAfter = generateAvailableTime(availableStart, availableTime.availableEnd)
+        const availableBefore = generateAvailableTime(availableTime.startTime, availableEnd)
+        const availableAfter = generateAvailableTime(availableStart, availableTime.endTime)
         console.log('mahdollinen ennen visitiä: ', availableBefore, 'mahdollinen visitin jälkeen: ', availableAfter)
+        console.log('availableTime: ', availableTime)
         const newAvailableTimes = assignAvailableTimes(availableAfter, availableBefore, availableTime)
         console.log('uusi taulukko: ', newAvailableTimes)
         event.availableTimes = newAvailableTimes
@@ -272,9 +282,64 @@ const resolvers = {
         })
       }
     },
+    /*
+----ES___E-----------------EE---- visitin S ja E
+----ES___S---E________S----EE---- availableTimes-taulukko
+----ES----E...S---E________S----EE---- visit, joka perutaan ...
+----ES------------E________S----EE---- uudet mahdolliset
+*/
     cancelVisit: async (root, args) => {
       const visit = await Visit.findById(args.id)
       const event = await Event.findById(visit.event)
+      let visitStart = new Date(visit.startTime)
+      let visitEnd = new Date(visit.endTime)
+      const eventStart = new Date(event.start)
+      const eventEnd = new Date(event.end)
+      visitEnd.setTime(visitEnd.getTime() + 900000)
+      visitStart.setTime(visitStart.getTime() - 900000)
+      if (visitEnd > eventEnd) visitEnd = eventEnd
+      if (visitStart < eventStart) visitStart = eventStart
+
+      const availableTimes = event.availableTimes.map(time => ({
+        startTime: new Date(time.startTime),
+        endTime: new Date(time.endTime)
+      }))
+      console.log('eventit: ', eventStart, eventEnd)
+
+      const findClosest = () => {
+        let startPoint
+        let endPoint
+        availableTimes.forEach(time => {
+          console.log('time: ', time)
+          console.log('visit: ', visitStart, visitEnd)
+          console.log(typeof time.startTime, typeof visitEnd, '---------------------------------')
+          if (time.startTime.toString() === visitEnd.toString()) {
+            endPoint = time.endTime
+            console.log('annettu', endPoint)
+          }
+          if (time.endTime.toString() === visitStart.toString()) {
+            startPoint = time.startTime
+            console.log('second annettu: ', startPoint)
+          }
+        })
+
+        console.log(startPoint, endPoint)
+        if (!startPoint) startPoint = eventStart
+        if (!endPoint) endPoint = eventEnd
+        console.log(startPoint, endPoint)
+        return {
+          startTime: startPoint,
+          endTime: endPoint
+        }
+      }
+
+      const closest = findClosest()
+      console.log('closest: ', closest)
+      const filteredAvailTimes = availableTimes.filter(time => !(time.startTime.toString() === closest.startTime.toString() || time.endTime.toString() === closest.endTime.toString()))
+      filteredAvailTimes.push(closest)
+
+      console.log('filteredAvailTimes: ', filteredAvailTimes)
+
       try {
         visit.status = false
         event.booked = false
