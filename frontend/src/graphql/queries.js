@@ -61,6 +61,25 @@ export const TAGS = gql`
   }
 `
 
+export const VISITS = gql`
+  query getVisits {
+    getVisits {
+      id
+      event {
+        id
+        title
+        resourceId
+      }
+      grade
+      extra
+      clientName
+      clientEmail
+      clientPhone
+      status
+    }
+  }
+`
+
 export const CURRENT_USER = gql`
   query me {
     me {
@@ -71,7 +90,7 @@ export const CURRENT_USER = gql`
 `
 
 export const CREATE_EVENT = gql`
-  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!, $grades: [Int]!, $remoteVisit: Boolean!, $closeVisit: Boolean!, $desc: String, $tags: [TagInput]) {
+  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!, $grades: [Int]!, $remoteVisit: Boolean!, $inPersonVisit: Boolean!, $desc: String, $tags: [TagInput]) {
     createEvent (
       title: $title,
       start: $start,
@@ -80,9 +99,10 @@ export const CREATE_EVENT = gql`
       desc: $desc,
       grades: $grades,
       remoteVisit: $remoteVisit,
-      closeVisit: $closeVisit,
+      inPersonVisit: $inPersonVisit,
       tags: $tags
     ) {
+      id
       title
       resourceId
       grades
@@ -92,7 +112,7 @@ export const CREATE_EVENT = gql`
         name,
         id
       }
-      closeVisit
+      inPersonVisit
       remoteVisit
       desc
       booked
@@ -119,13 +139,12 @@ export const CREATE_VISIT = gql`
       clientName
       clientEmail
       clientPhone
-      pin
     }
   }
 `
 export const FIND_VISIT = gql`
-  query findVisit($id: ID!, $pin: Int!) {
-    findVisit(id: $id, pin: $pin) {
+  query findVisit($id: ID!) {
+    findVisit(id: $id) {
       clientName
       clientEmail
       clientPhone
@@ -141,8 +160,8 @@ export const FIND_VISIT = gql`
 `
 
 export const CANCEL_VISIT = gql`
-  mutation cancelVisit($id: ID!, $pin: Int!) {
-    cancelVisit(id: $id, pin: $pin) {
+  mutation cancelVisit($id: ID!) {
+    cancelVisit(id: $id) {
       id
     }
   }

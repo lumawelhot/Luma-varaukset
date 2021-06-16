@@ -21,6 +21,7 @@ Scenario: An added user is shown on the user list
     Given Admin is logged in
     And a user is created
     When I press the user list button
+    And I am on the list user page
     Then the created user xxxxx is listed
 
 Scenario: An admin can enter to the user creation page from user list page

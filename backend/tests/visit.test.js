@@ -45,7 +45,7 @@ beforeEach(async () => {
     grades: [1],
     start: unavailableDate,
     end: unavailableDate,
-    closeVisit: true,
+    inPersonVisit: true,
     remoteVisit: false
   }
 
@@ -55,7 +55,7 @@ beforeEach(async () => {
     grades: [1],
     start: availableDate,
     end: availableDate,
-    closeVisit: false,
+    inPersonVisit: false,
     remoteVisit: true
   }
 
@@ -67,7 +67,6 @@ beforeEach(async () => {
 
   const testVisitData = {
     event: availableEvent,
-    pin: 1234,
     grade: 1,
     clientName: 'Teacher',
     clientEmail: 'teacher@school.com',
@@ -84,7 +83,6 @@ describe('Visit Model Test', () => {
   it('teacher can create new visit successfully', async () => {
     const newVisitData = {
       event: availableEvent,
-      pin: 5678,
       grade: 1,
       clientName: 'Teacher 2',
       clientEmail: 'teacher2@someschool.com',
@@ -95,7 +93,6 @@ describe('Visit Model Test', () => {
     const savedVisit = await validVisit.save()
     expect(savedVisit._id).toBeDefined()
     expect(savedVisit.event).toBe(newVisitData.event)
-    expect(savedVisit.pin).toBe(newVisitData.pin)
     expect(savedVisit.grade).toBe(newVisitData.grade)
     expect(savedVisit.clientName).toBe(newVisitData.clientName)
     expect(savedVisit.clientEmail).toBe(newVisitData.clientEmail)
@@ -104,7 +101,7 @@ describe('Visit Model Test', () => {
   })
 
   it('teacher cannot create visit without required field', async () => {
-    const visitWithoutRequiredField = new VisitModel({ pin: 1234 })
+    const visitWithoutRequiredField = new VisitModel()
     let err
     try {
       await visitWithoutRequiredField.save()
@@ -143,7 +140,6 @@ describe('Visit server test', () => {
           clientEmail
           clientPhone
           grade
-          pin
           status
         }
       }
@@ -156,7 +152,6 @@ describe('Visit server test', () => {
     const { createVisit }  = data
 
     expect(createVisit.id).toBeDefined()
-    expect(createVisit.pin).toBeDefined()
     expect(createVisit.event.title).toBe(savedAvailableEvent.title)
     expect(createVisit.clientName).toBe('Teacher')
     expect(createVisit.clientEmail).toBe('teacher@school.com')
@@ -186,7 +181,6 @@ describe('Visit server test', () => {
           clientEmail
           clientPhone
           grade
-          pin
         }
       }
       `
@@ -200,13 +194,12 @@ describe('Visit server test', () => {
     expect(createVisit).toBe(null)
   })
 
-  it('find by visit id and pin', async () => {
+  it('find by visit id', async () => {
     const { query } = createTestClient(server)
     const id = savedTestVisit.id
-    const pin = savedTestVisit.pin
     const FIND_VISIT = gql`
-        query findVisit($id: ID!, $pin: Int!) {
-          findVisit(id: $id, pin: $pin) {
+        query findVisit($id: ID!) {
+          findVisit(id: $id) {
             id
             event {
               id
@@ -220,12 +213,11 @@ describe('Visit server test', () => {
         `
     const { data }  = await query({
       query: FIND_VISIT,
-      variables: { id, pin }
+      variables: { id }
     })
 
     const { findVisit } = data
 
-    expect(findVisit.id).toBeDefined()
     expect(findVisit.event.id).toBe(savedTestVisit.event.id)
     expect(findVisit.grade).toBe(savedTestVisit.grade)
     expect(findVisit.clientName).toBe(savedTestVisit.clientName)
@@ -233,26 +225,23 @@ describe('Visit server test', () => {
     expect(findVisit.clientPhone).toBe(savedTestVisit.clientPhone)
   })
 
-  it('cancel visit by id and valid pin', async () => {
+  it('cancel visit by id', async () => {
     const { mutate } = createTestClient(server)
     const id = savedTestVisit.id
-    const pin = savedTestVisit.pin
     const CANCEL_VISIT = gql`
-        mutation cancelVisit($id: ID!, $pin: Int!) {
-          cancelVisit(id: $id, pin: $pin) {
+        mutation cancelVisit($id: ID!) {
+          cancelVisit(id: $id) {
             id
-            pin
             status
           }
         }
         `
     const { data } = await mutate({
       mutation: CANCEL_VISIT,
-      variables: { id, pin }
+      variables: { id }
     })
     const { cancelVisit } = data
     expect(cancelVisit.id).toBe(savedTestVisit.id)
-    expect(cancelVisit.pin).toBe(savedTestVisit.pin)
     expect(cancelVisit.status).toBe(false)
 
     const cancelledVisit = await VisitModel.findById(savedTestVisit.id)
@@ -260,29 +249,6 @@ describe('Visit server test', () => {
 
     const event = await EventModel.findById(cancelledVisit.event)
     expect(event.booked).toBe(false)
-  })
-
-  it('do not cancel visit by id and invalid pin', async () => {
-    const { mutate } = createTestClient(server)
-    const id = savedTestVisit.id
-    const pin = 4321
-    const CANCEL_VISIT = gql`
-        mutation cancelVisit($id: ID!, $pin: Int!) {
-          cancelVisit(id: $id, pin: $pin) {
-            id
-            pin
-          }
-        }
-        `
-    const  data  = await mutate({
-      mutation: CANCEL_VISIT,
-      variables: { id: id, pin: pin }
-    })
-
-    expect(data.errors[0].message).toBe('Wrong pin!')
-
-    const cancelledVisit = await VisitModel.findById(savedTestVisit.id)
-    expect(cancelledVisit.id).toBe(savedTestVisit.id)
   })
 })
 

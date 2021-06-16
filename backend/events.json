@@ -6,7 +6,7 @@
     "resourceId": 4,
     "grades": [1],
     "booked": false,
-    "closeVisit": true,
+    "inPersonVisit": true,
     "remoteVisit": false
   },
   {
@@ -16,7 +16,7 @@
     "resourceId": 4,
     "grades": [1],
     "booked": false,
-    "closeVisit": true,
+    "inPersonVisit": true,
     "remoteVisit": false
   },
   {
@@ -26,7 +26,7 @@
     "resourceId": 4,
     "grades": [1],
     "booked": false,
-    "closeVisit": true,
+    "inPersonVisit": true,
     "remoteVisit": false
   },
   {
@@ -36,7 +36,7 @@
     "resourceId": 3,
     "grades": [1],
     "booked": false,
-    "closeVisit": true,
+    "inPersonVisit": true,
     "remoteVisit": false
   },
   {
@@ -47,7 +47,7 @@
     "resourceId": 1,
     "grades": [1],
     "booked": false,
-    "closeVisit": true,
+    "inPersonVisit": true,
     "remoteVisit": false
   },
   {
@@ -58,7 +58,7 @@
     "resourceId": 3,
     "grades": [1, 2],
     "booked": false,
-    "closeVisit": true,
+    "inPersonVisit": true,
     "remoteVisit": false
   },
   {
@@ -69,7 +69,7 @@
     "resourceId": 4,
     "grades": [3, 4],
     "booked": false,
-    "closeVisit": true,
+    "inPersonVisit": true,
     "remoteVisit": false
   }
 ]

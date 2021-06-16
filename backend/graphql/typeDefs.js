@@ -1,7 +1,6 @@
 const { gql } = require('apollo-server-express')
 
 //Visit- ja Event-tyyppien kentät gradeId ja online tarkistettava
-//Visit-tyypin pin-kentän palautus frontendiin estettävä sitten, kun pin palautetaan sähköpostitse
 const typeDefs = gql `
   type Tag {
     id: ID
@@ -17,7 +16,7 @@ const typeDefs = gql `
     title: String!
     resourceId: Int
     remoteVisit: Boolean!
-    closeVisit: Boolean!
+    inPersonVisit: Boolean!
     grades: [Int]!
     start: String!
     end: String!
@@ -28,7 +27,6 @@ const typeDefs = gql `
   type Visit {
     id: ID!
     event: Event!
-    pin: Int!
     grade: Int!
     extra: [Int]
     clientName: String!
@@ -43,7 +41,7 @@ const typeDefs = gql `
     getUsers: [User]!
     me: User!
     getEvents: [Event]!
-    findVisit(id: ID!, pin: Int!): Visit!
+    findVisit(id: ID!): Visit!
     getVisits: [Visit]
     getTags: [Tag]!
   }
@@ -68,7 +66,7 @@ const typeDefs = gql `
       start: String!
       end: String!
       desc: String
-      closeVisit: Boolean!
+      inPersonVisit: Boolean!
       remoteVisit: Boolean!
       tags: [TagInput]
     ): Event
@@ -80,7 +78,7 @@ const typeDefs = gql `
       clientEmail: String!
       clientPhone: String!
     ): Visit
-    cancelVisit(id: ID!, pin: Int!): Visit
+    cancelVisit(id: ID!): Visit
   }
 `
 
