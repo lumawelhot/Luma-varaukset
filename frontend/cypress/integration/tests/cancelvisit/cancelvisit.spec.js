@@ -38,13 +38,14 @@ And('I have made a booking for that event', () => {
   cy.contains('Varaa tapahtuma').click()
 
   // Fill in the form
-  cy.get('#visitGrade').select('1')
   cy.get('#clientName').type('Teacher')
-  cy.wait(500)
+  cy.get('#schoolName').type('School')
+  cy.get('#schoolLocation').type('Location')
   cy.get('#clientEmail').type('teacher@school.fi')
-  cy.wait(100)
+  cy.get('#verifyEmail').type('teacher@school.fi')
   cy.get('#clientPhone').type('040-1234567')
-  cy.wait(100)
+  cy.get('#visitGrade').type('1. grade')
+  cy.get('#participants').type('9')
   cy.get('#create').click()
   cy.wait(2000)
 
