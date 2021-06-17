@@ -124,8 +124,8 @@ it('employee can create new event successfully', async () => {
         createEvent(
           title: "Learn JavaScript!"
           class: "LINKKI"
-          start: "Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)"
-          end: "Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)"
+          start: "2021-06-01T10:00:00+0300"
+          end: "2021-06-01T12:00:00+0300"
           desc: "JavaScript is the programming language of the Web."
           remoteVisit: true
           inPersonVisit: false
@@ -163,8 +163,8 @@ describe('Event Model Test', () => {
       resourceId: 2,
       grades: [3, 4],
       tags: tags,
-      start: 'Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)',
-      end: 'Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)',
+      start: '2021-06-01T10:00:00+0300',
+      end: '2021-06-01T12:00:00+0300',
       inPersonVisit: true,
       remoteVisit: false,
       desc: 'Test event desc.'
@@ -186,8 +186,8 @@ describe('Event Model Test', () => {
       title: 'New-event',
       resourceId: 2,
       grades: [1],
-      start: 'Tue Jun 01 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
-      end: 'Wed Jun 02 2021 15:00:00 GMT+0300 (Eastern European Summer Time)',
+      start: '2021-06-01T09:00:00+0300',
+      end: '2021-06-02T15:00:00+0300',
       inPersonVisit: true,
       remoteVisit: false,
       fieldNotInSchema: 'Tiedeluokka Linkki',
@@ -218,8 +218,8 @@ describe('Event Model Test', () => {
     const eventWithEndBeforeStart = new EventModel({
         title: 'New-event',
         resourceId: 2,
-        start: 'Tue Jun 01 2021 09:01:00 GMT+0300 (Eastern European Summer Time)',
-        end: 'Tue Jun 01 2021 09:00:00 GMT+0300 (Eastern European Summer Time)'
+        start: '2021-06-01T09:00:00+0300',
+        end: '2021-06-01T09:01:00+0300'
     })
   }) */
 })

@@ -48,6 +48,8 @@ export const EVENTS = gql`
       end
       desc
       booked
+      inPersonVisit
+      remoteVisit
     }
   }
 `
@@ -132,7 +134,9 @@ export const CREATE_VISIT = gql`
     $clientEmail: String!,
     $clientPhone: String!,
     $grade: String!,
-    $participants: Int!
+    $participants: Int!,
+    $inPersonVisit: Boolean!,
+    $remoteVisit: Boolean!
     ) {
     createVisit(
       event: $event,
@@ -143,6 +147,8 @@ export const CREATE_VISIT = gql`
       clientPhone: $clientPhone
       grade: $grade,
       participants: $participants
+      inPersonVisit: $inPersonVisit
+      remoteVisit: $remoteVisit 
     ) {
       id
       event {
@@ -176,6 +182,8 @@ export const FIND_VISIT = gql`
       }
       grade
       participants
+      inPersonVisit
+      remoteVisit
     }
   }
 `

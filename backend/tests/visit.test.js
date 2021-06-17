@@ -67,13 +67,15 @@ beforeEach(async () => {
 
   const testVisitData = {
     event: availableEvent,
-    grade: '1. grade',
     clientName: 'Teacher',
     schoolName: 'School',
     schoolLocation: 'Location',
-    participants: 13,
     clientEmail: 'teacher@school.com',
     clientPhone: '040-1234567',
+    grade: '1. grade',
+    participants: 13,
+    inPersonVisit: true,
+    remoteVisit: false,
     status: true
   }
 
@@ -86,13 +88,15 @@ describe('Visit Model Test', () => {
   it('teacher can create new visit successfully', async () => {
     const newVisitData = {
       event: availableEvent,
-      grade: '1. grade',
       clientName: 'Teacher 2',
       schoolName: 'School 2',
       schoolLocation: 'Location 2',
-      participants: 15,
       clientEmail: 'teacher2@someschool.com',
       clientPhone: '050-8912345',
+      grade: '1. grade',
+      participants: 15,
+      inPersonVisit: true,
+      remoteVisit: true,
       status: true
     }
     const validVisit = new VisitModel(newVisitData)
@@ -111,11 +115,13 @@ describe('Visit Model Test', () => {
     }
     expect(err).toBeInstanceOf(mongoose.Error.ValidationError)
     expect(err.errors.event).toBeDefined()
-    expect(err.errors.grade).toBeDefined()
     expect(err.errors.clientName).toBeDefined()
     expect(err.errors.schoolName).toBeDefined()
     expect(err.errors.schoolLocation).toBeDefined()
+    expect(err.errors.grade).toBeDefined()
     expect(err.errors.participants).toBeDefined()
+    expect(err.errors.inPersonVisit).toBeDefined()
+    expect(err.errors.remoteVisit).toBeDefined()
     expect(err.errors.clientEmail).toBeDefined()
     expect(err.errors.clientPhone).toBeDefined()
   })
@@ -129,13 +135,15 @@ describe('Visit server test', () => {
     const CREATE_VISIT = gql`
       mutation createVisit(
         $event: ID!,
-        $grade: String!,
         $clientName: String!,
         $schoolName: String!,
         $schoolLocation: String!,
-        $participants: Int!,
         $clientEmail: String!,
         $clientPhone: String!
+        $grade: String!,
+        $participants: Int!,
+        $inPersonVisit: Boolean!,
+        $remoteVisit: Boolean!
         ) {
         createVisit(
           event: $event
@@ -144,6 +152,8 @@ describe('Visit server test', () => {
           schoolName: $schoolName
           schoolLocation: $schoolLocation
           participants: $participants
+          inPersonVisit: $inPersonVisit
+          remoteVisit: $remoteVisit
           clientEmail: $clientEmail
           clientPhone: $clientPhone
         ) {
@@ -152,13 +162,15 @@ describe('Visit server test', () => {
             title
             booked
           }
-          grade
           clientName
           schoolName
           schoolLocation
-          participants
           clientEmail
           clientPhone
+          grade
+          participants
+          inPersonVisit
+          remoteVisit
           status
         }
       }
@@ -167,13 +179,15 @@ describe('Visit server test', () => {
       mutation: CREATE_VISIT,
       variables: {
         event: event,
-        grade: '1. grade',
         clientName: 'Teacher',
         schoolName: 'School',
         schoolLocation: 'Location',
-        participants: 13,
         clientEmail: 'teacher@school.com',
-        clientPhone: '040-1234567'
+        clientPhone: '040-1234567',
+        grade: '1. grade',
+        participants: 13,
+        inPersonVisit: true,
+        remoteVisit: false
       }
     })
 
@@ -181,13 +195,15 @@ describe('Visit server test', () => {
 
     expect(createVisit.id).toBeDefined()
     expect(createVisit.event.title).toBe(savedAvailableEvent.title)
-    expect(createVisit.grade).toBe('1. grade')
     expect(createVisit.clientName).toBe('Teacher')
     expect(createVisit.schoolName).toBe('School')
     expect(createVisit.schoolLocation).toBe('Location')
-    expect(createVisit.participants).toBe(13)
+    expect(createVisit.inPersonVisit).toBe(true)
+    expect(createVisit.remoteVisit).toBe(false)
     expect(createVisit.clientEmail).toBe('teacher@school.com')
     expect(createVisit.clientPhone).toBe('040-1234567')
+    expect(createVisit.grade).toBe('1. grade')
+    expect(createVisit.participants).toBe(13)
     expect(createVisit.event.booked).toBe(true)
     expect(createVisit.status).toBe(true)
   })
@@ -198,13 +214,15 @@ describe('Visit server test', () => {
     const CREATE_VISIT = gql`
       mutation createVisit(
         $event: ID!,
-        $grade: String!,
         $clientName: String!,
         $schoolName: String!,
         $schoolLocation: String!,
-        $participants: Int!,
+        $inPersonVisit: Boolean!,
+        $remoteVisit: Boolean!,
         $clientEmail: String!,
-        $clientPhone: String!
+        $clientPhone: String!,
+        $grade: String!,
+        $participants: Int!
         ) {
         createVisit(
           event: $event
@@ -213,6 +231,8 @@ describe('Visit server test', () => {
           schoolName: $schoolName
           schoolLocation: $schoolLocation
           participants: $participants
+          inPersonVisit: $inPersonVisit
+          remoteVisit: $remoteVisit
           clientEmail: $clientEmail
           clientPhone: $clientPhone
         ) {
@@ -220,13 +240,15 @@ describe('Visit server test', () => {
           event {
             title
           }
-          grade
           clientName
           schoolName
           schoolLocation
-          participants
           clientEmail
           clientPhone
+          grade
+          participants
+          inPersonVisit
+          remoteVisit
         }
       }
       `
@@ -234,13 +256,15 @@ describe('Visit server test', () => {
       mutation: CREATE_VISIT,
       variables: {
         event: event,
-        grade: '1. grade',
         clientName: 'Teacher',
         schoolName: 'School',
         schoolLocation: 'Location',
-        participants: 13,
         clientEmail: 'teacher@school.com',
-        clientPhone: '040-1234567'
+        clientPhone: '040-1234567',
+        grade: '1. grade',
+        participants: 13,
+        inPersonVisit: true,
+        remoteVisit: false
       }
     })
     const { createVisit }  = data
@@ -258,13 +282,15 @@ describe('Visit server test', () => {
             event {
               id
             }
-            grade
             clientName
             schoolName
             schoolLocation
-            participants
             clientEmail
             clientPhone
+            grade
+            participants
+            inPersonVisit
+            remoteVisit
             status
           }
         }
@@ -277,13 +303,15 @@ describe('Visit server test', () => {
     const { findVisit } = data
 
     expect(findVisit.event.id).toBe(savedTestVisit.event.id)
-    expect(findVisit.grade).toBe(savedTestVisit.grade)
     expect(findVisit.clientName).toBe(savedTestVisit.clientName)
     expect(findVisit.schoolName).toBe(savedTestVisit.schoolName)
     expect(findVisit.schoolLocation).toBe(savedTestVisit.schoolLocation)
-    expect(findVisit.participants).toBe(savedTestVisit.participants)
     expect(findVisit.clientEmail).toBe(savedTestVisit.clientEmail)
     expect(findVisit.clientPhone).toBe(savedTestVisit.clientPhone)
+    expect(findVisit.grade).toBe(savedTestVisit.grade)
+    expect(findVisit.participants).toBe(savedTestVisit.participants)
+    expect(findVisit.inPersonVisit).toBe(savedTestVisit.inPersonVisit)
+    expect(findVisit.remoteVisit).toBe(savedTestVisit.remoteVisit)
   })
 
   it('cancel visit by id', async () => {
