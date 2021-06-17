@@ -1,7 +1,13 @@
 const mongoose = require('mongoose')
 const { createTestClient } = require('apollo-server-testing')
 const { ApolloServer, gql } = require('apollo-server-express')
-const moment = require ('moment')
+//const moment = require ('moment')
+//const parseISO = require('date-fns/parseISO')
+var setHours = require('date-fns/setHours')
+var setMinutes = require('date-fns/setMinutes')
+var setSeconds = require('date-fns/setSeconds')
+var add = require('date-fns/add')
+//const { zonedTimeToUtc, utcToZonedTime, format } = require('date-fns-tz')
 
 const EventModel = require('../models/event')
 const VisitModel = require('../models/visit')
@@ -36,9 +42,9 @@ beforeEach(async () => {
   await EventModel.deleteMany({})
   await VisitModel.deleteMany({})
 
-  const availableDate = moment(new Date()).day(16)
-  //availableDate.setDate(new Date().getDate() + 16) // varmistetaan, että testitapahtuma on yli kahden viikon päässä
-  const oneHourAdded = moment(new Date()).day(16).milliseconds(3600000)
+  const availableDate = setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 9), 0), 0)
+
+  const fiveHoursAdded = setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 14), 0), 0)
   const unavailableDate = new Date()
 
   const unavailableEventData = {
@@ -56,9 +62,10 @@ beforeEach(async () => {
     resourceId: 2,
     grades: [1],
     start: availableDate,
-    end: oneHourAdded,
+    end: fiveHoursAdded,
     inPersonVisit: false,
-    remoteVisit: true
+    remoteVisit: true,
+    availableTimes: [{ startTime: availableDate, endTime: fiveHoursAdded }]
   }
 
   unavailableEvent = new EventModel(unavailableEventData)
@@ -157,8 +164,6 @@ describe('Visit server test', () => {
     })
 
     const { createVisit }  = data
-    console.log(createVisit, '<-----------------------------------------------------')
-    console.log('päivämäärät: ', availableEvent.start, availableEvent.end)
 
     expect(createVisit.id).toBeDefined()
     expect(createVisit.event.title).toBe(savedAvailableEvent.title)
@@ -258,7 +263,7 @@ describe('Visit server test', () => {
     expect(cancelledVisit.id).toBeDefined()
 
     const event = await EventModel.findById(cancelledVisit.event)
-    console.log(event.visits)
+    expect(event.visits.length).toBe(0)
   })
 })
 

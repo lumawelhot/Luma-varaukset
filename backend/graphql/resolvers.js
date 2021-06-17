@@ -9,6 +9,8 @@ const moment = require ('moment')
 const mailer = require('../services/mailer')
 const config = require('../utils/config')
 const { readMessage } = require('../services/fileReader')
+//const parseISO = require('date-fns/parseISO')
+const { /* differenceInMilliseconds, isDate, isValid, parseISO, */ getUnixTime } = require('date-fns')
 
 const resolvers = {
   Query: {
@@ -158,6 +160,7 @@ const resolvers = {
       const event = await Event.findById(args.event)
       const visitStart = new Date(args.startTime)
       const visitEnd = new Date(args.endTime)
+
       const availableTimes = event.availableTimes.map(time => ({
         startTime: new Date(time.startTime),
         endTime: new Date(time.endTime)
@@ -168,21 +171,20 @@ const resolvers = {
       const check = (availableTimes) => {
         let result = null
         availableTimes.forEach(item => {
-          if (visitStart >= item.startTime && visitEnd <= item.endTime) {
+          if (getUnixTime(visitStart) >= getUnixTime(item.startTime) && getUnixTime(visitEnd) <= getUnixTime(item.endTime)) {
             result = {
               startTime: new Date(item.startTime),
               endTime: new Date(item.endTime)
             }
           }
         })
-        console.log('checkin result: ', result)
         return result
       }
 
       const generateAvailableTime = (start, end) => {
         let result = null
-        console.log(start, end)
-        console.log(end - start, 'Hello world')
+        /* console.log(start, end)
+        console.log(end - start, 'Hello world') */
         if (end - start >= 3600000) {
           result = {
             startTime: start,
@@ -197,7 +199,7 @@ const resolvers = {
 --SE____S---------EXXXXXXXXE---- uudet mahdolliset
 */
       const assignAvailableTimes = (before, after , availableTime) => {
-        console.log('vanha taulukko: ', availableTimes)
+        //console.log('vanha taulukko: ', availableTimes)
         const filteredAvailTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime)
         if (before) filteredAvailTimes.push(before)
         if (after) filteredAvailTimes.push(after)
@@ -206,11 +208,18 @@ const resolvers = {
 
 
       const availableTime = check(availableTimes)
-      console.log(visitStart >= eventStart)
-      console.log(visitStart < visitEnd)
-      console.log(visitEnd <= eventEnd)
+      if (!availableTime) {
+        throw new UserInputError('Given timeslot is invalid')
+      }
+      //console.log(visitStart >= eventStart)
+      //console.log(visitStart, visitEnd)
+      /*console.log(visitStart, visitEnd)
+      console.log(getUnixTime(visitStart), getUnixTime(visitEnd))
+      console.log(getUnixTime(visitStart) < getUnixTime(visitEnd), '<-------------------UNIX time----------')*/
+      //console.log(visitStart < visitEnd)
+      //console.log(visitEnd <= eventEnd)
 
-      if (visitStart >= eventStart && visitStart < visitEnd && visitEnd <= eventEnd && availableTime) {
+      if (getUnixTime(visitStart) >= getUnixTime(eventStart) && getUnixTime(visitStart) < getUnixTime(visitEnd) && getUnixTime(visitEnd) <= getUnixTime(eventEnd)) {
         const availableEnd = new Date(visitStart)
         const availableStart = new Date(visitEnd)
         availableEnd.setTime(availableEnd.getTime() - 900000) //--> uuden mahdollisen aikaikkunan endTime
@@ -218,10 +227,10 @@ const resolvers = {
 
         const availableBefore = generateAvailableTime(availableTime.startTime, availableEnd)
         const availableAfter = generateAvailableTime(availableStart, availableTime.endTime)
-        console.log('mahdollinen ennen visitiä: ', availableBefore, 'mahdollinen visitin jälkeen: ', availableAfter)
-        console.log('availableTime: ', availableTime)
+        /* console.log('mahdollinen ennen visitiä: ', availableBefore, 'mahdollinen visitin jälkeen: ', availableAfter)
+        console.log('availableTime: ', availableTime) */
         const newAvailableTimes = assignAvailableTimes(availableAfter, availableBefore, availableTime)
-        console.log('uusi taulukko: ', newAvailableTimes)
+        //console.log('uusi taulukko: ', newAvailableTimes)
         event.availableTimes = newAvailableTimes
       }
 
