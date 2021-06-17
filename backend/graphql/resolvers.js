@@ -1,14 +1,16 @@
 const { UserInputError, AuthenticationError } = require('apollo-server-errors')
+const { readMessage } = require('../services/fileReader')
 const bcrypt = require('bcrypt')
-const User = require('../models/user')
-const Event = require('../models/event')
-const Visit = require('../models/visit')
 const jwt = require('jsonwebtoken')
-const Tag = require('../models/tag')
 const moment = require ('moment')
 const mailer = require('../services/mailer')
 const config = require('../utils/config')
-const { readMessage } = require('../services/fileReader')
+
+const User = require('../models/user')
+const Event = require('../models/event')
+const Visit = require('../models/visit')
+const Extra = require('../models/extra')
+const Tag = require('../models/tag')
 
 const resolvers = {
   Query: {
@@ -51,6 +53,10 @@ const resolvers = {
     },
     me: (root, args, context) => {
       return context.currentUser
+    },
+    getExtras: async () => {
+      const extras = await Extra.find({})
+      return extras
     }
   },
   Visit: {
@@ -112,11 +118,7 @@ const resolvers = {
         default:
           throw new UserInputError('Invalid class')
       }
-
-
       let grades = args.grades
-
-
 
       if (grades.length < 1) {
         throw new UserInputError('At least one grade must be selected!')
@@ -210,6 +212,20 @@ const resolvers = {
         })
       }
     },
+    createExtra: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
+      if(args.name.length < 5){
+        throw new UserInputError('Name too short!')
+      }
+      if(args.classes.length === 0) {
+        throw new UserInputError('Select at least one science class!')
+      }
+      if(args.remoteLength === 0 && args.inPersonLength === 0){
+        throw new UserInputError('Give duration for at least one mode!')
+      }
+    }
   }
 }
 

@@ -52,7 +52,6 @@ const validate = values => {
   if(!values.remoteVisitGuidelines){
     errors.remoteVisitGuidelines = 'Luethan ohjeet!'
   }
-
   return errors
 }
 
