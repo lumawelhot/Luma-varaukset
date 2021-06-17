@@ -152,9 +152,6 @@ const VisitForm = ({ sendMessage, event }) => {
   if (event) {
     const eventGrades = filterEventGrades(event.grades)
     const eventClass = filterEventClass(event.resourceId)
-    console.log(event)
-    console.log('lähi: ', event.inPersonVisit)
-    console.log('etä: ', event.remoteVisit)
     return (
       <div className="container">
         <div className="columns is-centered">
@@ -316,6 +313,10 @@ const VisitForm = ({ sendMessage, event }) => {
               </div>
               {formik.touched.participants && formik.errors.participants ? (
                 <p className="help is-danger">{formik.errors.participants}</p>
+              ) : null}
+
+              {event.inPersonVisit && event.remoteVisit ? (
+                <p>radiovaihtoehdot tähän</p>
               ) : null}
 
               <button id="create" className="button luma primary" type='submit'>Tallenna</button>
