@@ -154,18 +154,6 @@ const resolvers = {
 --------S---E----S-------E--- uudet mahdolliset
 */
 
-    /* const atObject = {
-        availableStart: new Date(at.startTime),
-        availableEnd: new Date(at.endTime)
-        console.log('vistin aloitus: ', visitStart, 'visitin lopetus: ', visitEnd)
-        console.log(availableStart, availableEnd)
-        console.log('onnistuu!')
-        "endTime": "2021-07-20T11:00:00+0300"
-        },
-        {
-        "startTime": "2021-07-20T013:00:00+0300",
-      } */
-
     createVisit: async (root, args) => {
       const event = await Event.findById(args.event)
       const visitStart = new Date(args.startTime)
@@ -209,11 +197,6 @@ const resolvers = {
 --SE____S---------EXXXXXXXXE---- uudet mahdolliset
 */
       const assignAvailableTimes = (before, after , availableTime) => {
-        /* console.log('The end of the beginning')
-        console.log(availableTime.startTime, availableTime.endTime) */
-        /* availableTimes.forEach(at => {
-          console.log(at.startTime, at.endTime)
-        }) */
         console.log('vanha taulukko: ', availableTimes)
         const filteredAvailTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime)
         if (before) filteredAvailTimes.push(before)
@@ -254,7 +237,7 @@ const resolvers = {
       try {
         const now = moment(new Date())
         const start = moment(event.start)
-        if (start.diff(now, 'days') >= 14) {
+        if (start.diff(now, 'days') >= 14 && availableTime) {
           savedVisit = await visit.save()
           const details = [{
             name: 'link',
@@ -304,49 +287,41 @@ const resolvers = {
         startTime: new Date(time.startTime),
         endTime: new Date(time.endTime)
       }))
-      console.log('eventit: ', eventStart, eventEnd)
 
-      const findClosest = () => {
+      const findAvailTime = () => {
         let startPoint
         let endPoint
         availableTimes.forEach(time => {
-          console.log('time: ', time)
-          console.log('visit: ', visitStart, visitEnd)
-          console.log(typeof time.startTime, typeof visitEnd, '---------------------------------')
           if (time.startTime.toString() === visitEnd.toString()) {
             endPoint = time.endTime
-            console.log('annettu', endPoint)
           }
           if (time.endTime.toString() === visitStart.toString()) {
             startPoint = time.startTime
-            console.log('second annettu: ', startPoint)
           }
         })
-
-        console.log(startPoint, endPoint)
         if (!startPoint) startPoint = eventStart
         if (!endPoint) endPoint = eventEnd
-        console.log(startPoint, endPoint)
         return {
           startTime: startPoint,
           endTime: endPoint
         }
       }
 
-      const closest = findClosest()
-      console.log('closest: ', closest)
-      const filteredAvailTimes = availableTimes.filter(time => !(time.startTime.toString() === closest.startTime.toString() || time.endTime.toString() === closest.endTime.toString()))
-      filteredAvailTimes.push(closest)
-
-      console.log('filteredAvailTimes: ', filteredAvailTimes)
+      const newAvailTime = findAvailTime()
+      const filteredAvailTimes = availableTimes.filter(time => !(time.startTime.toString() === newAvailTime.startTime.toString() || time.endTime.toString() === newAvailTime.endTime.toString()))
+      filteredAvailTimes.push(newAvailTime)
 
       try {
+        event.visits = event.visits.filter(v => v.id !== visit.id) //huomaa catch!
+        event.availableTimes = filteredAvailTimes
         visit.status = false
         event.booked = false
         await visit.save()
         await event.save()
         return visit
       } catch (error) {
+        event.availableTimes = availableTimes
+        await event.save()
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })

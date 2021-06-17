@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const { createTestClient } = require('apollo-server-testing')
 const { ApolloServer, gql } = require('apollo-server-express')
+const moment = require ('moment')
 
 const EventModel = require('../models/event')
 const VisitModel = require('../models/visit')
@@ -35,8 +36,9 @@ beforeEach(async () => {
   await EventModel.deleteMany({})
   await VisitModel.deleteMany({})
 
-  const availableDate = new Date()
-  availableDate.setDate(new Date().getDate() + 16) // varmistetaan, että testitapahtuma on yli kahden viikon päässä
+  const availableDate = moment(new Date()).day(16)
+  //availableDate.setDate(new Date().getDate() + 16) // varmistetaan, että testitapahtuma on yli kahden viikon päässä
+  const oneHourAdded = moment(new Date()).day(16).milliseconds(3600000)
   const unavailableDate = new Date()
 
   const unavailableEventData = {
@@ -54,7 +56,7 @@ beforeEach(async () => {
     resourceId: 2,
     grades: [1],
     start: availableDate,
-    end: availableDate,
+    end: oneHourAdded,
     inPersonVisit: false,
     remoteVisit: true
   }
@@ -155,6 +157,8 @@ describe('Visit server test', () => {
     })
 
     const { createVisit }  = data
+    console.log(createVisit, '<-----------------------------------------------------')
+    console.log('päivämäärät: ', availableEvent.start, availableEvent.end)
 
     expect(createVisit.id).toBeDefined()
     expect(createVisit.event.title).toBe(savedAvailableEvent.title)
