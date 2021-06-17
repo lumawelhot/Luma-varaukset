@@ -118,7 +118,6 @@ describe('Event Server Test', () => {
   })
 })
 it('employee can create new event successfully', async () => {
-  const date = new Date()
   const { mutate } = createTestClient(server)
   const CREATE_EVENT = gql`
       mutation {

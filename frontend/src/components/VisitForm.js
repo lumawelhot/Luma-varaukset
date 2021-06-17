@@ -223,7 +223,7 @@ const VisitForm = ({ sendMessage, event }) => {
                   </div>
                 </div>
               ) : null}
-              {formik.errors.location ? (
+              {formik.touched.location && formik.errors.location ? (
                 <p className="help is-danger">{formik.errors.location}</p>
               ) : null}
               </div>
@@ -378,7 +378,7 @@ const VisitForm = ({ sendMessage, event }) => {
                   </label>
                 </div>
               </div>
-              {formik.errors.privacyPolicy ? (
+              {formik.touched.privacyPolicy && formik.errors.privacyPolicy ? (
                 <p className="help is-danger">{formik.errors.privacyPolicy}</p>
               ) : null}
 
@@ -409,7 +409,7 @@ const VisitForm = ({ sendMessage, event }) => {
                   </label>
                 </div>
               </div>
-              {formik.errors.remoteVisitGuidelines ? (
+              {formik.touched.remoteVisitGuidelines && formik.errors.remoteVisitGuidelines ? (
                 <p className="help is-danger">{formik.errors.remoteVisitGuidelines}</p>
               ) : null}
 
