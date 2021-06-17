@@ -128,10 +128,10 @@ const App = () => {
       <Switch>
 
         <Route path='/event-page'>
-          <EventPage handleBookingButtonClick={handleBookingButtonClick} event={clickedEvent} sendMessage={notify}/>
+          <EventPage currentUser={currentUser} handleBookingButtonClick={handleBookingButtonClick} event={clickedEvent} sendMessage={notify}/>
         </Route>
         <Route path='/book'>
-          <VisitForm event={clickedEvent} sendMessage={notify}/>
+          <VisitForm currentUser={currentUser} event={clickedEvent} sendMessage={notify}/>
         </Route>
         <Route path='/admin'>
           {!currentUser &&
