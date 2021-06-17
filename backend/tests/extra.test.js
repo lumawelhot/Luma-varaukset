@@ -51,6 +51,7 @@ describe('Server Test (currentUser = admin)', () => {
     const GET_ALL_EXTRAS = gql`
       query {
         getExtras {
+          id
           name
           classes
           remoteLength
@@ -68,72 +69,62 @@ describe('Server Test (currentUser = admin)', () => {
     expect(getExtras.length).toBe(1)
   })
 
-  /*  it('login successfully', async () => {
+  it('current user can create new extra successfully', async () => {
     const { mutate } = createTestClient(serverAdmin)
-    const LOGIN = gql`
+    const CREATE_EXTRA = gql`
       mutation {
-        login(
-          username: "admin"
-          password: "admin-password"
+        createExtra(
+            name: "Tieteenalan esittely"
+            classes: [2, 3]
+            remoteLength: 5 
+            inPersonLength: 15
         ){
-          value
+          name,
+          classes,
+          remoteLength,
+          inPersonLength
         }
       }
     `
-    let response = await mutate({ mutation: LOGIN })
+    let response = await mutate({ mutation: CREATE_EXTRA })
     expect(response.errors).toBeUndefined()
   })
-
-  it('admin can create new user successfully', async () => {
-    const { mutate } = createTestClient(serverAdmin)
-    const CREATE_USER = gql`
-      mutation {
-        createUser(
-          username: "new-user"
-          password: "new-password"
-          isAdmin: false
-        ){
-          username,
-          isAdmin
-        }
-      }
-    `
-    let response = await mutate({ mutation: CREATE_USER })
-    expect(response.errors).toBeUndefined()
-  }) */
 })
 
-describe('User Model Test', () => {
+describe('Extra Model Test', () => {
 
-  /* it('create & save user successfully', async () => {
-    basicUserData = { username: 'Basic-user', passwordHash: 'password', isAdmin: false }
-    const validUser = new UserModel(basicUserData)
-    const savedUser = await validUser.save()
-    expect(savedUser._id).toBeDefined()
-    expect(savedUser.username).toBe(basicUserData.username)
-    expect(savedUser.passwordHash).toBe(basicUserData.passwordHash)
-    expect(savedUser.isAdmin).toBe(basicUserData.isAdmin)
+  it('create & save extra successfully', async () => {
+    const newExtraData = { name: 'tieteenalan esittely', classes: [1, 2, 3, 4, 5], remoteLength: 5 , inPersonLength: 15 }
+    const newExtra = new ExtraModel(newExtraData)
+    const savedExtra = await newExtra.save()
+    console.log(savedExtra)
+
+    expect(savedExtra._id).toBeDefined()
+    expect(savedExtra.name).toBe(newExtraData.name)
+    expect(savedExtra.classes.length).toBe(5)
+    expect(savedExtra.remoteLength).toBe(newExtraData.remoteLength)
+    expect(savedExtra.inPersonLength).toBe(newExtraData.inPersonLength)
   })
 
-  it('insert user successfully, but the field not defined in schema should be "undefined"', async () => {
-    const userWithInvalidField = new UserModel({ username: 'Basic user 2', passwordHash: 'password2', isAdmin: false, nickname: 'Bassy' })
-    const savedUserWithInvalidField = await userWithInvalidField.save()
-    expect(savedUserWithInvalidField._id).toBeDefined()
-    expect(savedUserWithInvalidField.nickname).toBeUndefined()
+  it('insert extra successfully, but the field not defined in schema should be "undefined"', async () => {
+    const extraWithInvalidField = new ExtraModel({ name: 'opiskelijan elämää - tyypillinen päivä', classes: [1, 2, 3, 4, 5], remoteLength: 5 , inPersonLength: 15, additionalField: true })
+    const savedExtraWithInvalidField = await extraWithInvalidField.save()
+    expect(savedExtraWithInvalidField._id).toBeDefined()
+    expect(savedExtraWithInvalidField.additionalField).toBeUndefined()
   })
 
-  it('cannot create user without required field', async () => {
-    const userWithoutRequiredField = new UserModel({ username: 'Basic user 3' })
+  it('cannot create extra without required field', async () => {
+    const extraWithoutRequiredField = new ExtraModel({ name: 'lisäpalvelu' })
     let err
     try {
-      const savedUserWithoutRequiredField = await userWithoutRequiredField.save()
-      err = savedUserWithoutRequiredField
+      await extraWithoutRequiredField.save()
     } catch (error) {
       err = error
     }
     expect(err).toBeInstanceOf(mongoose.Error.ValidationError)
-    expect(err.errors.passwordHash).toBeDefined()
-  }) */
+    expect(err.errors.remoteLength).toBeDefined()
+    expect(err.errors.inPersonLength).toBeDefined()
+  })
 })
 
 afterAll(async () => {

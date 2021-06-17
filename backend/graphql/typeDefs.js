@@ -45,9 +45,9 @@ const typeDefs = gql `
   type Extra {
     id: ID!
     name: String!
-    classes: [Number]!
-    remoteLength: Number!
-    inPersonLength: Number!
+    classes: [Int]!
+    remoteLength: Int!
+    inPersonLength: Int!
   }
   type Query {
     getUsers: [User]!
