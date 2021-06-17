@@ -182,6 +182,8 @@ export const FIND_VISIT = gql`
       }
       grade
       participants
+      inPersonVisit
+      remoteVisit
     }
   }
 `
