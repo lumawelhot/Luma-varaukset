@@ -5,7 +5,6 @@ const Event = require('../models/event')
 const Visit = require('../models/visit')
 const jwt = require('jsonwebtoken')
 const Tag = require('../models/tag')
-const moment = require ('moment')
 const mailer = require('../services/mailer')
 const config = require('../utils/config')
 const { readMessage } = require('../services/fileReader')
@@ -244,9 +243,9 @@ const resolvers = {
 
       let savedVisit
       try {
-        const now = moment(new Date())
-        const start = moment(event.start)
-        if (start.diff(now, 'days') >= 14 && availableTime) {
+        const now = new Date()
+        const start = new Date(event.start)
+        if (getUnixTime(start) - getUnixTime(now) >= 1209600 && availableTime) {
           savedVisit = await visit.save()
           const details = [{
             name: 'link',

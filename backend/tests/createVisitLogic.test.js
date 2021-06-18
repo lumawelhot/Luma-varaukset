@@ -1,18 +1,14 @@
 const mongoose = require('mongoose')
 const { createTestClient } = require('apollo-server-testing')
-const { ApolloServer, gql } = require('apollo-server-express')
-//const moment = require ('moment')
-//const parseISO = require('date-fns/parseISO')
-var setHours = require('date-fns/setHours')
-var setMinutes = require('date-fns/setMinutes')
-var setSeconds = require('date-fns/setSeconds')
-var add = require('date-fns/add')
-//const { zonedTimeToUtc, utcToZonedTime, format } = require('date-fns-tz')
+const { ApolloServer } = require('apollo-server-express')
+
+const { CREATE_VISIT, details, createTimeList, createAvailableList, createDate } = require('./testHelpers.js')
 
 const EventModel = require('../models/event')
 const VisitModel = require('../models/visit')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
+
 
 let availableEvent
 let availableEvent2
@@ -21,38 +17,18 @@ let savedEventWithVisit
 //let savedUnavailableEvent
 let server
 
-const CREATE_VISIT = gql `
-  mutation createVisit($event: ID!, $clientName: String!, $clientEmail: String!, $clientPhone: String!, $grade: Int!, $startTime: String!, $endTime: String!) {
-    createVisit(
-      event: $event
-      clientName: $clientName
-      clientEmail: $clientEmail
-      clientPhone: $clientPhone
-      grade: $grade
-      startTime: $startTime
-      endTime: $endTime
-    ) {
-      id
-      event {
-        title
-      }
-      clientName
-      clientEmail
-      clientPhone
-      grade
-      status
+const visitResponse = async (event, start, end) => {
+  const { mutate } = createTestClient(server)
+  return await mutate({
+    mutation: CREATE_VISIT,
+    variables: {
+      event,
+      ...details,
+      startTime: start.toString(),
+      endTime: end.toString()
     }
-  }
-`
-
-const details = {
-  clientName: 'Teacher',
-  clientEmail: 'teacher@school.com',
-  clientPhone: '040-1234567',
-  grade: 1,
+  })
 }
-
-const createDate = (minutes, hours) => setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), hours), minutes), 0)
 
 beforeAll(async () => {
 
@@ -75,8 +51,8 @@ beforeEach(async () => {
   await EventModel.deleteMany({})
   await VisitModel.deleteMany({})
 
-  const availableStart = createDate(0, 9) //setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 9), 0), 0)
-  const availableEnd = createDate(0, 15) //setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 15), 0), 0)
+  const availableStart = createDate(9, 0)
+  const availableEnd = createDate(15, 0)
 
   const availableEventData = {
     title: 'Up-And-Atom!',
@@ -89,10 +65,10 @@ beforeEach(async () => {
     availableTimes: [{ startTime: availableStart, endTime: availableEnd }]
   }
 
-  const start1 = createDate(0, 9) //setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 9), 0), 0)
-  const start2 = createDate(0, 11) //setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 11), 0), 0)
-  const end1 = createDate(0, 13) //setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 13), 0), 0)
-  const end2 = createDate(0, 15) //setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 15), 0), 0)
+  const start1 = createDate(9, 0)
+  const start2 = createDate(13, 0)
+  const end1 = createDate(11, 0)
+  const end2 = createDate(15, 0)
 
   const eventWithVisit = {
     title: 'Two times!',
@@ -115,84 +91,131 @@ beforeEach(async () => {
 describe('Visit cannot be created', () => {
 
   it('if its starting time is too early', async () => {
-    const { mutate } = createTestClient(server)
     const event = savedAvailableEvent.id
 
-    const startTooEarly = createDate(59, 8)
-    const end = createDate(0, 10)
-    const response = await mutate({
-      mutation: CREATE_VISIT,
-      variables: {
-        event: event,
-        ...details,
-        startTime: startTooEarly.toString(),
-        endTime: end.toString()
-      }
-    })
+    const startTooEarly = createDate(8, 59)
+    const end = createDate(10, 1)
+    const response = await visitResponse(event, startTooEarly, end)
     expect(response.errors[0].message).toBe('Given timeslot is invalid')
     const modifiedEvent = await EventModel.findById(event)
+
     expect(modifiedEvent.availableTimes.length).toBe(1)
+    expect(modifiedEvent.visits.length).toBe(0)
   })
 
   it('if its ending time is too late', async () => {
-    const { mutate } = createTestClient(server)
     const event = savedAvailableEvent.id
-    const startTooEarly = createDate(0, 12)
-    const end = createDate(1, 15)
-    const response = await mutate({
-      mutation: CREATE_VISIT,
-      variables: {
-        event: event,
-        ...details,
-        startTime: startTooEarly.toString(),
-        endTime: end.toString()
-      }
-    })
+    const start = createDate(12, 0)
+    const endTooLate = createDate(15, 1)
+    const response = await visitResponse(event, start, endTooLate)
     expect(response.errors[0].message).toBe('Given timeslot is invalid')
     const modifiedEvent = await EventModel.findById(event)
     expect(modifiedEvent.availableTimes.length).toBe(1)
+    expect(modifiedEvent.visits.length).toBe(0)
   })
 
   it('if there is two time slots and visit is tried to create over them', async () => {
-    const { mutate } = createTestClient(server)
     const event = savedEventWithVisit.id
-    const start = createDate(59, 10)
-    const end = createDate(1, 13)
-    const response = await mutate({
-      mutation: CREATE_VISIT,
-      variables: {
-        event: event,
-        ...details,
-        startTime: start.toString(),
-        endTime: end.toString()
-      }
-    })
+    const start = createDate(10, 59)
+    const end = createDate(13, 1)
+    const response = await visitResponse(event, start, end)
     expect(response.errors[0].message).toBe('Given timeslot is invalid')
     const modifiedEvent = await EventModel.findById(event)
     expect(modifiedEvent.availableTimes.length).toBe(2)
+
+    expect(modifiedEvent.visits.length).toBe(0)
   })
 })
 
 describe('Visit can be created', () => {
   it('if its timeslot is among with one of events available times', async () => {
-    const { mutate } = createTestClient(server)
     const event = savedAvailableEvent.id
+    const start = createDate(12, 0)
+    const end = createDate(12, 30)
 
-    const start = createDate(0, 12)//setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 12), 0), 0)
-    const end = createDate(30, 12)//setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 12), 30), 0)
-    const response = await mutate({
-      mutation: CREATE_VISIT,
-      variables: {
-        event: event,
-        ...details,
-        startTime: start.toString(),
-        endTime: end.toString()
-      }
-    })
+    const response = await visitResponse(event, start, end)
     expect(response.errors).toBeUndefined()
     const modifiedEvent = await EventModel.findById(event)
-    console.log(modifiedEvent.availableTimes)
     expect(modifiedEvent.availableTimes.length).toBe(2)
+
+    const timeList = createTimeList([[9, 0], [12, 45]], [[11, 45], [15, 0]])
+    const availableList = createAvailableList(modifiedEvent.availableTimes)
+
+    expect(timeList).toEqual(expect.arrayContaining(availableList))
+    const visitId = response.data.createVisit.id
+    expect(modifiedEvent.visits[0].toString()).toEqual(visitId)
+  })
+
+  it('if visit\'s starting time is same as event\'s starting time', async () => {
+    const event = savedAvailableEvent.id
+    const start = createDate(9, 0)
+    const end = createDate(12, 30)
+
+    const response = await visitResponse(event, start, end)
+    expect(response.errors).toBeUndefined()
+    const modifiedEvent = await EventModel.findById(event)
+    expect(modifiedEvent.availableTimes.length).toBe(1)
+
+    const timeList = createTimeList([[12, 45]], [[15, 0]])
+    const availableList = createAvailableList(modifiedEvent.availableTimes)
+
+    expect(timeList).toEqual(expect.arrayContaining(availableList))
+    const visitId = response.data.createVisit.id
+    expect(modifiedEvent.visits[0].toString()).toEqual(visitId)
+  })
+
+  it('if visit\'s ending time is same as event\'s ending time', async () => {
+    const event = savedAvailableEvent.id
+    const start = createDate(12, 0)
+    const end = createDate(15, 0)
+
+    const response = await visitResponse(event, start, end)
+    expect(response.errors).toBeUndefined()
+    const modifiedEvent = await EventModel.findById(event)
+    expect(modifiedEvent.availableTimes.length).toBe(1)
+
+    const timeList = createTimeList([[9, 0]], [[11, 45]])
+    const availableList = createAvailableList(modifiedEvent.availableTimes)
+
+    expect(timeList).toEqual(expect.arrayContaining(availableList))
+    const visitId = response.data.createVisit.id
+    expect(modifiedEvent.visits[0].toString()).toEqual(visitId)
+  })
+
+  it('if there is a free time slot before another visit', async () => {
+    const event = savedEventWithVisit.id
+    const start = createDate(10, 30)
+    const end = createDate(10, 59)
+
+    const response = await visitResponse(event, start, end)
+    expect(response.errors).toBeUndefined()
+    const modifiedEvent = await EventModel.findById(event)
+    expect(modifiedEvent.availableTimes.length).toBe(2)
+
+    const timeList = createTimeList([[9, 0], [13, 0]], [[10, 15], [15, 0]])
+    const availableList = createAvailableList(modifiedEvent.availableTimes)
+
+    expect(timeList).toEqual(expect.arrayContaining(availableList))
+    const visitId = response.data.createVisit.id
+    expect(modifiedEvent.visits[0].toString()).toEqual(visitId)
+  })
+
+  it('if there is a free time slot after another visit', async () => {
+    const event = savedEventWithVisit.id
+    const start = createDate(13, 1)
+    const end = createDate(13, 30)
+
+    const response = await visitResponse(event, start, end)
+    expect(response.errors).toBeUndefined()
+    const modifiedEvent = await EventModel.findById(event)
+    expect(modifiedEvent.availableTimes.length).toBe(2)
+
+    const timeList = createTimeList([[9, 0], [13, 45]], [[11, 0], [15, 0]])
+    const availableList = createAvailableList(modifiedEvent.availableTimes)
+
+    expect(timeList).toEqual(expect.arrayContaining(availableList))
+    const visitId = response.data.createVisit.id
+    expect(modifiedEvent.visits[0].toString()).toEqual(visitId)
   })
 })
 

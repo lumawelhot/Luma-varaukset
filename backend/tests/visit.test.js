@@ -250,7 +250,7 @@ describe('Visit server test', () => {
             status
           }
         }
-        `
+      `
     const { data } = await mutate({
       mutation: CANCEL_VISIT,
       variables: { id }
