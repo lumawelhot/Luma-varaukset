@@ -41,7 +41,7 @@ beforeEach(async () => {
 
   const unavailableEventData = {
     title: 'All About Algebra',
-    resourceId: 1,
+    resourceids: [1],
     grades: [1],
     start: unavailableDate,
     end: unavailableDate,
@@ -51,7 +51,7 @@ beforeEach(async () => {
 
   const availableEventData = {
     title: 'Up-And-Atom!',
-    resourceId: 2,
+    resourceids: [2],
     grades: [1],
     start: availableDate,
     end: availableDate,
