@@ -9,8 +9,8 @@ import moment from 'moment'
 const validate = (values) => {
   const defErrorMessage = 'Vaaditaan!'
   const errors = {}
-  const startTime = new Date(`${values.date}:${values.startTime}`)
-  const endTime = new Date(`${values.date}:${values.endTime}`)
+  const startTime = new Date(`${values.date}T${values.startTime}`)
+  const endTime = new Date(`${values.date}T${values.endTime}`)
 
   if (!values.title) {
     errors.title = defErrorMessage
