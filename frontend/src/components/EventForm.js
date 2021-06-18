@@ -133,6 +133,8 @@ const EventForm = ({
     },
   })
 
+  const style = { width: 500 }
+
   return (
     <div className="section">
       <div className="columns is-centered">
@@ -146,7 +148,7 @@ const EventForm = ({
               <div className="control">
                 <input
                   className="input"
-                  style={{ width: 300 }}
+                  style={style}
                   id="title"
                   name="title"
                   type="title"
@@ -168,7 +170,7 @@ const EventForm = ({
                   formik.setFieldValue('tags', tags)
                 }}
                 suggestedTags={suggestedTags}
-                style={{ width: 300 }}
+                style={style}
               />
             </FormikProvider>
 
@@ -306,7 +308,7 @@ const EventForm = ({
                     value={formik.values.scienceClass}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    style={{ display: 'block', width: 300 }}
+                    style={{ ...style, display: 'block' }}
                   >
                     <option value="" label="Valitse tiedeluokka" />
                     <option value="SUMMAMUTIKKA" label="SUMMAMUTIKKA" />
@@ -335,7 +337,7 @@ const EventForm = ({
                         : 'is-success'
                       : ''
                   }`}
-                  style={{ width: 300 }}
+                  style={style}
                   id="date"
                   name="date"
                   type="date"
@@ -362,7 +364,7 @@ const EventForm = ({
                         : 'is-success'
                       : ''
                   }`}
-                  style={{ width: 300 }}
+                  style={style}
                   id="startTime"
                   name="startTime"
                   type="time"
@@ -389,7 +391,7 @@ const EventForm = ({
                         : 'is-success'
                       : ''
                   }`}
-                  style={{ width: 300 }}
+                  style={style}
                   id="endTime"
                   name="endTime"
                   type="time"
@@ -417,7 +419,7 @@ const EventForm = ({
                         : 'is-success'
                       : ''
                   }`}
-                  style={{ width: 300 }}
+                  style={style}
                   id="desc"
                   name="desc"
                   placeholder="Kirjoita tähän lyhyt kuvaus vierailusta."

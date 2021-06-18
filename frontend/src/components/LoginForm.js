@@ -38,6 +38,7 @@ const LoginForm = ({ getUser, sendMessage }) => {
     history.push('/')
   }
 
+  const style = { width: 500 }
   return (
     <div className="container">
       <div className="columns is-centered">
@@ -51,7 +52,7 @@ const LoginForm = ({ getUser, sendMessage }) => {
                   id="username"
                   className="input"
                   {...username.field}
-                  style={{ width: 500 }}
+                  style={style}
                 />
               </div>
             </div>
@@ -62,7 +63,7 @@ const LoginForm = ({ getUser, sendMessage }) => {
                   id="password"
                   className="input"
                   {...password.field}
-                  style={{ width: 500 }}
+                  style={style}
                 />
               </div>
             </div>
