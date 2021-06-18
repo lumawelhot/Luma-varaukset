@@ -63,8 +63,12 @@ mutation {
 
 let availableEvent
 let unavailableEvent
+let availableForLoggedInEvent
+let unvailableForLoggedInUserEvent
 let savedAvailableEvent
 let savedUnavailableEvent
+let savedAvailableForLoggedInEvent
+let savedUnvailableForLoggedInUserEvent
 let savedTestVisit
 let server
 let basicUserData
