@@ -38,7 +38,7 @@ export const EVENTS = gql`
     getEvents {
       id
       title
-      resourceId
+      resourceids
       grades
       tags {
         id
@@ -68,7 +68,7 @@ export const VISITS = gql`
       event {
         id
         title
-        resourceId
+        resourceids
       }
       clientName
       schoolName
@@ -93,12 +93,12 @@ export const CURRENT_USER = gql`
 `
 
 export const CREATE_EVENT = gql`
-  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!, $grades: [Int]!, $remoteVisit: Boolean!, $inPersonVisit: Boolean!, $desc: String, $tags: [TagInput]) {
+  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: [Int]!, $grades: [Int]!, $remoteVisit: Boolean!, $inPersonVisit: Boolean!, $desc: String, $tags: [TagInput]) {
     createEvent (
       title: $title,
       start: $start,
       end: $end,
-      class: $scienceClass,
+      scienceClass: $scienceClass,
       desc: $desc,
       grades: $grades,
       remoteVisit: $remoteVisit,
@@ -107,7 +107,7 @@ export const CREATE_EVENT = gql`
     ) {
       id
       title
-      resourceId
+      resourceids
       grades
       start
       end
@@ -170,7 +170,7 @@ export const FIND_VISIT = gql`
       clientPhone
       event {
         title
-        resourceId
+        resourceids
         start
         end
       }

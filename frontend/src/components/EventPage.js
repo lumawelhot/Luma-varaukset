@@ -52,7 +52,7 @@ const EventPage = ({ event, handleBookingButtonClick }) => {
   }
 
   if (event) {
-    const eventClass = filterEventClass(event.resourceId)
+    const eventClass = filterEventClass(event.resourceids)
     const eventGrades = filterEventGrades(event.grades)
 
     return (

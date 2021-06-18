@@ -20,8 +20,8 @@ const validate = (values) => {
     errors.grades = 'Valitse vähintään yksi luokka-aste'
   }
 
-  if (!values.scienceClasses.includes(true)) {
-    errors.scienceClasses = 'Valitse vähintään yksi tiedeluokka'
+  if (!values.scienceClass.includes(true)) {
+    errors.scienceClass = 'Valitse vähintään yksi tiedeluokka'
   }
 
   if (!(values.remoteVisit || values.inPersonVisit)) {
@@ -90,7 +90,7 @@ const EventForm = ({
       remoteVisit: true,
       inPersonVisit: true,
       title: '',
-      scienceClasses: [false,false,false,false,false],
+      scienceClass: [false,false,false,false,false],
       desc: '',
       date: moment(newEventTimeRange[0]).format('YYYY-MM-DD'),
       startTime: moment(newEventTimeRange[0]).format('HH:mm'),
@@ -123,7 +123,7 @@ const EventForm = ({
           title: values.title,
           start,
           end,
-          scienceClasses: scienceClassList,
+          scienceClass: scienceClassList,
           desc: values.desc,
           tags: values.tags.map((tag) =>
             Object({
@@ -298,8 +298,8 @@ const EventForm = ({
                   <input
                     type="checkbox"  value="0"
                     onChange={() => {
-                      formik.touched.scienceClasses = true
-                      formik.values.scienceClasses[0] = !formik.values.scienceClasses[0]
+                      formik.touched.scienceClass = true
+                      formik.values.scienceClass[0] = !formik.values.scienceClass[0]
                     }} />
                   SUMMAMUTIKKA
                 </label>
@@ -308,8 +308,8 @@ const EventForm = ({
                 <label className="checkbox3">
                   <input type="checkbox" value="1"
                     onChange={() => {
-                      formik.touched.scienceClasses = true
-                      formik.values.scienceClasses[1] = !formik.values.scienceClasses[1]
+                      formik.touched.scienceClass = true
+                      formik.values.scienceClass[1] = !formik.values.scienceClass[1]
                     }
                     } />
                   FOTONI
@@ -319,8 +319,8 @@ const EventForm = ({
                 <label className="checkbox3">
                   <input type="checkbox" value="2"
                     onChange={() => {
-                      formik.touched.scienceClasses = true
-                      formik.values.scienceClasses[2] = !formik.values.scienceClasses[2]
+                      formik.touched.scienceClass = true
+                      formik.values.scienceClass[2] = !formik.values.scienceClass[2]
 
 
                     }
@@ -333,8 +333,8 @@ const EventForm = ({
                 <label className="checkbox3">
                   <input type="checkbox" value="3"
                     onChange={() => {
-                      formik.touched.scienceClasses = true
-                      formik.values.scienceClasses[3] = !formik.values.scienceClasses[3]
+                      formik.touched.scienceClass = true
+                      formik.values.scienceClass[3] = !formik.values.scienceClass[3]
 
 
                     }
@@ -347,8 +347,8 @@ const EventForm = ({
                 <label className="checkbox3">
                   <input type="checkbox" value="4"
                     onChange={() => {
-                      formik.touched.scienceClasses = true
-                      formik.values.scienceClasses[4] = !formik.values.scienceClasses[4]
+                      formik.touched.scienceClass = true
+                      formik.values.scienceClass[4] = !formik.values.scienceClass[4]
 
 
                     }
@@ -359,9 +359,9 @@ const EventForm = ({
 
             </div>
 
-            {formik.touched.scienceClasses && formik.errors.scienceClasses
+            {formik.touched.scienceClass && formik.errors.scienceClass
               ?
-              <p className="help is-danger">{formik.errors.scienceClasses}</p>
+              <p className="help is-danger">{formik.errors.scienceClass}</p>
               : null}
 
 

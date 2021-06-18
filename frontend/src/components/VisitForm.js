@@ -152,7 +152,7 @@ const VisitForm = ({ sendMessage, event }) => {
 
   if (event) {
     const eventGrades = filterEventGrades(event.grades)
-    const eventClass = filterEventClass(event.resourceId)
+    const eventClass = filterEventClass(event.resourceids)
     return (
       <div className="container">
         <div className="columns is-centered">

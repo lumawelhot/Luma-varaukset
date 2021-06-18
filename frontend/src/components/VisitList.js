@@ -27,7 +27,7 @@ const VisitList = ({ notify }) => {
   }
 
   const renderedVisits = result.data.getVisits.filter(visit => {
-    return filters.length ? filters.includes(visit.event.resourceId) : true
+    return filters.length ? filters.includes(visit.event.resourceids) : true
   })
 
   return (
@@ -54,7 +54,7 @@ const VisitList = ({ notify }) => {
             return (
               <tr key={visit.id}>
                 <td>{visit.event.title}</td>
-                <td>{visit.event.resourceId}</td>
+                <td>{visit.event.resourceids}</td>
                 <td>{visit.grade}</td>
                 <td>{visit.extra}</td>
                 <td>{visit.clientName}</td>

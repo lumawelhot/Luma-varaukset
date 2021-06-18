@@ -38,7 +38,7 @@ const App = () => {
     return {
       id: event.id,
       title: event.title,
-      resourceId: event.resourceId,
+      resourceids: event.resourceids,
       start: new Date(event.start),
       end: new Date(event.end),
       grades: event.grades,

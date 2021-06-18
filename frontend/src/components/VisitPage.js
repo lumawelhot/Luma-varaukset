@@ -108,7 +108,7 @@ const VisitPage = ({ sendMessage }) => {
           <div>
             <p><b>{visit.event.title}</b></p>
             <p>Kuvaus: [Tähän tapahtuman kuvaus]</p>
-            <p>Tiedeluokka: {filterEventClass(visit.event.resourceId)}</p>
+            <p>Tiedeluokka: {filterEventClass(visit.event.resourceids)}</p>
             <p>Valitut lisäpalvelut: [Tähän ekstrat]</p>
             <p>Valittu luokka-aste: {visit.grade}</p>
             <p>Ilmoitettu osallistujamäärä: {visit.participants}</p>
