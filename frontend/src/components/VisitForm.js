@@ -5,6 +5,8 @@ import { CREATE_VISIT } from '../graphql/queries'
 import { useHistory } from 'react-router'
 import moment from 'moment'
 
+let selectedEvent
+
 const validate = values => {
 
   const messageIfMissing = 'Vaaditaan!'
@@ -43,7 +45,7 @@ const validate = values => {
   if (!values.participants) {
     errors.participants = messageIfMissing
   }
-  if ((values.remoteVisit === values.inPersonVisit)) {
+  if ((values.remoteVisit === values.inPersonVisit) && (selectedEvent.inPersonVisit && selectedEvent.remoteVisit)) {
     errors.location = 'Valitse joko etä- tai lähivierailu!'
   }
   if(!values.privacyPolicy){
@@ -57,6 +59,7 @@ const validate = values => {
 }
 
 const VisitForm = ({ sendMessage, event }) => {
+  selectedEvent = event
   const history = useHistory()
   if (!event) {
     history.push('/')

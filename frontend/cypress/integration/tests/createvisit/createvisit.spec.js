@@ -5,9 +5,12 @@ import moment from 'moment'
 const eventDate1 = new Date()
 eventDate1.setDate(new Date().getDate() + 16)
 const eventDate2 = new Date()
-eventDate2.setDate(new Date().getDate() + 10)
-const availableEvent1 = 'UUSI Test available event 1'
+eventDate2.setDate(new Date().getDate() + 16)
+const eventDate3 = new Date()
+eventDate3.setDate(new Date().getDate() + 15)
+const availableEvent1 = 'Test available event 1 both remote and inPerson'
 const availableEvent2 = 'Test available event 2 for invalid client name'
+const availableEvent3 = 'Test available event 3 only remote'
 const unavailableEventName = 'Test unavailable event'
 const unavailableEventDate = new Date()
 
@@ -19,7 +22,7 @@ it('Initialize tests', () => {
     start: eventDate1,
     end: eventDate1,
     remoteVisit: true,
-    inPersonVisit: false,
+    inPersonVisit: true,
     desc: 'Test event description'
   })
   cy.createEvent({
@@ -29,6 +32,15 @@ it('Initialize tests', () => {
     end: eventDate2,
     inPersonVisit: true,
     remoteVisit: false,
+    desc: 'Test event description'
+  })
+  cy.createEvent({
+    title: availableEvent3,
+    scienceClass: 'LINKKI',
+    start: eventDate3,
+    end: eventDate3,
+    inPersonVisit: false,
+    remoteVisit: true,
     desc: 'Test event description'
   })
 })
@@ -45,6 +57,10 @@ And('there is an event 2 more than two weeks ahead', () => {
 
 })
 
+And('there is an event 3 more than two weeks ahead', () => {
+
+})
+
 When('I click on available event 1', () => {
   cy.get('.rbc-calendar').then(() => {
     if (cy.get('.rbc-calendar').contains(`${availableEvent1}`)) {
@@ -52,6 +68,17 @@ When('I click on available event 1', () => {
     } else {
       cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
       cy.contains(`${availableEvent1}`).click()
+    }
+  })
+})
+
+When('I click on available event 3', () => {
+  cy.get('.rbc-calendar').then(() => {
+    if (cy.get('.rbc-calendar').contains(`${availableEvent3}`)) {
+      cy.contains(`${availableEvent3}`).click()
+    } else {
+      cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
+      cy.contains(`${availableEvent3}`).click()
     }
   })
 })
@@ -109,7 +136,24 @@ And('unavailable event page contains correct info text', () => {
   cy.contains('Valitettavasti tämä tapahtuma ei ole varattavissa.')
 })
 
-And('valid information is entered', () => {
+And('valid information is entered and visit mode selected', () => {
+  cy.get(':nth-child(2) > .visitMode').click()
+  cy.get('#clientName').type('Teacher')
+  cy.get('#schoolName').type('School')
+  cy.get('#schoolLocation').type('Location')
+  cy.get('#clientEmail').type('teacher@school.fi')
+  cy.get('#verifyEmail').type('teacher@school.fi')
+  cy.get('#clientPhone').type('040-1234567')
+  cy.get('#visitGrade').type('1. grade')
+  cy.get('#participants').type('9')
+  cy.get('.privacyPolicy > input').click()
+  cy.get('.remoteVisitGuidelines > input').click()
+  cy.get('#create').click()
+  cy.wait(2000)
+  cy.visit('http://localhost:3000')
+})
+
+And('valid information is entered and visit mode predetermined', () => {
   cy.get('#clientName').type('Teacher')
   cy.get('#schoolName').type('School')
   cy.get('#schoolLocation').type('Location')
