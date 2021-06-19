@@ -14,7 +14,6 @@ let availableEvent
 let availableEvent2
 let savedAvailableEvent
 let savedEventWithVisit
-//let savedUnavailableEvent
 let server
 
 const visitResponse = async (event, start, end) => {

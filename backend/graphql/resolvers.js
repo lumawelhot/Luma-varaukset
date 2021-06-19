@@ -9,7 +9,8 @@ const mailer = require('../services/mailer')
 const config = require('../utils/config')
 const { readMessage } = require('../services/fileReader')
 //const parseISO = require('date-fns/parseISO')
-const { /* differenceInMilliseconds, isDate, isValid, parseISO, */ getUnixTime } = require('date-fns')
+const { /* differenceInMilliseconds, isDate, isValid, parseISO, */ getUnixTime, add, sub } = require('date-fns')
+const { findValidTimeSlot, findClosestTimeSlot } = require('../utils/timeCalculation')
 
 const resolvers = {
   Query: {
@@ -157,33 +158,22 @@ const resolvers = {
 
     createVisit: async (root, args) => {
       const event = await Event.findById(args.event)
-      const visitStart = new Date(args.startTime)
-      const visitEnd = new Date(args.endTime)
-
+      //const visitStart = new Date(args.startTime)
+      //const visitEnd = new Date(args.endTime)
+      const visitTime = {
+        start: new Date(args.startTime),
+        end: new Date(args.endTime)
+      }
       const availableTimes = event.availableTimes.map(time => ({
         startTime: new Date(time.startTime),
         endTime: new Date(time.endTime)
       }))
+
       const eventStart = new Date(event.start)
       const eventEnd = new Date(event.end)
 
-      const check = (availableTimes) => {
-        let result = null
-        availableTimes.forEach(item => {
-          if (getUnixTime(visitStart) >= getUnixTime(item.startTime) && getUnixTime(visitEnd) <= getUnixTime(item.endTime)) {
-            result = {
-              startTime: new Date(item.startTime),
-              endTime: new Date(item.endTime)
-            }
-          }
-        })
-        return result
-      }
-
       const generateAvailableTime = (start, end) => {
         let result = null
-        /* console.log(start, end)
-        console.log(end - start, 'Hello world') */
         if (end - start >= 3600000) {
           result = {
             startTime: start,
@@ -198,7 +188,6 @@ const resolvers = {
 --SE____S---------EXXXXXXXXE---- uudet mahdolliset
 */
       const assignAvailableTimes = (before, after , availableTime) => {
-        //console.log('vanha taulukko: ', availableTimes)
         const filteredAvailTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime)
         if (before) filteredAvailTimes.push(before)
         if (after) filteredAvailTimes.push(after)
@@ -206,30 +195,24 @@ const resolvers = {
       }
 
 
-      const availableTime = check(availableTimes)
+      const availableTime = findValidTimeSlot(availableTimes, visitTime)
       if (!availableTime) {
         throw new UserInputError('Given timeslot is invalid')
       }
-      //console.log(visitStart >= eventStart)
-      //console.log(visitStart, visitEnd)
-      /*console.log(visitStart, visitEnd)
-      console.log(getUnixTime(visitStart), getUnixTime(visitEnd))
-      console.log(getUnixTime(visitStart) < getUnixTime(visitEnd), '<-------------------UNIX time----------')*/
-      //console.log(visitStart < visitEnd)
-      //console.log(visitEnd <= eventEnd)
 
-      if (getUnixTime(visitStart) >= getUnixTime(eventStart) && getUnixTime(visitStart) < getUnixTime(visitEnd) && getUnixTime(visitEnd) <= getUnixTime(eventEnd)) {
-        const availableEnd = new Date(visitStart)
-        const availableStart = new Date(visitEnd)
-        availableEnd.setTime(availableEnd.getTime() - 900000) //--> uuden mahdollisen aikaikkunan endTime
-        availableStart.setTime(availableStart.getTime() + 900000) //--> uuden mahdollisen aikaikkunan startTime
+      if (
+        getUnixTime(visitTime.start) >= getUnixTime(eventStart) &&
+        getUnixTime(visitTime.start) < getUnixTime(visitTime.end) &&
+        getUnixTime(visitTime.end) <= getUnixTime(eventEnd)
+      ) {
+        const availableEnd = new Date(visitTime.start)
+        const availableStart = new Date(visitTime.end)
+        availableEnd.setTime(availableEnd.getTime() - 900000)
+        availableStart.setTime(availableStart.getTime() + 900000)
 
         const availableBefore = generateAvailableTime(availableTime.startTime, availableEnd)
         const availableAfter = generateAvailableTime(availableStart, availableTime.endTime)
-        /* console.log('mahdollinen ennen visitiä: ', availableBefore, 'mahdollinen visitin jälkeen: ', availableAfter)
-        console.log('availableTime: ', availableTime) */
         const newAvailableTimes = assignAvailableTimes(availableAfter, availableBefore, availableTime)
-        //console.log('uusi taulukko: ', newAvailableTimes)
         event.availableTimes = newAvailableTimes
       }
 
@@ -282,41 +265,28 @@ const resolvers = {
     cancelVisit: async (root, args) => {
       const visit = await Visit.findById(args.id)
       const event = await Event.findById(visit.event)
-      let visitStart = new Date(visit.startTime)
-      let visitEnd = new Date(visit.endTime)
-      const eventStart = new Date(event.start)
-      const eventEnd = new Date(event.end)
-      visitEnd.setTime(visitEnd.getTime() + 900000)
-      visitStart.setTime(visitStart.getTime() - 900000)
-      if (visitEnd > eventEnd) visitEnd = eventEnd
-      if (visitStart < eventStart) visitStart = eventStart
+      const visitTime = {
+        start: sub(new Date(visit.startTime), { minutes: 15 }),
+        end: add(new Date(visit.endTime), { minutes: 15 })
+      }
+      const eventTime = {
+        start: new Date(event.start),
+        end: new Date(event.end)
+      }
+      if (visitTime.end > eventTime.end) visitTime.end = eventTime.end
+      if (visitTime.start < eventTime.start) visitTime.start = eventTime.start
 
       const availableTimes = event.availableTimes.map(time => ({
         startTime: new Date(time.startTime),
         endTime: new Date(time.endTime)
       }))
 
-      const findAvailTime = () => {
-        let startPoint
-        let endPoint
-        availableTimes.forEach(time => {
-          if (time.startTime.toString() === visitEnd.toString()) {
-            endPoint = time.endTime
-          }
-          if (time.endTime.toString() === visitStart.toString()) {
-            startPoint = time.startTime
-          }
-        })
-        if (!startPoint) startPoint = eventStart
-        if (!endPoint) endPoint = eventEnd
-        return {
-          startTime: startPoint,
-          endTime: endPoint
-        }
-      }
+      const newAvailTime = findClosestTimeSlot(availableTimes, visitTime, eventTime)
 
-      const newAvailTime = findAvailTime()
-      const filteredAvailTimes = availableTimes.filter(time => !(time.startTime.toString() === newAvailTime.startTime.toString() || time.endTime.toString() === newAvailTime.endTime.toString()))
+      const filteredAvailTimes = availableTimes.filter(time => !(
+        getUnixTime(time.startTime) === getUnixTime(newAvailTime.startTime) ||
+        getUnixTime(time.endTime) === getUnixTime(newAvailTime.endTime)
+      ))
       filteredAvailTimes.push(newAvailTime)
 
       try {

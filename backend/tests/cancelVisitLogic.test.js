@@ -163,6 +163,25 @@ describe('Visit can be cancelled', () => {
     const availableListAfter = createAvailableList(eventAfterCancellation.availableTimes)
     expect(timeListAfterCancellation).toEqual(expect.arrayContaining(availableListAfter))
   })
+
+  it('if it is between two another visits', async () => {
+    const event = savedAvailableEvent.id
+    await visitResponse(event, createDate(9, 30), createDate(9, 45))
+    await visitResponse(event, createDate(13, 15), createDate(13, 30))
+    const { data } = await visitResponse(event, createDate(11, 30), createDate(11, 45))
+
+    const modifiedEvent = await EventModel.findById(event)
+    const timeList = createTimeList([[10, 0],[12, 0] , [13, 45]], [[11, 15], [13, 0], [15, 0]])
+    const availableList = createAvailableList(modifiedEvent.availableTimes)
+    expect(timeList).toEqual(expect.arrayContaining(availableList))
+
+    const response = await cancelVisit(data.createVisit.id)
+    expect(response.errors).toBeUndefined()
+    const eventAfterCancellation = await EventModel.findById(event)
+    const timeListAfterCancellation = createTimeList([[10, 0], [13, 45]], [[13, 0], [15, 0]])
+    const availableListAfter = createAvailableList(eventAfterCancellation.availableTimes)
+    expect(timeListAfterCancellation).toEqual(expect.arrayContaining(availableListAfter))
+  })
 })
 
 
