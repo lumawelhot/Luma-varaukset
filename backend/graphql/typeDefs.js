@@ -34,6 +34,8 @@ const typeDefs = gql `
     clientPhone: String!
     grade: String!
     participants: Int!
+    inPersonVisit: Boolean!
+    remoteVisit: Boolean!
     extra: [Int]
     status: Boolean!
   }
@@ -82,6 +84,8 @@ const typeDefs = gql `
       clientPhone: String!
       grade: String!
       participants: Int!
+      inPersonVisit: Boolean!
+      remoteVisit: Boolean!
       extra: [Int]
       username: String
     ): Visit

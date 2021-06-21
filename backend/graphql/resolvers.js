@@ -25,7 +25,7 @@ const resolvers = {
       return tags
     },
     getVisits: async () => {
-      const visits = await Visit.find({}).populate('event', { id: 1, title: 1, resourceId: 1 })
+      const visits = await Visit.find({}).populate('event', { id: 1, title: 1, resourceId: 1, remoteVisit: 1, inPersonVisit : 1 })
       return visits
     },
     findVisit: async (root, args) => {
@@ -39,6 +39,8 @@ const resolvers = {
           schoolName: visit.schoolName,
           schoolLocation: visit.schoolLocation,
           participants: visit.participants,
+          inPersonVisit: visit.inPersonVisit,
+          remoteVisit: visit.remoteVisit,
           clientEmail: visit.clientEmail,
           clientPhone: visit.clientPhone,
           status: visit.status
@@ -163,28 +165,30 @@ const resolvers = {
       })
       let savedVisit
       try {
-        const now = moment(new Date())
-        const start = moment(event.start)
-        const startsAfter14Days = start.diff(now, 'days') >= 14
-        const startsWithin1Hour = start.diff(now, 'hours') > 0
-        const user = await User.findOne({ username: args.username })
-        const eventCanBeBooked = (user === null) ? startsAfter14Days : startsWithin1Hour
-        if (eventCanBeBooked) {
-          savedVisit = await visit.save()
-          const details = [{
-            name: 'link',
-            value: `${config.HOST_URI}/${savedVisit.id}`
-          }]
-          const text = await readMessage('welcome.txt', details)
-          const html = await readMessage('welcome.html', details)
-          mailer.sendMail({
-            from: 'Luma-Varaukset <noreply@helsinki.fi>',
-            to: visit.clientEmail,
-            subject: 'Tervetuloa!',
-            text,
-            html
-          })
-          return savedVisit
+        if (visit.inPersonVisit !== visit.remoteVisit) {
+          const now = moment(new Date())
+          const start = moment(event.start)
+          const startsAfter14Days = start.diff(now, 'days') >= 14
+          const startsWithin1Hour = start.diff(now, 'hours') > 0
+          const user = await User.findOne({ username: args.username })
+          const eventCanBeBooked = (user === null) ? startsAfter14Days : startsWithin1Hour
+          if (eventCanBeBooked) {
+            savedVisit = await visit.save()
+            const details = [{
+              name: 'link',
+              value: `${config.HOST_URI}/${savedVisit.id}`
+            }]
+            const text = await readMessage('welcome.txt', details)
+            const html = await readMessage('welcome.html', details)
+            mailer.sendMail({
+              from: 'Luma-Varaukset <noreply@helsinki.fi>',
+              to: visit.clientEmail,
+              subject: 'Tervetuloa!',
+              text,
+              html
+            })
+            return savedVisit
+          }
         }
       } catch (error) {
         event.booked = false

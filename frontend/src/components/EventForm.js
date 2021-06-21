@@ -9,8 +9,8 @@ import moment from 'moment'
 const validate = (values) => {
   const defErrorMessage = 'Vaaditaan!'
   const errors = {}
-  const startTime = new Date(`${values.date}:${values.startTime}`)
-  const endTime = new Date(`${values.date}:${values.endTime}`)
+  const startTime = new Date(`${values.date}T${values.startTime}`)
+  const endTime = new Date(`${values.date}T${values.endTime}`)
 
   if (!values.title) {
     errors.title = defErrorMessage
@@ -99,8 +99,8 @@ const EventForm = ({
     },
     validate,
     onSubmit: (values) => {
-      const start = new Date(`${values.date}:${values.startTime}`)
-      const end = new Date(`${values.date}:${values.endTime}`)
+      const start = new Date(`${values.date}T${values.startTime}`)
+      const end = new Date(`${values.date}T${values.endTime}`)
       const gradelist = []
       values.grades.forEach((element,index) => {
         if(element){
