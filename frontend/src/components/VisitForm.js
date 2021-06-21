@@ -59,6 +59,7 @@ const validate = values => {
 }
 
 const VisitForm = ({ sendMessage, event, currentUser }) => {
+  selectedEvent = event
   const history = useHistory()
   if (!event) {
     history.push('/')

@@ -20,8 +20,8 @@ it('Initialize tests', () => {
   cy.createEvent({
     title: availableEvent1,
     scienceClass: 'LINKKI',
-    start: eventDate1,
-    end: eventDate1,
+    start: new Date(eventDate1.setHours(10,0)),
+    end: new Date(eventDate1.setHours(12,0)),
     remoteVisit: true,
     inPersonVisit: true,
     desc: 'Test event description'
@@ -29,8 +29,8 @@ it('Initialize tests', () => {
   cy.createEvent({
     title: availableEvent2,
     scienceClass: 'LINKKI',
-    start: eventDate2,
-    end: eventDate2,
+    start: new Date(eventDate2.setHours(13,0)),
+    end: new Date(eventDate2.setHours(14,0)),
     inPersonVisit: true,
     remoteVisit: false,
     desc: 'Test event description'
@@ -38,8 +38,8 @@ it('Initialize tests', () => {
   cy.createEvent({
     title: availableEvent3,
     scienceClass: 'LINKKI',
-    start: eventDate3,
-    end: eventDate3,
+    start: new Date(eventDate3.setHours(10,0)),
+    end: new Date(eventDate3.setHours(12,0)),
     inPersonVisit: false,
     remoteVisit: true,
     desc: 'Test event description'
@@ -49,8 +49,8 @@ it('Initialize tests', () => {
     scienceClass: 'LINKKI',
     inPersonVisit: true,
     remoteVisit: false,
-    start: unavailableEventDate,
-    end: unavailableEventDate,
+    start: new Date(unavailableEventDate.setHours(10,0)),
+    end: new Date(unavailableEventDate.setHours(12,0)),
     desc: 'Unavailable event description'
   })
 })
@@ -187,11 +187,7 @@ Then('an error message is shown', () => {
 })
 
 Given('admin logs in', () => {
-  cy.visit('http://localhost:3000/admin')
-  cy.wait(2000)
-  cy.get('#username').type('Admin')
-  cy.get('#password').type('salainen')
-  cy.get('#login').click()
+  cy.login({ username: 'Admin', password: 'salainen' })
 })
 
 Then('unavailable event page contains booking button', () => {
