@@ -2,7 +2,7 @@
 import { Given, /* When,  */Then, And } from 'cypress-cucumber-preprocessor/steps'
 
 const eventDate = new Date()
-eventDate.setDate(new Date().getDate() + 15)
+eventDate.setDate(new Date().getDate() + 1)
 const eventName = 'Cancel-visit'
 
 it('Initialize tests', () => {
@@ -20,15 +20,8 @@ it('Initialize tests', () => {
 
 Given('I have made a booking for an available event', () => {
   cy.visit('http://localhost:3000')
-
-  cy.get('.rbc-calendar').then(() => {
-    if (cy.get('.rbc-calendar').contains(`${eventName}`)) {
-      cy.contains(`${eventName}`).click()
-    } else {
-      cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
-      cy.contains(`${eventName}`).click()
-    }
-  })
+  cy.wait(1000)
+  cy.findEvent(eventName).click()
 
   // Open visit form
   cy.contains('Varaa tapahtuma').click()
@@ -59,14 +52,7 @@ Then('I can cancel that booking', () => {
 And('the event is available for booking', () => {
   /* cy.visit('http://localhost:3000')
 
-  cy.get('.rbc-calendar').then(() => {
-    if (cy.get('.rbc-calendar').contains(`${eventName}`)) {
-      cy.contains(`${eventName}`).click()
-    } else {
-      cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
-      cy.contains(`${eventName}`).click()
-    }
-  })
+  cy.findEvent(eventName).click()
 
   cy.contains('Varaa tapahtuma') */
 })

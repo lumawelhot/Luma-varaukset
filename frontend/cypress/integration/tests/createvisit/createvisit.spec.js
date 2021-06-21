@@ -72,14 +72,7 @@ And('there is an event 3 more than two weeks ahead', () => {
 })
 
 When('I click on available event 1', () => {
-  cy.get('.rbc-calendar').then(() => {
-    if (cy.get('.rbc-calendar').contains(`${availableEvent1}`)) {
-      cy.contains(`${availableEvent1}`).click()
-    } else {
-      cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
-      cy.contains(`${availableEvent1}`).click()
-    }
-  })
+  cy.findEvent(availableEvent1).click()
 })
 
 When('I click on available event 3', () => {
@@ -170,25 +163,11 @@ And('valid information is entered and visit mode predetermined', () => {
 })
 
 Then('booked event turns grey in calendar view', () => {
-  cy.get('.rbc-calendar').then(() => {
-    if (cy.get('.rbc-calendar').contains(`${availableEvent1}`)) {
-      cy.get('.rbc-calendar').contains(`${availableEvent1}`).parent().should('have.class', 'booked')
-    } else {
-      cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
-      cy.get('.rbc-calendar').contains(`${availableEvent1}`).parent().should('have.class', 'booked')
-    }
-  })
+  cy.findEvent(availableEvent1).should('have.class', 'booked')
 })
 
 When('I click on available event 2', () => {
-  cy.get('.rbc-calendar').then(() => {
-    if (cy.get('.rbc-calendar').contains(`${availableEvent2}`)) {
-      cy.contains(`${availableEvent2}`).click()
-    } else {
-      cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
-      cy.contains(`${availableEvent2}`).click()
-    }
-  })
+  cy.findEvent(availableEvent2).click()
 })
 
 When('invalid client name is entered', () => {
@@ -220,12 +199,5 @@ Then('unavailable event page contains booking button', () => {
 })
 
 Then('unavailable event turns grey in calendar view', () => {
-  cy.get('.rbc-calendar').then(() => {
-    if (cy.get('.rbc-calendar').contains(`${unavailableEventName}`)) {
-      cy.get('.rbc-calendar').contains(`${unavailableEventName}`).parent().should('have.class', 'booked')
-    } else {
-      cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
-      cy.get('.rbc-calendar').contains(`${unavailableEventName}`).parent().should('have.class', 'booked')
-    }
-  })
+  cy.findEvent(unavailableEventName).parent().should('have.class', 'booked')
 })
