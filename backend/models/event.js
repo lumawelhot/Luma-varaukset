@@ -39,7 +39,7 @@ const eventSchema = mongoose.Schema({
     required: true
   },
   availableTimes: {
-    type: [Object],
+    type: [],
     required: true
   },
   desc: String,

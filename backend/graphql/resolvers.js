@@ -8,8 +8,7 @@ const Tag = require('../models/tag')
 const mailer = require('../services/mailer')
 const config = require('../utils/config')
 const { readMessage } = require('../services/fileReader')
-//const parseISO = require('date-fns/parseISO')
-const { /* differenceInMilliseconds, isDate, isValid, parseISO, */ getUnixTime, add, sub } = require('date-fns')
+const { getUnixTime, add, sub } = require('date-fns')
 const { findValidTimeSlot, findClosestTimeSlot, generateAvailableTime } = require('../utils/timeCalculation')
 
 const resolvers = {
@@ -20,9 +19,6 @@ const resolvers = {
     },
     getEvents: async () => {
       const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits')
-
-      //säätöä
-
       return events
     },
     getTags: async () => {
@@ -149,7 +145,6 @@ const resolvers = {
       await newEvent.save()
       return newEvent
     },
-
     createVisit: async (root, args) => {
       const event = await Event.findById(args.event)
       const visitTime = {
@@ -226,7 +221,6 @@ const resolvers = {
         })
       }
     },
-
     cancelVisit: async (root, args) => {
       const visit = await Visit.findById(args.id)
       const event = await Event.findById(visit.event)
@@ -255,7 +249,7 @@ const resolvers = {
       filteredAvailTimes.push(newAvailTime)
 
       try {
-        event.visits = event.visits.filter(v => v.id !== visit.id) //huomaa catch!
+        event.visits = event.visits.filter(v => v.toString() !== visit.id) //huomaa catch!
         event.availableTimes = filteredAvailTimes
         visit.status = false
         event.booked = false
