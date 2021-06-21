@@ -87,6 +87,7 @@ const typeDefs = gql `
       inPersonVisit: Boolean!
       remoteVisit: Boolean!
       extra: [Int]
+      username: String
     ): Visit
     cancelVisit(id: ID!): Visit
   }

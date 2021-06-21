@@ -168,7 +168,11 @@ const resolvers = {
         if (visit.inPersonVisit !== visit.remoteVisit) {
           const now = moment(new Date())
           const start = moment(event.start)
-          if (start.diff(now, 'days') >= 14) {
+          const startsAfter14Days = start.diff(now, 'days') >= 14
+          const startsWithin1Hour = start.diff(now, 'hours') > 0
+          const user = await User.findOne({ username: args.username })
+          const eventCanBeBooked = (user === null) ? startsAfter14Days : startsWithin1Hour
+          if (eventCanBeBooked) {
             savedVisit = await visit.save()
             const details = [{
               name: 'link',

@@ -137,6 +137,7 @@ export const CREATE_VISIT = gql`
     $participants: Int!,
     $inPersonVisit: Boolean!,
     $remoteVisit: Boolean!
+    $username: String
     ) {
     createVisit(
       event: $event,
@@ -149,6 +150,8 @@ export const CREATE_VISIT = gql`
       participants: $participants
       inPersonVisit: $inPersonVisit
       remoteVisit: $remoteVisit 
+      participants: $participants,
+      username: $username
     ) {
       id
       event {

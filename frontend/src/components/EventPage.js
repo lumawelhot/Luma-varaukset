@@ -2,7 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import { useHistory } from 'react-router'
 
-const EventPage = ({ event, handleBookingButtonClick }) => {
+const EventPage = ({ event, handleBookingButtonClick, currentUser }) => {
   const history = useHistory()
   if (!event) {
     history.push('/')
@@ -55,6 +55,9 @@ const EventPage = ({ event, handleBookingButtonClick }) => {
     const eventClass = filterEventClass(event.resourceId)
     const eventGrades = filterEventGrades(event.grades)
 
+    const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14
+    const startsWithin1Hour = moment(event.start).diff(new Date(), 'hours') > 0
+
     return (
       <div className="container">
         <div className="columns is-centered">
@@ -73,7 +76,7 @@ const EventPage = ({ event, handleBookingButtonClick }) => {
               </div>
               <p>Tapahtuma alkaa: {moment(event.start).format('DD.MM.YYYY, HH:mm')}</p>
               <p>Tapahtuma päättyy: {moment(event.end).format('DD.MM.YYYY, HH:mm')}</p>
-              {event.booked || moment(event.start).diff(moment(new Date()), 'days') < 14
+              {event.booked || (currentUser && !startsWithin1Hour) || (!currentUser && !startsAfter14Days)
                 ? <p><b>Valitettavasti tämä tapahtuma ei ole varattavissa.</b></p>
                 : <button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>Varaa tapahtuma</button>}
               <button className="button luma" onClick={cancel}>Poistu</button>
