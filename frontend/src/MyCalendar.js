@@ -42,8 +42,8 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
   }
 
   const customEventPropGetter = event => {
-    const startsAfter14Days = moment(event.start).diff(new Date(), 'days') <= 14
-    const startsWithin1Hour = moment(event.start).diff(new Date(), 'hours') <= 0
+    const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14
+    const startsWithin1Hour = moment(event.start).diff(new Date(), 'hours') >= 0
     if (event.booked || (!currentUser && !startsAfter14Days) || (currentUser && !startsWithin1Hour)) {
       return { className: 'booked' , }
     }

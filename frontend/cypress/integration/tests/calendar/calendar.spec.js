@@ -8,8 +8,9 @@ Given('Employee is logged in', () => {
 Given('an event with title yyyyy is created', () => {
 
   const date = new Date()
-  date.setDate(date.getDate() + 1)
+  //date.setDate(date.getDate() + 100)
   date.setMinutes(0)
+  //date.setSeconds(0)
   
   const start = new Date(date)
   const end = new Date(date)

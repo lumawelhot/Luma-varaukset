@@ -167,3 +167,17 @@ Cypress.Commands.add('containsEvent', ({ title, resourceId }) => {
     return find
   })
 })
+
+Cypress.Commands.add('findEvent', (title) => {
+  cy.get('.rbc-calendar').then(($calendar) => {
+    // We are using jQuery selector to find any item that has event with the given title
+    const elements = $calendar.find(`.rbc-event-content:contains("${title}")`)
+    if (elements.length == 0) {
+      // Go to the next month view
+      cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
+      cy.wait(500)
+    }
+    return cy.contains(`${title}`)
+  })
+})
+
