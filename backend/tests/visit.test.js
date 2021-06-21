@@ -1,18 +1,77 @@
 const mongoose = require('mongoose')
 const { createTestClient } = require('apollo-server-testing')
 const { ApolloServer, gql } = require('apollo-server-express')
+const bcrypt = require('bcrypt')
 
+const UserModel = require('../models/user')
 const EventModel = require('../models/event')
 const VisitModel = require('../models/visit')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
 
+// This should be imported from ../graphql/typeDefs
+const CREATE_VISIT = gql`
+mutation createVisit(
+  $event: ID!,
+  $grade: String!,
+  $clientName: String!,
+  $schoolName: String!,
+  $schoolLocation: String!,
+  $participants: Int!,
+  $clientEmail: String!,
+  $clientPhone: String!,
+  $username: String
+  ) {
+  createVisit(
+    event: $event
+    grade: $grade
+    clientName: $clientName
+    schoolName: $schoolName
+    schoolLocation: $schoolLocation
+    participants: $participants
+    clientEmail: $clientEmail
+    clientPhone: $clientPhone
+    username: $username
+  ) {
+    id
+    event {
+      title
+      booked
+    }
+    grade
+    clientName
+    schoolName
+    schoolLocation
+    participants
+    clientEmail
+    clientPhone
+    status
+  }
+}
+`
+const LOGIN = gql`
+mutation {
+  login(
+    username: "basic"
+    password: "basic-password"
+  ){
+    value
+  }
+}
+`
+
+
 let availableEvent
 let unavailableEvent
+let availableForLoggedInEvent
+let unvailableForLoggedInUserEvent
 let savedAvailableEvent
 let savedUnavailableEvent
+let savedAvailableForLoggedInEvent
+let savedUnvailableForLoggedInUserEvent
 let savedTestVisit
 let server
+let basicUserData
 
 beforeAll(async () => {
 
@@ -24,6 +83,13 @@ beforeAll(async () => {
     .catch((error) => {
       console.log('connection error: ', error.message)
     })
+
+  await UserModel.deleteMany({})
+  const basicPassword = await bcrypt.hash('basic-password', 10)
+  basicUserData = { username: 'basic', passwordHash: basicPassword, isAdmin: false }
+
+  const basicUser = new UserModel(basicUserData)
+  await basicUser.save()
 
   server = new ApolloServer({
     typeDefs,
@@ -38,6 +104,11 @@ beforeEach(async () => {
   const availableDate = new Date()
   availableDate.setDate(new Date().getDate() + 16) // varmistetaan, että testitapahtuma on yli kahden viikon päässä
   const unavailableDate = new Date()
+
+  const availableForLoggedInDate = new Date()
+  availableForLoggedInDate.setDate(new Date().getDate() + 2)
+  const unavailableForLoggedInDate = new Date()
+  unavailableForLoggedInDate.setDate(new Date().getDate() - 2)
 
   const unavailableEventData = {
     title: 'All About Algebra',
@@ -59,11 +130,35 @@ beforeEach(async () => {
     remoteVisit: true
   }
 
+  const availableForLoggedInEventData = {
+    title: 'Last minute event!',
+    resourceId: 1,
+    grades: [1],
+    start: availableForLoggedInDate,
+    end: availableForLoggedInDate,
+    inPersonVisit: true,
+    remoteVisit: false
+  }
+
+  const unvailableForLoggedInUserEventData = {
+    title: 'Past event',
+    resourceId: 1,
+    grades: [1],
+    start: unavailableForLoggedInDate,
+    end: unavailableForLoggedInDate,
+    inPersonVisit: true,
+    remoteVisit: false
+  }
+
   unavailableEvent = new EventModel(unavailableEventData)
   availableEvent = new EventModel(availableEventData)
+  availableForLoggedInEvent = new EventModel(availableForLoggedInEventData)
+  unvailableForLoggedInUserEvent = new EventModel(unvailableForLoggedInUserEventData)
 
   savedUnavailableEvent = await unavailableEvent.save()
   savedAvailableEvent = await availableEvent.save()
+  savedAvailableForLoggedInEvent = await availableForLoggedInEvent.save()
+  savedUnvailableForLoggedInUserEvent = await unvailableForLoggedInUserEvent.save()
 
   const testVisitData = {
     event: availableEvent,
@@ -126,43 +221,6 @@ describe('Visit server test', () => {
   it('create visit successfully', async () => {
     const { mutate } = createTestClient(server)
     const event = savedAvailableEvent.id
-    const CREATE_VISIT = gql`
-      mutation createVisit(
-        $event: ID!,
-        $grade: String!,
-        $clientName: String!,
-        $schoolName: String!,
-        $schoolLocation: String!,
-        $participants: Int!,
-        $clientEmail: String!,
-        $clientPhone: String!
-        ) {
-        createVisit(
-          event: $event
-          grade: $grade
-          clientName: $clientName
-          schoolName: $schoolName
-          schoolLocation: $schoolLocation
-          participants: $participants
-          clientEmail: $clientEmail
-          clientPhone: $clientPhone
-        ) {
-          id
-          event {
-            title
-            booked
-          }
-          grade
-          clientName
-          schoolName
-          schoolLocation
-          participants
-          clientEmail
-          clientPhone
-          status
-        }
-      }
-      `
     const  { data } = await mutate({
       mutation: CREATE_VISIT,
       variables: {
@@ -195,41 +253,6 @@ describe('Visit server test', () => {
   it('cannot create visit for event less than two weeks ahead', async () => {
     const { mutate } = createTestClient(server)
     const event = savedUnavailableEvent.id
-    const CREATE_VISIT = gql`
-      mutation createVisit(
-        $event: ID!,
-        $grade: String!,
-        $clientName: String!,
-        $schoolName: String!,
-        $schoolLocation: String!,
-        $participants: Int!,
-        $clientEmail: String!,
-        $clientPhone: String!
-        ) {
-        createVisit(
-          event: $event
-          grade: $grade
-          clientName: $clientName
-          schoolName: $schoolName
-          schoolLocation: $schoolLocation
-          participants: $participants
-          clientEmail: $clientEmail
-          clientPhone: $clientPhone
-        ) {
-          id
-          event {
-            title
-          }
-          grade
-          clientName
-          schoolName
-          schoolLocation
-          participants
-          clientEmail
-          clientPhone
-        }
-      }
-      `
     const { data } = await mutate({
       mutation: CREATE_VISIT,
       variables: {
@@ -241,6 +264,72 @@ describe('Visit server test', () => {
         participants: 13,
         clientEmail: 'teacher@school.com',
         clientPhone: '040-1234567'
+      }
+    })
+    const { createVisit }  = data
+
+    expect(createVisit).toBe(null)
+  })
+
+  it('logged in user can create visit any event ahead', async () => {
+    const { mutate } = createTestClient(server)
+
+    // Login
+    let response = await mutate({ mutation: LOGIN })
+    expect(response.errors).toBeUndefined()
+
+    // create event
+    const event = savedAvailableForLoggedInEvent.id
+    const { data } = await mutate({
+      mutation: CREATE_VISIT,
+      variables: {
+        event: event,
+        grade: '1. grade',
+        clientName: 'Teacher',
+        schoolName: 'School',
+        schoolLocation: 'Location',
+        participants: 17,
+        clientEmail: 'teacher@school.com',
+        clientPhone: '040-1234567',
+        username: basicUserData.username
+      }
+    })
+    const { createVisit }  = data
+
+    expect(createVisit.id).toBeDefined()
+    expect(createVisit.event.title).toBe(savedAvailableForLoggedInEvent.title)
+    expect(createVisit.grade).toBe('1. grade')
+    expect(createVisit.clientName).toBe('Teacher')
+    expect(createVisit.schoolName).toBe('School')
+    expect(createVisit.schoolLocation).toBe('Location')
+    expect(createVisit.participants).toBe(17)
+    expect(createVisit.clientEmail).toBe('teacher@school.com')
+    expect(createVisit.clientPhone).toBe('040-1234567')
+    expect(createVisit.event.booked).toBe(true)
+    expect(createVisit.status).toBe(true)
+  })
+
+  it('logged in user can\'t create visit to any event before now', async () => {
+    const { mutate } = createTestClient(server)
+
+    // Login
+    let response = await mutate({ mutation: LOGIN })
+    expect(response.errors).toBeUndefined()
+
+    // create event
+    const event = savedUnvailableForLoggedInUserEvent.id
+    const { data } = await mutate({
+      mutation: CREATE_VISIT,
+      variables: {
+        event: event,
+        grade: '1. grade',
+        clientName: 'Teacher',
+        schoolName: 'School',
+        schoolLocation: 'Location',
+        participants: 17,
+        clientEmail: 'teacher@school.com',
+        clientPhone: '040-1234567',
+        username: basicUserData.username
       }
     })
     const { createVisit }  = data

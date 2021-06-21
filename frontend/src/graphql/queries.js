@@ -132,7 +132,8 @@ export const CREATE_VISIT = gql`
     $clientEmail: String!,
     $clientPhone: String!,
     $grade: String!,
-    $participants: Int!
+    $participants: Int!,
+    $username: String
     ) {
     createVisit(
       event: $event,
@@ -142,7 +143,8 @@ export const CREATE_VISIT = gql`
       clientEmail: $clientEmail,
       clientPhone: $clientPhone
       grade: $grade,
-      participants: $participants
+      participants: $participants,
+      username: $username
     ) {
       id
       event {

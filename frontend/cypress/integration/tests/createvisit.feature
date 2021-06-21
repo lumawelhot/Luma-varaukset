@@ -30,3 +30,17 @@ Scenario: An event is succesfully booked by a teacher with valid information
     And I click the booking button
     And valid information is entered
     Then booked event turns grey in calendar view
+
+Scenario: Event can be booked by admin if it is less than two weeks ahead
+    Given admin logs in
+    And there is an event less than two weeks ahead
+    When I click on the unavailable event
+    Then unavailable event page contains booking button
+
+Scenario: An event is succesfully booked by an admin with valid information
+    Given admin logs in
+    And there is an event less than two weeks ahead
+    And I click on the unavailable event
+    And I click the booking button
+    And valid information is entered
+    Then unavailable event turns grey in calendar view
