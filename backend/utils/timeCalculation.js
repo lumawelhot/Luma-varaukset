@@ -35,4 +35,15 @@ const findClosestTimeSlot = (timeSlots, timeSlot, timeBorder) => {
   }
 }
 
-module.exports = { findValidTimeSlot, findClosestTimeSlot }
+const generateAvailableTime = (start, end) => {
+  let result = null
+  if (getUnixTime(end) - getUnixTime(start) >= 3600) {
+    result = {
+      startTime: start,
+      endTime: end
+    }
+  }
+  return result
+}
+
+module.exports = { findValidTimeSlot, findClosestTimeSlot, generateAvailableTime }

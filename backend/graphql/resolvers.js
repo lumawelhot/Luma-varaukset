@@ -10,7 +10,7 @@ const config = require('../utils/config')
 const { readMessage } = require('../services/fileReader')
 //const parseISO = require('date-fns/parseISO')
 const { /* differenceInMilliseconds, isDate, isValid, parseISO, */ getUnixTime, add, sub } = require('date-fns')
-const { findValidTimeSlot, findClosestTimeSlot } = require('../utils/timeCalculation')
+const { findValidTimeSlot, findClosestTimeSlot, generateAvailableTime } = require('../utils/timeCalculation')
 
 const resolvers = {
   Query: {
@@ -150,16 +150,8 @@ const resolvers = {
       return newEvent
     },
 
-    /*
---------S----------------E---- availableTime
--------------S--E------------- visitin s ja e
---------S---E----S-------E--- uudet mahdolliset
-*/
-
     createVisit: async (root, args) => {
       const event = await Event.findById(args.event)
-      //const visitStart = new Date(args.startTime)
-      //const visitEnd = new Date(args.endTime)
       const visitTime = {
         start: new Date(args.startTime),
         end: new Date(args.endTime)
@@ -168,32 +160,10 @@ const resolvers = {
         startTime: new Date(time.startTime),
         endTime: new Date(time.endTime)
       }))
-
-      const eventStart = new Date(event.start)
-      const eventEnd = new Date(event.end)
-
-      const generateAvailableTime = (start, end) => {
-        let result = null
-        if (end - start >= 3600000) {
-          result = {
-            startTime: start,
-            endTime: end
-          }
-        }
-        return result
+      const eventTime = {
+        start: new Date(event.start),
+        end: new Date(event.end)
       }
-      /*
----S-----------------------E---- availableTime
----S--------------E____S---E---- visitin s ja e
---SE____S---------EXXXXXXXXE---- uudet mahdolliset
-*/
-      const assignAvailableTimes = (before, after , availableTime) => {
-        const filteredAvailTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime)
-        if (before) filteredAvailTimes.push(before)
-        if (after) filteredAvailTimes.push(after)
-        return filteredAvailTimes
-      }
-
 
       const availableTime = findValidTimeSlot(availableTimes, visitTime)
       if (!availableTime) {
@@ -201,18 +171,18 @@ const resolvers = {
       }
 
       if (
-        getUnixTime(visitTime.start) >= getUnixTime(eventStart) &&
+        getUnixTime(visitTime.start) >= getUnixTime(eventTime.start) &&
         getUnixTime(visitTime.start) < getUnixTime(visitTime.end) &&
-        getUnixTime(visitTime.end) <= getUnixTime(eventEnd)
+        getUnixTime(visitTime.end) <= getUnixTime(eventTime.end)
       ) {
-        const availableEnd = new Date(visitTime.start)
-        const availableStart = new Date(visitTime.end)
-        availableEnd.setTime(availableEnd.getTime() - 900000)
-        availableStart.setTime(availableStart.getTime() + 900000)
+        const availableEnd = sub(new Date(visitTime.start), { minutes: 15 })
+        const availableStart = add(new Date(visitTime.end), { minutes: 15 })
 
-        const availableBefore = generateAvailableTime(availableTime.startTime, availableEnd)
-        const availableAfter = generateAvailableTime(availableStart, availableTime.endTime)
-        const newAvailableTimes = assignAvailableTimes(availableAfter, availableBefore, availableTime)
+        const before = generateAvailableTime(availableTime.startTime, availableEnd)
+        const after = generateAvailableTime(availableStart, availableTime.endTime)
+        const newAvailableTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime)
+        if (before) newAvailableTimes.push(before)
+        if (after) newAvailableTimes.push(after)
         event.availableTimes = newAvailableTimes
       }
 
@@ -256,12 +226,7 @@ const resolvers = {
         })
       }
     },
-    /*
-----ES___E-----------------EE---- visitin S ja E
-----ES___S---E________S----EE---- availableTimes-taulukko
-----ES----E...S---E________S----EE---- visit, joka perutaan ...
-----ES------------E________S----EE---- uudet mahdolliset
-*/
+
     cancelVisit: async (root, args) => {
       const visit = await Visit.findById(args.id)
       const event = await Event.findById(visit.event)
