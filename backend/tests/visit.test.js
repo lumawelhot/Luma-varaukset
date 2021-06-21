@@ -20,7 +20,9 @@ mutation createVisit(
   $participants: Int!,
   $clientEmail: String!,
   $clientPhone: String!,
-  $username: String
+  $username: String,
+  $inPersonVisit: Boolean!,
+  $remoteVisit: Boolean!
   ) {
   createVisit(
     event: $event
@@ -31,7 +33,9 @@ mutation createVisit(
     participants: $participants
     clientEmail: $clientEmail
     clientPhone: $clientPhone
-    username: $username
+    username: $username,
+    inPersonVisit: $inPersonVisit,
+    remoteVisit: $remoteVisit
   ) {
     id
     event {
@@ -387,7 +391,9 @@ describe('Visit server test', () => {
         participants: 17,
         clientEmail: 'teacher@school.com',
         clientPhone: '040-1234567',
-        username: basicUserData.username
+        username: basicUserData.username,
+        inPersonVisit: true,
+        remoteVisit: false,
       }
     })
     const { createVisit }  = data
@@ -425,7 +431,9 @@ describe('Visit server test', () => {
         participants: 17,
         clientEmail: 'teacher@school.com',
         clientPhone: '040-1234567',
-        username: basicUserData.username
+        username: basicUserData.username,
+        inPersonVisit: true,
+        remoteVisit: false
       }
     })
     const { createVisit }  = data
