@@ -139,7 +139,12 @@ const resolvers = {
         resourceId,
         grades,
         remoteVisit: args.remoteVisit,
-        inPersonVisit: args.inPersonVisit
+        inPersonVisit: args.inPersonVisit,
+        waitingTime: args.waitingTime,
+        availableTimes: [{
+          startTime: args.start,
+          endTime: args.end
+        }]
       })
       newEvent.tags = mongoTags
       await newEvent.save()
@@ -170,8 +175,8 @@ const resolvers = {
         getUnixTime(visitTime.start) < getUnixTime(visitTime.end) &&
         getUnixTime(visitTime.end) <= getUnixTime(eventTime.end)
       ) {
-        const availableEnd = sub(new Date(visitTime.start), { minutes: 15 })
-        const availableStart = add(new Date(visitTime.end), { minutes: 15 })
+        const availableEnd = sub(new Date(visitTime.start), { minutes: event.waitingTime })
+        const availableStart = add(new Date(visitTime.end), { minutes: event.waitingTime })
 
         const before = generateAvailableTime(availableTime.startTime, availableEnd)
         const after = generateAvailableTime(availableStart, availableTime.endTime)
@@ -225,8 +230,8 @@ const resolvers = {
       const visit = await Visit.findById(args.id)
       const event = await Event.findById(visit.event)
       const visitTime = {
-        start: sub(new Date(visit.startTime), { minutes: 15 }),
-        end: add(new Date(visit.endTime), { minutes: 15 })
+        start: sub(new Date(visit.startTime), { minutes: event.waitingTime }),
+        end: add(new Date(visit.endTime), { minutes: event.waitingTime })
       }
       const eventTime = {
         start: new Date(event.start),

@@ -17,7 +17,8 @@
         "startTime": "2021-07-07T13:00:00+0300",
         "endTime": "2021-07-07T14:00:00+0300"
       }
-    ]
+    ],
+    "waitingTime": 15
   },
   {
     "title": "Lämpösäteily ja ilmastonmuutos",
@@ -27,7 +28,8 @@
     "grades": [1],
     "booked": false,
     "inPersonVisit": true,
-    "remoteVisit": false
+    "remoteVisit": false,
+    "waitingTime": 15
   },
   {
     "title": "Kemian kokeelliset työt",
@@ -42,7 +44,8 @@
       }
     ],
     "inPersonVisit": true,
-    "remoteVisit": false
+    "remoteVisit": false,
+    "waitingTime": 15
   },
   {
     "title": "Python-ohjelmointikieli",
@@ -52,7 +55,8 @@
     "grades": [1],
     "booked": false,
     "inPersonVisit": true,
-    "remoteVisit": false
+    "remoteVisit": false,
+    "waitingTime": 15
   },
   {
     "title": "Matematiikan työpaja",
@@ -63,7 +67,8 @@
     "grades": [1],
     "booked": false,
     "inPersonVisit": true,
-    "remoteVisit": false
+    "remoteVisit": false,
+    "waitingTime": 15
   },
   {
     "title": "Scratch-ohjelmointikieli",
@@ -74,7 +79,8 @@
     "grades": [1, 2],
     "booked": false,
     "inPersonVisit": true,
-    "remoteVisit": false
+    "remoteVisit": false,
+    "waitingTime": 15
   },
   {
     "title": "Lämpösäteily ja ilmastonmuutos",
@@ -85,6 +91,7 @@
     "grades": [3, 4],
     "booked": false,
     "inPersonVisit": true,
-    "remoteVisit": false
+    "remoteVisit": false,
+    "waitingTime": 15
   }
 ]

@@ -1,13 +1,10 @@
 const mongoose = require('mongoose')
 const { createTestClient } = require('apollo-server-testing')
 const { ApolloServer, gql } = require('apollo-server-express')
-//const moment = require ('moment')
-//const parseISO = require('date-fns/parseISO')
 var setHours = require('date-fns/setHours')
 var setMinutes = require('date-fns/setMinutes')
 var setSeconds = require('date-fns/setSeconds')
 var add = require('date-fns/add')
-//const { zonedTimeToUtc, utcToZonedTime, format } = require('date-fns-tz')
 
 const EventModel = require('../models/event')
 const VisitModel = require('../models/visit')
@@ -54,7 +51,8 @@ beforeEach(async () => {
     start: unavailableDate,
     end: unavailableDate,
     inPersonVisit: true,
-    remoteVisit: false
+    remoteVisit: false,
+    waitingTime: 15
   }
 
   const availableEventData = {
@@ -65,7 +63,8 @@ beforeEach(async () => {
     end: fiveHoursAdded,
     inPersonVisit: false,
     remoteVisit: true,
-    availableTimes: [{ startTime: availableDate, endTime: fiveHoursAdded }]
+    availableTimes: [{ startTime: availableDate, endTime: fiveHoursAdded }],
+    waitingTime: 15
   }
 
   unavailableEvent = new EventModel(unavailableEventData)

@@ -77,6 +77,7 @@ const EventForm = ({
   useEffect(() => {
     if (result.data) {
       console.log(result.data)
+      result.data.booked = false
       addEvent(result.data.createEvent)
       sendMessage('Vierailu luotu', 'success')
       history.push('/')
@@ -130,6 +131,7 @@ const EventForm = ({
       startTime: moment(newEventTimeRange[0]).format('HH:mm'),
       endTime: moment(newEventTimeRange[1]).format('HH:mm'),
       tags: [],
+      waitingTime: 15
     },
     validate,
     onSubmit: (values) => {
@@ -151,6 +153,7 @@ const EventForm = ({
               name: tag,
             })
           ),
+          waitingTime: values.waitingTime
         },
       })
 
@@ -427,6 +430,34 @@ const EventForm = ({
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.endTime}
+                />
+              </div>
+            </div>
+
+            {formik.touched.endTime && formik.errors.endTime ? (
+              <p className="help is-danger">{formik.errors.endTime}</p>
+            ) : null}
+
+            <div className="field">
+              <label className="label" htmlFor="endTime">
+                Minimiaika varausten välillä
+              </label>
+              <div className="control">
+                <input
+                  className={`input ${
+                    formik.touched.waitingTime
+                      ? formik.errors.waitingTime
+                        ? 'is-danger'
+                        : 'is-success'
+                      : ''
+                  }`}
+                  style={{ width: 300 }}
+                  id="waitingTime"
+                  name="waitingTime"
+                  type="number"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.waitingTime}
                 />
               </div>
             </div>

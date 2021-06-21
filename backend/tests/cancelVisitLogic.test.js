@@ -67,7 +67,8 @@ beforeEach(async () => {
     end: availableEnd,
     inPersonVisit: false,
     remoteVisit: true,
-    availableTimes: [{ startTime: availableStart, endTime: availableEnd }]
+    availableTimes: [{ startTime: availableStart, endTime: availableEnd }],
+    waitingTime: 10
   }
 
   availableEvent = new EventModel(availableEventData)
@@ -82,7 +83,7 @@ describe('Visit can be cancelled', () => {
     const { data } = await visitResponse(event, createDate(9, 0), createDate(10, 0))
 
     const modifiedEvent = await EventModel.findById(event)
-    const timeList = createTimeList([[10, 15]], [[15, 0]])
+    const timeList = createTimeList([[10, 10]], [[15, 0]])
     const availableList = createAvailableList(modifiedEvent.availableTimes)
     expect(timeList).toEqual(expect.arrayContaining(availableList))
 
@@ -100,7 +101,7 @@ describe('Visit can be cancelled', () => {
     const { data } = await visitResponse(event, createDate(12, 0), createDate(15, 0))
 
     const modifiedEvent = await EventModel.findById(event)
-    const timeList = createTimeList([[9, 0]], [[11, 45]])
+    const timeList = createTimeList([[9, 0]], [[11, 50]])
     const availableList = createAvailableList(modifiedEvent.availableTimes)
     expect(timeList).toEqual(expect.arrayContaining(availableList))
 
@@ -118,7 +119,7 @@ describe('Visit can be cancelled', () => {
     const { data } = await visitResponse(event, createDate(11, 0), createDate(13, 0))
 
     const modifiedEvent = await EventModel.findById(event)
-    const timeList = createTimeList([[9, 0], [13, 15]], [[10, 45], [15, 0]])
+    const timeList = createTimeList([[9, 0], [13, 10]], [[10, 50], [15, 0]])
     const availableList = createAvailableList(modifiedEvent.availableTimes)
     expect(timeList).toEqual(expect.arrayContaining(availableList))
 
@@ -137,14 +138,14 @@ describe('Visit can be cancelled', () => {
     const { data } = await visitResponse(event, createDate(12, 0), createDate(13, 0))
 
     const modifiedEvent = await EventModel.findById(event)
-    const timeList = createTimeList([[10, 15], [13, 15]], [[11, 45], [15, 0]])
+    const timeList = createTimeList([[10, 10], [13, 10]], [[11, 50], [15, 0]])
     const availableList = createAvailableList(modifiedEvent.availableTimes)
     expect(timeList).toEqual(expect.arrayContaining(availableList))
 
     const response = await cancelVisit(data.createVisit.id)
     expect(response.errors).toBeUndefined()
     const eventAfterCancellation = await EventModel.findById(event)
-    const timeListAfterCancellation = createTimeList([[10, 15]], [[15, 0]])
+    const timeListAfterCancellation = createTimeList([[10, 10]], [[15, 0]])
     const availableListAfter = createAvailableList(eventAfterCancellation.availableTimes)
     expect(timeListAfterCancellation).toEqual(expect.arrayContaining(availableListAfter))
     expect(eventAfterCancellation.visits.length).toEqual(1)
@@ -156,14 +157,14 @@ describe('Visit can be cancelled', () => {
     const { data } = await visitResponse(event, createDate(11, 0), createDate(12, 0))
 
     const modifiedEvent = await EventModel.findById(event)
-    const timeList = createTimeList([[9, 0], [12, 15]], [[10, 45], [13, 45]])
+    const timeList = createTimeList([[9, 0], [12, 10]], [[10, 50], [13, 50]])
     const availableList = createAvailableList(modifiedEvent.availableTimes)
     expect(timeList).toEqual(expect.arrayContaining(availableList))
 
     const response = await cancelVisit(data.createVisit.id)
     expect(response.errors).toBeUndefined()
     const eventAfterCancellation = await EventModel.findById(event)
-    const timeListAfterCancellation = createTimeList([[9, 0]], [[13, 45]])
+    const timeListAfterCancellation = createTimeList([[9, 0]], [[13, 50]])
     const availableListAfter = createAvailableList(eventAfterCancellation.availableTimes)
     expect(timeListAfterCancellation).toEqual(expect.arrayContaining(availableListAfter))
     expect(eventAfterCancellation.visits.length).toEqual(1)
@@ -176,14 +177,14 @@ describe('Visit can be cancelled', () => {
     const { data } = await visitResponse(event, createDate(11, 30), createDate(11, 45))
 
     const modifiedEvent = await EventModel.findById(event)
-    const timeList = createTimeList([[10, 0],[12, 0] , [13, 45]], [[11, 15], [13, 0], [15, 0]])
+    const timeList = createTimeList([[9, 55],[11, 55] , [13, 40]], [[11, 20], [13, 5], [15, 0]])
     const availableList = createAvailableList(modifiedEvent.availableTimes)
     expect(timeList).toEqual(expect.arrayContaining(availableList))
 
     const response = await cancelVisit(data.createVisit.id)
     expect(response.errors).toBeUndefined()
     const eventAfterCancellation = await EventModel.findById(event)
-    const timeListAfterCancellation = createTimeList([[10, 0], [13, 45]], [[13, 0], [15, 0]])
+    const timeListAfterCancellation = createTimeList([[9, 55], [13, 40]], [[13, 5], [15, 0]])
     const availableListAfter = createAvailableList(eventAfterCancellation.availableTimes)
     expect(timeListAfterCancellation).toEqual(expect.arrayContaining(availableListAfter))
     expect(eventAfterCancellation.visits.length).toEqual(2)

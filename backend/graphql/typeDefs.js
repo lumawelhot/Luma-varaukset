@@ -28,6 +28,7 @@ const typeDefs = gql `
     tags: [Tag]!
     visits: [Visit]!
     availableTimes: [TimeSlot]!
+    waitingTime: Int!
   }
   type Visit {
     id: ID!
@@ -76,6 +77,7 @@ const typeDefs = gql `
       inPersonVisit: Boolean!
       remoteVisit: Boolean!
       tags: [TagInput]
+      waitingTime: Int!
     ): Event
     createVisit(
       event: ID!
