@@ -83,6 +83,7 @@ const typeDefs = gql `
       grade: String!
       participants: Int!
       extra: [Int]
+      username: String
     ): Visit
     cancelVisit(id: ID!): Visit
   }

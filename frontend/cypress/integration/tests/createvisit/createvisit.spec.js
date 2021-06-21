@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { Given, When, Then, And } from 'cypress-cucumber-preprocessor/steps'
+import { Given, When, Then, And, before } from 'cypress-cucumber-preprocessor/steps'
 import moment from 'moment'
 
 const eventDate1 = new Date()
@@ -10,6 +10,7 @@ const availableEvent1 = 'Test available event 1'
 const availableEvent2 = 'Test available event 2 for invalid client name'
 const unavailableEventName = 'Test unavailable event'
 const unavailableEventDate = new Date()
+unavailableEventDate.setDate(new Date().getDate() + 5)
 
 it('Initialize tests', () => {
   cy.login({ username: 'Admin', password: 'salainen' })
@@ -30,6 +31,15 @@ it('Initialize tests', () => {
     inPersonVisit: true,
     remoteVisit: false,
     desc: 'Test event description'
+  })
+  cy.createEvent({
+    title: unavailableEventName,
+    scienceClass: 'LINKKI',
+    inPersonVisit: true,
+    remoteVisit: false,
+    start: unavailableEventDate,
+    end: unavailableEventDate,
+    desc: 'Unavailable event description'
   })
 })
 
@@ -80,16 +90,6 @@ Then('booking form opens', () => {
 })
 
 And('there is an event less than two weeks ahead', () => {
-  cy.login({ username: 'Admin', password: 'salainen' })
-  cy.createEvent({
-    title: unavailableEventName,
-    scienceClass: 'LINKKI',
-    inPersonVisit: true,
-    remoteVisit: false,
-    start: unavailableEventDate,
-    end: unavailableEventDate,
-    desc: 'Unavailable event description'
-  })
 })
 
 When('I click on the unavailable event', () => {
@@ -159,4 +159,27 @@ When('invalid client name is entered', () => {
 
 Then('an error message is shown', () => {
   cy.contains('Liian lyhyt!')
+})
+
+Given('admin logs in', () => {
+  cy.visit('http://localhost:3000/admin')
+  cy.wait(2000)
+  cy.get('#username').type('Admin')
+  cy.get('#password').type('salainen')
+  cy.get('#login').click()
+})
+
+Then('unavailable event page contains booking button', () => {
+  cy.contains('Varaa tapahtuma')
+})
+
+Then('unavailable event turns grey in calendar view', () => {
+  cy.get('.rbc-calendar').then(() => {
+    if (cy.get('.rbc-calendar').contains(`${unavailableEventName}`)) {
+      cy.get('.rbc-calendar').contains(`${unavailableEventName}`).parent().should('have.class', 'booked')
+    } else {
+      cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
+      cy.get('.rbc-calendar').contains(`${unavailableEventName}`).parent().should('have.class', 'booked')
+    }
+  })
 })
