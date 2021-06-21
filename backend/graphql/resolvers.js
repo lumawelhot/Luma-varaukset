@@ -19,7 +19,7 @@ const resolvers = {
     },
     getEvents: async () => {
       const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits')
-      console.log('events', events[0].availableTimes)
+      console.log(events.map(event => event.availableTimes))
       return events
     },
     getTags: async () => {
@@ -172,10 +172,11 @@ const resolvers = {
         }
         return result
       }
-      const assignAvailableTimes = (before, after , availableTime) => {
-        const filteredAvailTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime)
-        if (before) filteredAvailTimes.push(before)
-        if (after) filteredAvailTimes.push(after)
+      const assignAvailableTimes = (after, before , availableTime) => {
+        console.log(after, before, availableTime)
+        const filteredAvailTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime).map(at => Object({ startTime: at.startTime.toISOString(), endTime: at.endTime.toISOString() }))
+        if (before) filteredAvailTimes.push(before.toISOString())
+        if (after) filteredAvailTimes.push(after.toISOString())
         console.log(filteredAvailTimes)
         return filteredAvailTimes
       }
