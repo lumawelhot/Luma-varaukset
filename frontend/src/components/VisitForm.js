@@ -104,13 +104,16 @@ const VisitForm = ({ sendMessage, event }) => {
     onSubmit: values => {
       try {
         const grade = parseInt(values.visitGrade)
+        //console.log(event)
         create({
           variables: {
             clientName: values.clientName,
             clientEmail: values.clientEmail,
             clientPhone: values.clientPhone,
             grade: grade,
-            event: event.id
+            event: event.id,
+            startTime: event.start, // Alustava ratkaisu, kysytään jatkossa varauksen tekijältä
+            endTime: event.end, // Alustava ratkaisu, lasketaan jatkossa valittujen toimintojen mukaan
           }
         })
       } catch (error) {

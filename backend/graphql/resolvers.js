@@ -19,6 +19,7 @@ const resolvers = {
     },
     getEvents: async () => {
       const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits')
+      console.log('events', events[0].availableTimes)
       return events
     },
     getTags: async () => {
@@ -38,7 +39,9 @@ const resolvers = {
           clientEmail: visit.clientEmail,
           clientPhone: visit.clientPhone,
           event: visit.event,
-          grade: visit.grade
+          grade: visit.grade,
+          startTime: visit.startTime,
+          endTime: visit.endTime
         }
       } catch (e) {
         throw new UserInputError('Varausta ei löytynyt!')
@@ -173,6 +176,7 @@ const resolvers = {
         const filteredAvailTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime)
         if (before) filteredAvailTimes.push(before)
         if (after) filteredAvailTimes.push(after)
+        console.log(filteredAvailTimes)
         return filteredAvailTimes
       }
 
@@ -195,6 +199,7 @@ const resolvers = {
         const availableAfter = generateAvailableTime(availableStart, availableTime.endTime)
         const newAvailableTimes = assignAvailableTimes(availableAfter, availableBefore, availableTime)
         event.availableTimes = newAvailableTimes
+        console.log('new', newAvailableTimes)
       }
 
       const visit = new Visit({

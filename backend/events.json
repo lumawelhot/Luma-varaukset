@@ -14,18 +14,23 @@
         "endTime": "2021-07-07T11:00:00+0300"
       },
       {
-        "startTime": "2021-07-07T13:00:00+0300",
-        "endTime": "2021-07-07T14:00:00+0300"
+        "startTime": "2021-07-07T14:00:00+0300",
+        "endTime": "2021-07-07T15:00:00+0300"
       }
     ]
   },
   {
     "title": "Lämpösäteily ja ilmastonmuutos",
-    "start": "Tue Jun 15 2021 08:30:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Tue Jun 15 2021 12:00:00 GMT+0300 (Eastern European Summer Time)",
+    "start": "2021-06-15T09:00:00+0300",
+    "end": "2021-06-15T14:00:00+0300",
     "resourceId": 4,
     "grades": [1],
-    "booked": false,
+    "availableTimes": [
+      {
+        "startTime": "2021-06-15T09:00:00+0300",
+        "endTime": "2021-06-15T14:00:00+0300"
+      }
+    ],
     "inPersonVisit": true,
     "remoteVisit": false
   },
@@ -50,40 +55,60 @@
     "end": "2021-06-20T14:00:00+0300",
     "resourceId": 3,
     "grades": [1],
-    "booked": false,
+    "availableTimes": [
+      {
+        "startTime": "2021-06-20T09:00:00+0300",
+        "endTime": "2021-06-20T14:00:00+0300"
+      }
+    ],
     "inPersonVisit": true,
     "remoteVisit": false
   },
   {
     "title": "Matematiikan työpaja",
-    "start": "2021-06-20T09:00:00+0300",
-    "end": "2021-06-20T10:00:00+0300",
+    "start": "2021-07-20T09:00:00+0300",
+    "end": "2021-07-20T14:00:00+0300",
     "desc": "kuvaus",
     "resourceId": 1,
     "grades": [1],
-    "booked": false,
+    "availableTimes": [
+      {
+        "startTime": "2021-07-20T09:00:00+0300",
+        "endTime": "2021-07-20T14:00:00+0300"
+      }
+    ],
     "inPersonVisit": true,
     "remoteVisit": false
   },
   {
     "title": "Scratch-ohjelmointikieli",
-    "start": "Mon Jun 14 2021 10:30:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Mon Jun 14 2021 12:30:00 GMT+0300 (Eastern European Summer Time)",
+    "start": "2021-07-14T09:00:00+0300",
+    "end": "2021-07-14T14:00:00+0300",
     "desc": "kuvaus",
     "resourceId": 3,
     "grades": [1, 2],
-    "booked": false,
+    "availableTimes": [
+      {
+        "startTime": "2021-07-14T09:00:00+0300",
+        "endTime": "2021-07-14T14:00:00+0300"
+      }
+    ],
     "inPersonVisit": true,
     "remoteVisit": false
   },
   {
     "title": "Lämpösäteily ja ilmastonmuutos",
-    "start": "Wed Jun 16 2021 12:00:00 GMT+0300 (Eastern European Summer Time)",
-    "end": "Wed Jun 16 2021 13:00:00 GMT+0300 (Eastern European Summer Time)",
+    "start": "2021-06-16T10:00:00+0300",
+    "end": "2021-06-16T16:00:00+0300",
     "desc": "kuvaus",
     "resourceId": 4,
     "grades": [3, 4],
-    "booked": false,
+    "availableTimes": [
+      {
+        "startTime": "2021-06-20T10:00:00+0300",
+        "endTime": "2021-06-20T16:00:00+0300"
+      }
+    ],
     "inPersonVisit": true,
     "remoteVisit": false
   }

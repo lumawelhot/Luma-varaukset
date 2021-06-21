@@ -17,6 +17,7 @@ import Toasts from './components/Toasts'
 import { v4 as uuidv4 } from 'uuid'
 import VisitPage from './components/VisitPage'
 import VisitList from './components/VisitList'
+//mport fromUnixTime from 'date-fns/fromUnixTime'
 
 const App = () => {
   const history = useHistory()
@@ -33,6 +34,7 @@ const App = () => {
   const [currentUser, setUser] = useState(null)
 
   const parseEvent = (event) => {
+    console.log(event.title, event.availableTimes, event.start)
     if (!event.availableTimes.length) { // Jos varattavia aikoja ei ole saatavilla
       return {
         id: event.id,
@@ -42,7 +44,6 @@ const App = () => {
         end: new Date(event.end),
         grades: event.grades,
         tags: event.tags,
-        booked: true
       }
     }
     return event.availableTimes.map(timeSlot => Object({ // Jos varattavia aikoja on
@@ -52,8 +53,7 @@ const App = () => {
       start: new Date(timeSlot.startTime),
       end: new Date(timeSlot.endTime),
       grades: event.grades,
-      tags: event.tags,
-      booked: false
+      tags: event.tags
     }))
   }
 

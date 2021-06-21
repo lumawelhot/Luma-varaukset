@@ -66,7 +66,7 @@ const VisitPage = ({ sendMessage }) => {
       findVisit({ variables: { id } })
     }
     else if (data) {
-      console.log(data)
+      //console.log(data)
       setVisit(data.findVisit)
     }
   }, [data])
@@ -105,8 +105,8 @@ const VisitPage = ({ sendMessage }) => {
             <p>Tiedeluokka: {filterEventClass(visit.event.resourceId)}</p>
             <p>Valitut lisäpalvelut: [Tähän ekstrat]</p>
             <div>Valittu luokka-aste: {filterEventGrades(visit.grade)}</div>
-            <p>Tapahtuma alkaa: {moment(visit.event.start).format('DD.MM.YYYY, HH:mm')}</p>
-            <p>Tapahtuma päättyy: {moment(visit.event.end).format('DD.MM.YYYY, HH:mm')}</p>
+            <p>Vierailu alkaa: {moment(visit.startTime).format('DD.MM.YYYY, HH:mm')}</p>
+            <p>Vierailu päättyy: {moment(visit.endTime).format('DD.MM.YYYY, HH:mm')}</p>
             <button className="button is-danger" onClick={handelCancel}>Peru</button>
           </div>
         </div>
