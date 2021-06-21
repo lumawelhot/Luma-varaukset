@@ -5,8 +5,7 @@ import 'moment/locale/fi'
 import { messages } from './helpers/calendar-messages-fi'
 import { bookedEventColor, resourceColorsLUMA } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
-
-//import LumaEventWrapper from './components/Custom/LumaEventWrapper'
+import CalendarFilter from './components/CalendarFilter'
 
 const localizer = momentLocalizer(moment)
 
@@ -21,6 +20,7 @@ const resourceMap = [
 const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick }) => {
 
   const [localEvents, setEvents] = useState([])
+  const [filterFunction, setFilterFunction] = useState(() => () => { return true })
 
   useEffect(() => {
     setEvents(events)
@@ -78,6 +78,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
 
   return (
     <div>
+      <CalendarFilter filterFunction={filterFunction} setFilterFunction={setFilterFunction} />
       <Calendar
         culture='fi'
         localizer={localizer}
@@ -89,7 +90,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
           agenda: true
         }}
         showMultiDayTimes
-        events={localEvents}
+        events={localEvents.filter(event => filterFunction(event))}
         startAccessor='start'
         endAccessor='end'
         min={moment('8:00am', 'h:mma').toDate()}

@@ -42,7 +42,9 @@ const App = () => {
       start: new Date(event.start),
       end: new Date(event.end),
       grades: event.grades,
-      booked: event.booked
+      booked: event.booked,
+      remoteVisit: event.remoteVisit,
+      inPersonVisit: event.inPersonVisit
     }
   }
 

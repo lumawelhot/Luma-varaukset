@@ -48,6 +48,8 @@ export const EVENTS = gql`
       end
       desc
       booked
+      inPersonVisit
+      remoteVisit
     }
   }
 `
