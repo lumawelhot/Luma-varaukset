@@ -173,10 +173,9 @@ const resolvers = {
         return result
       }
       const assignAvailableTimes = (after, before , availableTime) => {
-        console.log(after, before, availableTime)
         const filteredAvailTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime).map(at => Object({ startTime: at.startTime.toISOString(), endTime: at.endTime.toISOString() }))
-        if (before) filteredAvailTimes.push(before.toISOString())
-        if (after) filteredAvailTimes.push(after.toISOString())
+        if (before) filteredAvailTimes.push(before)
+        if (after) filteredAvailTimes.push(after)
         console.log(filteredAvailTimes)
         return filteredAvailTimes
       }
