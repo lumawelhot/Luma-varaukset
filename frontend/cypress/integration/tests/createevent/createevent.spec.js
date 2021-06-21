@@ -34,7 +34,7 @@ When('valid information is entered', () => {
 })
 
 Then('an event is succesfully created', () => {
-  cy.containsEvent({ title: 'Test event', resourceids: 1 }).should('eq', true)
+  cy.containsEvent({ title: 'Test event', resourceids: [2] }).should('eq', true)
 })
 
 When('too short a title is entered', () => {
@@ -57,6 +57,6 @@ When('too short a title is entered', () => {
 
 Then('no event is created and an error message is shown', () => {
 
-  cy.containsEvent({ title: 'test', resourceids: 1 }).should('eq', false)
+  cy.containsEvent({ title: 'test', resourceids: [2] }).should('eq', false)
   //tähän luotava virheviestin tarkistus sitten, kun backend on korjattu se lähettämään
 })
