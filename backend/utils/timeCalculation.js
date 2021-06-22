@@ -30,8 +30,8 @@ const findClosestTimeSlot = (timeSlots, timeSlot, timeBorder) => {
   if (!startPoint) startPoint = timeBorder.start
   if (!endPoint) endPoint = timeBorder.end
   return {
-    startTime: startPoint,
-    endTime: endPoint
+    startTime: startPoint.toISOString(),
+    endTime: endPoint.toISOString()
   }
 }
 

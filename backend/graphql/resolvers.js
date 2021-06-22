@@ -1,15 +1,17 @@
 const { UserInputError, AuthenticationError } = require('apollo-server-errors')
-const bcrypt = require('bcrypt')
-const User = require('../models/user')
-const Event = require('../models/event')
-const Visit = require('../models/visit')
-const jwt = require('jsonwebtoken')
-const Tag = require('../models/tag')
-const mailer = require('../services/mailer')
-const config = require('../utils/config')
 const { readMessage } = require('../services/fileReader')
 const { getUnixTime, add, sub } = require('date-fns')
 const { findValidTimeSlot, findClosestTimeSlot, generateAvailableTime } = require('../utils/timeCalculation')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const mailer = require('../services/mailer')
+const config = require('../utils/config')
+
+const User = require('../models/user')
+const Event = require('../models/event')
+const Visit = require('../models/visit')
+const Extra = require('../models/extra')
+const Tag = require('../models/tag')
 
 const resolvers = {
   Query: {
@@ -18,7 +20,7 @@ const resolvers = {
       return users
     },
     getEvents: async () => {
-      const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits')
+      const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits', { startTime: 1, endTime: 1 })
       return events
     },
     getTags: async () => {
@@ -26,26 +28,38 @@ const resolvers = {
       return tags
     },
     getVisits: async () => {
-      const visits = await Visit.find({}).populate('event', { id: 1, title: 1, resourceId: 1 })
+      const visits = await Visit.find({}).populate('event', { id: 1, title: 1, resourceids: 1, remoteVisit: 1, inPersonVisit : 1 })
       return visits
     },
     findVisit: async (root, args) => {
       try {
         const visit = await Visit.findById(args.id)
-        return {
+        return visit /* {
           id: visit.id,
+          event: visit.event,
+          grade: visit.grade,
           clientName: visit.clientName,
+          schoolName: visit.schoolName,
+          schoolLocation: visit.schoolLocation,
+          participants: visit.participants,
           clientEmail: visit.clientEmail,
           clientPhone: visit.clientPhone,
-          event: visit.event,
-          grade: visit.grade
-        }
+          startTime: visit.startTime,
+          endTime: visit.endTime,
+          status: visit.status,
+          remoteVisit: visit.remoteVisit,
+          inPersonVisit: visit.inPersonVisit
+        } */
       } catch (e) {
         throw new UserInputError('Varausta ei löytynyt!')
       }
     },
     me: (root, args, context) => {
       return context.currentUser
+    },
+    getExtras: async () => {
+      const extras = await Extra.find({})
+      return extras
     }
   },
   Visit: {
@@ -83,33 +97,12 @@ const resolvers = {
       const userForToken = { username: user.username, id: user._id }
       return { value: jwt.sign(userForToken, config.SECRET) }
     },
-    createEvent: async (root, args, { currentUser } ) => {
+    createEvent: async (root, args, { currentUser }) => {
       if (!currentUser) {
         throw new AuthenticationError('not authenticated')
       }
-      let resourceId = null
-      switch (args.class) {
-        case 'SUMMAMUTIKKA':
-          resourceId = 1
-          break
-        case 'FOTONI':
-          resourceId = 2
-          break
-        case 'LINKKI':
-          resourceId = 3
-          break
-        case 'GEOPISTE':
-          resourceId = 4
-          break
-        case 'GADOLIN':
-          resourceId = 5
-          break
-        default:
-          throw new UserInputError('Invalid class')
-      }
-
+      let resourceids = args.scienceClass
       let grades = args.grades
-
       if (grades.length < 1) {
         throw new UserInputError('At least one grade must be selected!')
       }
@@ -136,7 +129,7 @@ const resolvers = {
         start: args.start,
         end: args.end,
         desc: args.desc,
-        resourceId,
+        resourceids,
         grades,
         remoteVisit: args.remoteVisit,
         inPersonVisit: args.inPersonVisit,
@@ -180,7 +173,7 @@ const resolvers = {
 
         const before = generateAvailableTime(availableTime.startTime, availableEnd)
         const after = generateAvailableTime(availableStart, availableTime.endTime)
-        const newAvailableTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime)
+        const newAvailableTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime).map(at => Object({ startTime: at.startTime.toISOString(), endTime: at.endTime.toISOString() }))
         if (before) newAvailableTimes.push(before)
         if (after) newAvailableTimes.push(after)
         event.availableTimes = newAvailableTimes
@@ -198,7 +191,11 @@ const resolvers = {
       try {
         const now = new Date()
         const start = new Date(event.start)
-        if (getUnixTime(start) - getUnixTime(now) >= 1209600 && availableTime) {
+        const user = await User.findOne({ username: args.username })
+        const startsAfter14Days = getUnixTime(start) - getUnixTime(now) >= 1209600
+        const startsAfter1Hour = getUnixTime(start) - getUnixTime(now) >= 3600
+        const eventCanBeBooked = (user === null) ? startsAfter14Days : startsAfter1Hour
+        if (eventCanBeBooked) {
           savedVisit = await visit.save()
           const details = [{
             name: 'link',
@@ -246,12 +243,14 @@ const resolvers = {
       }))
 
       const newAvailTime = findClosestTimeSlot(availableTimes, visitTime, eventTime)
+      console.log('newAvailTime (resolvers rivi 246)', newAvailTime)
 
       const filteredAvailTimes = availableTimes.filter(time => !(
         getUnixTime(time.startTime) === getUnixTime(newAvailTime.startTime) ||
         getUnixTime(time.endTime) === getUnixTime(newAvailTime.endTime)
       ))
       filteredAvailTimes.push(newAvailTime)
+      console.log('filteredAvailTimes (resolvers rivi 253)', filteredAvailTimes)
 
       try {
         event.visits = event.visits.filter(v => v.toString() !== visit.id) //huomaa catch!
@@ -269,6 +268,20 @@ const resolvers = {
         })
       }
     },
+    createExtra: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
+      if(args.name.length < 5){
+        throw new UserInputError('Name too short!')
+      }
+      if(args.classes.length === 0) {
+        throw new UserInputError('Select at least one science class!')
+      }
+      if(args.remoteLength === 0 && args.inPersonLength === 0){
+        throw new UserInputError('Give duration for at least one mode!')
+      }
+    }
   }
 }
 

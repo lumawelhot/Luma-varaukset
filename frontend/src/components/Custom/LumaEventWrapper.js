@@ -26,7 +26,7 @@ const LumaEventWrapper = (props) => {
 
   console.log(props.components)
 
-  const resourceStyle={ backgroundColor: resourceColors[event.resourceId-1] }
+  const resourceStyle={ backgroundColor: resourceColors[event.resourceids-1] }
 
   let title = accessors.title(event)
   let tooltip = accessors.tooltip(event)

@@ -1,14 +1,29 @@
+
+
 import React from 'react'
 import moment from 'moment'
 import { useHistory } from 'react-router'
 
-const EventPage = ({ event, handleBookingButtonClick }) => {
+const EventPage = ({ event, handleBookingButtonClick, currentUser }) => {
   const history = useHistory()
   if (!event) {
     history.push('/')
   }
 
-  const filterEventClass = (eventClass) => {
+  const classes = [
+    { value: 1, label: 'SUMMAMUTIKKA' },
+    { value: 2, label: 'FOTONI' },
+    { value: 3, label: 'LINKKI' },
+    { value: 4, label: 'GEOPISTE' },
+    { value: 5, label: 'GADOLIN' }
+  ]
+
+  const filterEventClass = (eventClasses) => {
+    const classesArray = eventClasses.map(c => classes[c].label)
+    return classesArray.join(', ')
+  }
+
+  /* const filterEventClass = (eventClass) => {
     switch (eventClass) {
       case 1:
         return 'SUMMAMUTIKKA'
@@ -24,7 +39,7 @@ const EventPage = ({ event, handleBookingButtonClick }) => {
         console.log('Error!')
         break
     }
-  }
+  } */
 
   const filterEventGrades = (eventGrades) => {
     const returnArray = []
@@ -52,8 +67,11 @@ const EventPage = ({ event, handleBookingButtonClick }) => {
   }
 
   if (event) {
-    const eventClass = filterEventClass(event.resourceId)
+    const eventClass = filterEventClass(event.resourceids)
     const eventGrades = filterEventGrades(event.grades)
+
+    const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14
+    const startsWithin1Hour = moment(event.start).diff(new Date(), 'hours') > 0
 
     return (
       <div className="container">
@@ -67,9 +85,13 @@ const EventPage = ({ event, handleBookingButtonClick }) => {
               <div>Tarjolla seuraaville luokka-asteille: {eventGrades.map(g =>
                 <div key={g.value}>{g.label}</div>)}
               </div>
+              <div>Tapahtuma tarjolla:
+                {event.inPersonVisit ? <p>Lähiopetuksena</p> : <></>}
+                {event.remoteVisit ? <p>Etäopetuksena</p> : <></>}
+              </div>
               <p>Tapahtuma alkaa: {moment(event.start).format('DD.MM.YYYY, HH:mm')}</p>
               <p>Tapahtuma päättyy: {moment(event.end).format('DD.MM.YYYY, HH:mm')}</p>
-              {moment(event.start).diff(moment(new Date()), 'days') < 14
+              {event.booked || (currentUser && !startsWithin1Hour) || (!currentUser && !startsAfter14Days)
                 ? <p><b>Valitettavasti tämä tapahtuma ei ole varattavissa.</b></p>
                 : <button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>Varaa tapahtuma</button>}
               <button className="button luma" onClick={cancel}>Poistu</button>
