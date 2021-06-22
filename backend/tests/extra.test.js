@@ -97,7 +97,6 @@ describe('Extra Model Test', () => {
     const newExtraData = { name: 'tieteenalan esittely', classes: [1, 2, 3, 4, 5], remoteLength: 5 , inPersonLength: 15 }
     const newExtra = new ExtraModel(newExtraData)
     const savedExtra = await newExtra.save()
-    console.log(savedExtra)
 
     expect(savedExtra._id).toBeDefined()
     expect(savedExtra.name).toBe(newExtraData.name)

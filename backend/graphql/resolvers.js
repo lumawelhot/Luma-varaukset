@@ -21,7 +21,6 @@ const resolvers = {
     },
     getEvents: async () => {
       const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits', { startTime: 1, endTime: 1 })
-      console.log(events.map(event => event.availableTimes))
       return events
     },
     getTags: async () => {
@@ -29,7 +28,7 @@ const resolvers = {
       return tags
     },
     getVisits: async () => {
-      const visits = await Visit.find({}).populate('event', { id: 1, title: 1, resourceids: 1 })
+      const visits = await Visit.find({}).populate('event', { id: 1, title: 1, resourceids: 1, remoteVisit: 1, inPersonVisit : 1 })
       return visits
     },
     findVisit: async (root, args) => {
@@ -101,10 +100,7 @@ const resolvers = {
         throw new AuthenticationError('not authenticated')
       }
       let resourceids = args.scienceClass
-
-
       let grades = args.grades
-
       if (grades.length < 1) {
         throw new UserInputError('At least one grade must be selected!')
       }

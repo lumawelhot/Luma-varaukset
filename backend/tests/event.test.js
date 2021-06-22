@@ -169,7 +169,6 @@ describe('Event Model Test', () => {
 
     const validEvent = new EventModel(eventData)
     const savedEvent = await validEvent.save()
-    console.log(savedEvent.resourceids)
 
     expect(savedEvent._id).toBeDefined()
     expect(savedEvent.title).toBe(eventData.title)
