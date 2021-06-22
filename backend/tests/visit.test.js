@@ -15,60 +15,7 @@ const EventModel = require('../models/event')
 const VisitModel = require('../models/visit')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
-
-// This should be imported from ../graphql/typeDefs
-const CREATE_VISIT = gql`
-mutation createVisit(
-  $event: ID!,
-  $grade: String!,
-  $clientName: String!,
-  $schoolName: String!,
-  $schoolLocation: String!,
-  $participants: Int!,
-  $clientEmail: String!,
-  $clientPhone: String!,
-  $username: String
-  $startTime: String!
-  $endTime: String!
-  ) {
-  createVisit(
-    event: $event
-    grade: $grade
-    clientName: $clientName
-    schoolName: $schoolName
-    schoolLocation: $schoolLocation
-    participants: $participants
-    clientEmail: $clientEmail
-    clientPhone: $clientPhone
-    username: $username
-    startTime: $startTime
-    endTime: $endTime
-  ) {
-    id
-    event {
-      title
-    }
-    grade
-    clientName
-    schoolName
-    schoolLocation
-    participants
-    clientEmail
-    clientPhone
-    status
-  }
-}
-`
-const LOGIN = gql`
-mutation {
-  login(
-    username: "basic"
-    password: "basic-password"
-  ){
-    value
-  }
-}
-`
+const { CREATE_VISIT, FIND_VISIT, LOGIN } = require('./testHelpers.js')
 
 let availableEvent
 let unavailableEvent
@@ -185,6 +132,8 @@ beforeEach(async () => {
     participants: 13,
     clientEmail: 'teacher@school.com',
     clientPhone: '040-1234567',
+    inPersonVisit: true,
+    remoteVisit: false,
     status: true,
     startTime: availableEvent.start,
     endTime: availableEvent.end
@@ -206,6 +155,8 @@ describe('Visit Model Test', () => {
       participants: 15,
       clientEmail: 'teacher2@someschool.com',
       clientPhone: '050-8912345',
+      inPersonVisit: true,
+      remoteVisit: true,
       status: true,
       startTime: availableEvent.start,
       endTime: availableEvent.end
@@ -252,6 +203,8 @@ describe('Visit server test', () => {
         participants: 13,
         clientEmail: 'teacher@school.com',
         clientPhone: '040-1234567',
+        inPersonVisit: true,
+        remoteVisit: false,
         startTime: event.start,
         endTime: event.end
       }
@@ -268,6 +221,8 @@ describe('Visit server test', () => {
     expect(createVisit.participants).toBe(13)
     expect(createVisit.clientEmail).toBe('teacher@school.com')
     expect(createVisit.clientPhone).toBe('040-1234567')
+    expect(createVisit.grade).toBe('1. grade')
+    expect(createVisit.participants).toBe(13)
     expect(createVisit.status).toBe(true)
   })
 
@@ -285,6 +240,37 @@ describe('Visit server test', () => {
         participants: 13,
         clientEmail: 'teacher@school.com',
         clientPhone: '040-1234567',
+        startTime: event.start,
+        endTime: event.end
+      }
+    })
+    const { createVisit } = data
+
+    expect(createVisit).toBe(null)
+  })
+
+  it('logged in user can create visit any event ahead', async () => {
+    const { mutate } = createTestClient(server)
+
+    // Login
+    let response = await mutate({ mutation: LOGIN })
+    expect(response.errors).toBeUndefined()
+
+    // create event
+    const event = savedAvailableForLoggedInEvent
+    const { data } = await mutate({
+      mutation: CREATE_VISIT,
+      variables: {
+        event: event.id,
+        grade: '1. grade',
+        clientName: 'Teacher',
+        schoolName: 'School',
+        schoolLocation: 'Location',
+        participants: 13,
+        clientEmail: 'teacher@school.com',
+        clientPhone: '040-1234567',
+        inPersonVisit: true,
+        remoteVisit: false,
         startTime: event.start,
         endTime: event.end
       }
@@ -355,7 +341,9 @@ describe('Visit server test', () => {
         clientPhone: '040-1234567',
         username: basicUserData.username,
         startTime: event.start,
-        endTime: event.end
+        endTime: event.end,
+        inPersonVisit: true,
+        remoteVisit: false
       }
     })
     const { createVisit } = data
@@ -366,24 +354,6 @@ describe('Visit server test', () => {
   it('Find visit by id', async () => {
     const { query } = createTestClient(server)
     const id = savedTestVisit.id
-    const FIND_VISIT = gql`
-    query findVisit($id: ID!) {
-      findVisit(id: $id) {
-        id
-        event {
-          id
-        }
-        grade
-        clientName
-        schoolName
-        schoolLocation
-        participants
-        clientEmail
-        clientPhone
-        status
-      }
-    }
-    `
     const { data } = await query({
       query: FIND_VISIT,
       variables: { id }

@@ -59,6 +59,36 @@ const CREATE_VISIT = gql `
   }
 `
 
+const FIND_VISIT = gql `
+  query findVisit($id: ID!) {
+    findVisit(id: $id) {
+      id
+      event {
+        id
+      }
+      clientName
+      schoolName
+      schoolLocation
+      clientEmail
+      clientPhone
+      grade
+      participants
+      status
+    }
+  }
+`
+
+const LOGIN = gql`
+  mutation {
+    login(
+      username: "basic"
+      password: "basic-password"
+    ) {
+      value
+    }
+  }
+`
+
 const details = {
   clientName: 'Teacher',
   clientEmail: 'teacher@school.com',
@@ -90,4 +120,4 @@ const createAvailableList = (timeList) => {
   return newList
 }
 
-module.exports = { CREATE_VISIT, CANCEL_VISIT, details, createTimeList, createAvailableList, createDate }
+module.exports = { LOGIN, FIND_VISIT, CREATE_VISIT, CANCEL_VISIT, details, createTimeList, createAvailableList, createDate }

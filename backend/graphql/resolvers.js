@@ -1,15 +1,17 @@
 const { UserInputError, AuthenticationError } = require('apollo-server-errors')
-const bcrypt = require('bcrypt')
-const User = require('../models/user')
-const Event = require('../models/event')
-const Visit = require('../models/visit')
-const jwt = require('jsonwebtoken')
-const Tag = require('../models/tag')
-const mailer = require('../services/mailer')
-const config = require('../utils/config')
 const { readMessage } = require('../services/fileReader')
 const { getUnixTime, add, sub } = require('date-fns')
 const { findValidTimeSlot, findClosestTimeSlot } = require('../utils/timeCalculation')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const mailer = require('../services/mailer')
+const config = require('../utils/config')
+
+const User = require('../models/user')
+const Event = require('../models/event')
+const Visit = require('../models/visit')
+const Extra = require('../models/extra')
+const Tag = require('../models/tag')
 
 const resolvers = {
   Query: {
@@ -19,7 +21,6 @@ const resolvers = {
     },
     getEvents: async () => {
       const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits', { startTime: 1, endTime: 1 })
-      console.log(events.map(event => event.availableTimes))
       return events
     },
     getTags: async () => {
@@ -27,7 +28,7 @@ const resolvers = {
       return tags
     },
     getVisits: async () => {
-      const visits = await Visit.find({}).populate('event', { id: 1, title: 1, resourceids: 1 })
+      const visits = await Visit.find({}).populate('event', { id: 1, title: 1, resourceids: 1, remoteVisit: 1, inPersonVisit : 1 })
       return visits
     },
     findVisit: async (root, args) => {
@@ -53,6 +54,10 @@ const resolvers = {
     },
     me: (root, args, context) => {
       return context.currentUser
+    },
+    getExtras: async () => {
+      const extras = await Extra.find({})
+      return extras
     }
   },
   Visit: {
@@ -95,10 +100,7 @@ const resolvers = {
         throw new AuthenticationError('not authenticated')
       }
       let resourceids = args.scienceClass
-
-
       let grades = args.grades
-
       if (grades.length < 1) {
         throw new UserInputError('At least one grade must be selected!')
       }
@@ -274,6 +276,20 @@ const resolvers = {
         })
       }
     },
+    createExtra: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
+      if(args.name.length < 5){
+        throw new UserInputError('Name too short!')
+      }
+      if(args.classes.length === 0) {
+        throw new UserInputError('Select at least one science class!')
+      }
+      if(args.remoteLength === 0 && args.inPersonLength === 0){
+        throw new UserInputError('Give duration for at least one mode!')
+      }
+    }
   }
 }
 

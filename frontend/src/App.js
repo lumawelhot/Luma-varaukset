@@ -41,7 +41,9 @@ const App = () => {
       title: event.title,
       resourceids: event.resourceids,
       grades: event.grades,
-      tags: event.tags,
+      inPersonVisit: event.inPersonVisit,
+      remoteVisit: event.remoteVisit,
+      tags: event.tags
     }
     let events = event.availableTimes.map(timeSlot => Object({
       start: new Date(timeSlot.startTime),

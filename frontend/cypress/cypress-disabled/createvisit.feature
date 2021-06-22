@@ -20,11 +20,19 @@ Scenario: Event cannot be booked if it is less than two weeks ahead
     And unavailable event page has the correct start date
     And unavailable event page contains correct info text
 
-Scenario: An event is succesfully booked by a teacher with valid information
+Scenario: An event available both as inPerson and remote is succesfully booked by a teacher with valid information
     Given I am on the front page
     When I click on available event 1
     And I click the booking button
-    And valid information is entered
+    And valid information is entered and visit mode selected
+    Then booked event turns grey in calendar view
+
+Scenario: An event available only as inPerson or remote is succesfully booked by a teacher with valid information
+    Given I am on the front page
+    And there is an event 3 more than two weeks ahead
+    When I click on available event 3
+    And I click the booking button
+    And valid information is entered and visit mode predetermined
     Then booked event turns grey in calendar view
 
 Scenario: Event can be booked by admin if it is less than two weeks ahead

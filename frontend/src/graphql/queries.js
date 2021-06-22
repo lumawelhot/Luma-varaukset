@@ -47,6 +47,8 @@ export const EVENTS = gql`
       start
       end
       desc
+      inPersonVisit
+      remoteVisit
       availableTimes {
         startTime
         endTime
@@ -102,7 +104,18 @@ export const CURRENT_USER = gql`
 `
 
 export const CREATE_EVENT = gql`
-  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: [Int]!, $grades: [Int]!, $remoteVisit: Boolean!, $inPersonVisit: Boolean!, $desc: String, $tags: [TagInput]) {
+  mutation createEvent(
+    $title: String!,
+    $start: String!,
+    $end: String!,
+    $scienceClass:
+    [Int]!,
+    $grades: [Int]!,
+    $remoteVisit: Boolean!,
+    $inPersonVisit: Boolean!,
+    $desc: String,
+    $tags: [TagInput]
+    ) {
     createEvent (
       title: $title,
       start: $start,
@@ -137,28 +150,32 @@ export const CREATE_EVENT = gql`
 
 export const CREATE_VISIT = gql`
   mutation createVisit(
-    $event: ID!,
-    $clientName: String!,
-    $schoolName: String!,
-    $schoolLocation: String!,
-    $clientEmail: String!,
-    $clientPhone: String!,
-    $grade: String!,
-    $participants: Int!,
+    $event: ID!
+    $clientName: String!
+    $schoolName: String!
+    $schoolLocation: String!
+    $clientEmail: String!
+    $clientPhone: String!
+    $grade: String!
+    $participants: Int!
+    $inPersonVisit: Boolean!
+    $remoteVisit: Boolean!
     $username: String
     ) {
     createVisit(
-      event: $event,
-      clientName: $clientName,
-      schoolName: $schoolName,
-      schoolLocation: $schoolLocation,
-      clientEmail: $clientEmail,
-      clientPhone: $clientPhone,
-      startTime: $startTime,
+      event: $event
+      clientName: $clientName
+      schoolName: $schoolName
+      schoolLocation: $schoolLocation
+      clientEmail: $clientEmail
+      clientPhone: $clientPhone
+      startTime: $startTime
       endTime: $endTime
       clientPhone: $clientPhone
-      grade: $grade,
-      participants: $participants,
+      grade: $grade
+      participants: $participants
+      inPersonVisit: $inPersonVisit
+      remoteVisit: $remoteVisit
       username: $username
     ) {
       id
@@ -196,6 +213,8 @@ export const FIND_VISIT = gql`
       startTime
       endTime
       participants
+      inPersonVisit
+      remoteVisit
     }
   }
 `
