@@ -16,13 +16,13 @@ const validate = values => {
   if (!values.clientName) {
     errors.clientName = messageIfMissing
   }
-  if (values.clientName.length<5) {
+  if (values.clientName.length < 5) {
     errors.clientName = messageIfTooShort
   }
   if (!values.schoolName) {
     errors.schoolName = messageIfMissing
   }
-  if (values.schoolName.length<5) {
+  if (values.schoolName.length < 5) {
     errors.schoolName = messageIfTooShort
   }
   if (!values.schoolLocation) {
@@ -199,7 +199,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
               <p>Tapahtuma päättyy: {moment(event.end).format('DD.MM.YYYY, HH:mm')}</p>
             </div>
 
-            <br/>
+            <br />
             <h1>Syötä varauksen tiedot</h1>
 
             <form onSubmit={formik.handleSubmit}>

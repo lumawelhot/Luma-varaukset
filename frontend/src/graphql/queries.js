@@ -47,9 +47,16 @@ export const EVENTS = gql`
       start
       end
       desc
-      booked
       inPersonVisit
       remoteVisit
+      availableTimes {
+        startTime
+        endTime
+      }
+      visits {
+        startTime
+        endTime
+      }
     }
   }
 `
@@ -81,6 +88,8 @@ export const VISITS = gql`
       participants
       extra
       status
+      startTime
+      endTime
     }
   }
 `
@@ -120,7 +129,10 @@ export const CREATE_EVENT = gql`
       inPersonVisit
       remoteVisit
       desc
-      booked
+      availableTimes {
+        startTime,
+        endTime
+      }
     }
   }
 `
@@ -145,6 +157,9 @@ export const CREATE_VISIT = gql`
       schoolName: $schoolName,
       schoolLocation: $schoolLocation,
       clientEmail: $clientEmail,
+      clientPhone: $clientPhone,
+      startTime: $startTime,
+      endTime: $endTime
       clientPhone: $clientPhone
       grade: $grade,
       participants: $participants
@@ -157,13 +172,14 @@ export const CREATE_VISIT = gql`
       event {
         id
         title
-        booked
       }
       clientName
       schoolName
       schoolLocation
       clientEmail
       clientPhone
+      startTime
+      endTime
       grade
       participants
     }
@@ -184,6 +200,8 @@ export const FIND_VISIT = gql`
         end
       }
       grade
+      startTime
+      endTime
       participants
       inPersonVisit
       remoteVisit
