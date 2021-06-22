@@ -72,7 +72,7 @@ const VisitPage = ({ sendMessage }) => {
       findVisit({ variables: { id } })
     }
     else if (data) {
-      console.log(data)
+      //console.log(data)
       setVisit(data.findVisit)
     }
   }, [data])
@@ -112,8 +112,8 @@ const VisitPage = ({ sendMessage }) => {
             <p>Valitut lisäpalvelut: [Tähän ekstrat]</p>
             <p>Valittu luokka-aste: {visit.grade}</p>
             <p>Ilmoitettu osallistujamäärä: {visit.participants}</p>
-            <p>Tapahtuma alkaa: {moment(visit.event.start).format('DD.MM.YYYY, HH:mm')}</p>
-            <p>Tapahtuma päättyy: {moment(visit.event.end).format('DD.MM.YYYY, HH:mm')}</p>
+            <p>Vierailu alkaa: {moment(visit.event.start).format('DD.MM.YYYY, HH:mm')}</p>
+            <p>Vierailu päättyy: {moment(visit.event.end).format('DD.MM.YYYY, HH:mm')}</p>
 
             <div className="field is-grouped">
               <div className="control">

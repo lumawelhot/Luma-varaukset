@@ -40,6 +40,14 @@ const visitSchema = mongoose.Schema({
   status: {
     type: Boolean,
     required: true,
+  },
+  startTime: {
+    type: String,
+    required: true
+  },
+  endTime: {
+    type: String,
+    required: true
   }
 })
 

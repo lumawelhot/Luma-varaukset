@@ -1,7 +1,7 @@
 const { gql } = require('apollo-server-express')
 
 //Visit- ja Event-tyyppien kentät gradeId ja online tarkistettava
-const typeDefs = gql `
+const typeDefs = gql`
   type Tag {
     id: ID
     name: String!
@@ -10,6 +10,10 @@ const typeDefs = gql `
     id: ID!
     username: String!
     isAdmin: Boolean!
+  }
+  type TimeSlot {
+    startTime: String!,
+    endTime: String!
   }
   type Event {
     id: ID!
@@ -22,7 +26,8 @@ const typeDefs = gql `
     end: String!
     desc: String
     tags: [Tag]!
-    booked: Boolean
+    visits: [Visit]!
+    availableTimes: [TimeSlot]!
   }
   type Visit {
     id: ID!
@@ -36,6 +41,8 @@ const typeDefs = gql `
     participants: Int!
     extra: [Int]
     status: Boolean!
+    startTime: String!
+    endTime: String!
   }
   type Token {
     value: String!
@@ -80,6 +87,8 @@ const typeDefs = gql `
       schoolLocation: String!
       clientEmail: String!
       clientPhone: String!
+      startTime: String!
+      endTime: String!
       grade: String!
       participants: Int!
       extra: [Int]
@@ -88,5 +97,4 @@ const typeDefs = gql `
     cancelVisit(id: ID!): Visit
   }
 `
-
 module.exports = typeDefs

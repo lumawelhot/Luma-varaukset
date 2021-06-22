@@ -42,9 +42,10 @@ const singleItem = [
             'schoolName':'Koulu',
             'schoolLocation':'Location',
             'clientEmail':'opettaja@luma.com',
-            'verifyEmail':'opettaja@luma.com',
             'clientPhone':'4234242',
-            'status':true
+            'status':true,
+            'startTime': null,
+            'endTime': null
           }
         ],
       },

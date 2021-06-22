@@ -12,13 +12,12 @@ import EventForm from './components/EventForm'
 import VisitForm from './components/VisitForm'
 import { FcKey } from 'react-icons/fc'
 import UserPage from './components/UserPage'
-/* import Message from './components/Message'
-import LumaTagInput from './components/LumaTagInput/LumaTagInput' */
 import EventPage from './components/EventPage'
 import Toasts from './components/Toasts'
 import { v4 as uuidv4 } from 'uuid'
 import VisitPage from './components/VisitPage'
 import VisitList from './components/VisitList'
+//mport fromUnixTime from 'date-fns/fromUnixTime'
 
 const App = () => {
   const history = useHistory()
@@ -35,20 +34,35 @@ const App = () => {
   const [currentUser, setUser] = useState(null)
 
   const parseEvent = (event) => {
-    return {
+    //console.log(event.title, event.availableTimes, event.start)
+    //console.log(event, '<--------------------------------------------------------------')
+    const details = {
       id: event.id,
       title: event.title,
       resourceId: event.resourceId,
-      start: new Date(event.start),
-      end: new Date(event.end),
       grades: event.grades,
-      booked: event.booked
+      tags: event.tags,
     }
+    let events = event.availableTimes.map(timeSlot => Object({
+      start: new Date(timeSlot.startTime),
+      end: new Date(timeSlot.endTime),
+      booked: false,
+      ...details
+    }))
+    events = events.concat(event.visits.map(visit => Object({
+      start: new Date(visit.startTime),
+      end: new Date(visit.endTime),
+      booked: true,
+      ...details
+    })))
+
+    return events
   }
+
 
   useEffect(() => {
     if (result.data) {
-      const events = result.data.getEvents.map(event => parseEvent(event))
+      const events = result.data.getEvents.map(event => parseEvent(event)).flat() // Lisätty flat(), mikäli parseEvent palauttaa taulukon
       setEvents(events)
     }
   }, [result])
@@ -80,7 +94,7 @@ const App = () => {
   }
 
   const showEventFormHandler = (start, end) => {
-    setNewEventTimeRange([start,end])
+    setNewEventTimeRange([start, end])
     setShowEventForm(true)
   }
 
@@ -91,8 +105,8 @@ const App = () => {
   }
 
   const handleEventClick = (event) => {
-    const selectedEvent = events.find(e => e.id === event.id)
-    setClickedEvent(selectedEvent)
+    //const selectedEvent = events.find(e => e.id === event.id)
+    setClickedEvent(event) // <- event tulee suoraan klikatusta, ei tarvitse hakea eventseistä
     history.push('/event-page')
   }
 
@@ -128,10 +142,10 @@ const App = () => {
       <Switch>
 
         <Route path='/event-page'>
-          <EventPage currentUser={currentUser} handleBookingButtonClick={handleBookingButtonClick} event={clickedEvent} sendMessage={notify}/>
+          <EventPage currentUser={currentUser} handleBookingButtonClick={handleBookingButtonClick} event={clickedEvent} sendMessage={notify} />
         </Route>
         <Route path='/book'>
-          <VisitForm currentUser={currentUser} event={clickedEvent} sendMessage={notify}/>
+          <VisitForm currentUser={currentUser} event={clickedEvent} sendMessage={notify} />
         </Route>
         <Route path='/admin'>
           {!currentUser &&
@@ -143,7 +157,7 @@ const App = () => {
         </Route>
         <Route path='/event'>
           {currentUser &&
-            <EventForm sendMessage={notify} addEvent={addEvent} closeEventForm={closeEventForm}/>
+            <EventForm sendMessage={notify} addEvent={addEvent} closeEventForm={closeEventForm} />
           }
           {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
         </Route>
@@ -164,12 +178,12 @@ const App = () => {
         </Route>
         <Route path='/visits'>
           {currentUser &&
-            <VisitList notify={notify}/>
+            <VisitList notify={notify} />
           }
           {!currentUser && <p>Et ole kirjautunut sisään.</p>}
         </Route>
         <Route path='/:id'>
-          <VisitPage sendMessage={notify}/>
+          <VisitPage sendMessage={notify} />
         </Route>
         <Route path='/'>
           {currentUser &&
@@ -181,21 +195,21 @@ const App = () => {
             </div>
           }
           {showEventForm &&
-          <div className="modal is-active">
-            <div className="modal-background"></div>
-            <div className="modal-content">
-              <EventForm
-                sendMessage={notify}
-                addEvent={addEvent}
-                newEventTimeRange={newEventTimeRange}
-                closeEventForm={closeEventForm}
-              />
-            </div>
-          </div>}
-          <MyCalendar events={events} currentUser={currentUser} showNewEventForm={showEventFormHandler} handleEventClick={handleEventClick}/>
+            <div className="modal is-active">
+              <div className="modal-background"></div>
+              <div className="modal-content">
+                <EventForm
+                  sendMessage={notify}
+                  addEvent={addEvent}
+                  newEventTimeRange={newEventTimeRange}
+                  closeEventForm={closeEventForm}
+                />
+              </div>
+            </div>}
+          <MyCalendar events={events} currentUser={currentUser} showNewEventForm={showEventFormHandler} handleEventClick={handleEventClick} />
           <UserPage currentUser={currentUser} />
           {!currentUser &&
-            <span className='icon is-pulled-right'><FcKey onClick={login} className='admin-button'/></span>
+            <span className='icon is-pulled-right'><FcKey onClick={login} className='admin-button' /></span>
           }
         </Route>
       </Switch>

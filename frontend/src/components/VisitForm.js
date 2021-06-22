@@ -15,13 +15,13 @@ const validate = values => {
   if (!values.clientName) {
     errors.clientName = messageIfMissing
   }
-  if (values.clientName.length<5) {
+  if (values.clientName.length < 5) {
     errors.clientName = messageIfTooShort
   }
   if (!values.schoolName) {
     errors.schoolName = messageIfMissing
   }
-  if (values.schoolName.length<5) {
+  if (values.schoolName.length < 5) {
     errors.schoolName = messageIfTooShort
   }
   if (!values.schoolLocation) {
@@ -173,7 +173,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
               <p>Tapahtuma päättyy: {moment(event.end).format('DD.MM.YYYY, HH:mm')}</p>
             </div>
 
-            <br/>
+            <br />
             <h1>Syötä varauksen tiedot</h1>
 
             <form onSubmit={formik.handleSubmit}>
@@ -193,7 +193,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 </div>
               </div>
               {formik.touched.clientName && formik.errors.clientName ? (
-                <p className="help is-danger">{formik.errors.clientName}</p>              ) : null}
+                <p className="help is-danger">{formik.errors.clientName}</p>) : null}
 
               <div className="field">
                 <label htmlFor="schoolName">Oppimisyhteisön nimi </label>
@@ -209,7 +209,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 </div>
               </div>
               {formik.touched.schoolName && formik.errors.schoolName ? (
-                <p className="help is-danger">{formik.errors.schoolName}</p>              ) : null}
+                <p className="help is-danger">{formik.errors.schoolName}</p>) : null}
 
               <div className="field">
                 <label htmlFor="schoolLocation">Oppimisyhteisön paikkakunta </label>
@@ -225,7 +225,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 </div>
               </div>
               {formik.touched.schoolLocation && formik.errors.schoolLocation ? (
-                <p className="help is-danger">{formik.errors.schoolLocation}</p>              ) : null}
+                <p className="help is-danger">{formik.errors.schoolLocation}</p>) : null}
 
               <div className="field">
                 <label htmlFor="clientEmail">Varaajan sähköpostiosoite </label>
@@ -240,7 +240,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                   />
                 </div>
                 {formik.touched.clientEmail && formik.errors.clientEmail ? (
-                  <p className="help is-danger">{formik.errors.clientEmail}</p>                ) : null}
+                  <p className="help is-danger">{formik.errors.clientEmail}</p>) : null}
               </div>
 
               <div className="field">
@@ -256,7 +256,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                   />
                 </div>
                 {formik.touched.verifyEmail && formik.errors.verifyEmail ? (
-                  <p className="help is-danger">{formik.errors.verifyEmail}</p>                ) : null}
+                  <p className="help is-danger">{formik.errors.verifyEmail}</p>) : null}
               </div>
 
               <div className="field">
@@ -274,7 +274,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 </div>
               </div>
               {formik.touched.clientPhone && formik.errors.clientPhone ? (
-                <p className="help is-danger">{formik.errors.clientPhone}</p>              ) : null}
+                <p className="help is-danger">{formik.errors.clientPhone}</p>) : null}
 
               <div className="field">
                 <label htmlFor="visitGrade">Luokka-aste/kurssi </label>
@@ -290,7 +290,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 </div>
               </div>
               {formik.touched.visitGrade && formik.errors.visitGrade ? (
-                <p className="help is-danger">{formik.errors.visitGrade}</p>              ) : null}
+                <p className="help is-danger">{formik.errors.visitGrade}</p>) : null}
 
               <div className="field">
                 <label htmlFor="participants">Osallistujamäärä </label>
@@ -306,7 +306,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 </div>
               </div>
               {formik.touched.participants && formik.errors.participants ? (
-                <p className="help is-danger">{formik.errors.participants}</p>              ) : null}
+                <p className="help is-danger">{formik.errors.participants}</p>) : null}
 
               <button id="create" className="button luma primary" type='submit'>Tallenna</button>
               <button className="button luma" onClick={cancel}>Poistu</button>
