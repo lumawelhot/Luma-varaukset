@@ -5,6 +5,7 @@ import { CREATE_VISIT } from '../graphql/queries'
 import { useHistory } from 'react-router'
 import moment from 'moment'
 
+let selectedEvent
 
 const validate = values => {
 
@@ -43,6 +44,15 @@ const validate = values => {
   }
   if (!values.participants) {
     errors.participants = messageIfMissing
+  }
+  if ((values.remoteVisit === values.inPersonVisit) && (selectedEvent.inPersonVisit && selectedEvent.remoteVisit)) {
+    errors.location = 'Valitse joko etä- tai lähivierailu!'
+  }
+  if(!values.privacyPolicy){
+    errors.privacyPolicy = 'Hyväksy tietosuojailmoitus!'
+  }
+  if(!values.remoteVisitGuidelines){
+    errors.remoteVisitGuidelines = 'Luethan ohjeet!'
   }
 
   return errors
@@ -113,21 +123,33 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
     initialValues: {
       clientName: '',
       schoolName: '',
+      remoteVisit: false,
+      inPersonVisit: false,
       schoolLocation: '',
       clientEmail: '',
       verifyEmail: '',
       clientPhone: '',
       visitGrade: '',
-      participants: ''
+      participants: '',
+      privacyPolicy: false,
+      remoteVisitGuidelines: false,
+      dataUseAgreement: false
+
     },
     validate,
     onSubmit: values => {
       try {
+        if (!values.remoteVisit && !values.inPersonVisit) {
+          values.remoteVisit = event.remoteVisit
+          values.inPersonVisit = event.inPersonVisit
+        }
         create({
           variables: {
             event: event.id,
             clientName: values.clientName,
             schoolName: values.schoolName,
+            remoteVisit: values.remoteVisit,
+            inPersonVisit: values.inPersonVisit,
             schoolLocation: values.schoolLocation,
             clientEmail: values.clientEmail,
             verifyEmail: values.verifyEmail,
@@ -169,6 +191,10 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
               <div>Tarjolla seuraaville luokka-asteille: {eventGrades.map(g =>
                 <div key={g.value}>{g.label}</div>)}
               </div>
+              <div>Tapahtuma tarjolla:
+                {event.inPersonVisit ? <p>Lähiopetuksena</p> : <></>}
+                {event.remoteVisit ? <p>Etäopetuksena</p> : <></>}
+              </div>
               <p>Tapahtuma alkaa: {moment(event.start).format('DD.MM.YYYY, HH:mm')}</p>
               <p>Tapahtuma päättyy: {moment(event.end).format('DD.MM.YYYY, HH:mm')}</p>
             </div>
@@ -177,6 +203,36 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
             <h1>Syötä varauksen tiedot</h1>
 
             <form onSubmit={formik.handleSubmit}>
+
+              <div>{event.inPersonVisit && event.remoteVisit ? (
+                <div className="field">
+                  <div id="radio-group">Valitse etä- tai lähiopetus</div>
+                  <div className="control">
+                    <label className="visitMode">
+                      <input
+                        type="radio" name="visitMode" checked = {formik.values.remoteVisit}
+                        onChange={() => {
+                          formik.touched.remoteVisit = !formik.values.remoteVisit
+                          formik.setFieldValue('remoteVisit', !formik.values.remoteVisit)
+                        }} /> Etävierailu
+                    </label>
+                  </div>
+                  <div className="control">
+                    <label className="visitMode">
+                      <input type="radio" name="visitMode" checked={formik.values.inPersonVisit}
+                        onChange={() => {
+                          formik.touched.inPersonVisit = !formik.values.inPersonVisit
+                          formik.setFieldValue('inPersonVisit', !formik.values.inPersonVisit)
+                        }} /> Lähivierailu
+                    </label>
+                  </div>
+                </div>
+              ) : null}
+              {formik.touched.location && formik.errors.location ? (
+                <p className="help is-danger">{formik.errors.location}</p>
+              ) : null}
+              </div>
+
 
               <div className="field">
                 <label htmlFor="clientName">Varaajan nimi </label>
@@ -193,7 +249,8 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 </div>
               </div>
               {formik.touched.clientName && formik.errors.clientName ? (
-                <p className="help is-danger">{formik.errors.clientName}</p>) : null}
+                <p className="help is-danger">{formik.errors.clientName}</p>
+              ) : null}
 
               <div className="field">
                 <label htmlFor="schoolName">Oppimisyhteisön nimi </label>
@@ -209,7 +266,8 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 </div>
               </div>
               {formik.touched.schoolName && formik.errors.schoolName ? (
-                <p className="help is-danger">{formik.errors.schoolName}</p>) : null}
+                <p className="help is-danger">{formik.errors.schoolName}</p>
+              ) : null}
 
               <div className="field">
                 <label htmlFor="schoolLocation">Oppimisyhteisön paikkakunta </label>
@@ -225,7 +283,8 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 </div>
               </div>
               {formik.touched.schoolLocation && formik.errors.schoolLocation ? (
-                <p className="help is-danger">{formik.errors.schoolLocation}</p>) : null}
+                <p className="help is-danger">{formik.errors.schoolLocation}</p>
+              ) : null}
 
               <div className="field">
                 <label htmlFor="clientEmail">Varaajan sähköpostiosoite </label>
@@ -240,7 +299,8 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                   />
                 </div>
                 {formik.touched.clientEmail && formik.errors.clientEmail ? (
-                  <p className="help is-danger">{formik.errors.clientEmail}</p>) : null}
+                  <p className="help is-danger">{formik.errors.clientEmail}</p>
+                ) : null}
               </div>
 
               <div className="field">
@@ -256,7 +316,8 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                   />
                 </div>
                 {formik.touched.verifyEmail && formik.errors.verifyEmail ? (
-                  <p className="help is-danger">{formik.errors.verifyEmail}</p>) : null}
+                  <p className="help is-danger">{formik.errors.verifyEmail}</p>
+                ) : null}
               </div>
 
               <div className="field">
@@ -274,7 +335,8 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 </div>
               </div>
               {formik.touched.clientPhone && formik.errors.clientPhone ? (
-                <p className="help is-danger">{formik.errors.clientPhone}</p>) : null}
+                <p className="help is-danger">{formik.errors.clientPhone}</p>
+              ) : null}
 
               <div className="field">
                 <label htmlFor="visitGrade">Luokka-aste/kurssi </label>
@@ -290,7 +352,8 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 </div>
               </div>
               {formik.touched.visitGrade && formik.errors.visitGrade ? (
-                <p className="help is-danger">{formik.errors.visitGrade}</p>) : null}
+                <p className="help is-danger">{formik.errors.visitGrade}</p>
+              ) : null}
 
               <div className="field">
                 <label htmlFor="participants">Osallistujamäärä </label>
@@ -306,7 +369,56 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 </div>
               </div>
               {formik.touched.participants && formik.errors.participants ? (
-                <p className="help is-danger">{formik.errors.participants}</p>) : null}
+                <p className="help is-danger">{formik.errors.participants}</p>
+              ) : null}
+
+              <div className="field">
+                <div id="checkbox-group"></div>
+                <div className="control">
+                  <label className="privacyPolicy">
+                    <input
+                      type="checkbox" name="privacyPolicy" checked = {formik.values.privacyPolicy}
+                      onChange={() => {
+                        formik.touched.privacyPolicy = !formik.values.privacyPolicy
+                        formik.setFieldValue('privacyPolicy', !formik.values.privacyPolicy)
+                      }} /> Hyväksyn, että tietoni tallennetaan ja käsitellään <a href="https://www2.helsinki.fi/fi/tiedekasvatus/tietosuojailmoitus-opintokaynnit" target="_blank" rel="noopener noreferrer">tietosuojailmoituksen</a> mukaisesti.
+                  </label>
+                </div>
+              </div>
+              {formik.touched.privacyPolicy && formik.errors.privacyPolicy ? (
+                <p className="help is-danger">{formik.errors.privacyPolicy}</p>
+              ) : null}
+
+              <div className="field">
+                <div id="checkbox-group"></div>
+                <div className="control">
+                  <label className="dataUseAgreement">
+                    <input
+                      type="checkbox" name="dataUseAgreement" checked = {formik.values.dataUseAgreement}
+                      onChange={() => {
+                        formik.touched.dataUseAgreement = !formik.values.dataUseAgreement
+                        formik.setFieldValue('dataUseAgreement', !formik.values.dataUseAgreement)
+                      }} /> Hyväksyn, että antamiani tietoja voidaan hyödyntää tutkimuskäytössä.
+                  </label>
+                </div>
+              </div>
+
+              <div className="field">
+                <div id="checkbox-group"></div>
+                <div className="control">
+                  <label className="remoteVisitGuidelines">
+                    <input
+                      type="checkbox" name="remoteVisitGuidelines" checked = {formik.values.remoteVisitGuidelines}
+                      onChange={() => {
+                        formik.touched.remoteVisitGuidelines = !formik.values.remoteVisitGuidelines
+                        formik.setFieldValue('remoteVisitGuidelines', !formik.values.remoteVisitGuidelines)
+                      }} /> Olen lukenut <a href="https://www2.helsinki.fi/fi/tiedekasvatus/opettajille-ja-oppimisyhteisoille/varaa-opintokaynti">etäopintokäyntien ohjeistuksen</a> ja hyväksyn käytänteet.
+                  </label>
+                </div>
+              </div>
+              {formik.touched.remoteVisitGuidelines && formik.errors.remoteVisitGuidelines ? (
+                <p className="help is-danger">{formik.errors.remoteVisitGuidelines}</p>
+              ) : null}
 
               <button id="create" className="button luma primary" type='submit'>Tallenna</button>
               <button className="button luma" onClick={cancel}>Poistu</button>

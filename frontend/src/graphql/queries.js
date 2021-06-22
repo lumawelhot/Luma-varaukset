@@ -47,6 +47,8 @@ export const EVENTS = gql`
       start
       end
       desc
+      inPersonVisit
+      remoteVisit
       availableTimes {
         startTime
         endTime
@@ -145,6 +147,8 @@ export const CREATE_VISIT = gql`
     $clientPhone: String!,
     $grade: String!,
     $participants: Int!,
+    $inPersonVisit: Boolean!,
+    $remoteVisit: Boolean!
     $username: String
     ) {
     createVisit(
@@ -158,6 +162,9 @@ export const CREATE_VISIT = gql`
       endTime: $endTime
       clientPhone: $clientPhone
       grade: $grade,
+      participants: $participants
+      inPersonVisit: $inPersonVisit
+      remoteVisit: $remoteVisit 
       participants: $participants,
       username: $username
     ) {
@@ -196,6 +203,8 @@ export const FIND_VISIT = gql`
       startTime
       endTime
       participants
+      inPersonVisit
+      remoteVisit
     }
   }
 `

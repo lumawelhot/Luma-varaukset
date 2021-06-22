@@ -23,25 +23,6 @@ const filterEventClass = (eventClass) => {
   }
 }
 
-/* const filterEventGrades = (visitGrade) => {
-  switch (visitGrade) {
-    case 1:
-      return 'Varhaiskasvatus'
-    case 2:
-      return '1.-2. luokka'
-    case 3:
-      return '3.-6. luokka'
-    case 4:
-      return '7.-9. luokka'
-    case 5:
-      return 'Toinen aste'
-    default:
-      console.log('Error!')
-      break
-  }
-} */
-
-
 const VisitPage = ({ sendMessage }) => {
   const history = useHistory()
 
@@ -53,7 +34,6 @@ const VisitPage = ({ sendMessage }) => {
   })
 
   const [cancelVisit, resultOfCancel] = useMutation(CANCEL_VISIT, {
-    // tarkista backendin error
     onError: (e) => {
       sendMessage('Virhe!', 'danger')
       console.log(e)
@@ -111,6 +91,10 @@ const VisitPage = ({ sendMessage }) => {
             <p>Tiedeluokka: {filterEventClass(visit.event.resourceids)}</p>
             <p>Valitut lisäpalvelut: [Tähän ekstrat]</p>
             <p>Valittu luokka-aste: {visit.grade}</p>
+            <div>Opetusmuoto:
+              {visit.inPersonVisit ? <p>Lähiopetus</p> : <></>}
+              {visit.remoteVisit ? <p>Etäopetus</p> : <></>}
+            </div>
             <p>Ilmoitettu osallistujamäärä: {visit.participants}</p>
             <p>Vierailu alkaa: {moment(visit.event.start).format('DD.MM.YYYY, HH:mm')}</p>
             <p>Vierailu päättyy: {moment(visit.event.end).format('DD.MM.YYYY, HH:mm')}</p>

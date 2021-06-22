@@ -70,6 +70,10 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser }) => {
               <div>Tarjolla seuraaville luokka-asteille: {eventGrades.map(g =>
                 <div key={g.value}>{g.label}</div>)}
               </div>
+              <div>Tapahtuma tarjolla:
+                {event.inPersonVisit ? <p>Lähiopetuksena</p> : <></>}
+                {event.remoteVisit ? <p>Etäopetuksena</p> : <></>}
+              </div>
               <p>Tapahtuma alkaa: {moment(event.start).format('DD.MM.YYYY, HH:mm')}</p>
               <p>Tapahtuma päättyy: {moment(event.end).format('DD.MM.YYYY, HH:mm')}</p>
               {event.booked || (currentUser && !startsWithin1Hour) || (!currentUser && !startsAfter14Days)
