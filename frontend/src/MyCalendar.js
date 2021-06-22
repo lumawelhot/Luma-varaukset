@@ -24,7 +24,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
 
   useEffect(() => {
     setEvents(events)
-  },[events])
+  }, [events])
 
   const handleSelect = ({ start, end }) => {
     showNewEventForm(start, end)
@@ -42,9 +42,9 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
   }
 
   const customEventPropGetter = event => {
-    const startsBefore14Days = moment(event.start).diff(new Date(), 'days') <= 14
-    const startsWithin1Hour = moment(event.start).diff(new Date(), 'minutes') <= 60
-    if (event.booked || (!currentUser && startsBefore14Days) || (currentUser && startsWithin1Hour)) {
+    const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14
+    const startsAfter1Hour = moment(event.start).diff(new Date(), 'minutes') >= 60
+    if (event.booked || (!currentUser && !startsAfter14Days) || (currentUser && !startsAfter1Hour)) {
       return { className: 'booked' , }
     }
     return { className: resourceMap[event.resourceids-1]?.resourceTitle.toLowerCase() || '' }
@@ -58,7 +58,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
       return (
         <div className="block">
           {resourceName &&
-            <span className='tag is-small is-link' style={{ backgroundColor:bookedEventColor[0] }}>{resourceName}</span>
+            <span className='tag is-small is-link' style={{ backgroundColor: bookedEventColor[0] }}>{resourceName}</span>
           }
           <span> {event.title}</span>
           <p>{event.desc}</p>
@@ -68,7 +68,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
     return (
       <div className="block">
         {resourceName &&
-          <span className='tag is-small is-link' style={{ backgroundColor:resourceColorsLUMA[event.resourceids-1] }}>{resourceName}</span>
+          <span className='tag is-small is-link' style={{ backgroundColor: resourceColorsLUMA[event.resourceId - 1] }}>{resourceName}</span>
         }
         <span> {event.title}</span>
         <p>{event.desc}</p>
@@ -98,7 +98,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
         //resourceidsAccessor="resourceids"
         //resourceTitleAccessor="resourceTitle"
         selectable={currentUser?.isAdmin}
-        onSelectEvent={ (event) => handleEventClick(event)/* alert(JSON.stringify(event)) */}
+        onSelectEvent={(event) => handleEventClick(event)/* alert(JSON.stringify(event)) */}
         onSelectSlot={handleSelect}
         components={{
           //eventWrapper: LumaEventWrapper,

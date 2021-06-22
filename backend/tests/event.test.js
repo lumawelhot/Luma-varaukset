@@ -95,7 +95,6 @@ describe('Event Server Test', () => {
         start
         end
         desc
-        booked
       }
     }
     `
@@ -112,7 +111,6 @@ describe('Event Server Test', () => {
       expect(event.start).toBeDefined()
       expect(event.end).toBeDefined()
       expect(event.desc).toBeDefined()
-      expect(event.booked).toBe(false)
     })
     expect(getEvents.length).toBe(2)
   })
@@ -141,7 +139,6 @@ it('employee can create new event successfully', async () => {
           tags {
             name
           }
-          booked
         }
       }
     `
@@ -149,7 +146,6 @@ it('employee can create new event successfully', async () => {
   expect(response.data.createEvent.title).toBe('Learn JavaScript!')
   expect(response.data.createEvent.grades).toEqual([1, 3, 4])
   expect(response.data.createEvent.tags).toEqual([{ name: 'Matematiikka' }, { name: 'Fysiikka' }, { name: 'Ohjelmointi' }, { name: 'Maantiede' }, { name: 'Kemia' } ])
-  expect(response.data.createEvent.booked).toBe(false)
   expect(response.errors).toBeUndefined()
 })
 

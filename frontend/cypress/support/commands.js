@@ -106,7 +106,6 @@ Cypress.Commands.add('createEvent', ({ title, scienceClass, remoteVisit, inPerso
           tags {
             name
           },
-          booked
         }
       }
     `
