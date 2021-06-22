@@ -47,6 +47,13 @@ const typeDefs = gql`
   type Token {
     value: String!
   }
+  type Extra {
+    id: ID!
+    name: String!
+    classes: [Int]!
+    remoteLength: Int!
+    inPersonLength: Int!
+  }
   type Query {
     getUsers: [User]!
     me: User!
@@ -54,6 +61,7 @@ const typeDefs = gql`
     findVisit(id: ID!): Visit!
     getVisits: [Visit]
     getTags: [Tag]!
+    getExtras: [Extra]!
   }
   input TagInput {
     id: String
@@ -95,6 +103,12 @@ const typeDefs = gql`
       username: String
     ): Visit
     cancelVisit(id: ID!): Visit
+    createExtra(
+      name: String!
+      classes: [Int]!
+      remoteLength: Int!
+      inPersonLength: Int!
+    ): Extra
   }
 `
 module.exports = typeDefs
