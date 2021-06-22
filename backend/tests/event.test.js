@@ -156,7 +156,7 @@ describe('Event Model Test', () => {
     const tags = await Tag.find({ name: { $in: ['Matematiikka', 'Fysiikka'] } })
     const eventData = {
       title: 'New-event',
-      resourceids: [ 2 ],
+      resourceids: [2],
       grades: [3, 4],
       tags: tags,
       start: 'Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)',
@@ -165,19 +165,17 @@ describe('Event Model Test', () => {
       remoteVisit: false,
       desc: 'Test event desc.'
     }
-    console.log(eventData.resourceids)
 
 
     const validEvent = new EventModel(eventData)
     const savedEvent = await validEvent.save()
     console.log(savedEvent.resourceids)
 
-    console.log(savedEvent)
     expect(savedEvent._id).toBeDefined()
     expect(savedEvent.title).toBe(eventData.title)
     expect(savedEvent.grades.toObject()).toEqual(eventData.grades)
     expect(savedEvent.tags.toObject().map(tag => tag.name)).toEqual(['Fysiikka','Matematiikka'])
-    expect(savedEvent.resourceids).toBe(eventData.resourceids)
+    expect(savedEvent.resourceids.toObject()).toEqual(eventData.resourceids)
     expect(savedEvent.start).toBe(eventData.start)
     expect(savedEvent.end).toBe(eventData.end)
     expect(savedEvent.desc).toBe(eventData.desc)
@@ -208,11 +206,9 @@ describe('Event Model Test', () => {
     } catch (error) {
       err = error
     }
-    console.log(eventWithoutRequiredField)
     expect(err).toBeInstanceOf(mongoose.Error.ValidationError)
     expect(err.errors.end).toBeDefined()
     expect(err.errors.start).toBeDefined()
-    //expect(err.errors.resourceids).toBeDefined()
     expect(err.errors.title).toBeDefined()
     expect(err.errors.grades).toBeDefined()
   })
