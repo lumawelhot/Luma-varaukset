@@ -11,11 +11,11 @@ import LumaWorkWeek from './components/Custom/LumaWorkWeek'
 const localizer = momentLocalizer(moment)
 
 const resourceMap = [
-  { resourceId: 1, resourceTitle: 'Summamutikka' },
-  { resourceId: 2, resourceTitle: 'Fotoni' },
-  { resourceId: 3, resourceTitle: 'Linkki' },
-  { resourceId: 4, resourceTitle: 'Geopiste' },
-  { resourceId: 5, resourceTitle: 'Gadolin' },
+  { resourceids: 1, resourceTitle: 'Summamutikka' },
+  { resourceids: 2, resourceTitle: 'Fotoni' },
+  { resourceids: 3, resourceTitle: 'Linkki' },
+  { resourceids: 4, resourceTitle: 'Geopiste' },
+  { resourceids: 5, resourceTitle: 'Gadolin' },
 ]
 
 const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick }) => {
@@ -24,7 +24,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
 
   useEffect(() => {
     setEvents(events)
-  },[events])
+  }, [events])
 
   const handleSelect = ({ start, end }) => {
     showNewEventForm(start, end)
@@ -43,22 +43,22 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
 
   const customEventPropGetter = event => {
     const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14
-    const startsWithin1Hour = moment(event.start).diff(new Date(), 'hours') >= 0
-    if (event.booked || (!currentUser && !startsAfter14Days) || (currentUser && !startsWithin1Hour)) {
+    const startsAfter1Hour = moment(event.start).diff(new Date(), 'minutes') >= 60
+    if (event.booked || (!currentUser && !startsAfter14Days) || (currentUser && !startsAfter1Hour)) {
       return { className: 'booked' , }
     }
-    return { className: resourceMap[event.resourceId-1]?.resourceTitle.toLowerCase() || '' }
+    return { className: resourceMap[event.resourceids-1]?.resourceTitle.toLowerCase() || '' }
   }
 
   const AgendaEvent = ({ event }) => {
-    const resourceName = resourceMap[event.resourceId-1]?.resourceTitle || null
+    const resourceName = resourceMap[event.resourceids-1]?.resourceTitle || null
     console.log(event.booked)
     if (event.booked) {
       console.log(event.booked)
       return (
         <div className="block">
           {resourceName &&
-            <span className='tag is-small is-link' style={{ backgroundColor:bookedEventColor[0] }}>{resourceName}</span>
+            <span className='tag is-small is-link' style={{ backgroundColor: bookedEventColor[0] }}>{resourceName}</span>
           }
           <span> {event.title}</span>
           <p>{event.desc}</p>
@@ -68,7 +68,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
     return (
       <div className="block">
         {resourceName &&
-          <span className='tag is-small is-link' style={{ backgroundColor:resourceColorsLUMA[event.resourceId-1] }}>{resourceName}</span>
+          <span className='tag is-small is-link' style={{ backgroundColor: resourceColorsLUMA[event.resourceId - 1] }}>{resourceName}</span>
         }
         <span> {event.title}</span>
         <p>{event.desc}</p>
@@ -95,10 +95,10 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
         min={moment('8:00am', 'h:mma').toDate()}
         max={moment('5:00pm', 'h:mma').toDate()}
         //resources={resourceMap}
-        //resourceIdAccessor="resourceId"
+        //resourceidsAccessor="resourceids"
         //resourceTitleAccessor="resourceTitle"
         selectable={currentUser?.isAdmin}
-        onSelectEvent={ (event) => handleEventClick(event)/* alert(JSON.stringify(event)) */}
+        onSelectEvent={(event) => handleEventClick(event)/* alert(JSON.stringify(event)) */}
         onSelectSlot={handleSelect}
         components={{
           //eventWrapper: LumaEventWrapper,

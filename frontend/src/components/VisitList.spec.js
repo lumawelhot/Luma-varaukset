@@ -33,7 +33,7 @@ const singleItem = [
             'event': {
               'id':'60c86276eb217d69b0703960',
               'title':'Maanjäristysten alueellisuus ja niiden vaikutukset',
-              'resourceId':4
+              'resourceids':[4]
             },
             'grade':'1. luokka',
             'participants':9,
@@ -42,9 +42,10 @@ const singleItem = [
             'schoolName':'Koulu',
             'schoolLocation':'Location',
             'clientEmail':'opettaja@luma.com',
-            'verifyEmail':'opettaja@luma.com',
             'clientPhone':'4234242',
-            'status':true
+            'status':true,
+            'startTime': null,
+            'endTime': null
           }
         ],
       },

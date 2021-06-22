@@ -1,11 +1,15 @@
 import React from 'react'
-import { resourceColors } from '../../helpers/styles'
 
 const LumaEvent = ({ event }) => {
+  console.log(event)
   return (
-    <span style={{ backgroundColor:resourceColors[event.resourceId-1] }}>
-      <strong style={{ color: 'white' }}>{event.title}</strong>
-    </span>
+    <>
+      <span>{event.title}</span>
+      {event.availableTimes.map((timeSlot,index) => (
+        <div key={index} style={{ backgroundColor:'red', width:200, height: 20, position: 'relative' }}>Varaa</div>
+      )
+      )}
+    </>
   )
 }
 

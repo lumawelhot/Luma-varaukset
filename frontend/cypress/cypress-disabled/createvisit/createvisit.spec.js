@@ -16,7 +16,7 @@ before(() => {
   cy.login({ username: 'Admin', password: 'salainen' })
   cy.createEvent({
     title: availableEvent1,
-    scienceClass: 'LINKKI',
+    scienceClass: [1,3],
     start: eventDate1,
     end: eventDate1,
     remoteVisit: true,
@@ -25,7 +25,7 @@ before(() => {
   })
   cy.createEvent({
     title: availableEvent2,
-    scienceClass: 'LINKKI',
+    scienceClass: [3],
     start: eventDate2,
     end: eventDate2,
     inPersonVisit: true,

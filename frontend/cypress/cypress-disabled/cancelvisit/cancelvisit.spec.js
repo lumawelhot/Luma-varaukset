@@ -12,7 +12,7 @@ Given('employee is logged in', () => {
 And('there is an available event in more than two weeks ahead', () => {
   cy.createEvent({
     title: eventName,
-    scienceClass: 'LINKKI',
+    scienceClass: [1,2],
     start: eventDate,
     end: eventDate,
     remoteVisit: true,
