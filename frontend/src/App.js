@@ -39,7 +39,7 @@ const App = () => {
     const details = {
       id: event.id,
       title: event.title,
-      resourceId: event.resourceId,
+      resourceids: event.resourceids,
       grades: event.grades,
       tags: event.tags,
     }

@@ -73,7 +73,7 @@ Cypress.Commands.add('createUser', ({ username, password, isAdmin }) => {
     cy.log(body)
   })
 })
-
+//eslint-disable-next-line
 Cypress.Commands.add('createEvent', ({ title, scienceClass, remoteVisit, inPersonVisit, start, end, desc }) => {
   cy.request({
     url: 'http://localhost:3001/graphql',
@@ -86,7 +86,7 @@ Cypress.Commands.add('createEvent', ({ title, scienceClass, remoteVisit, inPerso
       mutation {
         createEvent(
           title: "${title}"
-          class: "${scienceClass}"
+          scienceClass: [1,2,3]
           start: "${start}"
           end: "${end}"
           desc: "${desc}"
@@ -96,7 +96,7 @@ Cypress.Commands.add('createEvent', ({ title, scienceClass, remoteVisit, inPerso
           tags: [{ name: "Matematiikka" }, { name: "Fysiikka" }]
         ){
           title,
-          resourceId,
+          resourceids,
           start,
           end,
           grades,
@@ -142,7 +142,7 @@ Cypress.Commands.add('containsUser', ({ username }) => {
   })
 })
 
-Cypress.Commands.add('containsEvent', ({ title, resourceId }) => {
+Cypress.Commands.add('containsEvent', ({ title, resourceids }) => {
   cy.request({
     url: 'http://localhost:3001/graphql',
     method: 'POST',
@@ -151,7 +151,7 @@ Cypress.Commands.add('containsEvent', ({ title, resourceId }) => {
         query  {
           getEvents {
             title,
-            resourceId
+            resourceids
           }
         }
       `
@@ -159,7 +159,7 @@ Cypress.Commands.add('containsEvent', ({ title, resourceId }) => {
   }).then(({ body }) => {
     let find = false
     body.data.getEvents.forEach(event => {
-      if (event.title === title && event.resourceId === resourceId) {
+      if (event.title === title && event.resourceids === resourceids) {
         find = true
       }
     }, [find])

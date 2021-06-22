@@ -33,7 +33,7 @@ const singleItem = [
             'event': {
               'id':'60c86276eb217d69b0703960',
               'title':'Maanjäristysten alueellisuus ja niiden vaikutukset',
-              'resourceId':4
+              'resourceids':[4]
             },
             'grade':'1. luokka',
             'participants':9,
