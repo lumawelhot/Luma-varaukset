@@ -51,6 +51,10 @@ export const EVENTS = gql`
         startTime
         endTime
       }
+      visits {
+        startTime
+        endTime
+      }
     }
   }
 `
@@ -120,6 +124,10 @@ export const CREATE_EVENT = gql`
       inPersonVisit
       remoteVisit
       desc
+      availableTimes {
+        startTime,
+        endTime
+      }
     }
   }
 `

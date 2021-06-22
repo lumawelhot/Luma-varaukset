@@ -34,28 +34,31 @@ const App = () => {
   const [currentUser, setUser] = useState(null)
 
   const parseEvent = (event) => {
-    console.log(event.title, event.availableTimes, event.start)
-    if (!event.availableTimes.length) { // Jos varattavia aikoja ei ole saatavilla
-      return {
-        id: event.id,
-        title: event.title,
-        resourceId: event.resourceId,
-        start: new Date(event.start),
-        end: new Date(event.end),
-        grades: event.grades,
-        tags: event.tags,
-      }
-    }
-    return event.availableTimes.map(timeSlot => Object({ // Jos varattavia aikoja on
+    //console.log(event.title, event.availableTimes, event.start)
+    //console.log(event, '<--------------------------------------------------------------')
+    const details = {
       id: event.id,
       title: event.title,
       resourceId: event.resourceId,
+      grades: event.grades,
+      tags: event.tags,
+    }
+    let events = event.availableTimes.map(timeSlot => Object({
       start: new Date(timeSlot.startTime),
       end: new Date(timeSlot.endTime),
-      grades: event.grades,
-      tags: event.tags
+      booked: false,
+      ...details
     }))
+    events = events.concat(event.visits.map(visit => Object({
+      start: new Date(visit.startTime),
+      end: new Date(visit.endTime),
+      booked: true,
+      ...details
+    })))
+
+    return events
   }
+
 
   useEffect(() => {
     if (result.data) {
@@ -91,7 +94,7 @@ const App = () => {
   }
 
   const showEventFormHandler = (start, end) => {
-    setNewEventTimeRange([start,end])
+    setNewEventTimeRange([start, end])
     setShowEventForm(true)
   }
 
@@ -139,10 +142,10 @@ const App = () => {
       <Switch>
 
         <Route path='/event-page'>
-          <EventPage handleBookingButtonClick={handleBookingButtonClick} event={clickedEvent} sendMessage={notify}/>
+          <EventPage handleBookingButtonClick={handleBookingButtonClick} event={clickedEvent} sendMessage={notify} />
         </Route>
         <Route path='/book'>
-          <VisitForm event={clickedEvent} sendMessage={notify}/>
+          <VisitForm event={clickedEvent} sendMessage={notify} />
         </Route>
         <Route path='/admin'>
           {!currentUser &&
@@ -154,7 +157,7 @@ const App = () => {
         </Route>
         <Route path='/event'>
           {currentUser &&
-            <EventForm sendMessage={notify} addEvent={addEvent} closeEventForm={closeEventForm}/>
+            <EventForm sendMessage={notify} addEvent={addEvent} closeEventForm={closeEventForm} />
           }
           {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
         </Route>
@@ -175,12 +178,12 @@ const App = () => {
         </Route>
         <Route path='/visits'>
           {currentUser &&
-            <VisitList notify={notify}/>
+            <VisitList notify={notify} />
           }
           {!currentUser && <p>Et ole kirjautunut sisään.</p>}
         </Route>
         <Route path='/:id'>
-          <VisitPage sendMessage={notify}/>
+          <VisitPage sendMessage={notify} />
         </Route>
         <Route path='/'>
           {currentUser &&
@@ -192,21 +195,21 @@ const App = () => {
             </div>
           }
           {showEventForm &&
-          <div className="modal is-active">
-            <div className="modal-background"></div>
-            <div className="modal-content">
-              <EventForm
-                sendMessage={notify}
-                addEvent={addEvent}
-                newEventTimeRange={newEventTimeRange}
-                closeEventForm={closeEventForm}
-              />
-            </div>
-          </div>}
-          <MyCalendar events={events} currentUser={currentUser} showNewEventForm={showEventFormHandler} handleEventClick={handleEventClick}/>
+            <div className="modal is-active">
+              <div className="modal-background"></div>
+              <div className="modal-content">
+                <EventForm
+                  sendMessage={notify}
+                  addEvent={addEvent}
+                  newEventTimeRange={newEventTimeRange}
+                  closeEventForm={closeEventForm}
+                />
+              </div>
+            </div>}
+          <MyCalendar events={events} currentUser={currentUser} showNewEventForm={showEventFormHandler} handleEventClick={handleEventClick} />
           <UserPage currentUser={currentUser} />
           {!currentUser &&
-            <span className='icon is-pulled-right'><FcKey onClick={login} className='admin-button'/></span>
+            <span className='icon is-pulled-right'><FcKey onClick={login} className='admin-button' /></span>
           }
         </Route>
       </Switch>

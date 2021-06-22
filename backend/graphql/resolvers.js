@@ -18,7 +18,7 @@ const resolvers = {
       return users
     },
     getEvents: async () => {
-      const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits')
+      const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits', { startTime: 1, endTime: 1 })
       console.log(events.map(event => event.availableTimes))
       return events
     },
@@ -142,7 +142,8 @@ const resolvers = {
         resourceId,
         grades,
         remoteVisit: args.remoteVisit,
-        inPersonVisit: args.inPersonVisit
+        inPersonVisit: args.inPersonVisit,
+        availableTimes: [{ startTime: args.start, endTime: args.end }]
       })
       newEvent.tags = mongoTags
       await newEvent.save()
