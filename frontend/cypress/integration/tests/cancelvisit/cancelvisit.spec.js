@@ -53,6 +53,7 @@ Then('I can cancel that booking', () => {
 
 And('the event is available for booking', () => {
   cy.visit('http://localhost:3000')
+  cy.wait(500)
 
   cy.findEvent(eventName).click()
 

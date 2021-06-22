@@ -1,9 +1,9 @@
 /* eslint-disable no-undef */
-import { Given, When, Then, And, before } from 'cypress-cucumber-preprocessor/steps'
+import { Given, When, Then, And } from 'cypress-cucumber-preprocessor/steps'
 import moment from 'moment'
 
 const eventDate1 = new Date()
-eventDate1.setDate(new Date().getDate() + 16)
+eventDate1.setDate(new Date().getDate() + 17)
 const eventDate2 = new Date()
 eventDate2.setDate(new Date().getDate() + 10)
 const availableEvent1 = 'Test available event 1'
@@ -12,7 +12,7 @@ const unavailableEventName = 'Test unavailable event'
 const unavailableEventDate = new Date()
 unavailableEventDate.setDate(new Date().getDate() + 5)
 
-it('Initialize tests', () => {
+before(() => {
   cy.login({ username: 'Admin', password: 'salainen' })
   cy.createEvent({
     title: availableEvent1,
@@ -47,14 +47,6 @@ Given('I am on the front page', () => {
   cy.visit('http://localhost:3000')
 })
 
-And('there is an event 1 more than two weeks ahead', () => {
-
-})
-
-And('there is an event 2 more than two weeks ahead', () => {
-
-})
-
 When('I click on available event 1', () => {
   cy.findEvent(availableEvent1).click()
 })
@@ -80,9 +72,6 @@ Then('booking form opens', () => {
   cy.get('#clientName')
     .should('exist')
     .and('be.visible')
-})
-
-And('there is an event less than two weeks ahead', () => {
 })
 
 When('I click on the unavailable event', () => {
@@ -153,5 +142,5 @@ Then('unavailable event page contains booking button', () => {
 })
 
 Then('unavailable event turns grey in calendar view', () => {
-  cy.findEvent(unavailableEventName).parent().should('have.class', 'booked')
+  cy.findEvent(unavailableEventName).should('have.class', 'booked')
 })

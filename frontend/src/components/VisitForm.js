@@ -138,6 +138,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
           }
         })
       } catch (error) {
+        alert(error)
         sendMessage('Varauksen teko epäonnistui.', 'danger')
       }
     },
