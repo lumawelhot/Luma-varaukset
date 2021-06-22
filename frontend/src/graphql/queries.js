@@ -38,7 +38,7 @@ export const EVENTS = gql`
     getEvents {
       id
       title
-      resourceId
+      resourceids
       grades
       tags {
         id
@@ -47,9 +47,16 @@ export const EVENTS = gql`
       start
       end
       desc
-      booked
       inPersonVisit
       remoteVisit
+      availableTimes {
+        startTime
+        endTime
+      }
+      visits {
+        startTime
+        endTime
+      }
     }
   }
 `
@@ -70,7 +77,7 @@ export const VISITS = gql`
       event {
         id
         title
-        resourceId
+        resourceids
       }
       clientName
       schoolName
@@ -81,6 +88,8 @@ export const VISITS = gql`
       participants
       extra
       status
+      startTime
+      endTime
     }
   }
 `
@@ -95,12 +104,12 @@ export const CURRENT_USER = gql`
 `
 
 export const CREATE_EVENT = gql`
-  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: String!, $grades: [Int]!, $remoteVisit: Boolean!, $inPersonVisit: Boolean!, $desc: String, $tags: [TagInput]) {
+  mutation createEvent($title: String!, $start: String!, $end: String!, $scienceClass: [Int]!, $grades: [Int]!, $remoteVisit: Boolean!, $inPersonVisit: Boolean!, $desc: String, $tags: [TagInput]) {
     createEvent (
       title: $title,
       start: $start,
       end: $end,
-      class: $scienceClass,
+      scienceClass: $scienceClass,
       desc: $desc,
       grades: $grades,
       remoteVisit: $remoteVisit,
@@ -109,7 +118,7 @@ export const CREATE_EVENT = gql`
     ) {
       id
       title
-      resourceId
+      resourceids
       grades
       start
       end
@@ -120,7 +129,10 @@ export const CREATE_EVENT = gql`
       inPersonVisit
       remoteVisit
       desc
-      booked
+      availableTimes {
+        startTime,
+        endTime
+      }
     }
   }
 `
@@ -137,6 +149,7 @@ export const CREATE_VISIT = gql`
     $participants: Int!,
     $inPersonVisit: Boolean!,
     $remoteVisit: Boolean!
+    $username: String
     ) {
     createVisit(
       event: $event,
@@ -144,23 +157,29 @@ export const CREATE_VISIT = gql`
       schoolName: $schoolName,
       schoolLocation: $schoolLocation,
       clientEmail: $clientEmail,
+      clientPhone: $clientPhone,
+      startTime: $startTime,
+      endTime: $endTime
       clientPhone: $clientPhone
       grade: $grade,
       participants: $participants
       inPersonVisit: $inPersonVisit
       remoteVisit: $remoteVisit 
+      participants: $participants,
+      username: $username
     ) {
       id
       event {
         id
         title
-        booked
       }
       clientName
       schoolName
       schoolLocation
       clientEmail
       clientPhone
+      startTime
+      endTime
       grade
       participants
     }
@@ -176,11 +195,13 @@ export const FIND_VISIT = gql`
       clientPhone
       event {
         title
-        resourceId
+        resourceids
         start
         end
       }
       grade
+      startTime
+      endTime
       participants
       inPersonVisit
       remoteVisit

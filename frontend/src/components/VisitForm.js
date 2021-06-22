@@ -5,6 +5,8 @@ import { CREATE_VISIT } from '../graphql/queries'
 import { useHistory } from 'react-router'
 import moment from 'moment'
 
+let selectedEvent
+
 const validate = values => {
 
   const messageIfMissing = 'Vaaditaan!'
@@ -14,13 +16,13 @@ const validate = values => {
   if (!values.clientName) {
     errors.clientName = messageIfMissing
   }
-  if (values.clientName.length<5) {
+  if (values.clientName.length < 5) {
     errors.clientName = messageIfTooShort
   }
   if (!values.schoolName) {
     errors.schoolName = messageIfMissing
   }
-  if (values.schoolName.length<5) {
+  if (values.schoolName.length < 5) {
     errors.schoolName = messageIfTooShort
   }
   if (!values.schoolLocation) {
@@ -43,7 +45,7 @@ const validate = values => {
   if (!values.participants) {
     errors.participants = messageIfMissing
   }
-  if ((values.remoteVisit === values.inPersonVisit)) {
+  if ((values.remoteVisit === values.inPersonVisit) && (selectedEvent.inPersonVisit && selectedEvent.remoteVisit)) {
     errors.location = 'Valitse joko etä- tai lähivierailu!'
   }
   if(!values.privacyPolicy){
@@ -55,7 +57,7 @@ const validate = values => {
   return errors
 }
 
-const VisitForm = ({ sendMessage, event }) => {
+const VisitForm = ({ sendMessage, event, currentUser }) => {
   const history = useHistory()
   if (!event) {
     history.push('/')
@@ -152,7 +154,8 @@ const VisitForm = ({ sendMessage, event }) => {
             verifyEmail: values.verifyEmail,
             clientPhone: values.clientPhone,
             grade: values.visitGrade,
-            participants: values.participants
+            participants: values.participants,
+            username: currentUser.username
           }
         })
       } catch (error) {
@@ -164,6 +167,7 @@ const VisitForm = ({ sendMessage, event }) => {
   const style = { width: 500 }
   useEffect(() => {
     if (result.data) {
+      console.log('result', result)
       sendMessage(`Varaus on tehty onnistuneesti! Varauksen tiedot on lähetetty sähköpostiosoitteeseenne ${result.data.createVisit.clientEmail}.`, 'success')
       history.push('/' + result.data.createVisit.id)
     }
@@ -171,7 +175,7 @@ const VisitForm = ({ sendMessage, event }) => {
 
   if (event) {
     const eventGrades = filterEventGrades(event.grades)
-    const eventClass = filterEventClass(event.resourceId)
+    const eventClass = filterEventClass(event.resourceids)
     return (
       <div className="container">
         <div className="columns is-centered">
@@ -194,7 +198,7 @@ const VisitForm = ({ sendMessage, event }) => {
               <p>Tapahtuma päättyy: {moment(event.end).format('DD.MM.YYYY, HH:mm')}</p>
             </div>
 
-            <br/>
+            <br />
             <h1>Syötä varauksen tiedot</h1>
 
             <form onSubmit={formik.handleSubmit}>

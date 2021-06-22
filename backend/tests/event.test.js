@@ -47,7 +47,7 @@ beforeEach(async () => {
 
   const testData1 = {
     title: 'All About Algebra',
-    resourceId: 1,
+    resourceids: [1],
     grades: [1, 2],
     desc: 'Algebra is one of the broad areas of mathematics, together with number theory, geometry and analysis.',
     tags: newTags,
@@ -59,7 +59,7 @@ beforeEach(async () => {
   }
   const testData2 = {
     title: 'Up-And-Atom!',
-    resourceId: 2,
+    resourceids: [2],
     grades: [4],
     desc: 'Atom is a programming text editor developed by GitHub.',
     tags: newTags,
@@ -86,7 +86,7 @@ describe('Event Server Test', () => {
       getEvents {
         id
         title
-        resourceId
+        resourceids
         grades
         tags {
           id
@@ -95,7 +95,6 @@ describe('Event Server Test', () => {
         start
         end
         desc
-        booked
       }
     }
     `
@@ -108,11 +107,10 @@ describe('Event Server Test', () => {
       expect(event.title).toBeDefined()
       expect(event.grades).toBeDefined()
       expect(event.tags).toBeDefined()
-      expect(event.resourceId).toBeDefined()
+      expect(event.resourceids).toBeDefined()
       expect(event.start).toBeDefined()
       expect(event.end).toBeDefined()
       expect(event.desc).toBeDefined()
-      expect(event.booked).toBe(false)
     })
     expect(getEvents.length).toBe(2)
   })
@@ -123,9 +121,9 @@ it('employee can create new event successfully', async () => {
       mutation {
         createEvent(
           title: "Learn JavaScript!"
-          class: "LINKKI"
-          start: "2021-06-01T10:00:00+0300"
-          end: "2021-06-01T12:00:00+0300"
+          scienceClass: [1,4]
+          start: "Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)"
+          end: "Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)"
           desc: "JavaScript is the programming language of the Web."
           remoteVisit: true
           inPersonVisit: false
@@ -133,7 +131,7 @@ it('employee can create new event successfully', async () => {
           tags: [{ name: "Matematiikka" }, { name: "Fysiikka" }, { name: "Ohjelmointi" }, { name: "Maantiede" }, { name: "Kemia" } ]
         ){
           title,
-          resourceId,
+          resourceids,
           start,
           end,
           grades,
@@ -141,7 +139,6 @@ it('employee can create new event successfully', async () => {
           tags {
             name
           }
-          booked
         }
       }
     `
@@ -149,7 +146,6 @@ it('employee can create new event successfully', async () => {
   expect(response.data.createEvent.title).toBe('Learn JavaScript!')
   expect(response.data.createEvent.grades).toEqual([1, 3, 4])
   expect(response.data.createEvent.tags).toEqual([{ name: 'Matematiikka' }, { name: 'Fysiikka' }, { name: 'Ohjelmointi' }, { name: 'Maantiede' }, { name: 'Kemia' } ])
-  expect(response.data.createEvent.booked).toBe(false)
   expect(response.errors).toBeUndefined()
 })
 
@@ -160,22 +156,26 @@ describe('Event Model Test', () => {
     const tags = await Tag.find({ name: { $in: ['Matematiikka', 'Fysiikka'] } })
     const eventData = {
       title: 'New-event',
-      resourceId: 2,
+      resourceids: [2],
       grades: [3, 4],
       tags: tags,
-      start: '2021-06-01T10:00:00+0300',
-      end: '2021-06-01T12:00:00+0300',
+      start: 'Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)',
+      end: 'Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)',
       inPersonVisit: true,
       remoteVisit: false,
       desc: 'Test event desc.'
     }
+
+
     const validEvent = new EventModel(eventData)
     const savedEvent = await validEvent.save()
+    console.log(savedEvent.resourceids)
+
     expect(savedEvent._id).toBeDefined()
     expect(savedEvent.title).toBe(eventData.title)
     expect(savedEvent.grades.toObject()).toEqual(eventData.grades)
     expect(savedEvent.tags.toObject().map(tag => tag.name)).toEqual(['Fysiikka','Matematiikka'])
-    expect(savedEvent.resourceId).toBe(eventData.resourceId)
+    expect(savedEvent.resourceids.toObject()).toEqual(eventData.resourceids)
     expect(savedEvent.start).toBe(eventData.start)
     expect(savedEvent.end).toBe(eventData.end)
     expect(savedEvent.desc).toBe(eventData.desc)
@@ -184,10 +184,10 @@ describe('Event Model Test', () => {
   it('insert event successfully, but the field not defined in schema should be "undefined"', async () => {
     const eventWithInvalidField = new EventModel({
       title: 'New-event',
-      resourceId: 2,
+      resourceids: [2],
       grades: [1],
-      start: '2021-06-01T09:00:00+0300',
-      end: '2021-06-02T15:00:00+0300',
+      start: 'Tue Jun 01 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
+      end: 'Wed Jun 02 2021 15:00:00 GMT+0300 (Eastern European Summer Time)',
       inPersonVisit: true,
       remoteVisit: false,
       fieldNotInSchema: 'Tiedeluokka Linkki',
@@ -209,7 +209,6 @@ describe('Event Model Test', () => {
     expect(err).toBeInstanceOf(mongoose.Error.ValidationError)
     expect(err.errors.end).toBeDefined()
     expect(err.errors.start).toBeDefined()
-    expect(err.errors.resourceId).toBeDefined()
     expect(err.errors.title).toBeDefined()
     expect(err.errors.grades).toBeDefined()
   })
@@ -217,9 +216,9 @@ describe('Event Model Test', () => {
 /* it('cannot create event with end time before start time', async () => {
     const eventWithEndBeforeStart = new EventModel({
         title: 'New-event',
-        resourceId: 2,
-        start: '2021-06-01T09:00:00+0300',
-        end: '2021-06-01T09:01:00+0300'
+        resourceids: 2,
+        start: 'Tue Jun 01 2021 09:01:00 GMT+0300 (Eastern European Summer Time)',
+        end: 'Tue Jun 01 2021 09:00:00 GMT+0300 (Eastern European Summer Time)'
     })
   }) */
 })

@@ -22,15 +22,21 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   introspection: true,
-  playground: true,
+  playground: {
+    endpoint: process.env.NODE_ENV==='production' ? '/luma-varaukset/graphql' : '/graphql'
+  },
   context: async ({ req }) => {
     const auth = req ? req.headers.authorization : null
     if (auth && auth.toLowerCase().startsWith('bearer ')) {
-      const decodedToken = jwt.verify(
-        auth.substring(7), config.SECRET
-      )
-      const currentUser = await User.findById(decodedToken.id)
-      return { currentUser }
+      try {
+        const decodedToken = jwt.verify(
+          auth.substring(7), config.SECRET
+        )
+        const currentUser = await User.findById(decodedToken.id)
+        return { currentUser }
+      } catch (error) {
+        return null
+      }
     }
   }
 })
