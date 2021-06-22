@@ -52,7 +52,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser }) => {
   }
 
   if (event) {
-    const eventClass = filterEventClass(event.resourceId)
+    const eventClass = filterEventClass(event.resourceids)
     const eventGrades = filterEventGrades(event.grades)
 
     const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14

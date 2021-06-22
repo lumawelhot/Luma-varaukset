@@ -24,7 +24,7 @@ When('valid information is entered', () => {
   cy.wait(100)
   cy.get(':nth-child(2) > .checkbox2 > input').click()
   cy.wait(100)
-  cy.get('#scienceClass').focus().select('SUMMAMUTIKKA')
+  cy.get(':nth-child(3) > .checkbox3 > input').click()
   cy.get('#date').type('2021-01-31')
   cy.get('#startTime').type('08:15')
   cy.get('#endTime').type('09:45')
@@ -34,7 +34,7 @@ When('valid information is entered', () => {
 })
 
 Then('an event is succesfully created', () => {
-  cy.containsEvent({ title: 'Test event', resourceId: 1 }).should('eq', true)
+  cy.containsEvent({ title: 'Test event', resourceids: [2] }).should('eq', true)
 })
 
 When('too short a title is entered', () => {
@@ -46,7 +46,7 @@ When('too short a title is entered', () => {
   cy.wait(100)
   cy.get(':nth-child(2) > .checkbox2 > input').click()
   cy.wait(100)
-  cy.get('#scienceClass').focus().select('SUMMAMUTIKKA')
+  cy.get(':nth-child(3) > .checkbox3 > input').click()
   cy.get('#date').type('2021-01-31')
   cy.get('#startTime').type('08:15')
   cy.get('#endTime').type('09:45')
@@ -57,6 +57,6 @@ When('too short a title is entered', () => {
 
 Then('no event is created and an error message is shown', () => {
 
-  cy.containsEvent({ title: 'test', resourceId: 1 }).should('eq', false)
+  cy.containsEvent({ title: 'test', resourceids: [2] }).should('eq', false)
   //tähän luotava virheviestin tarkistus sitten, kun backend on korjattu se lähettämään
 })

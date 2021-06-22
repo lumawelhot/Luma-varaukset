@@ -18,7 +18,7 @@ const typeDefs = gql`
   type Event {
     id: ID!
     title: String!
-    resourceId: Int
+    resourceids: [Int]
     remoteVisit: Boolean!
     inPersonVisit: Boolean!
     grades: [Int]!
@@ -39,8 +39,6 @@ const typeDefs = gql`
     clientPhone: String!
     grade: String!
     participants: Int!
-    inPersonVisit: Boolean!
-    remoteVisit: Boolean!
     extra: [Int]
     status: Boolean!
     startTime: String!
@@ -73,7 +71,7 @@ const typeDefs = gql`
     ): Token
     createEvent(
       title: String!
-      class: String!
+      scienceClass: [Int]!
       grades: [Int]!
       start: String!
       end: String!
@@ -93,8 +91,6 @@ const typeDefs = gql`
       endTime: String!
       grade: String!
       participants: Int!
-      inPersonVisit: Boolean!
-      remoteVisit: Boolean!
       extra: [Int]
       username: String
     ): Visit

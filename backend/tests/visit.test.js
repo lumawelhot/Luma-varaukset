@@ -124,7 +124,7 @@ beforeEach(async () => {
 
   const unavailableEventData = {
     title: 'All About Algebra',
-    resourceId: 1,
+    resourceids: [1],
     grades: [1],
     start: unavailableDate,
     end: unavailableDate,
@@ -135,7 +135,7 @@ beforeEach(async () => {
 
   const availableEventData = {
     title: 'Up-And-Atom!',
-    resourceId: 2,
+    resourceids: [2],
     grades: [1],
     start: availableDate,
     end: fiveHoursAdded,
@@ -178,9 +178,11 @@ beforeEach(async () => {
 
   const testVisitData = {
     event: availableEvent,
+    grade: '1. grade',
     clientName: 'Teacher',
     schoolName: 'School',
     schoolLocation: 'Location',
+    participants: 13,
     clientEmail: 'teacher@school.com',
     clientPhone: '040-1234567',
     status: true,
@@ -197,9 +199,11 @@ describe('Visit Model Test', () => {
   it('teacher can create new visit successfully', async () => {
     const newVisitData = {
       event: availableEvent,
+      grade: '1. grade',
       clientName: 'Teacher 2',
       schoolName: 'School 2',
       schoolLocation: 'Location 2',
+      participants: 15,
       clientEmail: 'teacher2@someschool.com',
       clientPhone: '050-8912345',
       status: true,
@@ -222,13 +226,11 @@ describe('Visit Model Test', () => {
     }
     expect(err).toBeInstanceOf(mongoose.Error.ValidationError)
     expect(err.errors.event).toBeDefined()
+    expect(err.errors.grade).toBeDefined()
     expect(err.errors.clientName).toBeDefined()
     expect(err.errors.schoolName).toBeDefined()
     expect(err.errors.schoolLocation).toBeDefined()
-    expect(err.errors.grade).toBeDefined()
     expect(err.errors.participants).toBeDefined()
-    expect(err.errors.inPersonVisit).toBeDefined()
-    expect(err.errors.remoteVisit).toBeDefined()
     expect(err.errors.clientEmail).toBeDefined()
     expect(err.errors.clientPhone).toBeDefined()
   })
@@ -247,6 +249,7 @@ describe('Visit server test', () => {
         clientName: 'Teacher',
         schoolName: 'School',
         schoolLocation: 'Location',
+        participants: 13,
         clientEmail: 'teacher@school.com',
         clientPhone: '040-1234567',
         startTime: event.start,
@@ -258,11 +261,11 @@ describe('Visit server test', () => {
 
     expect(createVisit.id).toBeDefined()
     expect(createVisit.event.title).toBe(savedAvailableEvent.title)
+    expect(createVisit.grade).toBe('1. grade')
     expect(createVisit.clientName).toBe('Teacher')
     expect(createVisit.schoolName).toBe('School')
     expect(createVisit.schoolLocation).toBe('Location')
-    expect(createVisit.inPersonVisit).toBe(true)
-    expect(createVisit.remoteVisit).toBe(false)
+    expect(createVisit.participants).toBe(13)
     expect(createVisit.clientEmail).toBe('teacher@school.com')
     expect(createVisit.clientPhone).toBe('040-1234567')
     expect(createVisit.status).toBe(true)
@@ -279,6 +282,7 @@ describe('Visit server test', () => {
         clientName: 'Teacher',
         schoolName: 'School',
         schoolLocation: 'Location',
+        participants: 13,
         clientEmail: 'teacher@school.com',
         clientPhone: '040-1234567',
         startTime: event.start,
@@ -350,8 +354,6 @@ describe('Visit server test', () => {
         clientEmail: 'teacher@school.com',
         clientPhone: '040-1234567',
         username: basicUserData.username,
-        inPersonVisit: true,
-        remoteVisit: false,
         startTime: event.start,
         endTime: event.end
       }
@@ -390,15 +392,13 @@ describe('Visit server test', () => {
     const { findVisit } = data
 
     expect(findVisit.event.id).toBe(savedTestVisit.event.id)
+    expect(findVisit.grade).toBe(savedTestVisit.grade)
     expect(findVisit.clientName).toBe(savedTestVisit.clientName)
     expect(findVisit.schoolName).toBe(savedTestVisit.schoolName)
     expect(findVisit.schoolLocation).toBe(savedTestVisit.schoolLocation)
+    expect(findVisit.participants).toBe(savedTestVisit.participants)
     expect(findVisit.clientEmail).toBe(savedTestVisit.clientEmail)
     expect(findVisit.clientPhone).toBe(savedTestVisit.clientPhone)
-    expect(findVisit.grade).toBe(savedTestVisit.grade)
-    expect(findVisit.participants).toBe(savedTestVisit.participants)
-    expect(findVisit.inPersonVisit).toBe(savedTestVisit.inPersonVisit)
-    expect(findVisit.remoteVisit).toBe(savedTestVisit.remoteVisit)
   })
 
   it('Cancel visit by id', async () => {

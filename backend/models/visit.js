@@ -37,14 +37,6 @@ const visitSchema = mongoose.Schema({
     type: Number,
     required: true
   },
-  inPersonVisit: {
-    type: Boolean,
-    required: true,
-  },
-  remoteVisit: {
-    type: Boolean,
-    required: true
-  },
   status: {
     type: Boolean,
     required: true,

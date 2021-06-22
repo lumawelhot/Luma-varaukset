@@ -16,7 +16,7 @@ Given('an event with title yyyyy is created', () => {
   end.setHours(23)
   cy.createEvent({
     title: 'yyyyy',
-    scienceClass: 'FOTONI',
+    scienceClass: [1,2],
     grades: [1, 3, 4],
     remoteVisit: true,
     inPersonVisit: false,
