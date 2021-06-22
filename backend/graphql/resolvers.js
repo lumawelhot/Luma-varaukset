@@ -115,10 +115,7 @@ const resolvers = {
           throw new UserInputError('Invalid class')
       }
 
-
       let grades = args.grades
-
-
 
       if (grades.length < 1) {
         throw new UserInputError('At least one grade must be selected!')
@@ -184,7 +181,6 @@ const resolvers = {
         const filteredAvailTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime).map(at => Object({ startTime: at.startTime.toISOString(), endTime: at.endTime.toISOString() }))
         if (before) filteredAvailTimes.push(before)
         if (after) filteredAvailTimes.push(after)
-        console.log(filteredAvailTimes)
         return filteredAvailTimes
       }
 
@@ -207,7 +203,6 @@ const resolvers = {
         const availableAfter = generateAvailableTime(availableStart, availableTime.endTime)
         const newAvailableTimes = assignAvailableTimes(availableAfter, availableBefore, availableTime)
         event.availableTimes = newAvailableTimes
-        console.log('new', newAvailableTimes)
       }
 
       const visit = new Visit({
@@ -277,7 +272,7 @@ const resolvers = {
 
       const filteredAvailTimes = availableTimes.filter(time => !(
         getUnixTime(time.startTime) === getUnixTime(newAvailTime.startTime) ||
-          getUnixTime(time.endTime) === getUnixTime(newAvailTime.endTime)
+        getUnixTime(time.endTime) === getUnixTime(newAvailTime.endTime)
       ))
       filteredAvailTimes.push(newAvailTime)
 

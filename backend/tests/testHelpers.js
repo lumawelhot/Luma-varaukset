@@ -17,13 +17,29 @@ const CANCEL_VISIT = gql `
 `
 
 const CREATE_VISIT = gql `
-  mutation createVisit($event: ID!, $clientName: String!, $clientEmail: String!, $clientPhone: String!, $grade: Int!, $startTime: String!, $endTime: String!) {
+  mutation createVisit(
+    $event: ID!,
+    $grade: String!,
+    $clientName: String!,
+    $schoolName: String!,
+    $schoolLocation: String!,
+    $participants: Int!,
+    $clientEmail: String!,
+    $clientPhone: String!,
+    $username: String
+    $startTime: String!
+    $endTime: String!
+    ) {
     createVisit(
       event: $event
+      grade: $grade
       clientName: $clientName
+      schoolName: $schoolName
+      schoolLocation: $schoolLocation
+      participants: $participants
       clientEmail: $clientEmail
       clientPhone: $clientPhone
-      grade: $grade
+      username: $username
       startTime: $startTime
       endTime: $endTime
     ) {
@@ -31,10 +47,13 @@ const CREATE_VISIT = gql `
       event {
         title
       }
+      grade
       clientName
+      schoolName
+      schoolLocation
+      participants
       clientEmail
       clientPhone
-      grade
       status
     }
   }
@@ -44,7 +63,10 @@ const details = {
   clientName: 'Teacher',
   clientEmail: 'teacher@school.com',
   clientPhone: '040-1234567',
-  grade: 1,
+  grade: '1',
+  schoolName: 'school',
+  schoolLocation: 'Helsinki',
+  participants: 13
 }
 
 const createTimeList = (startList, endList) => {

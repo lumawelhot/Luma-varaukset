@@ -28,6 +28,8 @@ mutation createVisit(
   $clientEmail: String!,
   $clientPhone: String!,
   $username: String
+  $startTime: String!
+  $endTime: String!
   ) {
   createVisit(
     event: $event
@@ -39,11 +41,12 @@ mutation createVisit(
     clientEmail: $clientEmail
     clientPhone: $clientPhone
     username: $username
+    startTime: $startTime
+    endTime: $endTime
   ) {
     id
     event {
       title
-      booked
     }
     grade
     clientName
@@ -66,7 +69,6 @@ mutation {
   }
 }
 `
-
 
 let availableEvent
 let unavailableEvent
@@ -109,12 +111,14 @@ beforeEach(async () => {
   await VisitModel.deleteMany({})
 
   const availableDate = setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 9), 0), 0)
-
   const fiveHoursAdded = setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 14), 0), 0)
+
   const unavailableDate = new Date()
 
   const availableForLoggedInDate = new Date()
   availableForLoggedInDate.setDate(new Date().getDate() + 2)
+  const twoHoursAddedForLoggedIn = add(new Date(), { days: 2, hours: 2 })
+
   const unavailableForLoggedInDate = new Date()
   unavailableForLoggedInDate.setDate(new Date().getDate() - 2)
 
@@ -125,7 +129,8 @@ beforeEach(async () => {
     start: unavailableDate,
     end: unavailableDate,
     inPersonVisit: true,
-    remoteVisit: false
+    remoteVisit: false,
+    availableTimes: []
   }
 
   const availableEventData = {
@@ -144,9 +149,10 @@ beforeEach(async () => {
     resourceId: 1,
     grades: [1],
     start: availableForLoggedInDate,
-    end: availableForLoggedInDate,
+    end: twoHoursAddedForLoggedIn,
     inPersonVisit: true,
-    remoteVisit: false
+    remoteVisit: false,
+    availableTimes: [{ startTime: availableForLoggedInDate, endTime: twoHoursAddedForLoggedIn }]
   }
 
   const unvailableForLoggedInUserEventData = {
@@ -156,7 +162,8 @@ beforeEach(async () => {
     start: unavailableForLoggedInDate,
     end: unavailableForLoggedInDate,
     inPersonVisit: true,
-    remoteVisit: false
+    remoteVisit: false,
+    availableTimes: []
   }
 
   unavailableEvent = new EventModel(unavailableEventData)
@@ -233,18 +240,20 @@ describe('Visit server test', () => {
 
   it('Create visit successfully', async () => {
     const { mutate } = createTestClient(server)
-    const event = savedAvailableEvent.id
+    const event = savedAvailableEvent
     const { data } = await mutate({
       mutation: CREATE_VISIT,
       variables: {
-        event: event,
+        event: event.id,
         grade: '1. grade',
         clientName: 'Teacher',
         schoolName: 'School',
         schoolLocation: 'Location',
         participants: 13,
         clientEmail: 'teacher@school.com',
-        clientPhone: '040-1234567'
+        clientPhone: '040-1234567',
+        startTime: event.start,
+        endTime: event.end
       }
     })
 
@@ -264,18 +273,20 @@ describe('Visit server test', () => {
 
   it('cannot create visit for event less than two weeks ahead', async () => {
     const { mutate } = createTestClient(server)
-    const event = savedUnavailableEvent.id
+    const event = savedUnavailableEvent
     const { data } = await mutate({
       mutation: CREATE_VISIT,
       variables: {
-        event: event,
+        event: event.id,
         grade: '1. grade',
         clientName: 'Teacher',
         schoolName: 'School',
         schoolLocation: 'Location',
         participants: 13,
         clientEmail: 'teacher@school.com',
-        clientPhone: '040-1234567'
+        clientPhone: '040-1234567',
+        startTime: event.start,
+        endTime: event.end
       }
     })
     const { createVisit } = data
@@ -291,11 +302,11 @@ describe('Visit server test', () => {
     expect(response.errors).toBeUndefined()
 
     // create event
-    const event = savedAvailableForLoggedInEvent.id
+    const event = savedAvailableForLoggedInEvent
     const { data } = await mutate({
       mutation: CREATE_VISIT,
       variables: {
-        event: event,
+        event: event.id,
         grade: '1. grade',
         clientName: 'Teacher',
         schoolName: 'School',
@@ -303,7 +314,9 @@ describe('Visit server test', () => {
         participants: 17,
         clientEmail: 'teacher@school.com',
         clientPhone: '040-1234567',
-        username: basicUserData.username
+        username: basicUserData.username,
+        startTime: event.start,
+        endTime: event.end
       }
     })
     const { createVisit } = data
@@ -317,7 +330,6 @@ describe('Visit server test', () => {
     expect(createVisit.participants).toBe(17)
     expect(createVisit.clientEmail).toBe('teacher@school.com')
     expect(createVisit.clientPhone).toBe('040-1234567')
-    expect(createVisit.event.booked).toBe(true)
     expect(createVisit.status).toBe(true)
   })
 
@@ -329,11 +341,11 @@ describe('Visit server test', () => {
     expect(response.errors).toBeUndefined()
 
     // create event
-    const event = savedUnvailableForLoggedInUserEvent.id
+    const event = savedUnvailableForLoggedInUserEvent
     const { data } = await mutate({
       mutation: CREATE_VISIT,
       variables: {
-        event: event,
+        event: event.id,
         grade: '1. grade',
         clientName: 'Teacher',
         schoolName: 'School',
@@ -341,7 +353,9 @@ describe('Visit server test', () => {
         participants: 17,
         clientEmail: 'teacher@school.com',
         clientPhone: '040-1234567',
-        username: basicUserData.username
+        username: basicUserData.username,
+        startTime: event.start,
+        endTime: event.end
       }
     })
     const { createVisit } = data
