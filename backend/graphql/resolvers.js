@@ -35,13 +35,17 @@ const resolvers = {
         const visit = await Visit.findById(args.id)
         return {
           id: visit.id,
-          clientName: visit.clientName,
-          clientEmail: visit.clientEmail,
-          clientPhone: visit.clientPhone,
           event: visit.event,
           grade: visit.grade,
+          clientName: visit.clientName,
+          schoolName: visit.schoolName,
+          schoolLocation: visit.schoolLocation,
+          participants: visit.participants,
+          clientEmail: visit.clientEmail,
+          clientPhone: visit.clientPhone,
           startTime: visit.startTime,
-          endTime: visit.endTime
+          endTime: visit.endTime,
+          status: visit.status
         }
       } catch (e) {
         throw new UserInputError('Varausta ei löytynyt!')
@@ -86,7 +90,7 @@ const resolvers = {
       const userForToken = { username: user.username, id: user._id }
       return { value: jwt.sign(userForToken, config.SECRET) }
     },
-    createEvent: async (root, args, { currentUser } ) => {
+    createEvent: async (root, args, { currentUser }) => {
       if (!currentUser) {
         throw new AuthenticationError('not authenticated')
       }
@@ -111,7 +115,10 @@ const resolvers = {
           throw new UserInputError('Invalid class')
       }
 
+
       let grades = args.grades
+
+
 
       if (grades.length < 1) {
         throw new UserInputError('At least one grade must be selected!')
@@ -173,7 +180,7 @@ const resolvers = {
         }
         return result
       }
-      const assignAvailableTimes = (after, before , availableTime) => {
+      const assignAvailableTimes = (after, before, availableTime) => {
         const filteredAvailTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime).map(at => Object({ startTime: at.startTime.toISOString(), endTime: at.endTime.toISOString() }))
         if (before) filteredAvailTimes.push(before)
         if (after) filteredAvailTimes.push(after)
@@ -215,7 +222,11 @@ const resolvers = {
       try {
         const now = new Date()
         const start = new Date(event.start)
-        if (getUnixTime(start) - getUnixTime(now) >= 1209600 && availableTime) {
+        const user = await User.findOne({ username: args.username })
+        const startsAfter14Days = getUnixTime(start) - getUnixTime(now) >= 1209600
+        const startsAfter1Hour = getUnixTime(start) - getUnixTime(now) >= 3600
+        const eventCanBeBooked = (user === null) ? startsAfter14Days : startsAfter1Hour
+        if (eventCanBeBooked) {
           savedVisit = await visit.save()
           const details = [{
             name: 'link',
@@ -266,7 +277,7 @@ const resolvers = {
 
       const filteredAvailTimes = availableTimes.filter(time => !(
         getUnixTime(time.startTime) === getUnixTime(newAvailTime.startTime) ||
-        getUnixTime(time.endTime) === getUnixTime(newAvailTime.endTime)
+          getUnixTime(time.endTime) === getUnixTime(newAvailTime.endTime)
       ))
       filteredAvailTimes.push(newAvailTime)
 

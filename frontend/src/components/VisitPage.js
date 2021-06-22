@@ -23,7 +23,7 @@ const filterEventClass = (eventClass) => {
   }
 }
 
-const filterEventGrades = (visitGrade) => {
+/* const filterEventGrades = (visitGrade) => {
   switch (visitGrade) {
     case 1:
       return 'Varhaiskasvatus'
@@ -39,7 +39,7 @@ const filterEventGrades = (visitGrade) => {
       console.log('Error!')
       break
   }
-}
+} */
 
 
 const VisitPage = ({ sendMessage }) => {
@@ -60,6 +60,12 @@ const VisitPage = ({ sendMessage }) => {
     },
     //fetchPolicy: 'cache-and-network'
   })
+
+  const cancel = (event) => {
+    event.preventDefault()
+
+    history.push('/')
+  }
 
   useEffect(() => {
     if (!data) {
@@ -104,10 +110,19 @@ const VisitPage = ({ sendMessage }) => {
             <p>Kuvaus: [Tähän tapahtuman kuvaus]</p>
             <p>Tiedeluokka: {filterEventClass(visit.event.resourceId)}</p>
             <p>Valitut lisäpalvelut: [Tähän ekstrat]</p>
-            <div>Valittu luokka-aste: {filterEventGrades(visit.grade)}</div>
-            <p>Vierailu alkaa: {moment(visit.startTime).format('DD.MM.YYYY, HH:mm')}</p>
-            <p>Vierailu päättyy: {moment(visit.endTime).format('DD.MM.YYYY, HH:mm')}</p>
-            <button className="button is-danger" onClick={handelCancel}>Peru</button>
+            <p>Valittu luokka-aste: {visit.grade}</p>
+            <p>Ilmoitettu osallistujamäärä: {visit.participants}</p>
+            <p>Vierailu alkaa: {moment(visit.event.start).format('DD.MM.YYYY, HH:mm')}</p>
+            <p>Vierailu päättyy: {moment(visit.event.end).format('DD.MM.YYYY, HH:mm')}</p>
+
+            <div className="field is-grouped">
+              <div className="control">
+                <button className="button is-danger" onClick={handelCancel}>Peru</button>
+              </div>
+              <div className="control">
+                <button className="button luma" onClick={cancel}>Poistu</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

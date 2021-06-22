@@ -46,6 +46,7 @@ const UserForm = ({ sendMessage }) => {
     else if (value === 'employee') setPermissions(false)
   }
 
+  const style = { width: 500 }
   return (
     <div className="container">
       <div className="columns is-centered">
@@ -55,13 +56,13 @@ const UserForm = ({ sendMessage }) => {
             <div className="field">
               <label className="label">Käyttäjänimi</label>
               <div className="control">
-                <input id="username" className="input" {...username.field} style={{ width: 500 }} />
+                <input id="username" className="input" {...username.field} style={style} />
               </div>
             </div>
             <div className="field">
               <label className="label">Salasana</label>
               <div className="control">
-                <input id="password" className="input" {...password.field} style={{ width: 500 }} />
+                <input id="password" className="input" {...password.field} style={style} />
               </div>
             </div>
             <div className="field">

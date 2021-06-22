@@ -6,12 +6,16 @@ Given('Employee is logged in', () => {
 })
 
 Given('an event with title yyyyy is created', () => {
-  const start = new Date()
-  const end = new Date()
+
+  const date = new Date()
+  date.setDate(date.getDate() + 1)
+  date.setMinutes(0)
+  
+  const start = new Date(date)
+  const end = new Date(date)
   start.setHours(7)
-  start.setDate(16)
   end.setHours(23)
-  end.setDate(16)
+
   cy.createEvent({
     title: 'yyyyy',
     scienceClass: 'FOTONI',
@@ -38,5 +42,5 @@ Given('User is not logged in', () => {
 })
 
 Then('a specific event is shown', () => {
-  cy.get('.rbc-agenda-view').contains('Lämpösäteily ja ilmastonmuutos')
+  cy.get('.rbc-agenda-view').contains('yyyyy')
 })

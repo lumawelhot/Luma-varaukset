@@ -77,11 +77,14 @@ export const VISITS = gql`
         title
         resourceId
       }
-      grade
-      extra
       clientName
+      schoolName
+      schoolLocation
       clientEmail
       clientPhone
+      grade
+      participants
+      extra
       status
       startTime
       endTime
@@ -133,27 +136,45 @@ export const CREATE_EVENT = gql`
 `
 
 export const CREATE_VISIT = gql`
-  mutation createVisit($event: ID!, $grade: Int!, $clientName: String!, $clientEmail: String!, $clientPhone: String!, $startTime: String!, $endTime: String!) {
+  mutation createVisit(
+    $event: ID!,
+    $clientName: String!,
+    $schoolName: String!,
+    $schoolLocation: String!,
+    $clientEmail: String!,
+    $clientPhone: String!,
+    $grade: String!,
+    $participants: Int!,
+    $username: String
+    ) {
     createVisit(
       event: $event,
-      grade: $grade,
       clientName: $clientName,
+      schoolName: $schoolName,
+      schoolLocation: $schoolLocation,
       clientEmail: $clientEmail,
       clientPhone: $clientPhone,
       startTime: $startTime,
       endTime: $endTime
+      clientPhone: $clientPhone
+      grade: $grade,
+      participants: $participants,
+      username: $username
     ) {
       id
       event {
         id
         title
       }
-      grade
       clientName
+      schoolName
+      schoolLocation
       clientEmail
       clientPhone
       startTime
       endTime
+      grade
+      participants
     }
   }
 `
@@ -161,6 +182,8 @@ export const FIND_VISIT = gql`
   query findVisit($id: ID!) {
     findVisit(id: $id) {
       clientName
+      schoolName
+      schoolLocation
       clientEmail
       clientPhone
       event {
@@ -172,6 +195,7 @@ export const FIND_VISIT = gql`
       grade
       startTime
       endTime
+      participants
     }
   }
 `
