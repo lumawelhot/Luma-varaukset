@@ -1,15 +1,13 @@
-const { getUnixTime } = require('date-fns')
-
-const findValidTimeSlot = (timeSlots, timeSlot) => {
-  let result = null
-  timeSlots.forEach(slot => {
+const findValidTimeSlot = (availableTimes, visitTime) => {
+  let result = false
+  availableTimes.forEach(slot => {
     if (
-      getUnixTime(timeSlot.start) >= getUnixTime(slot.startTime) &&
-      getUnixTime(timeSlot.end) <= getUnixTime(slot.endTime)
+      visitTime.start >= slot.startTime &&
+      visitTime.end <= slot.endTime
     ) {
       result = {
-        startTime: new Date(slot.startTime),
-        endTime: new Date(slot.endTime)
+        startTime: slot.startTime,
+        endTime: slot.endTime
       }
     }
   })
@@ -20,24 +18,24 @@ const findClosestTimeSlot = (timeSlots, timeSlot, timeBorder) => {
   let startPoint
   let endPoint
   timeSlots.forEach(slot => {
-    if (getUnixTime(slot.startTime) === getUnixTime(timeSlot.end)) {
+    if (slot.startTime === timeSlot.end) {
       endPoint = slot.endTime
     }
-    if (getUnixTime(slot.endTime) === getUnixTime(timeSlot.start)) {
+    if (slot.endTime === timeSlot.start) {
       startPoint = slot.startTime
     }
   })
   if (!startPoint) startPoint = timeBorder.start
   if (!endPoint) endPoint = timeBorder.end
   return {
-    startTime: startPoint.toISOString(),
-    endTime: endPoint.toISOString()
+    startTime: startPoint,
+    endTime: endPoint
   }
 }
 
 const generateAvailableTime = (start, end) => {
   let result = null
-  if (getUnixTime(end) - getUnixTime(start) >= 3600) {
+  if (end - start >= 3600) {
     result = {
       startTime: start,
       endTime: end

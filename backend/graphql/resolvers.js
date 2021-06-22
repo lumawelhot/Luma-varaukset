@@ -1,6 +1,6 @@
 const { UserInputError, AuthenticationError } = require('apollo-server-errors')
 const { readMessage } = require('../services/fileReader')
-const { getUnixTime, add, sub } = require('date-fns')
+const { add, sub } = require('date-fns')
 const { findValidTimeSlot, findClosestTimeSlot, generateAvailableTime } = require('../utils/timeCalculation')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -164,9 +164,9 @@ const resolvers = {
       }
 
       if (
-        getUnixTime(visitTime.start) >= getUnixTime(eventTime.start) &&
-        getUnixTime(visitTime.start) < getUnixTime(visitTime.end) &&
-        getUnixTime(visitTime.end) <= getUnixTime(eventTime.end)
+        visitTime.start >= eventTime.start &&
+        visitTime.start < visitTime.end &&
+        visitTime.end <= eventTime.end
       ) {
         const availableEnd = sub(new Date(visitTime.start), { minutes: event.waitingTime })
         const availableStart = add(new Date(visitTime.end), { minutes: event.waitingTime })
@@ -192,8 +192,8 @@ const resolvers = {
         const now = new Date()
         const start = new Date(event.start)
         const user = await User.findOne({ username: args.username })
-        const startsAfter14Days = getUnixTime(start) - getUnixTime(now) >= 1209600
-        const startsAfter1Hour = getUnixTime(start) - getUnixTime(now) >= 3600
+        const startsAfter14Days = start - now >= 1209600
+        const startsAfter1Hour = start - now >= 3600
         const eventCanBeBooked = (user === null) ? startsAfter14Days : startsAfter1Hour
         if (eventCanBeBooked) {
           savedVisit = await visit.save()
@@ -245,10 +245,12 @@ const resolvers = {
       const newAvailTime = findClosestTimeSlot(availableTimes, visitTime, eventTime)
       console.log('newAvailTime (resolvers rivi 246)', newAvailTime)
 
-      const filteredAvailTimes = availableTimes.filter(time => !(
-        getUnixTime(time.startTime) === getUnixTime(newAvailTime.startTime) ||
-        getUnixTime(time.endTime) === getUnixTime(newAvailTime.endTime)
-      ))
+      const filteredAvailTimes = availableTimes.filter(time => {
+        return !(
+          time.startTime >= newAvailTime.startTime &&
+          time.endTime <= newAvailTime.endTime
+        )
+      })
       filteredAvailTimes.push(newAvailTime)
       console.log('filteredAvailTimes (resolvers rivi 253)', filteredAvailTimes)
 

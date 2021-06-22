@@ -2,10 +2,11 @@ const { gql } = require('apollo-server-express')
 const setHours = require('date-fns/setHours')
 const setMinutes = require('date-fns/setMinutes')
 const setSeconds = require('date-fns/setSeconds')
+const setMilliseconds = require('date-fns/setMilliseconds')
 const add = require('date-fns/add')
 const { getUnixTime } = require('date-fns')
 
-const createDate = (hours, minutes) => setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), hours), minutes), 0)
+const createDate = (hours, minutes) => setMilliseconds(setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), hours), minutes), 0), 0)
 
 const CANCEL_VISIT = gql `
   mutation cancelVisit($id: ID!) {

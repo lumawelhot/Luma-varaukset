@@ -23,8 +23,8 @@ const visitResponse = async (event, start, end) => {
     variables: {
       event,
       ...details,
-      startTime: start.toString(),
-      endTime: end.toString()
+      startTime: start.toISOString(),
+      endTime: end.toISOString()
     }
   })
 }
@@ -55,10 +55,10 @@ beforeEach(async () => {
 
   const availableEventData = {
     title: 'Up-And-Atom!',
-    resourceId: 2,
+    resourceids: [2],
     grades: [1],
-    start: availableStart,
-    end: availableEnd,
+    start: availableStart.toISOString(),
+    end: availableEnd.toISOString(),
     inPersonVisit: false,
     remoteVisit: true,
     availableTimes: [{ startTime: availableStart, endTime: availableEnd }],
@@ -72,10 +72,10 @@ beforeEach(async () => {
 
   const eventWithVisit = {
     title: 'Two times!',
-    resourceId: 2,
+    resourceids: [2],
     grades: [1],
-    start: availableStart,
-    end: availableEnd,
+    start: availableStart.toISOString(),
+    end: availableEnd.toISOString(),
     inPersonVisit: false,
     remoteVisit: true,
     availableTimes: [{ startTime: start1, endTime: end1 }, { startTime: start2, endTime: end2 }],
