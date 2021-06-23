@@ -19,18 +19,18 @@ it('Initialize tests', () => {
   cy.login({ username: 'Admin', password: 'salainen' })
   cy.createEvent({
     title: availableEvent1,
+    start: new Date(eventDate1.setHours(10,0)),
+    end: new Date(eventDate1.setHours(12,0)),
     scienceClass: [1,3],
-    start: eventDate1,
-    end: eventDate1,
     remoteVisit: true,
     inPersonVisit: true,
     desc: 'Test event description'
   })
   cy.createEvent({
     title: availableEvent2,
+    start: new Date(eventDate2.setHours(13,0)),
+    end: new Date(eventDate2.setHours(14,0)),
     scienceClass: [3],
-    start: eventDate2,
-    end: eventDate2,
     inPersonVisit: true,
     remoteVisit: false,
     desc: 'Test event description'
@@ -38,8 +38,8 @@ it('Initialize tests', () => {
   cy.createEvent({
     title: availableEvent3,
     scienceClass: 'LINKKI',
-    start: eventDate3,
-    end: eventDate3,
+    start: new Date(eventDate3.setHours(10,0)),
+    end: new Date(eventDate3.setHours(12,0)),
     inPersonVisit: false,
     remoteVisit: true,
     desc: 'Test event description'
@@ -49,8 +49,8 @@ it('Initialize tests', () => {
     scienceClass: 'LINKKI',
     inPersonVisit: true,
     remoteVisit: false,
-    start: unavailableEventDate,
-    end: unavailableEventDate,
+    start: new Date(unavailableEventDate.setHours(10,0)),
+    end: new Date(unavailableEventDate.setHours(12,0)),
     desc: 'Unavailable event description'
   })
 })
@@ -72,14 +72,7 @@ And('there is an event 3 more than two weeks ahead', () => {
 })
 
 When('I click on available event 1', () => {
-  cy.get('.rbc-calendar').then(() => {
-    if (cy.get('.rbc-calendar').contains(`${availableEvent1}`)) {
-      cy.contains(`${availableEvent1}`).click()
-    } else {
-      cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
-      cy.contains(`${availableEvent1}`).click()
-    }
-  })
+  cy.findEvent(availableEvent1).click()
 })
 
 When('I click on available event 3', () => {
@@ -170,25 +163,11 @@ And('valid information is entered and visit mode predetermined', () => {
 })
 
 Then('booked event turns grey in calendar view', () => {
-  cy.get('.rbc-calendar').then(() => {
-    if (cy.get('.rbc-calendar').contains(`${availableEvent1}`)) {
-      cy.get('.rbc-calendar').contains(`${availableEvent1}`).parent().should('have.class', 'booked')
-    } else {
-      cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
-      cy.get('.rbc-calendar').contains(`${availableEvent1}`).parent().should('have.class', 'booked')
-    }
-  })
+  cy.findEvent(availableEvent1).should('have.class', 'booked')
 })
 
 When('I click on available event 2', () => {
-  cy.get('.rbc-calendar').then(() => {
-    if (cy.get('.rbc-calendar').contains(`${availableEvent2}`)) {
-      cy.contains(`${availableEvent2}`).click()
-    } else {
-      cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
-      cy.contains(`${availableEvent2}`).click()
-    }
-  })
+  cy.findEvent(availableEvent2).click()
 })
 
 When('invalid client name is entered', () => {
@@ -208,11 +187,7 @@ Then('an error message is shown', () => {
 })
 
 Given('admin logs in', () => {
-  cy.visit('http://localhost:3000/admin')
-  cy.wait(2000)
-  cy.get('#username').type('Admin')
-  cy.get('#password').type('salainen')
-  cy.get('#login').click()
+  cy.login({ username: 'Admin', password: 'salainen' })
 })
 
 Then('unavailable event page contains booking button', () => {
@@ -220,12 +195,5 @@ Then('unavailable event page contains booking button', () => {
 })
 
 Then('unavailable event turns grey in calendar view', () => {
-  cy.get('.rbc-calendar').then(() => {
-    if (cy.get('.rbc-calendar').contains(`${unavailableEventName}`)) {
-      cy.get('.rbc-calendar').contains(`${unavailableEventName}`).parent().should('have.class', 'booked')
-    } else {
-      cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
-      cy.get('.rbc-calendar').contains(`${unavailableEventName}`).parent().should('have.class', 'booked')
-    }
-  })
+  cy.findEvent(unavailableEventName).parent().should('have.class', 'booked')
 })

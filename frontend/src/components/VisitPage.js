@@ -91,8 +91,8 @@ const VisitPage = ({ sendMessage }) => {
               {visit.remoteVisit ? <p>Etäopetus</p> : <></>}
             </div>
             <p>Ilmoitettu osallistujamäärä: {visit.participants}</p>
-            <p>Vierailu alkaa: {moment(visit.event.start).format('DD.MM.YYYY, HH:mm')}</p>
-            <p>Vierailu päättyy: {moment(visit.event.end).format('DD.MM.YYYY, HH:mm')}</p>
+            <p>Vierailu alkaa: {moment(visit.startTime).format('DD.MM.YYYY, HH:mm')}</p>
+            <p>Vierailu päättyy: {moment(visit.endTime).format('DD.MM.YYYY, HH:mm')}</p>
 
             <div className="field is-grouped">
               <div className="control">

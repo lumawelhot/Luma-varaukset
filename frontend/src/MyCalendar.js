@@ -47,7 +47,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
     if (event.booked/*  || (!currentUser && !startsAfter14Days) || (currentUser && !startsAfter1Hour) */) {
       return { className: 'booked' , }
     }
-    return { className: resourceMap[event.resourceids[0]-1]?.resourceTitle.toLowerCase() || '' }
+    return { className: event.resourceids.length > 1 ? 'multiple' : resourceMap[event.resourceids[0]-1]?.resourceTitle.toLowerCase() || '' }
   }
 
   const AgendaEvent = ({ event }) => {
