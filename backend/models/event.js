@@ -58,7 +58,13 @@ const eventSchema = mongoose.Schema({
   waitingTime: {
     type: Number,
     required: true
-  }
+  },
+  extras: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Extra'
+    }
+  ]
 })
 
 eventSchema.set('toJSON', {

@@ -20,7 +20,7 @@ const resolvers = {
       return users
     },
     getEvents: async () => {
-      const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits')
+      const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits').populate('extras')
       return events
     },
     getTags: async () => {
@@ -109,6 +109,9 @@ const resolvers = {
         }
       })
 
+      const extras = await Extra.find({ _id: { $in: args.extras } })
+      console.log(extras)
+
       const newEvent = new Event({
         title: args.title,
         start: args.start,
@@ -122,10 +125,12 @@ const resolvers = {
         availableTimes: [{
           startTime: args.start,
           endTime: args.end
-        }]
+        }],
       })
+      newEvent.extras = extras
       newEvent.tags = mongoTags
       await newEvent.save()
+      console.log(newEvent)
       return newEvent
     },
     createVisit: async (root, args, { currentUser }) => {
