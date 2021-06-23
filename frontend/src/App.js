@@ -20,6 +20,7 @@ import VisitList from './components/VisitList'
 //mport fromUnixTime from 'date-fns/fromUnixTime'
 import moment from 'moment'
 import 'moment/locale/fi'
+import ExtrasAdmin from './components/EventExtras/ExtrasAdmin'
 
 const App = () => {
   const history = useHistory()
@@ -166,6 +167,12 @@ const App = () => {
             <EventForm sendMessage={notify} addEvent={addEvent} closeEventForm={closeEventForm} />
           }
           {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
+        </Route>
+        <Route path='/extras'>
+          {currentUser &&
+            <ExtrasAdmin sendMessage={notify} />
+          }
+          {!currentUser && <p>Et ole kirjautunut sisään.</p>}
         </Route>
         <Route path='/users/create'>
           {currentUser && currentUser.isAdmin &&

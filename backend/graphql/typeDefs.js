@@ -115,6 +115,9 @@ const typeDefs = gql`
       remoteLength: Int!
       inPersonLength: Int!
     ): Extra
+    deleteExtra(
+      id: String!
+    ): String
   }
 `
 module.exports = typeDefs
