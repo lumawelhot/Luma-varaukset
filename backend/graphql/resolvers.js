@@ -34,22 +34,7 @@ const resolvers = {
     findVisit: async (root, args) => {
       try {
         const visit = await Visit.findById(args.id)
-        return visit /* {
-          id: visit.id,
-          event: visit.event,
-          grade: visit.grade,
-          clientName: visit.clientName,
-          schoolName: visit.schoolName,
-          schoolLocation: visit.schoolLocation,
-          participants: visit.participants,
-          clientEmail: visit.clientEmail,
-          clientPhone: visit.clientPhone,
-          startTime: visit.startTime,
-          endTime: visit.endTime,
-          status: visit.status,
-          remoteVisit: visit.remoteVisit,
-          inPersonVisit: visit.inPersonVisit
-        } */
+        return visit
       } catch (e) {
         throw new UserInputError('Varausta ei löytynyt!')
       }
@@ -143,7 +128,7 @@ const resolvers = {
       await newEvent.save()
       return newEvent
     },
-    createVisit: async (root, args) => {
+    createVisit: async (root, args, { currentUser }) => {
       const event = await Event.findById(args.event)
       const visitTime = {
         start: new Date(args.startTime),
@@ -191,10 +176,9 @@ const resolvers = {
       try {
         const now = new Date()
         const start = new Date(event.start)
-        const user = await User.findOne({ username: args.username })
-        const startsAfter14Days = start - now >= 1209600
-        const startsAfter1Hour = start - now >= 3600
-        const eventCanBeBooked = (user === null) ? startsAfter14Days : startsAfter1Hour
+        const startsAfter14Days = start - now >= 1209600000
+        const startsAfter1Hour = start - now >= 3600000
+        const eventCanBeBooked = !currentUser ? startsAfter14Days : startsAfter1Hour
         if (eventCanBeBooked) {
           savedVisit = await visit.save()
           const details = [{
@@ -230,7 +214,6 @@ const resolvers = {
         start: sub(new Date(visit.startTime), { minutes: event.waitingTime }),
         end: add(new Date(visit.endTime), { minutes: event.waitingTime })
       }
-      console.log(visitTime, '<----------------------------------------------------')
       const eventTime = {
         start: new Date(event.start),
         end: new Date(event.end)
@@ -244,7 +227,6 @@ const resolvers = {
       }))
 
       const newAvailTime = findClosestTimeSlot(availableTimes, visitTime, eventTime)
-      console.log('newAvailTime (resolvers rivi 246)', newAvailTime)
 
       const filteredAvailTimes = availableTimes.filter(time => {
         return !(
@@ -253,7 +235,6 @@ const resolvers = {
         )
       })
       filteredAvailTimes.push(newAvailTime)
-      console.log('filteredAvailTimes (resolvers rivi 253)', filteredAvailTimes)
 
       try {
         event.visits = event.visits.filter(v => v.toString() !== visit.id) //huomaa catch!

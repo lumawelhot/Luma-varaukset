@@ -184,7 +184,6 @@ describe('Cancelling a visit results in correct availableTimes', () => {
     )
 
     const modifiedEvent = await EventModel.findById(event)
-    console.log(modifiedEvent.toJSON())
     const timeList = createTimeList(
       [
         [10, 10],
@@ -196,20 +195,6 @@ describe('Cancelling a visit results in correct availableTimes', () => {
       ]
     )
     const availableList = createAvailableList(modifiedEvent.availableTimes)
-    console.log(
-      'timeList: ',
-      timeList
-        .map((v) => Object.values(v))
-        .flat()
-        .map((x) => new Date(x * 1000).toISOString())
-    )
-    console.log(
-      'availableList: ',
-      availableList
-        .map((v) => Object.values(v))
-        .flat()
-        .map((x) => new Date(x * 1000).toISOString())
-    )
     expect(timeList).toEqual(expect.arrayContaining(availableList))
 
     const response = await cancelVisit(data.createVisit.id)
@@ -219,20 +204,7 @@ describe('Cancelling a visit results in correct availableTimes', () => {
     const availableListAfter = createAvailableList(
       eventAfterCancellation.availableTimes
     )
-    console.log(
-      'timeListAfterCancellation: ',
-      timeListAfterCancellation
-        .map((v) => Object.values(v))
-        .flat()
-        .map((x) => new Date(x * 1000).toISOString())
-    )
-    console.log(
-      'availableListAfter: ',
-      availableListAfter
-        .map((v) => Object.values(v))
-        .flat()
-        .map((x) => new Date(x * 1000).toISOString())
-    )
+
     expect(timeListAfterCancellation).toEqual(
       expect.arrayContaining(availableListAfter)
     )
