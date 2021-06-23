@@ -20,7 +20,7 @@ const resolvers = {
       return users
     },
     getEvents: async () => {
-      const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits', { startTime: 1, endTime: 1 })
+      const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits')
       return events
     },
     getTags: async () => {
@@ -173,6 +173,12 @@ const resolvers = {
       })
 
       let savedVisit
+      event.availableTimes = event.availableTimes.map(time => {
+        return {
+          startTime: time.startTime.toISOString(),
+          endTime: time.endTime.toISOString()
+        }
+      })
       try {
         const now = new Date()
         const start = new Date(event.start)
@@ -196,6 +202,7 @@ const resolvers = {
           })
           event.visits = event.visits.concat(savedVisit._id)
           await event.save()
+          console.log('luotu vierailu (resolvers rivi 199): ', savedVisit)
           return savedVisit
         }
       } catch (error) {
@@ -228,13 +235,19 @@ const resolvers = {
 
       const newAvailTime = findClosestTimeSlot(availableTimes, visitTime, eventTime)
 
-      const filteredAvailTimes = availableTimes.filter(time => {
+      let filteredAvailTimes = availableTimes.filter(time => {
         return !(
           time.startTime >= newAvailTime.startTime &&
           time.endTime <= newAvailTime.endTime
         )
       })
       filteredAvailTimes.push(newAvailTime)
+      filteredAvailTimes = filteredAvailTimes.map(time => {
+        return {
+          startTime: time.startTime.toISOString(),
+          endTime: time.endTime.toISOString()
+        }
+      })
 
       try {
         event.visits = event.visits.filter(v => v.toString() !== visit.id) //huomaa catch!

@@ -42,9 +42,9 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
   }
 
   const customEventPropGetter = event => {
-    const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14
-    const startsAfter1Hour = moment(event.start).diff(new Date(), 'minutes') >= 60
-    if (event.booked || (!currentUser && !startsAfter14Days) || (currentUser && !startsAfter1Hour)) {
+    /* const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14
+    const startsAfter1Hour = moment(event.start).diff(new Date(), 'minutes') >= 60 */
+    if (event.booked/*  || (!currentUser && !startsAfter14Days) || (currentUser && !startsAfter1Hour) */) {
       return { className: 'booked' , }
     }
     return { className: resourceMap[event.resourceids[0]-1]?.resourceTitle.toLowerCase() || '' }
