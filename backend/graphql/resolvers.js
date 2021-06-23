@@ -272,7 +272,7 @@ const resolvers = {
       if (!currentUser) {
         throw new AuthenticationError('not authenticated or no credentials')
       }
-      if(args.name.length < 5){
+      if(args.name.length < 3){
         throw new UserInputError('Name too short!')
       }
       if(args.classes.length === 0) {
@@ -280,6 +280,29 @@ const resolvers = {
       }
       if(args.remoteLength === 0 && args.inPersonLength === 0){
         throw new UserInputError('Give duration for at least one mode!')
+      }
+      try {
+        const newExtra = new Extra({
+          ...args
+        })
+        const savedExtra = await newExtra.save()
+        return savedExtra
+      } catch (error) {
+        throw new UserInputError(error.message, { invalidArgs: args })
+      }
+    },
+    deleteExtra: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
+      if (!args.id) {
+        throw new UserInputError('No ID provided!')
+      }
+      try {
+        await Extra.deleteOne({ _id:args.id })
+        return 'Deleted Extra with ID ' + args.id
+      } catch (error) {
+        throw new UserInputError('Backend problemo')
       }
     }
   }

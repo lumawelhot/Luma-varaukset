@@ -233,3 +233,47 @@ export const CANCEL_VISIT = gql`
     }
   }
 `
+
+export const EXTRAS = gql`
+  query getExtras {
+    getExtras {
+      id
+      name
+      classes
+      remoteLength
+      inPersonLength
+    }
+  }
+`
+
+export const CREATE_EXTRA = gql`
+  mutation createExtra(
+      $name: String!
+      $classes: [Int]!
+      $remoteLength: Int!
+      $inPersonLength: Int!
+    ) {
+    createExtra (
+    name: $name
+    classes: $classes
+    remoteLength: $remoteLength
+    inPersonLength: $inPersonLength
+    ) {
+      id
+      name
+      classes
+      remoteLength
+      inPersonLength
+    }
+  }
+`
+
+export const DELETE_EXTRA = gql`
+  mutation deleteExtra(
+    $id: String!
+  ) {
+    deleteExtra(
+      id: $id
+    )
+  }
+`
