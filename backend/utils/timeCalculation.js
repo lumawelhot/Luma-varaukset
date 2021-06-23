@@ -14,19 +14,30 @@ const findValidTimeSlot = (availableTimes, visitTime) => {
   return result
 }
 
-const findClosestTimeSlot = (timeSlots, timeSlot, timeBorder) => {
+/*
+---|________S-----E______S-------E|---
+---|________S-----S______E-------E|---
+---|________S--------------------E|---
+9:30-10:00 jäävä varaus
+9:00-15:00 eventTime
+12:00-13:00 visitTime
+[[10, 10],[11, 50]]       ,     [[13, 10],[15, 0]] availableTimes
+[[10, 10],[15, 0]]
+*/
+
+const findClosestTimeSlot = (availableTimes, visitTime, eventTime) => {
   let startPoint
   let endPoint
-  timeSlots.forEach(slot => {
-    if (slot.startTime === timeSlot.end) {
-      endPoint = slot.endTime
+  availableTimes.forEach(availableTime => {
+    if (availableTime.startTime.getTime() === visitTime.end.getTime()) {
+      endPoint = availableTime.endTime
     }
-    if (slot.endTime === timeSlot.start) {
-      startPoint = slot.startTime
+    if (availableTime.endTime.getTime() === visitTime.start.getTime()) {
+      startPoint = availableTime.startTime
     }
   })
-  if (!startPoint) startPoint = timeBorder.start
-  if (!endPoint) endPoint = timeBorder.end
+  if (!startPoint) startPoint = eventTime.start
+  if (!endPoint) endPoint = eventTime.end
   return {
     startTime: startPoint,
     endTime: endPoint
@@ -35,7 +46,7 @@ const findClosestTimeSlot = (timeSlots, timeSlot, timeBorder) => {
 
 const generateAvailableTime = (start, end) => {
   let result = null
-  if (end - start >= 3600) {
+  if (end - start >= 3600000) {
     result = {
       startTime: start,
       endTime: end

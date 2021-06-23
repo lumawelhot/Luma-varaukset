@@ -230,6 +230,7 @@ const resolvers = {
         start: sub(new Date(visit.startTime), { minutes: event.waitingTime }),
         end: add(new Date(visit.endTime), { minutes: event.waitingTime })
       }
+      console.log(visitTime, '<----------------------------------------------------')
       const eventTime = {
         start: new Date(event.start),
         end: new Date(event.end)
