@@ -24,6 +24,13 @@ const validate = (values) => {
     errors.scienceClass = 'Valitse vähintään yksi tiedeluokka'
   }
 
+  if(!values.remotePlatforms.includes(true)){
+    errors.remotePlatforms = 'Valitse vähintään yksi etäyhteysalusta'
+  }
+  if(!values.otherRemotePlatformOption){
+    errors.otherRemotePlatformOption = 'Kirjoita muun etäyhteysalustan nimi'
+  }
+
   if (!(values.remoteVisit || values.inPersonVisit)) {
     errors.location = 'Valitse joko etä- tai lähivierailu'
   }
@@ -86,6 +93,8 @@ const EventForm = ({
       grades: [false, false, false, false, false],
       remoteVisit: true,
       inPersonVisit: true,
+      remotePlatforms: [false,false,false, false],
+      otherRemotePlatformOption: '',
       title: '',
       scienceClass: [false, false, false, false, false],
       desc: '',
@@ -112,7 +121,17 @@ const EventForm = ({
         if (element) {
           scienceClassList.push(index + 1)
         }
-      })
+      } )
+
+      const remotePlatformList = []
+      values.remotePlatforms.forEach((element,index) => {
+        if(element){
+          remotePlatformList.push(index + 1)
+        }
+      } )
+
+      console.log(remotePlatformList)
+
       create({
         variables: {
           grades: gradelist,
@@ -121,6 +140,7 @@ const EventForm = ({
           title: values.title,
           start,
           end,
+          remotePlatforms: remotePlatformList,
           scienceClass: scienceClassList,
           desc: values.desc,
           tags: values.tags.map((tag) =>
@@ -235,22 +255,193 @@ const EventForm = ({
               <p className="help is-danger">{formik.errors.location}</p>
               : null}
 
+            {formik.values.remoteVisit
+              ?
+              <div className="field">
+                <div id="checkbox-group">Valitse etäyhteysalusta(t)</div>
+                <div className="control">
+                  <label className="remotePlatforms">
+                    <input
+                      type="checkbox"  value="0"
+                      onChange={() => {
+                        formik.touched.remotePlatforms = true
+                        formik.values.remotePlatforms[0] = !formik.values.remotePlatforms[0]
+                        formik.setFieldValue('remotePlatforms', [formik.values.remotePlatforms[0],formik.values.remotePlatforms[1],formik.values.remotePlatforms[2],formik.values.remotePlatforms[3]])
+
+                      }} />
+                  Zoom
+                  </label>
+                </div>
+                <div className="control">
+                  <label className="remotePlatforms">
+                    <input type="checkbox" value="1"
+                      onChange={() => {
+                        formik.touched.remotePlatforms = true
+
+                        formik.values.remotePlatforms[1] = !formik.values.remotePlatforms[1]
+                        formik.setFieldValue('remotePlatforms', [formik.values.remotePlatforms[0],formik.values.remotePlatforms[1],formik.values.remotePlatforms[2],formik.values.remotePlatforms[3]])
+
+
+
+                      }
+                      } />
+                  Google Meet
+                  </label>
+                </div>
+                <div className="control">
+                  <label className="remotePlatforms">
+                    <input type="checkbox" value="2"
+                      onChange={() => {
+                        formik.touched.remotePlatforms = true
+
+                        formik.values.remotePlatforms[2] = !formik.values.remotePlatforms[2]
+                        formik.setFieldValue('remotePlatforms', [formik.values.remotePlatforms[0],formik.values.remotePlatforms[1],formik.values.remotePlatforms[2],formik.values.remotePlatforms[3]])
+
+
+
+                      }
+                      } />
+                  Microsoft Teams
+                  </label>
+                </div>
+                <div className="control">
+                  <label className="remotePlatforms">
+                    <input type="checkbox" value="3"
+                      onChange={() => {
+                        formik.touched.remotePlatforms = true
+                        formik.values.remotePlatforms[3] = !formik.values.remotePlatforms[3]
+                        formik.setFieldValue('remotePlatforms', [formik.values.remotePlatforms[0],formik.values.remotePlatforms[1],formik.values.remotePlatforms[2],formik.values.remotePlatforms[3]])
+                      }
+                      } />
+                  Muu, mikä?
+                    {formik.values.remotePlatforms[3]
+                      ?
+
+                      <div className="field">
+
+                        <div className="control">
+                          <input
+                            className="input"
+                            id="otherRemotePlatformOption"
+                            name="otherRemotePlatformOption"
+                            type="otherRemotePlatformOption"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.otherRemotePlatformOption}
+                          />
+                        </div>
+                      </div>
+
+
+
+                      : null}
+                    {formik.values.remotePlatforms[3] && formik.touched.remotePlatforms && formik.errors.otherRemotePlatformOption ? (
+                      <p className="help is-danger">{formik.errors.otherRemotePlatformOption}</p>
+                    ) : null}
+
+                  </label>
+                </div>
+
+
+                {formik.touched.remotePlatforms && formik.errors.remotePlatforms
+                  ?
+                  <p className="help is-danger">{formik.errors.remotePlatforms}</p>
+                  : null}
+
+              </div>
+
+
+              : null}
 
             <div className="field">
-              <label className="label" id="checkbox-group">
-                Valitse vierailulle sopivat luokka-asteet
-              </label>
+              <div id="checkbox-group">Valitse vierailulle sopivat tiedeluokat</div>
+              <div className="control">
+                <label className="checkbox3">
+                  <input
+                    type="checkbox" value="0"
+                    onChange={() => {
+                      formik.touched.scienceClass = true
+                      formik.values.scienceClass[0] = !formik.values.scienceClass[0]
+                    }} />
+                  SUMMAMUTIKKA
+                </label>
+              </div>
+              <div className="control">
+                <label className="checkbox3">
+                  <input type="checkbox" value="1"
+                    onChange={() => {
+                      formik.touched.scienceClass = true
+                      formik.values.scienceClass[1] = !formik.values.scienceClass[1]
+                    }
+                    } />
+                  FOTONI
+                </label>
+              </div>
+              <div className="control">
+                <label className="checkbox3">
+                  <input type="checkbox" value="2"
+                    onChange={() => {
+                      formik.touched.scienceClass = true
+                      formik.values.scienceClass[2] = !formik.values.scienceClass[2]
+
+
+                    }
+                    } />
+                  LINKKI
+                </label>
+              </div>
+
+              <div className="control">
+                <label className="checkbox3">
+                  <input type="checkbox" value="3"
+                    onChange={() => {
+                      formik.touched.scienceClass = true
+                      formik.values.scienceClass[3] = !formik.values.scienceClass[3]
+
+
+                    }
+                    } />
+                  GEOPISTE
+                </label>
+              </div>
+
+              <div className="control">
+                <label className="checkbox3">
+                  <input type="checkbox" value="4"
+                    onChange={() => {
+                      formik.touched.scienceClass = true
+                      formik.values.scienceClass[4] = !formik.values.scienceClass[4]
+
+
+                    }
+                    } />
+                  GADOLIN
+                </label>
+              </div>
+
+            </div>
+
+            {formik.touched.scienceClass && formik.errors.scienceClass
+              ?
+              <p className="help is-danger">{formik.errors.scienceClass}</p>
+              : null}
+
+
+
+
+
+
+
+            <div className="field">
+              <div id="checkbox-group">Valitse vierailulle sopivat luokka-asteet</div>
               <div className="control">
                 <label className="checkbox2">
                   <input
                     type="checkbox" value="0"
                     onChange={() => {
                       formik.touched.grades = true
-
                       formik.values.grades[0] = !formik.values.grades[0]
                     }} />
-
-
                   Varhaiskasvatus
                 </label>
               </div>
@@ -261,10 +452,10 @@ const EventForm = ({
                       formik.touched.grades = true
 
                       formik.values.grades[1] = !formik.values.grades[1]
+
+
                     }
                     } />
-
-
                   1.-2. luokka
                 </label>
               </div>
@@ -275,10 +466,11 @@ const EventForm = ({
                       formik.touched.grades = true
 
                       formik.values.grades[2] = !formik.values.grades[2]
+
+
+                      formik.values.scienceClass[2] = !formik.values.scienceClass[2]
                     }
                     } />
-
-
                   3.-6. luokka
                 </label>
               </div>
@@ -290,10 +482,11 @@ const EventForm = ({
                       formik.touched.grades = true
 
                       formik.values.grades[3] = !formik.values.grades[3]
+
+
+                      formik.values.scienceClass[3] = !formik.values.scienceClass[3]
                     }
                     } />
-
-
                   7.-9. luokka
                 </label>
               </div>
@@ -305,102 +498,19 @@ const EventForm = ({
                       formik.touched.grades = true
 
                       formik.values.grades[4] = !formik.values.grades[4]
+
+
+                      formik.values.scienceClass[4] = !formik.values.scienceClass[4]
                     }
                     } />
-
-
                   toinen aste
                 </label>
               </div>
-
             </div>
 
             {formik.touched.grades && formik.errors.grades
               ?
               <p className="help is-danger">{formik.errors.grades}</p>
-              : null}
-
-            <div className="field">
-              <label className="label" id="checkbox-group">
-                Valitse vierailulle sopivat tiedeluokat
-              </label>
-              <div className="control">
-                <label className="checkbox3">
-                  <input
-                    type="checkbox" value="0"
-                    onChange={() => {
-                      formik.touched.scienceClass = true
-
-                      formik.values.scienceClass[0] = !formik.values.scienceClass[0]
-                    }} />
-
-
-                  SUMMAMUTIKKA
-                </label>
-              </div>
-              <div className="control">
-                <label className="checkbox3">
-                  <input type="checkbox" value="1"
-                    onChange={() => {
-                      formik.touched.scienceClass = true
-
-                      formik.values.scienceClass[1] = !formik.values.scienceClass[1]
-                    }
-                    } />
-
-
-                  FOTONI
-                </label>
-              </div>
-              <div className="control">
-                <label className="checkbox3">
-                  <input type="checkbox" value="2"
-                    onChange={() => {
-                      formik.touched.scienceClass = true
-
-                      formik.values.scienceClass[2] = !formik.values.scienceClass[2]
-                    }
-                    } />
-
-
-                  LINKKI
-                </label>
-              </div>
-
-              <div className="control">
-                <label className="checkbox3">
-                  <input type="checkbox" value="3"
-                    onChange={() => {
-                      formik.touched.scienceClass = true
-
-                      formik.values.scienceClass[3] = !formik.values.scienceClass[3]
-                    }
-                    } />
-
-
-                  GEOPISTE
-                </label>
-              </div>
-
-              <div className="control">
-                <label className="checkbox3">
-                  <input type="checkbox" value="4"
-                    onChange={() => {
-                      formik.touched.scienceClass = true
-
-                      formik.values.scienceClass[4] = !formik.values.scienceClass[4]
-                    }
-                    } />
-
-
-                  GADOLIN
-                </label>
-              </div>
-            </div>
-
-            {formik.touched.scienceClass && formik.errors.scienceClass
-              ?
-              <p className="help is-danger">{formik.errors.scienceClass}</p>
               : null}
 
             <div className="field" >
@@ -428,6 +538,7 @@ const EventForm = ({
                   </label>
                 </div></div>)}
             </div>
+
 
             <div className="field">
               <label className="label" htmlFor="date">
