@@ -24,6 +24,8 @@ import ExtrasAdmin from './components/EventExtras/ExtrasAdmin'
 
 const App = () => {
   const history = useHistory()
+  const [currentDate, setCurrentDate] = useState(null)
+  const [currentView, setCurrentView] = useState('month')
   const [events, setEvents] = useState([])
   const client = useApolloClient()
   const result = useQuery(EVENTS)
@@ -219,7 +221,16 @@ const App = () => {
                 />
               </div>
             </div>}
-          <MyCalendar events={events} currentUser={currentUser} showNewEventForm={showEventFormHandler} handleEventClick={handleEventClick} />
+          <MyCalendar
+            events={events}
+            currentUser={currentUser}
+            showNewEventForm={showEventFormHandler}
+            handleEventClick={handleEventClick}
+            currentDate={currentDate}
+            setCurrentDate={setCurrentDate}
+            currentView={currentView}
+            setCurrentView={setCurrentView}
+          />
           <UserPage currentUser={currentUser} />
           {!currentUser &&
             <span className='icon is-pulled-right'><FcKey onClick={login} className='admin-button' /></span>
