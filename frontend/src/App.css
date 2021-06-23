@@ -828,6 +828,15 @@ button.button.luma {
   background-color: #dcdcdc;
 }
 
+.rbc-event.multiple {
+  background-color: #000000;
+}
+
+.rbc-event.multiple .rbc-event-label {
+  width: 100%;
+  background-color: #000000;
+}
+
 .taginput .taginput-container.is-focusable,
 .taginput .taginput-container:not(.is-focusable) {
   display: inline-flex;

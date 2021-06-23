@@ -11,9 +11,9 @@ it('Initialize tests', () => {
   cy.login({ username: 'Admin', password: 'salainen' })
   cy.createEvent({
     title: eventName,
-    scienceClass: 'LINKKI',
     start: eventStart,
     end: eventEnd,
+    scienceClass: [1,2],
     remoteVisit: true,
     inPersonVisit: false,
     desc: 'Test event description'

@@ -37,17 +37,25 @@ const visitSchema = mongoose.Schema({
     type: Number,
     required: true
   },
-  inPersonVisit: {
+  status: {
     type: Boolean,
     required: true,
+  },
+  startTime: {
+    type: String,
+    required: true
+  },
+  endTime: {
+    type: String,
+    required: true
+  },
+  inPersonVisit: {
+    type: Boolean,
+    required: true
   },
   remoteVisit: {
     type: Boolean,
     required: true
-  },
-  status: {
-    type: Boolean,
-    required: true,
   }
 })
 

@@ -1,14 +1,17 @@
 const { UserInputError, AuthenticationError } = require('apollo-server-errors')
+const { readMessage } = require('../services/fileReader')
+const { add, sub } = require('date-fns')
+const { findValidTimeSlot, findClosestTimeSlot, generateAvailableTime } = require('../utils/timeCalculation')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const mailer = require('../services/mailer')
+const config = require('../utils/config')
+
 const User = require('../models/user')
 const Event = require('../models/event')
 const Visit = require('../models/visit')
-const jwt = require('jsonwebtoken')
+const Extra = require('../models/extra')
 const Tag = require('../models/tag')
-const moment = require ('moment')
-const mailer = require('../services/mailer')
-const config = require('../utils/config')
-const { readMessage } = require('../services/fileReader')
 
 const resolvers = {
   Query: {
@@ -17,7 +20,7 @@ const resolvers = {
       return users
     },
     getEvents: async () => {
-      const events = await Event.find({}).populate('tags', { name: 1, id: 1 })
+      const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits')
       return events
     },
     getTags: async () => {
@@ -25,32 +28,23 @@ const resolvers = {
       return tags
     },
     getVisits: async () => {
-      const visits = await Visit.find({}).populate('event', { id: 1, title: 1, resourceId: 1, remoteVisit: 1, inPersonVisit : 1 })
+      const visits = await Visit.find({}).populate('event', { id: 1, title: 1, resourceids: 1, remoteVisit: 1, inPersonVisit : 1 })
       return visits
     },
     findVisit: async (root, args) => {
       try {
         const visit = await Visit.findById(args.id)
-        return {
-          id: visit.id,
-          event: visit.event,
-          grade: visit.grade,
-          clientName: visit.clientName,
-          schoolName: visit.schoolName,
-          schoolLocation: visit.schoolLocation,
-          participants: visit.participants,
-          inPersonVisit: visit.inPersonVisit,
-          remoteVisit: visit.remoteVisit,
-          clientEmail: visit.clientEmail,
-          clientPhone: visit.clientPhone,
-          status: visit.status
-        }
+        return visit
       } catch (e) {
         throw new UserInputError('Varausta ei löytynyt!')
       }
     },
     me: (root, args, context) => {
       return context.currentUser
+    },
+    getExtras: async () => {
+      const extras = await Extra.find({})
+      return extras
     }
   },
   Visit: {
@@ -88,36 +82,12 @@ const resolvers = {
       const userForToken = { username: user.username, id: user._id }
       return { value: jwt.sign(userForToken, config.SECRET) }
     },
-    createEvent: async (root, args, { currentUser } ) => {
+    createEvent: async (root, args, { currentUser }) => {
       if (!currentUser) {
         throw new AuthenticationError('not authenticated')
       }
-      let resourceId = null
-      switch (args.class) {
-        case 'SUMMAMUTIKKA':
-          resourceId = 1
-          break
-        case 'FOTONI':
-          resourceId = 2
-          break
-        case 'LINKKI':
-          resourceId = 3
-          break
-        case 'GEOPISTE':
-          resourceId = 4
-          break
-        case 'GADOLIN':
-          resourceId = 5
-          break
-        default:
-          throw new UserInputError('Invalid class')
-      }
-
-
+      let resourceids = args.scienceClass
       let grades = args.grades
-
-
-
       if (grades.length < 1) {
         throw new UserInputError('At least one grade must be selected!')
       }
@@ -144,54 +114,99 @@ const resolvers = {
         start: args.start,
         end: args.end,
         desc: args.desc,
-        resourceId,
+        resourceids,
         grades,
-        booked: false,
         remoteVisit: args.remoteVisit,
-        inPersonVisit: args.inPersonVisit
+        inPersonVisit: args.inPersonVisit,
+        waitingTime: args.waitingTime,
+        availableTimes: [{
+          startTime: args.start,
+          endTime: args.end
+        }]
       })
       newEvent.tags = mongoTags
       await newEvent.save()
       return newEvent
     },
-    createVisit: async (root, args) => {
+    createVisit: async (root, args, { currentUser }) => {
       const event = await Event.findById(args.event)
-      event.booked = true
-      await event.save()
+      const visitTime = {
+        start: new Date(args.startTime),
+        end: new Date(args.endTime)
+      }
+      const availableTimes = event.availableTimes.map(time => ({
+        startTime: new Date(time.startTime),
+        endTime: new Date(time.endTime)
+      }))
+      const eventTime = {
+        start: new Date(event.start),
+        end: new Date(event.end)
+      }
+
+      const availableTime = findValidTimeSlot(availableTimes, visitTime)
+      if (!availableTime) {
+        throw new UserInputError('Given timeslot is invalid')
+      }
+
+      if (
+        visitTime.start >= eventTime.start &&
+        visitTime.start < visitTime.end &&
+        visitTime.end <= eventTime.end
+      ) {
+        const availableEnd = sub(new Date(visitTime.start), { minutes: event.waitingTime })
+        const availableStart = add(new Date(visitTime.end), { minutes: event.waitingTime })
+
+        const before = generateAvailableTime(availableTime.startTime, availableEnd)
+        const after = generateAvailableTime(availableStart, availableTime.endTime)
+        const newAvailableTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime).map(at => Object({ startTime: at.startTime.toISOString(), endTime: at.endTime.toISOString() }))
+        if (before) newAvailableTimes.push(before)
+        if (after) newAvailableTimes.push(after)
+        event.availableTimes = newAvailableTimes
+      }
+
       const visit = new Visit({
         ...args,
         event: event,
         status: true,
+        startTime: args.startTime,
+        endTime: args.endTime,
       })
+
       let savedVisit
+      event.availableTimes = event.availableTimes.map(time => {
+        if (typeof time.startTime === 'string') return time
+        return {
+          startTime: time.startTime.toISOString(),
+          endTime: time.endTime.toISOString()
+        }
+      })
       try {
-        if (visit.inPersonVisit !== visit.remoteVisit) {
-          const now = moment(new Date())
-          const start = moment(event.start)
-          const startsAfter14Days = start.diff(now, 'days') >= 14
-          const startsWithin1Hour = start.diff(now, 'hours') > 0
-          const user = await User.findOne({ username: args.username })
-          const eventCanBeBooked = (user === null) ? startsAfter14Days : startsWithin1Hour
-          if (eventCanBeBooked) {
-            savedVisit = await visit.save()
-            const details = [{
-              name: 'link',
-              value: `${config.HOST_URI}/${savedVisit.id}`
-            }]
-            const text = await readMessage('welcome.txt', details)
-            const html = await readMessage('welcome.html', details)
-            mailer.sendMail({
-              from: 'Luma-Varaukset <noreply@helsinki.fi>',
-              to: visit.clientEmail,
-              subject: 'Tervetuloa!',
-              text,
-              html
-            })
-            return savedVisit
-          }
+        const now = new Date()
+        const start = new Date(event.start)
+        const startsAfter14Days = start - now >= 1209600000
+        const startsAfter1Hour = start - now >= 3600000
+        const eventCanBeBooked = !currentUser ? startsAfter14Days : startsAfter1Hour
+        if (eventCanBeBooked) {
+          savedVisit = await visit.save()
+          const details = [{
+            name: 'link',
+            value: `${config.HOST_URI}/${savedVisit.id}`
+          }]
+          const text = await readMessage('welcome.txt', details)
+          const html = await readMessage('welcome.html', details)
+          mailer.sendMail({
+            from: 'Luma-Varaukset <noreply@helsinki.fi>',
+            to: visit.clientEmail,
+            subject: 'Tervetuloa!',
+            text,
+            html
+          })
+          event.visits = event.visits.concat(savedVisit._id)
+          await event.save()
+          return savedVisit
         }
       } catch (error) {
-        event.booked = false
+        event.availableTimes = availableTimes
         await event.save()
         await savedVisit.delete()
         throw new UserInputError(error.message, {
@@ -202,18 +217,71 @@ const resolvers = {
     cancelVisit: async (root, args) => {
       const visit = await Visit.findById(args.id)
       const event = await Event.findById(visit.event)
+      const visitTime = {
+        start: sub(new Date(visit.startTime), { minutes: event.waitingTime }),
+        end: add(new Date(visit.endTime), { minutes: event.waitingTime })
+      }
+      const eventTime = {
+        start: new Date(event.start),
+        end: new Date(event.end)
+      }
+      if (visitTime.end > eventTime.end) visitTime.end = eventTime.end
+      if (visitTime.start < eventTime.start) visitTime.start = eventTime.start
+
+      const availableTimes = event.availableTimes.map(time => ({
+        startTime: new Date(time.startTime),
+        endTime: new Date(time.endTime)
+      }))
+
+      const newAvailTime = findClosestTimeSlot(availableTimes, visitTime, eventTime)
+
+      let filteredAvailTimes = availableTimes.filter(time => {
+        return !(
+          time.startTime >= newAvailTime.startTime &&
+          time.endTime <= newAvailTime.endTime
+        )
+      })
+      filteredAvailTimes.push(newAvailTime)
+      filteredAvailTimes = filteredAvailTimes.map(time => {
+        if (typeof time.startTime === 'string') return time
+        return {
+          startTime: time.startTime.toISOString(),
+          endTime: time.endTime.toISOString()
+        }
+      })
+
       try {
+        event.visits = event.visits.filter(v => v.toString() !== visit.id)
+        event.availableTimes = filteredAvailTimes
         visit.status = false
-        event.booked = false
         await visit.save()
         await event.save()
         return visit
       } catch (error) {
+        event.visits = event.visits.concat(visit._id)
+        event.availableTimes = availableTimes
+        visit.status = true
+        await event.save()
+        await visit.save()
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
       }
     },
+    createExtra: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
+      if(args.name.length < 5){
+        throw new UserInputError('Name too short!')
+      }
+      if(args.classes.length === 0) {
+        throw new UserInputError('Select at least one science class!')
+      }
+      if(args.remoteLength === 0 && args.inPersonLength === 0){
+        throw new UserInputError('Give duration for at least one mode!')
+      }
+    }
   }
 }
 

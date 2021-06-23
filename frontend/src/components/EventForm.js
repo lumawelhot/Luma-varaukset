@@ -20,8 +20,8 @@ const validate = (values) => {
     errors.grades = 'Valitse vähintään yksi luokka-aste'
   }
 
-  if (!values.scienceClass) {
-    errors.scienceClass = defErrorMessage
+  if (!values.scienceClass.includes(true)) {
+    errors.scienceClass = 'Valitse vähintään yksi tiedeluokka'
   }
 
   if (!(values.remoteVisit || values.inPersonVisit)) {
@@ -75,6 +75,7 @@ const EventForm = ({
   useEffect(() => {
     if (result.data) {
       console.log(result.data)
+      result.data.booked = false
       addEvent(result.data.createEvent)
       sendMessage('Vierailu luotu', 'success')
       history.push('/')
@@ -90,12 +91,13 @@ const EventForm = ({
       remoteVisit: true,
       inPersonVisit: true,
       title: '',
-      scienceClass: '',
+      scienceClass: [false,false,false,false,false],
       desc: '',
       date: moment(newEventTimeRange[0]).format('YYYY-MM-DD'),
       startTime: moment(newEventTimeRange[0]).format('HH:mm'),
       endTime: moment(newEventTimeRange[1]).format('HH:mm'),
       tags: [],
+      waitingTime: 15
     },
     validate,
     onSubmit: (values) => {
@@ -105,6 +107,12 @@ const EventForm = ({
       values.grades.forEach((element,index) => {
         if(element){
           gradelist.push(index + 1)
+        }
+      } )
+      const scienceClassList = []
+      values.grades.forEach((element,index) => {
+        if(element){
+          scienceClassList.push(index + 1)
         }
       } )
       create({
@@ -117,7 +125,7 @@ const EventForm = ({
           title: values.title,
           start,
           end,
-          scienceClass: values.scienceClass,
+          scienceClass: scienceClassList,
           desc: values.desc,
           tags: values.tags.map((tag) =>
             Object({
@@ -125,6 +133,7 @@ const EventForm = ({
               name: tag,
             })
           ),
+          waitingTime: values.waitingTime
         },
       })
 
@@ -278,9 +287,6 @@ const EventForm = ({
                 </label>
               </div>
 
-
-
-
             </div>
 
             {formik.touched.grades && formik.errors.grades
@@ -288,41 +294,80 @@ const EventForm = ({
               <p className="help is-danger">{formik.errors.grades}</p>
               : null}
 
-
             <div className="field">
-              <label className="label" htmlFor="scienceClass">
-                Tiedeluokka
-              </label>
+              <div id="checkbox-group">Valitse vierailulle sopivat tiedeluokat</div>
               <div className="control">
-                <FormikProvider value={formik}>
-                  <select
-                    className={`input ${
-                      formik.touched.scienceClass
-                        ? formik.errors.scienceClass
-                          ? 'is-danger'
-                          : 'is-success'
-                        : ''
-                    }`}
-                    id="scienceClass"
-                    name="scienceClass"
-                    value={formik.values.scienceClass}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    style={{ ...style, display: 'block' }}
-                  >
-                    <option value="" label="Valitse tiedeluokka" />
-                    <option value="SUMMAMUTIKKA" label="SUMMAMUTIKKA" />
-                    <option value="FOTONI" label="FOTONI" />
-                    <option value="LINKKI" label="LINKKI" />
-                    <option value="GEOPISTE" label="GEOPISTE" />
-                    <option value="GADOLIN" label="GADOLIN" />
-                  </select>
-                </FormikProvider>
+                <label className="checkbox3">
+                  <input
+                    type="checkbox"  value="0"
+                    onChange={() => {
+                      formik.touched.scienceClass = true
+                      formik.values.scienceClass[0] = !formik.values.scienceClass[0]
+                    }} />
+                  SUMMAMUTIKKA
+                </label>
               </div>
+              <div className="control">
+                <label className="checkbox3">
+                  <input type="checkbox" value="1"
+                    onChange={() => {
+                      formik.touched.scienceClass = true
+                      formik.values.scienceClass[1] = !formik.values.scienceClass[1]
+                    }
+                    } />
+                  FOTONI
+                </label>
+              </div>
+              <div className="control">
+                <label className="checkbox3">
+                  <input type="checkbox" value="2"
+                    onChange={() => {
+                      formik.touched.scienceClass = true
+                      formik.values.scienceClass[2] = !formik.values.scienceClass[2]
+
+
+                    }
+                    } />
+                  LINKKI
+                </label>
+              </div>
+
+              <div className="control">
+                <label className="checkbox3">
+                  <input type="checkbox" value="3"
+                    onChange={() => {
+                      formik.touched.scienceClass = true
+                      formik.values.scienceClass[3] = !formik.values.scienceClass[3]
+
+
+                    }
+                    } />
+                  GEOPISTE
+                </label>
+              </div>
+
+              <div className="control">
+                <label className="checkbox3">
+                  <input type="checkbox" value="4"
+                    onChange={() => {
+                      formik.touched.scienceClass = true
+                      formik.values.scienceClass[4] = !formik.values.scienceClass[4]
+
+
+                    }
+                    } />
+                  GADOLIN
+                </label>
+              </div>
+
             </div>
-            {formik.touched.scienceClass && formik.errors.scienceClass ? (
+
+            {formik.touched.scienceClass && formik.errors.scienceClass
+              ?
               <p className="help is-danger">{formik.errors.scienceClass}</p>
-            ) : null}
+              : null}
+
+
 
             <div className="field">
               <label className="label" htmlFor="date">
@@ -398,6 +443,34 @@ const EventForm = ({
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.endTime}
+                />
+              </div>
+            </div>
+
+            {formik.touched.endTime && formik.errors.endTime ? (
+              <p className="help is-danger">{formik.errors.endTime}</p>
+            ) : null}
+
+            <div className="field">
+              <label className="label" htmlFor="endTime">
+                Minimiaika varausten välillä
+              </label>
+              <div className="control">
+                <input
+                  className={`input ${
+                    formik.touched.waitingTime
+                      ? formik.errors.waitingTime
+                        ? 'is-danger'
+                        : 'is-success'
+                      : ''
+                  }`}
+                  style={{ width: 300 }}
+                  id="waitingTime"
+                  name="waitingTime"
+                  type="number"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.waitingTime}
                 />
               </div>
             </div>

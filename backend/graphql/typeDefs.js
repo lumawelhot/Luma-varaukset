@@ -1,7 +1,7 @@
 const { gql } = require('apollo-server-express')
 
 //Visit- ja Event-tyyppien kentät gradeId ja online tarkistettava
-const typeDefs = gql `
+const typeDefs = gql`
   type Tag {
     id: ID
     name: String!
@@ -11,10 +11,14 @@ const typeDefs = gql `
     username: String!
     isAdmin: Boolean!
   }
+  type TimeSlot {
+    startTime: String!,
+    endTime: String!
+  }
   type Event {
     id: ID!
     title: String!
-    resourceId: Int
+    resourceids: [Int]
     remoteVisit: Boolean!
     inPersonVisit: Boolean!
     grades: [Int]!
@@ -22,7 +26,9 @@ const typeDefs = gql `
     end: String!
     desc: String
     tags: [Tag]!
-    booked: Boolean
+    visits: [Visit]!
+    availableTimes: [TimeSlot]!
+    waitingTime: Int!
   }
   type Visit {
     id: ID!
@@ -34,13 +40,22 @@ const typeDefs = gql `
     clientPhone: String!
     grade: String!
     participants: Int!
-    inPersonVisit: Boolean!
-    remoteVisit: Boolean!
     extra: [Int]
     status: Boolean!
+    startTime: String!
+    endTime: String!
+    inPersonVisit: Boolean!
+    remoteVisit: Boolean!
   }
   type Token {
     value: String!
+  }
+  type Extra {
+    id: ID!
+    name: String!
+    classes: [Int]!
+    remoteLength: Int!
+    inPersonLength: Int!
   }
   type Query {
     getUsers: [User]!
@@ -49,6 +64,7 @@ const typeDefs = gql `
     findVisit(id: ID!): Visit!
     getVisits: [Visit]
     getTags: [Tag]!
+    getExtras: [Extra]!
   }
   input TagInput {
     id: String
@@ -66,7 +82,7 @@ const typeDefs = gql `
     ): Token
     createEvent(
       title: String!
-      class: String!
+      scienceClass: [Int]!
       grades: [Int]!
       start: String!
       end: String!
@@ -74,6 +90,7 @@ const typeDefs = gql `
       inPersonVisit: Boolean!
       remoteVisit: Boolean!
       tags: [TagInput]
+      waitingTime: Int!
     ): Event
     createVisit(
       event: ID!
@@ -82,15 +99,22 @@ const typeDefs = gql `
       schoolLocation: String!
       clientEmail: String!
       clientPhone: String!
+      startTime: String!
+      endTime: String!
       grade: String!
       participants: Int!
-      inPersonVisit: Boolean!
-      remoteVisit: Boolean!
       extra: [Int]
       username: String
+      inPersonVisit: Boolean!
+      remoteVisit: Boolean!
     ): Visit
     cancelVisit(id: ID!): Visit
+    createExtra(
+      name: String!
+      classes: [Int]!
+      remoteLength: Int!
+      inPersonLength: Int!
+    ): Extra
   }
 `
-
 module.exports = typeDefs

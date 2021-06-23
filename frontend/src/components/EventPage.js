@@ -1,3 +1,5 @@
+
+
 import React from 'react'
 import moment from 'moment'
 import { useHistory } from 'react-router'
@@ -8,7 +10,20 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser }) => {
     history.push('/')
   }
 
-  const filterEventClass = (eventClass) => {
+  const classes = [
+    { value: 1, label: 'SUMMAMUTIKKA' },
+    { value: 2, label: 'FOTONI' },
+    { value: 3, label: 'LINKKI' },
+    { value: 4, label: 'GEOPISTE' },
+    { value: 5, label: 'GADOLIN' }
+  ]
+
+  const filterEventClass = (eventClasses) => {
+    const classesArray = eventClasses.map(c => classes[c-1].label)
+    return classesArray.join(', ')
+  }
+
+  /* const filterEventClass = (eventClass) => {
     switch (eventClass) {
       case 1:
         return 'SUMMAMUTIKKA'
@@ -24,7 +39,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser }) => {
         console.log('Error!')
         break
     }
-  }
+  } */
 
   const filterEventGrades = (eventGrades) => {
     const returnArray = []
@@ -52,7 +67,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser }) => {
   }
 
   if (event) {
-    const eventClass = filterEventClass(event.resourceId)
+    const eventClass = filterEventClass(event.resourceids)
     const eventGrades = filterEventGrades(event.grades)
 
     const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14

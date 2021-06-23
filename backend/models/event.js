@@ -21,8 +21,8 @@ const eventSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  resourceId: {
-    type: Number,
+  resourceids: {
+    type: [Number],
     required: true,
   },
   grades: {
@@ -38,6 +38,10 @@ const eventSchema = mongoose.Schema({
     type: Boolean,
     required: true
   },
+  availableTimes: {
+    type: [],
+    required: true
+  },
   desc: String,
   tags: [
     {
@@ -45,7 +49,16 @@ const eventSchema = mongoose.Schema({
       ref: 'Tag'
     }
   ],
-  booked: Boolean
+  visits: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Visit'
+    }
+  ],
+  waitingTime: {
+    type: Number,
+    required: true
+  }
 })
 
 eventSchema.set('toJSON', {
