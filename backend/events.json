@@ -3,20 +3,17 @@
     "title": "Maanjäristysten alueellisuus ja niiden vaikutukset",
     "resourceids": [4],
     "grades": [1],
-    "start": "2021-07-07T09:00:00+0300",
-    "end": "2021-07-07T14:00:00+0300",
+    "start": "2021-07-08T09:00:00+0300",
+    "end": "2021-07-08T15:00:00+0300",
     "inPersonVisit": true,
     "remoteVisit": false,
     "availableTimes": [
       {
-        "startTime": "2021-07-07T10:00:00+0300",
-        "endTime": "2021-07-07T11:00:00+0300"
-      },
-      {
-        "startTime": "2021-07-07T14:00:00+0300",
-        "endTime": "2021-07-07T15:00:00+0300"
+        "startTime": "2021-07-08T09:00:00+0300",
+        "endTime": "2021-07-08T15:00:00+0300"
       }
-    ]
+    ],
+    "waitingTime": 15
   },
   {
     "title": "Lämpösäteily ja ilmastonmuutos",
@@ -31,7 +28,8 @@
       }
     ],
     "inPersonVisit": true,
-    "remoteVisit": false
+    "remoteVisit": false,
+    "waitingTime": 15
   },
   {
     "title": "Kemian kokeelliset työt",
@@ -46,7 +44,8 @@
       }
     ],
     "inPersonVisit": true,
-    "remoteVisit": false
+    "remoteVisit": false,
+    "waitingTime": 15
   },
   {
     "title": "Python-ohjelmointikieli",
@@ -62,7 +61,8 @@
       }
     ],
     "inPersonVisit": true,
-    "remoteVisit": false
+    "remoteVisit": false,
+    "waitingTime": 15
   },
   {
     "title": "Matematiikan työpaja",
@@ -78,7 +78,8 @@
       }
     ],
     "inPersonVisit": true,
-    "remoteVisit": false
+    "remoteVisit": false,
+    "waitingTime": 15
   },
   {
     "title": "Scratch-ohjelmointikieli",
@@ -94,7 +95,8 @@
       }
     ],
     "inPersonVisit": true,
-    "remoteVisit": false
+    "remoteVisit": false,
+    "waitingTime": 15
   },
   {
     "title": "Lämpösäteily ja ilmastonmuutos",
@@ -110,6 +112,7 @@
       }
     ],
     "inPersonVisit": true,
-    "remoteVisit": false
+    "remoteVisit": false,
+    "waitingTime": 15
   }
 ]

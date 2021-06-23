@@ -17,7 +17,7 @@ const CalendarFilter = (props) => {
       setInPerson(true)
     } else {
       props.setFilterFunction(() => (event) => {
-        return newValues.includes(event.resourceId)
+        return event.resourceids.some(r => newValues.includes(r))
         &&
         ((inPerson!==false && event.inPersonVisit) || (remote!==false && event.remoteVisit))
         &&
@@ -29,7 +29,7 @@ const CalendarFilter = (props) => {
   const handleChangeRemote = (newValue) => {
     setRemote(newValue)
     props.setFilterFunction(() => (event) => {
-      return (resources.length ? resources.includes(event.resourceId) : true)
+      return (resources.length ? event.resourceids.some(r => resources.includes(r)) : true)
         &&
         ((inPerson!==false && event.inPersonVisit) || (newValue!==false && event.remoteVisit))
         &&
@@ -40,7 +40,7 @@ const CalendarFilter = (props) => {
   const handleChangeInPerson = (newValue) => {
     setInPerson(newValue)
     props.setFilterFunction(() => (event) => {
-      return (resources.length ? resources.includes(event.resourceId) : true)
+      return (resources.length ? event.resourceids.some(r => resources.includes(r)) : true)
       &&
       ((newValue!==false && event.inPersonVisit) || (remote!==false && event.remoteVisit))
       &&
@@ -51,7 +51,7 @@ const CalendarFilter = (props) => {
   const handleChangeGrades = (newValues) => {
     setGrades(newValues)
     props.setFilterFunction(() => (event) => {
-      return (resources.length ? resources.includes(event.resourceId) : true)
+      return (resources.length ? event.resourceids.some(r => resources.includes(r)) : true)
       &&
       ((inPerson!==false && event.inPersonVisit) || (remote!==false && event.remoteVisit))
       &&

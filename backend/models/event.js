@@ -54,7 +54,11 @@ const eventSchema = mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Visit'
     }
-  ]
+  ],
+  waitingTime: {
+    type: Number,
+    required: true
+  }
 })
 
 eventSchema.set('toJSON', {

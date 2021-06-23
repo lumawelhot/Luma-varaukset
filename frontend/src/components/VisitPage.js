@@ -1,26 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import { FIND_VISIT, CANCEL_VISIT } from '../graphql/queries'
+import { FIND_VISIT, CANCEL_VISIT, EVENTS } from '../graphql/queries'
 import { useMutation, useLazyQuery } from '@apollo/client'
 import { useParams } from 'react-router'
 import moment from 'moment'
 import { useHistory } from 'react-router'
 
-const filterEventClass = (eventClass) => {
-  switch (eventClass) {
-    case 1:
-      return 'SUMMAMUTIKKA'
-    case 2:
-      return 'FOTONI'
-    case 3:
-      return 'LINKKI'
-    case 4:
-      return 'GEOPISTE'
-    case 5:
-      return 'GADOLIN'
-    default:
-      console.log('Error!')
-      break
-  }
+const classes = [
+  { value: 1, label: 'SUMMAMUTIKKA' },
+  { value: 2, label: 'FOTONI' },
+  { value: 3, label: 'LINKKI' },
+  { value: 4, label: 'GEOPISTE' },
+  { value: 5, label: 'GADOLIN' }
+]
+
+const filterEventClass = (eventClasses) => {
+  const classesArray = eventClasses.map(c => classes[c].label)
+  return classesArray.join(', ')
 }
 
 const VisitPage = ({ sendMessage }) => {
@@ -34,6 +29,7 @@ const VisitPage = ({ sendMessage }) => {
   })
 
   const [cancelVisit, resultOfCancel] = useMutation(CANCEL_VISIT, {
+    refetchQueries: [{ query: EVENTS }],
     onError: (e) => {
       sendMessage('Virhe!', 'danger')
       console.log(e)
@@ -96,8 +92,8 @@ const VisitPage = ({ sendMessage }) => {
               {visit.remoteVisit ? <p>Etäopetus</p> : <></>}
             </div>
             <p>Ilmoitettu osallistujamäärä: {visit.participants}</p>
-            <p>Vierailu alkaa: {moment(visit.event.start).format('DD.MM.YYYY, HH:mm')}</p>
-            <p>Vierailu päättyy: {moment(visit.event.end).format('DD.MM.YYYY, HH:mm')}</p>
+            <p>Vierailu alkaa: {moment(visit.startTime).format('DD.MM.YYYY, HH:mm')}</p>
+            <p>Vierailu päättyy: {moment(visit.endTime).format('DD.MM.YYYY, HH:mm')}</p>
 
             <div className="field is-grouped">
               <div className="control">

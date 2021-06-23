@@ -6,7 +6,7 @@ const extraSchema = mongoose.Schema({
     type: String,
     unique: true,
     required: true,
-    minlength: 5
+    minlength: 3
   },
   classes: {
     type: [Number],

@@ -19,6 +19,11 @@ const UserPage = ({ currentUser }) => {
     history.push('/visits')
   }
 
+  const extras = (event) => {
+    event.preventDefault()
+    history.push('/extras')
+  }
+
   if (!currentUser) return <div></div>
 
   return (
@@ -28,6 +33,9 @@ const UserPage = ({ currentUser }) => {
       </p>
       <p className="control">
         <button className="button luma" onClick={listVisits}>Varaukset</button>
+      </p>
+      <p className="control">
+        <button className="button luma" onClick={extras}>Lisäpalvelut</button>
       </p>
       {currentUser.isAdmin &&
         <p className="control">

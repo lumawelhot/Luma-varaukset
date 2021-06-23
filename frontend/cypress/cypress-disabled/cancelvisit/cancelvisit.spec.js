@@ -4,14 +4,16 @@ import { Given, /* When,  */Then, And } from 'cypress-cucumber-preprocessor/step
 const eventDate = new Date()
 eventDate.setDate(new Date().getDate() + 1)
 const eventName = 'Cancel-visit'
+const eventStart = new Date(eventDate.setHours(10,0))
+const eventEnd = new Date(eventDate.setHours(12,0))
 
 it('Initialize tests', () => {
   cy.login({ username: 'Admin', password: 'salainen' })
   cy.createEvent({
     title: eventName,
+    start: eventStart,
+    end: eventEnd,
     scienceClass: [1,2],
-    start: eventDate,
-    end: eventDate,
     remoteVisit: true,
     inPersonVisit: false,
     desc: 'Test event description'
@@ -19,6 +21,7 @@ it('Initialize tests', () => {
 })
 
 Given('I have made a booking for an available event', () => {
+  cy.login({ username: 'Admin', password: 'salainen' })
   cy.visit('http://localhost:3000')
   cy.wait(1000)
   cy.findEvent(eventName).click()

@@ -28,6 +28,7 @@ const typeDefs = gql`
     tags: [Tag]!
     visits: [Visit]!
     availableTimes: [TimeSlot]!
+    waitingTime: Int!
   }
   type Visit {
     id: ID!
@@ -43,6 +44,8 @@ const typeDefs = gql`
     status: Boolean!
     startTime: String!
     endTime: String!
+    inPersonVisit: Boolean!
+    remoteVisit: Boolean!
   }
   type Token {
     value: String!
@@ -87,6 +90,7 @@ const typeDefs = gql`
       inPersonVisit: Boolean!
       remoteVisit: Boolean!
       tags: [TagInput]
+      waitingTime: Int!
     ): Event
     createVisit(
       event: ID!
@@ -101,6 +105,8 @@ const typeDefs = gql`
       participants: Int!
       extra: [Int]
       username: String
+      inPersonVisit: Boolean!
+      remoteVisit: Boolean!
     ): Visit
     cancelVisit(id: ID!): Visit
     createExtra(
@@ -109,6 +115,9 @@ const typeDefs = gql`
       remoteLength: Int!
       inPersonLength: Int!
     ): Extra
+    deleteExtra(
+      id: String!
+    ): String
   }
 `
 module.exports = typeDefs

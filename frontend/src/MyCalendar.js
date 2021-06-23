@@ -17,7 +17,7 @@ const resourceMap = [
   { resourceids: 5, resourceTitle: 'Gadolin' },
 ]
 
-const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick }) => {
+const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, currentDate, setCurrentDate, currentView, setCurrentView }) => {
 
   const [localEvents, setEvents] = useState([])
   const [filterFunction, setFilterFunction] = useState(() => () => { return true })
@@ -25,6 +25,15 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
   useEffect(() => {
     setEvents(events)
   }, [events])
+
+  const handleNavigate = (date) => {
+    if (date) setCurrentDate(date)
+  }
+
+  const handleView = (view) => {
+    console.log(view)
+    if (view) setCurrentView(view)
+  }
 
   const handleSelect = ({ start, end }) => {
     showNewEventForm(start, end)
@@ -42,16 +51,16 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
   }
 
   const customEventPropGetter = event => {
-    const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14
-    const startsAfter1Hour = moment(event.start).diff(new Date(), 'minutes') >= 60
-    if (event.booked || (!currentUser && !startsAfter14Days) || (currentUser && !startsAfter1Hour)) {
+    /* const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14
+    const startsAfter1Hour = moment(event.start).diff(new Date(), 'minutes') >= 60 */
+    if (event.booked/*  || (!currentUser && !startsAfter14Days) || (currentUser && !startsAfter1Hour) */) {
       return { className: 'booked' , }
     }
-    return { className: resourceMap[event.resourceids-1]?.resourceTitle.toLowerCase() || '' }
+    return { className: event.resourceids.length > 1 ? 'multiple' : resourceMap[event.resourceids[0]-1]?.resourceTitle.toLowerCase() || '' }
   }
 
   const AgendaEvent = ({ event }) => {
-    const resourceName = resourceMap[event.resourceids-1]?.resourceTitle || null
+    const resourceName = resourceMap[event.resourceids[0]-1]?.resourceTitle || null
     console.log(event.booked)
     if (event.booked) {
       console.log(event.booked)
@@ -109,6 +118,10 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick })
         }}
         dayPropGetter={customDayPropGetter}
         eventPropGetter={customEventPropGetter}
+        onNavigate={handleNavigate}
+        onView={handleView}
+        date={currentDate}
+        view={currentView}
       />
     </div>)
 }

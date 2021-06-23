@@ -18,9 +18,14 @@ import { v4 as uuidv4 } from 'uuid'
 import VisitPage from './components/VisitPage'
 import VisitList from './components/VisitList'
 //mport fromUnixTime from 'date-fns/fromUnixTime'
+import moment from 'moment'
+import 'moment/locale/fi'
+import ExtrasAdmin from './components/EventExtras/ExtrasAdmin'
 
 const App = () => {
   const history = useHistory()
+  const [currentDate, setCurrentDate] = useState(null)
+  const [currentView, setCurrentView] = useState('month')
   const [events, setEvents] = useState([])
   const client = useApolloClient()
   const result = useQuery(EVENTS)
@@ -36,6 +41,9 @@ const App = () => {
   const parseEvent = (event) => {
     //console.log(event.title, event.availableTimes, event.start)
     //console.log(event, '<--------------------------------------------------------------')
+    const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14
+    const startsAfter1Hour = moment(event.start).diff(new Date(), 'minutes') >= 60
+    const booked = (!currentUser && !startsAfter14Days) || (currentUser && !startsAfter1Hour)
     const details = {
       id: event.id,
       title: event.title,
@@ -48,7 +56,7 @@ const App = () => {
     let events = event.availableTimes.map(timeSlot => Object({
       start: new Date(timeSlot.startTime),
       end: new Date(timeSlot.endTime),
-      booked: false,
+      booked: booked,
       ...details
     }))
     events = events.concat(event.visits.map(visit => Object({
@@ -60,7 +68,6 @@ const App = () => {
 
     return events
   }
-
 
   useEffect(() => {
     if (result.data) {
@@ -163,6 +170,12 @@ const App = () => {
           }
           {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
         </Route>
+        <Route path='/extras'>
+          {currentUser &&
+            <ExtrasAdmin sendMessage={notify} />
+          }
+          {!currentUser && <p>Et ole kirjautunut sisään.</p>}
+        </Route>
         <Route path='/users/create'>
           {currentUser && currentUser.isAdmin &&
             <UserForm sendMessage={notify} />
@@ -208,7 +221,16 @@ const App = () => {
                 />
               </div>
             </div>}
-          <MyCalendar events={events} currentUser={currentUser} showNewEventForm={showEventFormHandler} handleEventClick={handleEventClick} />
+          <MyCalendar
+            events={events}
+            currentUser={currentUser}
+            showNewEventForm={showEventFormHandler}
+            handleEventClick={handleEventClick}
+            currentDate={currentDate}
+            setCurrentDate={setCurrentDate}
+            currentView={currentView}
+            setCurrentView={setCurrentView}
+          />
           <UserPage currentUser={currentUser} />
           {!currentUser &&
             <span className='icon is-pulled-right'><FcKey onClick={login} className='admin-button' /></span>

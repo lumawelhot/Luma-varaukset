@@ -1,7 +1,7 @@
 const { UserInputError, AuthenticationError } = require('apollo-server-errors')
 const { readMessage } = require('../services/fileReader')
-const { getUnixTime, add, sub } = require('date-fns')
-const { findValidTimeSlot, findClosestTimeSlot } = require('../utils/timeCalculation')
+const { add, sub } = require('date-fns')
+const { findValidTimeSlot, findClosestTimeSlot, generateAvailableTime } = require('../utils/timeCalculation')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const mailer = require('../services/mailer')
@@ -20,7 +20,7 @@ const resolvers = {
       return users
     },
     getEvents: async () => {
-      const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits', { startTime: 1, endTime: 1 })
+      const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits')
       return events
     },
     getTags: async () => {
@@ -34,20 +34,7 @@ const resolvers = {
     findVisit: async (root, args) => {
       try {
         const visit = await Visit.findById(args.id)
-        return {
-          id: visit.id,
-          event: visit.event,
-          grade: visit.grade,
-          clientName: visit.clientName,
-          schoolName: visit.schoolName,
-          schoolLocation: visit.schoolLocation,
-          participants: visit.participants,
-          clientEmail: visit.clientEmail,
-          clientPhone: visit.clientPhone,
-          startTime: visit.startTime,
-          endTime: visit.endTime,
-          status: visit.status
-        }
+        return visit
       } catch (e) {
         throw new UserInputError('Varausta ei löytynyt!')
       }
@@ -131,13 +118,17 @@ const resolvers = {
         grades,
         remoteVisit: args.remoteVisit,
         inPersonVisit: args.inPersonVisit,
-        availableTimes: [{ startTime: args.start, endTime: args.end }]
+        waitingTime: args.waitingTime,
+        availableTimes: [{
+          startTime: args.start,
+          endTime: args.end
+        }]
       })
       newEvent.tags = mongoTags
       await newEvent.save()
       return newEvent
     },
-    createVisit: async (root, args) => {
+    createVisit: async (root, args, { currentUser }) => {
       const event = await Event.findById(args.event)
       const visitTime = {
         start: new Date(args.startTime),
@@ -147,25 +138,9 @@ const resolvers = {
         startTime: new Date(time.startTime),
         endTime: new Date(time.endTime)
       }))
-
-      const eventStart = new Date(event.start)
-      const eventEnd = new Date(event.end)
-
-      const generateAvailableTime = (start, end) => {
-        let result = null
-        if (end - start >= 3600000) {
-          result = {
-            startTime: start,
-            endTime: end
-          }
-        }
-        return result
-      }
-      const assignAvailableTimes = (after, before, availableTime) => {
-        const filteredAvailTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime).map(at => Object({ startTime: at.startTime.toISOString(), endTime: at.endTime.toISOString() }))
-        if (before) filteredAvailTimes.push(before)
-        if (after) filteredAvailTimes.push(after)
-        return filteredAvailTimes
+      const eventTime = {
+        start: new Date(event.start),
+        end: new Date(event.end)
       }
 
       const availableTime = findValidTimeSlot(availableTimes, visitTime)
@@ -174,18 +149,18 @@ const resolvers = {
       }
 
       if (
-        getUnixTime(visitTime.start) >= getUnixTime(eventStart) &&
-        getUnixTime(visitTime.start) < getUnixTime(visitTime.end) &&
-        getUnixTime(visitTime.end) <= getUnixTime(eventEnd)
+        visitTime.start >= eventTime.start &&
+        visitTime.start < visitTime.end &&
+        visitTime.end <= eventTime.end
       ) {
-        const availableEnd = new Date(visitTime.start)
-        const availableStart = new Date(visitTime.end)
-        availableEnd.setTime(availableEnd.getTime() - 900000)
-        availableStart.setTime(availableStart.getTime() + 900000)
+        const availableEnd = sub(new Date(visitTime.start), { minutes: event.waitingTime })
+        const availableStart = add(new Date(visitTime.end), { minutes: event.waitingTime })
 
-        const availableBefore = generateAvailableTime(availableTime.startTime, availableEnd)
-        const availableAfter = generateAvailableTime(availableStart, availableTime.endTime)
-        const newAvailableTimes = assignAvailableTimes(availableAfter, availableBefore, availableTime)
+        const before = generateAvailableTime(availableTime.startTime, availableEnd)
+        const after = generateAvailableTime(availableStart, availableTime.endTime)
+        const newAvailableTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime).map(at => Object({ startTime: at.startTime.toISOString(), endTime: at.endTime.toISOString() }))
+        if (before) newAvailableTimes.push(before)
+        if (after) newAvailableTimes.push(after)
         event.availableTimes = newAvailableTimes
       }
 
@@ -198,13 +173,19 @@ const resolvers = {
       })
 
       let savedVisit
+      event.availableTimes = event.availableTimes.map(time => {
+        if (typeof time.startTime === 'string') return time
+        return {
+          startTime: time.startTime.toISOString(),
+          endTime: time.endTime.toISOString()
+        }
+      })
       try {
         const now = new Date()
         const start = new Date(event.start)
-        const user = await User.findOne({ username: args.username })
-        const startsAfter14Days = getUnixTime(start) - getUnixTime(now) >= 1209600
-        const startsAfter1Hour = getUnixTime(start) - getUnixTime(now) >= 3600
-        const eventCanBeBooked = (user === null) ? startsAfter14Days : startsAfter1Hour
+        const startsAfter14Days = start - now >= 1209600000
+        const startsAfter1Hour = start - now >= 3600000
+        const eventCanBeBooked = !currentUser ? startsAfter14Days : startsAfter1Hour
         if (eventCanBeBooked) {
           savedVisit = await visit.save()
           const details = [{
@@ -237,8 +218,8 @@ const resolvers = {
       const visit = await Visit.findById(args.id)
       const event = await Event.findById(visit.event)
       const visitTime = {
-        start: sub(new Date(visit.startTime), { minutes: 15 }),
-        end: add(new Date(visit.endTime), { minutes: 15 })
+        start: sub(new Date(visit.startTime), { minutes: event.waitingTime }),
+        end: add(new Date(visit.endTime), { minutes: event.waitingTime })
       }
       const eventTime = {
         start: new Date(event.start),
@@ -254,23 +235,34 @@ const resolvers = {
 
       const newAvailTime = findClosestTimeSlot(availableTimes, visitTime, eventTime)
 
-      const filteredAvailTimes = availableTimes.filter(time => !(
-        getUnixTime(time.startTime) === getUnixTime(newAvailTime.startTime) ||
-        getUnixTime(time.endTime) === getUnixTime(newAvailTime.endTime)
-      ))
+      let filteredAvailTimes = availableTimes.filter(time => {
+        return !(
+          time.startTime >= newAvailTime.startTime &&
+          time.endTime <= newAvailTime.endTime
+        )
+      })
       filteredAvailTimes.push(newAvailTime)
+      filteredAvailTimes = filteredAvailTimes.map(time => {
+        if (typeof time.startTime === 'string') return time
+        return {
+          startTime: time.startTime.toISOString(),
+          endTime: time.endTime.toISOString()
+        }
+      })
 
       try {
-        event.visits = event.visits.filter(v => v.toString() !== visit.id) //huomaa catch!
+        event.visits = event.visits.filter(v => v.toString() !== visit.id)
         event.availableTimes = filteredAvailTimes
         visit.status = false
-        event.booked = false
         await visit.save()
         await event.save()
         return visit
       } catch (error) {
+        event.visits = event.visits.concat(visit._id)
         event.availableTimes = availableTimes
+        visit.status = true
         await event.save()
+        await visit.save()
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
@@ -280,7 +272,7 @@ const resolvers = {
       if (!currentUser) {
         throw new AuthenticationError('not authenticated or no credentials')
       }
-      if(args.name.length < 5){
+      if(args.name.length < 3){
         throw new UserInputError('Name too short!')
       }
       if(args.classes.length === 0) {
@@ -288,6 +280,29 @@ const resolvers = {
       }
       if(args.remoteLength === 0 && args.inPersonLength === 0){
         throw new UserInputError('Give duration for at least one mode!')
+      }
+      try {
+        const newExtra = new Extra({
+          ...args
+        })
+        const savedExtra = await newExtra.save()
+        return savedExtra
+      } catch (error) {
+        throw new UserInputError(error.message, { invalidArgs: args })
+      }
+    },
+    deleteExtra: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
+      if (!args.id) {
+        throw new UserInputError('No ID provided!')
+      }
+      try {
+        await Extra.deleteOne({ _id:args.id })
+        return 'Deleted Extra with ID ' + args.id
+      } catch (error) {
+        throw new UserInputError('Backend problemo')
       }
     }
   }

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useFormik/* , FormikProvider */ } from 'formik'
 import { useMutation } from '@apollo/client'
-import { CREATE_VISIT } from '../graphql/queries'
+import { CREATE_VISIT, EVENTS } from '../graphql/queries'
 import { useHistory } from 'react-router'
 import moment from 'moment'
 
@@ -45,7 +45,7 @@ const validate = values => {
   if (!values.participants) {
     errors.participants = messageIfMissing
   }
-  if ((values.remoteVisit === values.inPersonVisit) && (selectedEvent.inPersonVisit && selectedEvent.remoteVisit)) {
+  if ((values.visitMode === 0) && (selectedEvent.inPersonVisit && selectedEvent.remoteVisit)) {
     errors.location = 'Valitse joko etä- tai lähivierailu!'
   }
   if(!values.privacyPolicy){
@@ -58,7 +58,9 @@ const validate = values => {
 }
 
 const VisitForm = ({ sendMessage, event, currentUser }) => {
+  selectedEvent = event
   const history = useHistory()
+  selectedEvent = event
   if (!event) {
     history.push('/')
   }
@@ -71,7 +73,9 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
   ]
 
   const filterEventGrades = (eventGrades) => {
-    const returnArray = []
+    const gradesArrays = eventGrades.map(g => grades[g].label)
+    return gradesArrays.join(', ')
+    /* const returnArray = []
     eventGrades.forEach(availableGrade => {
       grades.forEach(grade => {
         if (availableGrade === grade.value) {
@@ -79,28 +83,24 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
         }
       })
     })
-    return returnArray
+    return returnArray */
   }
 
-  const filterEventClass = (eventClass) => {
-    switch (eventClass) {
-      case 1:
-        return 'SUMMAMUTIKKA'
-      case 2:
-        return 'FOTONI'
-      case 3:
-        return 'LINKKI'
-      case 4:
-        return 'GEOPISTE'
-      case 5:
-        return 'GADOLIN'
-      default:
-        console.log('Error!')
-        break
-    }
+  const classes = [
+    { value: 1, label: 'SUMMAMUTIKKA' },
+    { value: 2, label: 'FOTONI' },
+    { value: 3, label: 'LINKKI' },
+    { value: 4, label: 'GEOPISTE' },
+    { value: 5, label: 'GADOLIN' }
+  ]
+
+  const filterEventClass = (eventClasses) => {
+    const classesArray = eventClasses.map(c => classes[c].label)
+    return classesArray.join(', ')
   }
 
   const [create, result] = useMutation(CREATE_VISIT, {
+    refetchQueries: [{ query: EVENTS }],
     onError: (error) => {
       if (error.message === 'File not found') {
         sendMessage('Vahvistusviestin lähettäminen epäonnistui! Vierailun varaaminen ei onnistunut.', 'danger')
@@ -122,8 +122,9 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
     initialValues: {
       clientName: '',
       schoolName: '',
-      remoteVisit: false,
-      inPersonVisit: false,
+      visitMode: '0',
+      /* remoteVisit: false,
+      inPersonVisit: false, */
       schoolLocation: '',
       clientEmail: '',
       verifyEmail: '',
@@ -132,30 +133,32 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
       participants: '',
       privacyPolicy: false,
       remoteVisitGuidelines: false,
-      dataUseAgreement: false
-
+      dataUseAgreement: false,
+      username: ''
     },
     validate,
     onSubmit: values => {
       try {
-        if (!values.remoteVisit && !values.inPersonVisit) {
-          values.remoteVisit = event.remoteVisit
-          values.inPersonVisit = event.inPersonVisit
+        if (currentUser) {
+          formik.setFieldValue('username', currentUser.username)
         }
+        const remoteVisit = (values.visitMode === '0')? event.remoteVisit : (values.visitMode === '1') ? true : false
+        const inPersonVisit = (values.visitMode === '0')? event.inPersonVisit : (values.visitMode === '2') ? true : false
         create({
           variables: {
             event: event.id,
             clientName: values.clientName,
             schoolName: values.schoolName,
-            remoteVisit: values.remoteVisit,
-            inPersonVisit: values.inPersonVisit,
+            remoteVisit: remoteVisit,
+            inPersonVisit: inPersonVisit,
             schoolLocation: values.schoolLocation,
+            startTime: event.start,
+            endTime: event.end,
             clientEmail: values.clientEmail,
-            verifyEmail: values.verifyEmail,
             clientPhone: values.clientPhone,
             grade: values.visitGrade,
             participants: values.participants,
-            username: currentUser.username
+            username: values.username
           }
         })
       } catch (error) {
@@ -188,8 +191,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
               <p>Kuvaus: [Tähän tapahtuman kuvaus]</p>
               <p>Tiedeluokka: {eventClass}</p>
               <p>Valittavissa olevat lisäpalvelut: [Tähän ekstrat]</p>
-              <div>Tarjolla seuraaville luokka-asteille: {eventGrades.map(g =>
-                <div key={g.value}>{g.label}</div>)}
+              <div>Tarjolla seuraaville luokka-asteille: {eventGrades}
               </div>
               <div>Tapahtuma tarjolla:
                 {event.inPersonVisit ? <p>Lähiopetuksena</p> : <></>}
@@ -210,25 +212,25 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                   <div className="control">
                     <label className="visitMode">
                       <input
-                        type="radio" name="visitMode" checked = {formik.values.remoteVisit}
+                        type="radio" name="visitMode" value="1" /* checked = {formik.values.visitMode} */
                         onChange={() => {
-                          formik.touched.remoteVisit = !formik.values.remoteVisit
-                          formik.setFieldValue('remoteVisit', !formik.values.remoteVisit)
+                          formik.touched.visitMode = true
+                          formik.setFieldValue('visitMode', '1')
                         }} /> Etävierailu
                     </label>
                   </div>
                   <div className="control">
                     <label className="visitMode">
-                      <input type="radio" name="visitMode" checked={formik.values.inPersonVisit}
+                      <input type="radio" name="visitMode" value="2" /* checked={!formik.values.visitMode} */
                         onChange={() => {
-                          formik.touched.inPersonVisit = !formik.values.inPersonVisit
-                          formik.setFieldValue('inPersonVisit', !formik.values.inPersonVisit)
+                          formik.touched.visitMode = true
+                          formik.setFieldValue('visitMode', '2')
                         }} /> Lähivierailu
                     </label>
                   </div>
                 </div>
               ) : null}
-              {formik.touched.location && formik.errors.location ? (
+              {formik.touched.clientName && formik.errors.location ? (
                 <p className="help is-danger">{formik.errors.location}</p>
               ) : null}
               </div>

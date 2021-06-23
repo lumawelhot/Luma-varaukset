@@ -2,10 +2,11 @@ const { gql } = require('apollo-server-express')
 const setHours = require('date-fns/setHours')
 const setMinutes = require('date-fns/setMinutes')
 const setSeconds = require('date-fns/setSeconds')
+const setMilliseconds = require('date-fns/setMilliseconds')
 const add = require('date-fns/add')
 const { getUnixTime } = require('date-fns')
 
-const createDate = (hours, minutes) => setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), hours), minutes), 0)
+const createDate = (hours, minutes) => setMilliseconds(setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), hours), minutes), 0), 0)
 
 const CANCEL_VISIT = gql `
   mutation cancelVisit($id: ID!) {
@@ -28,7 +29,9 @@ const CREATE_VISIT = gql `
     $clientPhone: String!,
     $username: String
     $startTime: String!
-    $endTime: String!
+    $endTime: String!,
+    $inPersonVisit: Boolean!,
+    $remoteVisit: Boolean!
     ) {
     createVisit(
       event: $event
@@ -42,6 +45,8 @@ const CREATE_VISIT = gql `
       username: $username
       startTime: $startTime
       endTime: $endTime
+      inPersonVisit: $inPersonVisit,
+      remoteVisit: $remoteVisit
     ) {
       id
       event {
@@ -96,7 +101,9 @@ const details = {
   grade: '1',
   schoolName: 'school',
   schoolLocation: 'Helsinki',
-  participants: 13
+  participants: 13,
+  inPersonVisit: true,
+  remoteVisit: true
 }
 
 const createTimeList = (startList, endList) => {
