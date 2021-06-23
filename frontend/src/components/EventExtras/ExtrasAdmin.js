@@ -26,8 +26,8 @@ const AddExtraForm = ({ handleAdd }) => {
     handleAdd({
       name,
       classes: [...classes],
-      remoteLength,
-      inPersonLength
+      remoteLength: Number(remoteLength),
+      inPersonLength: Number(inPersonLength)
     })
   }
 
