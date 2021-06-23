@@ -56,7 +56,7 @@ const AddExtraForm = ({ handleAdd }) => {
         <input type="number" value={inPersonLength} onChange={(e) => setInPersonLength(e.target.value)}/>
       </label>
       <label className="label">
-        Kesto lähi
+        Kesto etä
         <input type="number" value={remoteLength} onChange={(e) => setRemoteLength(e.target.value)}/>
       </label>
       <input type="submit" className="button luma primary"/>
