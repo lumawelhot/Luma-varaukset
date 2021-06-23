@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FIND_VISIT, CANCEL_VISIT } from '../graphql/queries'
+import { FIND_VISIT, CANCEL_VISIT, EVENTS } from '../graphql/queries'
 import { useMutation, useLazyQuery } from '@apollo/client'
 import { useParams } from 'react-router'
 import moment from 'moment'
@@ -29,6 +29,7 @@ const VisitPage = ({ sendMessage }) => {
   })
 
   const [cancelVisit, resultOfCancel] = useMutation(CANCEL_VISIT, {
+    refetchQueries: [{ query: EVENTS }],
     onError: (e) => {
       sendMessage('Virhe!', 'danger')
       console.log(e)

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useFormik/* , FormikProvider */ } from 'formik'
 import { useMutation } from '@apollo/client'
-import { CREATE_VISIT } from '../graphql/queries'
+import { CREATE_VISIT, EVENTS } from '../graphql/queries'
 import { useHistory } from 'react-router'
 import moment from 'moment'
 
@@ -100,6 +100,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
   }
 
   const [create, result] = useMutation(CREATE_VISIT, {
+    refetchQueries: [{ query: EVENTS }],
     onError: (error) => {
       if (error.message === 'File not found') {
         sendMessage('Vahvistusviestin lähettäminen epäonnistui! Vierailun varaaminen ei onnistunut.', 'danger')
