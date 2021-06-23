@@ -174,6 +174,7 @@ const resolvers = {
 
       let savedVisit
       event.availableTimes = event.availableTimes.map(time => {
+        if (typeof time.startTime === 'string') return time
         return {
           startTime: time.startTime.toISOString(),
           endTime: time.endTime.toISOString()
@@ -202,7 +203,6 @@ const resolvers = {
           })
           event.visits = event.visits.concat(savedVisit._id)
           await event.save()
-          console.log('luotu vierailu (resolvers rivi 199): ', savedVisit)
           return savedVisit
         }
       } catch (error) {
@@ -243,6 +243,7 @@ const resolvers = {
       })
       filteredAvailTimes.push(newAvailTime)
       filteredAvailTimes = filteredAvailTimes.map(time => {
+        if (typeof time.startTime === 'string') return time
         return {
           startTime: time.startTime.toISOString(),
           endTime: time.endTime.toISOString()
@@ -250,16 +251,18 @@ const resolvers = {
       })
 
       try {
-        event.visits = event.visits.filter(v => v.toString() !== visit.id) //huomaa catch!
+        event.visits = event.visits.filter(v => v.toString() !== visit.id)
         event.availableTimes = filteredAvailTimes
         visit.status = false
-        event.booked = false
         await visit.save()
         await event.save()
         return visit
       } catch (error) {
+        event.visits = event.visits.concat(visit._id)
         event.availableTimes = availableTimes
+        visit.status = true
         await event.save()
+        await visit.save()
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
