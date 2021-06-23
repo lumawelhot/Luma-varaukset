@@ -48,6 +48,14 @@ const visitSchema = mongoose.Schema({
   endTime: {
     type: String,
     required: true
+  },
+  inPersonVisit: {
+    type: Boolean,
+    required: true
+  },
+  remoteVisit: {
+    type: Boolean,
+    required: true
   }
 })
 

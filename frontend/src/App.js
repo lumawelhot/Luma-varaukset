@@ -18,6 +18,8 @@ import { v4 as uuidv4 } from 'uuid'
 import VisitPage from './components/VisitPage'
 import VisitList from './components/VisitList'
 //mport fromUnixTime from 'date-fns/fromUnixTime'
+import moment from 'moment'
+import 'moment/locale/fi'
 
 const App = () => {
   const history = useHistory()
@@ -36,6 +38,9 @@ const App = () => {
   const parseEvent = (event) => {
     //console.log(event.title, event.availableTimes, event.start)
     //console.log(event, '<--------------------------------------------------------------')
+    const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14
+    const startsAfter1Hour = moment(event.start).diff(new Date(), 'minutes') >= 60
+    const booked = (!currentUser && !startsAfter14Days) || (currentUser && !startsAfter1Hour)
     const details = {
       id: event.id,
       title: event.title,
@@ -48,7 +53,7 @@ const App = () => {
     let events = event.availableTimes.map(timeSlot => Object({
       start: new Date(timeSlot.startTime),
       end: new Date(timeSlot.endTime),
-      booked: false,
+      booked: booked,
       ...details
     }))
     events = events.concat(event.visits.map(visit => Object({
@@ -60,7 +65,6 @@ const App = () => {
 
     return events
   }
-
 
   useEffect(() => {
     if (result.data) {

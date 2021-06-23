@@ -94,6 +94,7 @@ Cypress.Commands.add('createEvent', ({ title, scienceClass, remoteVisit, inPerso
           remoteVisit: ${remoteVisit}
           inPersonVisit: ${inPersonVisit}
           tags: [{ name: "Matematiikka" }, { name: "Fysiikka" }]
+          waitingTime: 15
         ){
           title,
           resourceids,

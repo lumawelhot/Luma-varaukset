@@ -59,6 +59,7 @@ const validate = values => {
 
 const VisitForm = ({ sendMessage, event, currentUser }) => {
   const history = useHistory()
+  selectedEvent = event
   if (!event) {
     history.push('/')
   }
@@ -71,7 +72,9 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
   ]
 
   const filterEventGrades = (eventGrades) => {
-    const returnArray = []
+    const gradesArrays = eventGrades.map(g => grades[g].label)
+    return gradesArrays.join(', ')
+    /* const returnArray = []
     eventGrades.forEach(availableGrade => {
       grades.forEach(grade => {
         if (availableGrade === grade.value) {
@@ -79,25 +82,20 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
         }
       })
     })
-    return returnArray
+    return returnArray */
   }
 
-  const filterEventClass = (eventClass) => {
-    switch (eventClass) {
-      case 1:
-        return 'SUMMAMUTIKKA'
-      case 2:
-        return 'FOTONI'
-      case 3:
-        return 'LINKKI'
-      case 4:
-        return 'GEOPISTE'
-      case 5:
-        return 'GADOLIN'
-      default:
-        console.log('Error!')
-        break
-    }
+  const classes = [
+    { value: 1, label: 'SUMMAMUTIKKA' },
+    { value: 2, label: 'FOTONI' },
+    { value: 3, label: 'LINKKI' },
+    { value: 4, label: 'GEOPISTE' },
+    { value: 5, label: 'GADOLIN' }
+  ]
+
+  const filterEventClass = (eventClasses) => {
+    const classesArray = eventClasses.map(c => classes[c].label)
+    return classesArray.join(', ')
   }
 
   const [create, result] = useMutation(CREATE_VISIT, {
@@ -132,12 +130,15 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
       participants: '',
       privacyPolicy: false,
       remoteVisitGuidelines: false,
-      dataUseAgreement: false
-
+      dataUseAgreement: false,
+      username: ''
     },
     validate,
     onSubmit: values => {
       try {
+        if (currentUser) {
+          formik.setFieldValue('username', currentUser.username)
+        }
         if (!values.remoteVisit && !values.inPersonVisit) {
           values.remoteVisit = event.remoteVisit
           values.inPersonVisit = event.inPersonVisit
@@ -150,12 +151,13 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
             remoteVisit: values.remoteVisit,
             inPersonVisit: values.inPersonVisit,
             schoolLocation: values.schoolLocation,
+            startTime: event.start,
+            endTime: event.end,
             clientEmail: values.clientEmail,
-            verifyEmail: values.verifyEmail,
             clientPhone: values.clientPhone,
             grade: values.visitGrade,
             participants: values.participants,
-            username: currentUser.username
+            username: values.username
           }
         })
       } catch (error) {
@@ -187,8 +189,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
               <p>Kuvaus: [Tähän tapahtuman kuvaus]</p>
               <p>Tiedeluokka: {eventClass}</p>
               <p>Valittavissa olevat lisäpalvelut: [Tähän ekstrat]</p>
-              <div>Tarjolla seuraaville luokka-asteille: {eventGrades.map(g =>
-                <div key={g.value}>{g.label}</div>)}
+              <div>Tarjolla seuraaville luokka-asteille: {eventGrades}
               </div>
               <div>Tapahtuma tarjolla:
                 {event.inPersonVisit ? <p>Lähiopetuksena</p> : <></>}

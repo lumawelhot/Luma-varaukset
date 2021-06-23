@@ -1,13 +1,10 @@
 const mongoose = require('mongoose')
 const { createTestClient } = require('apollo-server-testing')
 const { ApolloServer, gql } = require('apollo-server-express')
-//const moment = require ('moment')
-//const parseISO = require('date-fns/parseISO')
 var setHours = require('date-fns/setHours')
 var setMinutes = require('date-fns/setMinutes')
 var setSeconds = require('date-fns/setSeconds')
 var add = require('date-fns/add')
-//const { zonedTimeToUtc, utcToZonedTime, format } = require('date-fns-tz')
 const bcrypt = require('bcrypt')
 
 const UserModel = require('../models/user')
@@ -16,18 +13,20 @@ const VisitModel = require('../models/visit')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
 const { CREATE_VISIT, FIND_VISIT, LOGIN } = require('./testHelpers.js')
+const setMilliseconds = require('date-fns/setMilliseconds')
 
 let availableEvent
-let unavailableEvent
+//let unavailableForAllEvent
 let availableForLoggedInEvent
 let unvailableForLoggedInUserEvent
 let savedAvailableEvent
-let savedUnavailableEvent
 let savedAvailableForLoggedInEvent
 let savedUnvailableForLoggedInUserEvent
 let savedTestVisit
 let server
 let basicUserData
+let savedUser
+let serverNoUser
 
 beforeAll(async () => {
 
@@ -45,11 +44,24 @@ beforeAll(async () => {
   basicUserData = { username: 'basic', passwordHash: basicPassword, isAdmin: false }
 
   const basicUser = new UserModel(basicUserData)
-  await basicUser.save()
+  savedUser = await basicUser.save()
 
   server = new ApolloServer({
     typeDefs,
     resolvers,
+    context: async () => {
+      const currentUser = savedUser
+      return { currentUser }
+    }
+  })
+
+  serverNoUser = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: async () => {
+      const currentUser = undefined
+      return { currentUser }
+    }
   })
 })
 
@@ -57,28 +69,28 @@ beforeEach(async () => {
   await EventModel.deleteMany({})
   await VisitModel.deleteMany({})
 
-  const availableDate = setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 9), 0), 0)
-  const fiveHoursAdded = setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 14), 0), 0)
+  const availableDate = setMilliseconds(setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 9), 0), 0), 0)
+  const fiveHoursAdded = setMilliseconds(setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 14), 0), 0), 0)
 
-  const unavailableDate = new Date()
+  //const unavailableForAllDate = new Date()
 
-  const availableForLoggedInDate = new Date()
-  availableForLoggedInDate.setDate(new Date().getDate() + 2)
-  const twoHoursAddedForLoggedIn = add(new Date(), { days: 2, hours: 2 })
+  const availableForLoggedInDate = setMilliseconds(setSeconds(setMinutes(setHours(add(new Date(), { days: 1 }), 9), 0), 0), 0)
+  const twoHoursAddedForLoggedIn = setMilliseconds(setSeconds(setMinutes(setHours(add(new Date(), { days: 1 }), 11), 0), 0), 0)
 
   const unavailableForLoggedInDate = new Date()
   unavailableForLoggedInDate.setDate(new Date().getDate() - 2)
 
-  const unavailableEventData = {
+  /* const unavailableEventForAllData = {
     title: 'All About Algebra',
     resourceids: [1],
     grades: [1],
-    start: unavailableDate,
-    end: unavailableDate,
+    start: unavailableForAllDate,
+    end: unavailableForAllDate,
     inPersonVisit: true,
     remoteVisit: false,
+    waitingTime: 15,
     availableTimes: []
-  }
+  } */
 
   const availableEventData = {
     title: 'Up-And-Atom!',
@@ -88,7 +100,8 @@ beforeEach(async () => {
     end: fiveHoursAdded,
     inPersonVisit: false,
     remoteVisit: true,
-    availableTimes: [{ startTime: availableDate, endTime: fiveHoursAdded }]
+    availableTimes: [{ startTime: availableDate, endTime: fiveHoursAdded }],
+    waitingTime: 15
   }
 
   const availableForLoggedInEventData = {
@@ -99,7 +112,8 @@ beforeEach(async () => {
     end: twoHoursAddedForLoggedIn,
     inPersonVisit: true,
     remoteVisit: false,
-    availableTimes: [{ startTime: availableForLoggedInDate, endTime: twoHoursAddedForLoggedIn }]
+    availableTimes: [{ startTime: availableForLoggedInDate, endTime: twoHoursAddedForLoggedIn }],
+    waitingTime: 15
   }
 
   const unvailableForLoggedInUserEventData = {
@@ -110,15 +124,16 @@ beforeEach(async () => {
     end: unavailableForLoggedInDate,
     inPersonVisit: true,
     remoteVisit: false,
-    availableTimes: []
+    availableTimes: [],
+    waitingTime: 15
   }
 
-  unavailableEvent = new EventModel(unavailableEventData)
+  //unavailableForAllEvent = new EventModel(unavailableEventForAllData)
   availableEvent = new EventModel(availableEventData)
   availableForLoggedInEvent = new EventModel(availableForLoggedInEventData)
   unvailableForLoggedInUserEvent = new EventModel(unvailableForLoggedInUserEventData)
 
-  savedUnavailableEvent = await unavailableEvent.save()
+  //savedUnavailableEventForAll = await unavailableForAllEvent.save()
   savedAvailableEvent = await availableEvent.save()
   savedAvailableForLoggedInEvent = await availableForLoggedInEvent.save()
   savedUnvailableForLoggedInUserEvent = await unvailableForLoggedInUserEvent.save()
@@ -145,7 +160,7 @@ beforeEach(async () => {
 
 describe('Visit Model Test', () => {
 
-  it('teacher can create new visit successfully', async () => {
+  it('anonymous user can create new visit successfully', async () => {
     const newVisitData = {
       event: availableEvent,
       grade: '1. grade',
@@ -167,7 +182,7 @@ describe('Visit Model Test', () => {
     expect(savedVisit._id).toBeDefined()
   })
 
-  it('teacher cannot create visit without required field', async () => {
+  it('anonymous user cannot create visit without required field', async () => {
     const visitWithoutRequiredField = new VisitModel()
     let err
     try {
@@ -189,7 +204,7 @@ describe('Visit Model Test', () => {
 
 describe('Visit server test', () => {
 
-  it('Create visit successfully', async () => {
+  it('anonymous user can create visit successfully', async () => {
     const { mutate } = createTestClient(server)
     const event = savedAvailableEvent
     const { data } = await mutate({
@@ -226,37 +241,8 @@ describe('Visit server test', () => {
     expect(createVisit.status).toBe(true)
   })
 
-  it('cannot create visit for event less than two weeks ahead', async () => {
-    const { mutate } = createTestClient(server)
-    const event = savedUnavailableEvent
-    const { data } = await mutate({
-      mutation: CREATE_VISIT,
-      variables: {
-        event: event.id,
-        grade: '1. grade',
-        clientName: 'Teacher',
-        schoolName: 'School',
-        schoolLocation: 'Location',
-        participants: 13,
-        clientEmail: 'teacher@school.com',
-        clientPhone: '040-1234567',
-        startTime: event.start,
-        endTime: event.end
-      }
-    })
-    const { createVisit } = data
-
-    expect(createVisit).toBe(null)
-  })
-
-  it('logged in user can create visit any event ahead', async () => {
-    const { mutate } = createTestClient(server)
-
-    // Login
-    let response = await mutate({ mutation: LOGIN })
-    expect(response.errors).toBeUndefined()
-
-    // create event
+  it('anonymous user cannot create visit for event less than two weeks ahead', async () => {
+    const { mutate } = createTestClient(serverNoUser)
     const event = savedAvailableForLoggedInEvent
     const { data } = await mutate({
       mutation: CREATE_VISIT,
@@ -269,10 +255,10 @@ describe('Visit server test', () => {
         participants: 13,
         clientEmail: 'teacher@school.com',
         clientPhone: '040-1234567',
+        startTime: event.start,
+        endTime: event.end,
         inPersonVisit: true,
-        remoteVisit: false,
-        startTime: event.start,
-        endTime: event.end
+        remoteVisit: false
       }
     })
     const { createVisit } = data
@@ -280,7 +266,7 @@ describe('Visit server test', () => {
     expect(createVisit).toBe(null)
   })
 
-  it('logged in user can create visit any event ahead', async () => {
+  it('logged in user can create visit for event more than one hour ahead', async () => {
     const { mutate } = createTestClient(server)
 
     // Login
@@ -289,7 +275,7 @@ describe('Visit server test', () => {
 
     // create event
     const event = savedAvailableForLoggedInEvent
-    const { data } = await mutate({
+    const res = await mutate({
       mutation: CREATE_VISIT,
       variables: {
         event: event.id,
@@ -302,10 +288,13 @@ describe('Visit server test', () => {
         clientPhone: '040-1234567',
         username: basicUserData.username,
         startTime: event.start,
-        endTime: event.end
+        endTime: event.end,
+        inPersonVisit: true,
+        remoteVisit: false
       }
     })
-    const { createVisit } = data
+
+    const { createVisit } = res.data
 
     expect(createVisit.id).toBeDefined()
     expect(createVisit.event.title).toBe(savedAvailableForLoggedInEvent.title)
@@ -319,7 +308,7 @@ describe('Visit server test', () => {
     expect(createVisit.status).toBe(true)
   })
 
-  it('logged in user can\'t create visit to any event before now', async () => {
+  it('logged in user can\'t create visit for event less than one hour ahead', async () => {
     const { mutate } = createTestClient(server)
 
     // Login

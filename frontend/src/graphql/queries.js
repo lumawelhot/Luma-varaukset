@@ -114,7 +114,8 @@ export const CREATE_EVENT = gql`
     $remoteVisit: Boolean!,
     $inPersonVisit: Boolean!,
     $desc: String,
-    $tags: [TagInput]
+    $tags: [TagInput],
+    $waitingTime: Int!
     ) {
     createEvent (
       title: $title,
@@ -126,6 +127,7 @@ export const CREATE_EVENT = gql`
       remoteVisit: $remoteVisit,
       inPersonVisit: $inPersonVisit,
       tags: $tags
+      waitingTime: $waitingTime
     ) {
       id
       title
@@ -136,6 +138,10 @@ export const CREATE_EVENT = gql`
       tags {
         name,
         id
+      }
+      visits {
+        startTime,
+        endTime
       }
       inPersonVisit
       remoteVisit
@@ -161,6 +167,8 @@ export const CREATE_VISIT = gql`
     $inPersonVisit: Boolean!
     $remoteVisit: Boolean!
     $username: String
+    $startTime: String!
+    $endTime: String!
     ) {
     createVisit(
       event: $event
@@ -171,7 +179,6 @@ export const CREATE_VISIT = gql`
       clientPhone: $clientPhone
       startTime: $startTime
       endTime: $endTime
-      clientPhone: $clientPhone
       grade: $grade
       participants: $participants
       inPersonVisit: $inPersonVisit
@@ -205,9 +212,9 @@ export const FIND_VISIT = gql`
       clientPhone
       event {
         title
-        resourceids
         start
         end
+        resourceids
       }
       grade
       startTime
