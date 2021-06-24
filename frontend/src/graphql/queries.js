@@ -58,10 +58,12 @@ export const EVENTS = gql`
         endTime
       }
       extras {
+        id
         name
         inPersonLength
         remoteLength
       }
+      duration
     }
   }
 `

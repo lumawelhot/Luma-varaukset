@@ -19,46 +19,49 @@ const CANCEL_VISIT = gql `
 
 const CREATE_VISIT = gql `
   mutation createVisit(
-    $event: ID!,
-    $grade: String!,
-    $clientName: String!,
-    $schoolName: String!,
-    $schoolLocation: String!,
-    $participants: Int!,
-    $clientEmail: String!,
-    $clientPhone: String!,
+    $event: ID!
+    $clientName: String!
+    $schoolName: String!
+    $schoolLocation: String!
+    $clientEmail: String!
+    $clientPhone: String!
+    $grade: String!
+    $participants: Int!
+    $inPersonVisit: Boolean!
+    $remoteVisit: Boolean!
     $username: String
     $startTime: String!
-    $endTime: String!,
-    $inPersonVisit: Boolean!,
-    $remoteVisit: Boolean!
+    $endTime: String!
     ) {
     createVisit(
       event: $event
-      grade: $grade
       clientName: $clientName
       schoolName: $schoolName
       schoolLocation: $schoolLocation
-      participants: $participants
       clientEmail: $clientEmail
       clientPhone: $clientPhone
-      username: $username
       startTime: $startTime
       endTime: $endTime
-      inPersonVisit: $inPersonVisit,
+      grade: $grade
+      participants: $participants
+      inPersonVisit: $inPersonVisit
       remoteVisit: $remoteVisit
+      username: $username
     ) {
       id
       event {
+        id
         title
       }
-      grade
       clientName
       schoolName
       schoolLocation
-      participants
       clientEmail
       clientPhone
+      startTime
+      endTime
+      grade
+      participants
       status
     }
   }

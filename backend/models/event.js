@@ -67,7 +67,7 @@ const eventSchema = mongoose.Schema({
   ],
   duration: {
     type: Number,
-    required: false
+    required: true
   }
 })
 
