@@ -2,18 +2,21 @@
 import { Given, When, Then, And } from 'cypress-cucumber-preprocessor/steps'
 import moment from 'moment'
 
-const eventDate1 = new Date()
-eventDate1.setDate(new Date().getDate() + 17)
-const eventDate2 = new Date()
-eventDate2.setDate(new Date().getDate() + 18)
-const eventDate3 = new Date()
-eventDate3.setDate(new Date().getDate() + 19)
 const availableEvent1 = 'Test available event 1 both remote and inPerson'
+const eventDate1 = new Date()
+eventDate1.setDate(new Date().getDate() + 30)
+
 const availableEvent2 = 'Test available event 2 for invalid client name'
+const eventDate2 = new Date()
+eventDate2.setDate(new Date().getDate() + 31)
+
 const availableEvent3 = 'Test available event 3 only remote'
+const eventDate3 = new Date()
+eventDate3.setDate(new Date().getDate() + 32)
+
 const unavailableEventName = 'Test unavailable event'
 const unavailableEventDate = new Date()
-unavailableEventDate.setDate(new Date().getDate() + 3)
+unavailableEventDate.setDate(new Date().getDate() + 1)
 
 before(() => {
   cy.login({ username: 'Admin', password: 'salainen' })
@@ -48,7 +51,7 @@ before(() => {
     title: unavailableEventName,
     scienceClass: 'LINKKI',
     inPersonVisit: true,
-    remoteVisit: false,
+    remoteVisit: true,
     start: new Date(unavailableEventDate.setHours(10,0)),
     end: new Date(unavailableEventDate.setHours(12,0)),
     desc: 'Unavailable event description'

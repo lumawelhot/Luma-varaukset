@@ -45,5 +45,5 @@ Scenario: An event is succesfully booked by an admin with valid information
     And there is an event less than two weeks ahead
     And I click on the unavailable event
     And I click the booking button
-    And valid information is entered and visit mode predetermined
+    And valid information is entered and visit mode selected
     Then booked unavailable event turns grey in calendar view

@@ -2,7 +2,7 @@
 import { Given, /* When,  */Then, And } from 'cypress-cucumber-preprocessor/steps'
 
 const eventDate = new Date()
-eventDate.setDate(new Date().getDate() + 20)
+eventDate.setDate(new Date().getDate() + 29)
 const eventName = 'Cancel-visit'
 const eventStart = new Date(eventDate.setHours(10,0))
 const eventEnd = new Date(eventDate.setHours(12,0))
