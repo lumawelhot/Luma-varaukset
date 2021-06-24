@@ -1,5 +1,3 @@
-
-
 import React from 'react'
 import moment from 'moment'
 import { useHistory } from 'react-router'
@@ -63,7 +61,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser }) => {
             <div>
               <p>Kuvaus: [Tähän tapahtuman kuvaus]</p>
               <p>Tiedeluokka: {eventClass}</p>
-              <p>Valittavissa olevat lisäpalvelut: {event.extras.map(e => e.name) }</p>
+              <div>Valittavissa olevat lisäpalvelut: {event.extras.map(extra => <div key={extra.name}>{extra.name}</div>) }</div>
               <div>Tarjolla seuraaville luokka-asteille: {eventGrades.map(g =>
                 <div key={g.value}>{g.label}</div>)}
               </div>

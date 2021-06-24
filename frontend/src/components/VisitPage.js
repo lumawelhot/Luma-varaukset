@@ -14,7 +14,7 @@ const classes = [
 ]
 
 const filterEventClass = (eventClasses) => {
-  const classesArray = eventClasses.map(c => classes[c].label)
+  const classesArray = eventClasses.map(c => classes[c-1].label)
   return classesArray.join(', ')
 }
 

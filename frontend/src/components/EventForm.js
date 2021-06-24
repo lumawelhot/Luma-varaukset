@@ -401,7 +401,7 @@ const EventForm = ({
                       onChange={() => {
                         if (formik.values.extras.includes(extra.id)) {
                           const index = formik.values.extras.indexOf(extra.id)
-                          formik.values.splice(index, 1)
+                          formik.values.extras.splice(index, 1)
                         } else {
                           formik.values.extras.push(extra.id)
                         }
