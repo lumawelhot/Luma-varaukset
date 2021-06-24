@@ -83,6 +83,7 @@ const resolvers = {
       return { value: jwt.sign(userForToken, config.SECRET) }
     },
     createEvent: async (root, args, { currentUser }) => {
+      console.log('Tapahtuman luominen alkaa-----------------------------------')
       if (!currentUser) {
         throw new AuthenticationError('not authenticated')
       }
@@ -110,7 +111,7 @@ const resolvers = {
       })
 
       const extras = await Extra.find({ _id: { $in: args.extras } })
-      console.log(extras)
+      console.log('args.extras (resolvers rivi 114)', extras)
 
       const newEvent = new Event({
         title: args.title,
@@ -130,7 +131,7 @@ const resolvers = {
       newEvent.extras = extras
       newEvent.tags = mongoTags
       await newEvent.save()
-      console.log(newEvent)
+      console.log('uusi tapahtuma (resolvers rivi 135): ', newEvent)
       return newEvent
     },
     createVisit: async (root, args, { currentUser }) => {

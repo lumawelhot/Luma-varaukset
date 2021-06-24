@@ -23,24 +23,6 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser }) => {
     return classesArray.join(', ')
   }
 
-  /* const filterEventClass = (eventClass) => {
-    switch (eventClass) {
-      case 1:
-        return 'SUMMAMUTIKKA'
-      case 2:
-        return 'FOTONI'
-      case 3:
-        return 'LINKKI'
-      case 4:
-        return 'GEOPISTE'
-      case 5:
-        return 'GADOLIN'
-      default:
-        console.log('Error!')
-        break
-    }
-  } */
-
   const filterEventGrades = (eventGrades) => {
     const returnArray = []
     eventGrades.forEach(availableGrade => {
@@ -81,7 +63,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser }) => {
             <div>
               <p>Kuvaus: [Tähän tapahtuman kuvaus]</p>
               <p>Tiedeluokka: {eventClass}</p>
-              <p>Valittavissa olevat lisäpalvelut: [Tähän ekstrat]</p>
+              <p>Valittavissa olevat lisäpalvelut: {event.extras.map(e => e.name) }</p>
               <div>Tarjolla seuraaville luokka-asteille: {eventGrades.map(g =>
                 <div key={g.value}>{g.label}</div>)}
               </div>

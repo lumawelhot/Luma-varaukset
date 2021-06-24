@@ -13,6 +13,7 @@ const jwt = require('jsonwebtoken')
 const User = require('./models/user')
 const Event = require('./models/event')
 const Tag = require('./models/tag')
+const Extra = require('./models/tag')
 const config = require('./utils/config')
 
 const { ApolloServer } = require('apollo-server-express')
@@ -79,6 +80,36 @@ const createTags = async () => {
   await tag3.save()
 }
 
+const createExtras = async () => {
+  await Extra.deleteMany({})
+  const extra1 = new Extra({
+    name: 'Kierros Kumpulan yliopistokampuksella',
+    classes: [1, 2],
+    remoteLength: 5,
+    inPersonLength: 15
+  })
+  const extra2 = new Extra({
+    name: 'Opiskeljan elämää - tyypillinen päivä',
+    classes: [1, 2, 3, 4, 5],
+    remoteLength: 5,
+    inPersonLength: 15,
+  })
+  const extra3 = new Extra({
+    name: 'Tieteenalan esittely',
+    classes: [3, 4],
+    remoteLength: 10,
+    inPersonLength: 20
+  })
+
+  /* console.log(extra1)
+  console.log(extra2)
+  console.log(extra3) */
+  await extra1.save()
+  //console.log(candidate1)
+  await extra2.save()
+  await extra3.save()
+}
+
 const staticEvents = require('./events.json')
 const createEvents = async () => {
   await Event.deleteMany({})
@@ -102,6 +133,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
         await createEmployee()
         await createTags()
         await createEvents()
+        await createExtras()
       })
       .catch((error) => {
         console.log('error connecting to MongoDB: ', error.message)
