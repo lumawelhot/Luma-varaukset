@@ -2,7 +2,7 @@
 import { Given, /* When,  */Then, And } from 'cypress-cucumber-preprocessor/steps'
 
 const eventDate = new Date()
-eventDate.setDate(new Date().getDate() + 1)
+eventDate.setDate(new Date().getDate() + 20)
 const eventName = 'Cancel-visit'
 const eventStart = new Date(eventDate.setHours(10,0))
 const eventEnd = new Date(eventDate.setHours(12,0))
@@ -20,16 +20,18 @@ it('Initialize tests', () => {
   })
 })
 
-Given('I have made a booking for an available event', () => {
-  cy.login({ username: 'Admin', password: 'salainen' })
+Given('I am on the front page', () => {
   cy.visit('http://localhost:3000')
   cy.wait(1000)
+})
+
+And('there is an available event more than two weeks ahead', () => {
   cy.findEvent(eventName).click()
-
-  // Open visit form
+  cy.wait(1000)
   cy.contains('Varaa tapahtuma').click()
+})
 
-  // Fill in the form
+And('I have made a booking for that event', () => {
   cy.get('#clientName').type('Teacher')
   cy.get('#schoolName').type('School')
   cy.get('#schoolLocation').type('Location')
@@ -42,20 +44,17 @@ Given('I have made a booking for an available event', () => {
   cy.get('.remoteVisitGuidelines > input').click()
   cy.get('#create').click()
   cy.wait(2000)
-
-  // Cancel the visit
-  cy.wait(2000)
 })
 
 Then('I can cancel that booking', () => {
-  //cy.contains('Peru').click()
+  cy.contains('Peru').click()
 })
 
 
 And('the event is available for booking', () => {
-  /* cy.visit('http://localhost:3000')
+  cy.visit('http://localhost:3000')
 
   cy.findEvent(eventName).click()
 
-  cy.contains('Varaa tapahtuma') */
+  cy.contains('Varaa tapahtuma')
 })

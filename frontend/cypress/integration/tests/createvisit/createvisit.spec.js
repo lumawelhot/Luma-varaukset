@@ -5,15 +5,15 @@ import moment from 'moment'
 const eventDate1 = new Date()
 eventDate1.setDate(new Date().getDate() + 17)
 const eventDate2 = new Date()
-eventDate2.setDate(new Date().getDate() + 16)
+eventDate2.setDate(new Date().getDate() + 18)
 const eventDate3 = new Date()
-eventDate3.setDate(new Date().getDate() + 15)
+eventDate3.setDate(new Date().getDate() + 19)
 const availableEvent1 = 'Test available event 1 both remote and inPerson'
 const availableEvent2 = 'Test available event 2 for invalid client name'
 const availableEvent3 = 'Test available event 3 only remote'
 const unavailableEventName = 'Test unavailable event'
 const unavailableEventDate = new Date()
-unavailableEventDate.setDate(new Date().getDate() + 5)
+unavailableEventDate.setDate(new Date().getDate() + 3)
 
 before(() => {
   cy.login({ username: 'Admin', password: 'salainen' })
@@ -148,7 +148,7 @@ And('valid information is entered and visit mode predetermined', () => {
 })
 
 Then('booked event turns grey in calendar view', () => {
-  cy.findEvent(availableEvent1).should('have.class', 'booked')
+  cy.findEvent(availableEvent1).parent().should('have.class', 'booked')
 })
 
 When('I click on available event 2', () => {
@@ -173,12 +173,31 @@ Then('an error message is shown', () => {
 
 Given('admin logs in', () => {
   cy.login({ username: 'Admin', password: 'salainen' })
+  cy.visit('http://localhost:3000')
+  cy.wait(2000)
 })
 
 Then('unavailable event page contains booking button', () => {
   cy.contains('Varaa tapahtuma')
 })
 
-Then('unavailable event turns grey in calendar view', () => {
-  cy.findEvent(unavailableEventName).should('have.class', 'booked')
+Then('booked unavailable event turns grey in calendar view', () => {
+  cy.findEvent(unavailableEventName).parent().should('have.class', 'booked')
+})
+
+
+And('there is an event 3 more than two weeks ahead', () => {
+  cy.findEvent(availableEvent3)
+})
+
+When('I click on available event 3', () => {
+  cy.findEvent(availableEvent3).click()
+})
+
+Then('booked event 3 turns grey in calendar view', () => {
+  cy.findEvent(availableEvent3).parent().should('have.class', 'booked')
+})
+
+And('there is an event less than two weeks ahead', () => {
+  cy.findEvent(unavailableEventName)
 })

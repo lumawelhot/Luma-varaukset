@@ -177,9 +177,7 @@ Cypress.Commands.add('findEvent', (title) => {
       cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
       cy.wait(500)
     }
-    const $elem = cy.contains(`${title}`)
-    cy.log('result of contains', $elem)
-    return $elem
+    return cy.contains(`${title}`)
   })
 })
 

@@ -1,8 +1,7 @@
 Feature: As a teacher I want to create a new visit
 
 Scenario: Event page shows the correct event information
-    Given I am on the front page
-    When I click on available event 1
+    Given I click on available event 1
     Then available event page has the correct title
     And available event page has the correct start date
     And available event page contains booking button
@@ -33,7 +32,7 @@ Scenario: An event available only as inPerson or remote is succesfully booked by
     When I click on available event 3
     And I click the booking button
     And valid information is entered and visit mode predetermined
-    Then booked event turns grey in calendar view
+    Then booked event 3 turns grey in calendar view
 
 Scenario: Event can be booked by admin if it is less than two weeks ahead
     Given admin logs in
@@ -46,5 +45,5 @@ Scenario: An event is succesfully booked by an admin with valid information
     And there is an event less than two weeks ahead
     And I click on the unavailable event
     And I click the booking button
-    And valid information is entered
-    Then unavailable event turns grey in calendar view
+    And valid information is entered and visit mode predetermined
+    Then booked unavailable event turns grey in calendar view
