@@ -83,7 +83,6 @@ const resolvers = {
       return { value: jwt.sign(userForToken, config.SECRET) }
     },
     createEvent: async (root, args, { currentUser }) => {
-      console.log('Tapahtuman luominen alkaa-----------------------------------')
       if (!currentUser) {
         throw new AuthenticationError('not authenticated')
       }
@@ -111,7 +110,6 @@ const resolvers = {
       })
 
       const extras = await Extra.find({ _id: { $in: args.extras } })
-      console.log('args.extras (resolvers rivi 114)', extras)
 
       const newEvent = new Event({
         title: args.title,
@@ -127,11 +125,11 @@ const resolvers = {
           startTime: args.start,
           endTime: args.end
         }],
+        duration: args.duration
       })
       newEvent.extras = extras
       newEvent.tags = mongoTags
       await newEvent.save()
-      console.log('uusi tapahtuma (resolvers rivi 135): ', newEvent)
       return newEvent
     },
     createVisit: async (root, args, { currentUser }) => {
@@ -308,7 +306,25 @@ const resolvers = {
         await Extra.deleteOne({ _id:args.id })
         return 'Deleted Extra with ID ' + args.id
       } catch (error) {
-        throw new UserInputError('Backend problemo')
+        throw new UserInputError('Backend problem')
+      }
+    },
+    deleteEvent: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
+      if (!args.id) {
+        throw new UserInputError('No ID provided!')
+      }
+      try {
+        const event = await Event.findById(args.id)
+        if (event.visits.length) {
+          throw new UserInputError('Event has visits!')
+        }
+        await Event.deleteOne({ _id:args.id })
+        return 'Deleted Event with ID ' + args.id
+      } catch (error) {
+        throw new UserInputError('Backend problem')
       }
     }
   }

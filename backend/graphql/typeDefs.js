@@ -37,6 +37,7 @@ const typeDefs = gql`
     availableTimes: [TimeSlot]!
     waitingTime: Int!
     extras: [Extra]
+    duration: Int!
   }
   type Visit {
     id: ID!
@@ -93,6 +94,7 @@ const typeDefs = gql`
       tags: [TagInput]
       waitingTime: Int!
       extras: [ID]
+      duration: Int
     ): Event
     createVisit(
       event: ID!
@@ -118,6 +120,9 @@ const typeDefs = gql`
       inPersonLength: Int!
     ): Extra
     deleteExtra(
+      id: String!
+    ): String
+    deleteEvent(
       id: String!
     ): String
   }

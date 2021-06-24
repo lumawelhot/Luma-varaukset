@@ -133,7 +133,7 @@ const EventForm = ({
             })
           ),
           waitingTime: values.waitingTime,
-          extras: values.extras/* values.extras.map(extra => extra.id) */
+          extras: values.extras
         },
       })
       alert(JSON.stringify(values, null, 2))
@@ -387,14 +387,12 @@ const EventForm = ({
               <p className="help is-danger">{formik.errors.scienceClass}</p>
               : null}
 
-            {/* {formik.touched.scienceClass && !formik.errors.scienceClass &&
-              ( */}
             <div className="field" >
               <label className="label">
-                Saatavilla olevat lisäpalvelut:
+                Valitse vierailulle sopivat lisäpalvelut
               </label>
               {extras.data && extras.data.getExtras
-                /* .filter(extra => formik.values.scienceClass.some((c,index) => extra.classes.includes(index+1))) */
+
                 .map(extra => <div key={extra.id}><div className="control">
                   <label className="checkbox4">
                     <input type="checkbox" value="extras"
@@ -405,18 +403,15 @@ const EventForm = ({
                         } else {
                           formik.values.extras.push(extra.id)
                         }
-
-                        /* formik.touched.scienceClass = true
-
-                        formik.values.scienceClass[3] = !formik.values.scienceClass[3] */
                       }
                       } />
 
                     {extra.name}
+                    {(extra.remoteLength > 0) ? <p>(tarjolla etävierailuihin, kesto {extra.remoteLength} minuuttia)</p> : null}
+                    {(extra.inPersonLength > 0) ? <p>(tarjolla lähivierailuihin, kesto {extra.inPersonLength} minuuttia)</p> : null}
                   </label>
                 </div></div>)}
-            </div>{/* )
-            } */}
+            </div>
 
             <div className="field">
               <label className="label" htmlFor="date">

@@ -1,9 +1,19 @@
 import React from 'react'
 import moment from 'moment'
 import { useHistory } from 'react-router'
+import { useMutation } from '@apollo/client'
+import { DELETE_EVENT, EVENTS } from '../graphql/queries'
 
-const EventPage = ({ event, handleBookingButtonClick, currentUser }) => {
+const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage }) => {
   const history = useHistory()
+
+  const [deleteEvent, result] = useMutation(DELETE_EVENT, {
+    refetchQueries: [{ query: EVENTS }],
+    onError: (error) => {
+      console.log('virheviesti: ', error, result)
+    }
+  })
+
   if (!event) {
     history.push('/')
   }
@@ -19,6 +29,21 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser }) => {
   const filterEventClass = (eventClasses) => {
     const classesArray = eventClasses.map(c => classes[c-1].label)
     return classesArray.join(', ')
+  }
+
+  const handleRemoveEventClick = () => {
+    if (confirm('Haluatko varmasti poistaa tapahtuman?')) {
+      deleteEvent({
+        variables: {
+          id: event.id
+        }
+      })
+        .then(() => {
+          sendMessage('Tapahtuma poistettu.', 'success')
+          history.push('/')
+        })
+        .catch(() => sendMessage('Palvelinvirhe', 'danger'))
+    }
   }
 
   const filterEventGrades = (eventGrades) => {
@@ -53,15 +78,22 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser }) => {
     const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14
     const startsWithin1Hour = moment(event.start).diff(new Date(), 'hours') > 0
 
+    const description = event.desc ? event.desc : null
+
     return (
       <div className="container">
         <div className="columns is-centered">
           <div className="section">
             <div className="title">{event.title}</div>
             <div>
-              <p>Kuvaus: [Tähän tapahtuman kuvaus]</p>
+              {description
+                ? <p>Kuvaus: {description} </p>
+                : null}
               <p>Tiedeluokka: {eventClass}</p>
-              <div>Valittavissa olevat lisäpalvelut: {event.extras.map(extra => <div key={extra.name}>{extra.name}</div>) }</div>
+              {event.extras.length
+                ? <div>Valittavissa olevat lisäpalvelut: {event.extras.map(extra => <div key={extra.name}>{extra.name}</div>) }</div>
+                : null}
+
               <div>Tarjolla seuraaville luokka-asteille: {eventGrades.map(g =>
                 <div key={g.value}>{g.label}</div>)}
               </div>
@@ -71,10 +103,19 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser }) => {
               </div>
               <p>Tapahtuma alkaa: {moment(event.start).format('DD.MM.YYYY, HH:mm')}</p>
               <p>Tapahtuma päättyy: {moment(event.end).format('DD.MM.YYYY, HH:mm')}</p>
-              {event.booked || (currentUser && !startsWithin1Hour) || (!currentUser && !startsAfter14Days)
-                ? <p><b>Valitettavasti tämä tapahtuma ei ole varattavissa.</b></p>
-                : <button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>Varaa tapahtuma</button>}
-              <button className="button luma" onClick={cancel}>Poistu</button>
+              <div className="field is-grouped">
+                {event.booked || (currentUser && !startsWithin1Hour) || (!currentUser && !startsAfter14Days)
+                  ? <p><b>Valitettavasti tämä tapahtuma ei ole varattavissa.</b></p>
+                  : <button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>Varaa tapahtuma</button>}
+                {currentUser &&
+                <div className="control">
+                  <button className="button luma" onClick={() => handleRemoveEventClick()}>Poista tapahtuma</button>
+                </div>
+                }
+                <div className="control">
+                  <button className="button luma" onClick={cancel}>Poistu</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
