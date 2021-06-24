@@ -180,6 +180,7 @@ export const CREATE_VISIT = gql`
     $username: String
     $startTime: String!
     $endTime: String!
+    $dataUseAgreement: Boolean!
     ) {
     createVisit(
       event: $event
@@ -195,6 +196,7 @@ export const CREATE_VISIT = gql`
       inPersonVisit: $inPersonVisit
       remoteVisit: $remoteVisit
       username: $username
+      dataUseAgreement: $dataUseAgreement
     ) {
       id
       event {

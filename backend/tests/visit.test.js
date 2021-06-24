@@ -151,7 +151,8 @@ beforeEach(async () => {
     remoteVisit: false,
     status: true,
     startTime: availableEvent.start,
-    endTime: availableEvent.end
+    endTime: availableEvent.end,
+    dataUseAgreement: true
   }
 
   const testVisit = new VisitModel(testVisitData)
@@ -174,7 +175,8 @@ describe('Visit Model Test', () => {
       remoteVisit: true,
       status: true,
       startTime: availableEvent.start,
-      endTime: availableEvent.end
+      endTime: availableEvent.end,
+      dataUseAgreement: true
     }
     const validVisit = new VisitModel(newVisitData)
     const savedVisit = await validVisit.save()
@@ -199,6 +201,7 @@ describe('Visit Model Test', () => {
     expect(err.errors.participants).toBeDefined()
     expect(err.errors.clientEmail).toBeDefined()
     expect(err.errors.clientPhone).toBeDefined()
+    expect(err.errors.dataUseAgreement).toBeDefined()
   })
 })
 
@@ -221,7 +224,8 @@ describe('Visit server test', () => {
         inPersonVisit: true,
         remoteVisit: false,
         startTime: event.start,
-        endTime: event.end
+        endTime: event.end,
+        dataUseAgreement: false
       }
     })
 
@@ -239,6 +243,7 @@ describe('Visit server test', () => {
     expect(createVisit.grade).toBe('1. grade')
     expect(createVisit.participants).toBe(13)
     expect(createVisit.status).toBe(true)
+    expect(createVisit.dataUseAgreement).toBe(false)
   })
 
   it('anonymous user cannot create visit for event less than two weeks ahead', async () => {
@@ -258,7 +263,8 @@ describe('Visit server test', () => {
         startTime: event.start,
         endTime: event.end,
         inPersonVisit: true,
-        remoteVisit: false
+        remoteVisit: false,
+        dataUseAgreement: true
       }
     })
     const { createVisit } = data
@@ -290,7 +296,8 @@ describe('Visit server test', () => {
         startTime: event.start,
         endTime: event.end,
         inPersonVisit: true,
-        remoteVisit: false
+        remoteVisit: false,
+        dataUseAgreement: true
       }
     })
 
@@ -306,6 +313,7 @@ describe('Visit server test', () => {
     expect(createVisit.clientEmail).toBe('teacher@school.com')
     expect(createVisit.clientPhone).toBe('040-1234567')
     expect(createVisit.status).toBe(true)
+    expect(createVisit.dataUseAgreement).toBe(true)
   })
 
   it('logged in user can\'t create visit for event less than one hour ahead', async () => {
@@ -332,7 +340,8 @@ describe('Visit server test', () => {
         startTime: event.start,
         endTime: event.end,
         inPersonVisit: true,
-        remoteVisit: false
+        remoteVisit: false,
+        dataUseAgreement: true
       }
     })
     const { createVisit } = data
@@ -358,6 +367,7 @@ describe('Visit server test', () => {
     expect(findVisit.participants).toBe(savedTestVisit.participants)
     expect(findVisit.clientEmail).toBe(savedTestVisit.clientEmail)
     expect(findVisit.clientPhone).toBe(savedTestVisit.clientPhone)
+    expect(findVisit.dataUseAgreement).toBe(savedTestVisit.dataUseAgreement)
   })
 
   it('Cancel visit by id', async () => {

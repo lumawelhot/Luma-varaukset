@@ -172,8 +172,8 @@ const resolvers = {
         ...args,
         event: event,
         status: true,
-        startTime: args.startTime,
-        endTime: args.endTime,
+        /* startTime: args.startTime,
+        endTime: args.endTime, */
       })
 
       let savedVisit

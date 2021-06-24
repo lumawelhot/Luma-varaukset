@@ -149,7 +149,8 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
             clientPhone: values.clientPhone,
             grade: values.visitGrade,
             participants: values.participants,
-            username: values.username
+            username: values.username,
+            dataUseAgreement: values.dataUseAgreement
           }
         })
       } catch (error) {

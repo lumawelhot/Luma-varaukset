@@ -31,7 +31,8 @@ const CREATE_VISIT = gql `
     $startTime: String!
     $endTime: String!,
     $inPersonVisit: Boolean!,
-    $remoteVisit: Boolean!
+    $remoteVisit: Boolean!,
+    $dataUseAgreement: Boolean!
     ) {
     createVisit(
       event: $event
@@ -46,7 +47,8 @@ const CREATE_VISIT = gql `
       startTime: $startTime
       endTime: $endTime
       inPersonVisit: $inPersonVisit,
-      remoteVisit: $remoteVisit
+      remoteVisit: $remoteVisit,
+      dataUseAgreement: $dataUseAgreement
     ) {
       id
       event {
@@ -60,6 +62,7 @@ const CREATE_VISIT = gql `
       clientEmail
       clientPhone
       status
+      dataUseAgreement
     }
   }
 `
@@ -79,6 +82,7 @@ const FIND_VISIT = gql `
       grade
       participants
       status
+      dataUseAgreement
     }
   }
 `
@@ -103,7 +107,8 @@ const details = {
   schoolLocation: 'Helsinki',
   participants: 13,
   inPersonVisit: true,
-  remoteVisit: true
+  remoteVisit: true,
+  dataUseAgreement: true
 }
 
 const createTimeList = (startList, endList) => {
