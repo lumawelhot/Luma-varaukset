@@ -97,7 +97,7 @@ const EventForm = ({
       grades: [false,false,false,false,false],
       remoteVisit: true,
       inPersonVisit: true,
-      remotePlatforms: [false,false,false, false],
+      remotePlatforms: [true,true,true,false],
       otherRemotePlatformOption: '',
       title: '',
       scienceClass: [false,false,false,false,false],
@@ -132,7 +132,6 @@ const EventForm = ({
         }
       } )
 
-      console.log(remotePlatformList)
 
       create({
 
@@ -145,6 +144,7 @@ const EventForm = ({
           start,
           end,
           remotePlatforms: remotePlatformList,
+          otherRemotePlatformOption: values.otherRemotePlatformOption,
           scienceClass: scienceClassList,
           desc: values.desc,
           tags: values.tags.map((tag) =>
@@ -241,7 +241,7 @@ const EventForm = ({
                 <div className="control">
                   <label className="remotePlatforms">
                     <input
-                      type="checkbox"  value="0"
+                      type="checkbox"  value="0" checked = {formik.values.remotePlatforms[0]}
                       onChange={() => {
                         formik.touched.remotePlatforms = true
                         formik.values.remotePlatforms[0] = !formik.values.remotePlatforms[0]
@@ -253,7 +253,7 @@ const EventForm = ({
                 </div>
                 <div className="control">
                   <label className="remotePlatforms">
-                    <input type="checkbox" value="1"
+                    <input type="checkbox" value="1" checked = {formik.values.remotePlatforms[1]}
                       onChange={() => {
                         formik.touched.remotePlatforms = true
 
@@ -269,7 +269,7 @@ const EventForm = ({
                 </div>
                 <div className="control">
                   <label className="remotePlatforms">
-                    <input type="checkbox" value="2"
+                    <input type="checkbox" value="2" checked = {formik.values.remotePlatforms[2]}
                       onChange={() => {
                         formik.touched.remotePlatforms = true
 
@@ -285,7 +285,7 @@ const EventForm = ({
                 </div>
                 <div className="control">
                   <label className="remotePlatforms">
-                    <input type="checkbox" value="3"
+                    <input type="checkbox" value="3" checked = {formik.values.remotePlatforms[3]}
                       onChange={() => {
                         formik.touched.remotePlatforms = true
                         formik.values.remotePlatforms[3] = !formik.values.remotePlatforms[3]
@@ -301,6 +301,7 @@ const EventForm = ({
                         <div className="control">
                           <input
                             className="input"
+                            style={{ width: 300 }}
                             id="otherRemotePlatformOption"
                             name="otherRemotePlatformOption"
                             type="otherRemotePlatformOption"
@@ -314,7 +315,7 @@ const EventForm = ({
 
 
                       : null}
-                    {formik.values.remotePlatforms[3] && formik.touched.remotePlatforms && formik.errors.otherRemotePlatformOption ? (
+                    {formik.values.remotePlatforms[3] && formik.touched.otherRemotePlatformOption && formik.errors.otherRemotePlatformOption ? (
                       <p className="help is-danger">{formik.errors.otherRemotePlatformOption}</p>
                     ) : null}
 
