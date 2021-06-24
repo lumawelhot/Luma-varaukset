@@ -32,8 +32,6 @@ When('valid information is entered', () => {
   cy.get('#endTime').type('12:00')
   cy.get('#desc').type('Test description')
   cy.get('[type="submit"]').click()
-  cy.get('#waitingTime').type('10')
-  //cy.get('#extras')
   cy.wait(2000)
 })
 
