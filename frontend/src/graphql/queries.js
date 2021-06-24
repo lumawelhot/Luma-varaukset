@@ -40,6 +40,8 @@ export const EVENTS = gql`
       title
       resourceids
       grades
+      remotePlatforms
+      otherRemotePlatformOption
       tags {
         id
         name
@@ -111,6 +113,8 @@ export const CREATE_EVENT = gql`
     $scienceClass:
     [Int]!,
     $grades: [Int]!,
+    $remotePlatforms: [Int],
+    $otherRemotePlatformOption: String,
     $remoteVisit: Boolean!,
     $inPersonVisit: Boolean!,
     $desc: String,
@@ -124,6 +128,8 @@ export const CREATE_EVENT = gql`
       scienceClass: $scienceClass,
       desc: $desc,
       grades: $grades,
+      remotePlatforms: $remotePlatforms,
+      otherRemotePlatformOption: $otherRemotePlatformOption,
       remoteVisit: $remoteVisit,
       inPersonVisit: $inPersonVisit,
       tags: $tags
@@ -133,6 +139,8 @@ export const CREATE_EVENT = gql`
       title
       resourceids
       grades
+      remotePlatforms
+      otherRemotePlatformOption
       start
       end
       tags {

@@ -81,7 +81,7 @@ const EventForm = ({
 
   useEffect(() => {
     if (result.data) {
-      console.log(result.data)
+
       result.data.booked = false
       addEvent(result.data.createEvent)
       sendMessage('Vierailu luotu', 'success')
