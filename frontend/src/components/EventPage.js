@@ -1,11 +1,19 @@
-
-
 import React from 'react'
 import moment from 'moment'
 import { useHistory } from 'react-router'
+import { useMutation } from '@apollo/client'
+import { DELETE_EVENT, EVENTS } from '../graphql/queries'
 
-const EventPage = ({ event, handleBookingButtonClick, currentUser }) => {
+const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage }) => {
   const history = useHistory()
+
+  const [deleteEvent, result] = useMutation(DELETE_EVENT, {
+    refetchQueries: [{ query: EVENTS }],
+    onError: (error) => {
+      console.log('virheviesti: ', error, result)
+    }
+  })
+
   if (!event) {
     history.push('/')
   }
@@ -23,23 +31,20 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser }) => {
     return classesArray.join(', ')
   }
 
-  /* const filterEventClass = (eventClass) => {
-    switch (eventClass) {
-      case 1:
-        return 'SUMMAMUTIKKA'
-      case 2:
-        return 'FOTONI'
-      case 3:
-        return 'LINKKI'
-      case 4:
-        return 'GEOPISTE'
-      case 5:
-        return 'GADOLIN'
-      default:
-        console.log('Error!')
-        break
+  const handleRemoveEventClick = () => {
+    if (confirm('Haluatko varmasti poistaa tapahtuman?')) {
+      deleteEvent({
+        variables: {
+          id: event.id
+        }
+      })
+        .then(() => {
+          sendMessage('Tapahtuma poistettu.', 'success')
+          history.push('/')
+        })
+        .catch(() => sendMessage('Palvelinvirhe', 'danger'))
     }
-  } */
+  }
 
   const filterEventGrades = (eventGrades) => {
     const returnArray = []
@@ -91,10 +96,19 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser }) => {
               </div>
               <p>Tapahtuma alkaa: {moment(event.start).format('DD.MM.YYYY, HH:mm')}</p>
               <p>Tapahtuma päättyy: {moment(event.end).format('DD.MM.YYYY, HH:mm')}</p>
-              {event.booked || (currentUser && !startsWithin1Hour) || (!currentUser && !startsAfter14Days)
-                ? <p><b>Valitettavasti tämä tapahtuma ei ole varattavissa.</b></p>
-                : <button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>Varaa tapahtuma</button>}
-              <button className="button luma" onClick={cancel}>Poistu</button>
+              <div className="field is-grouped">
+                {event.booked || (currentUser && !startsWithin1Hour) || (!currentUser && !startsAfter14Days)
+                  ? <p><b>Valitettavasti tämä tapahtuma ei ole varattavissa.</b></p>
+                  : <button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>Varaa tapahtuma</button>}
+                {currentUser &&
+                <div className="control">
+                  <button className="button luma" onClick={() => handleRemoveEventClick()}>Poista tapahtuma</button>
+                </div>
+                }
+                <div className="control">
+                  <button className="button luma" onClick={cancel}>Poistu</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
