@@ -51,6 +51,7 @@ const App = () => {
       remoteVisit: event.remoteVisit,
       tags: event.tags,
       extras: event.extras,
+      duration: event.duration,
       desc: event.desc
     }
     let events = event.availableTimes.map(timeSlot => Object({

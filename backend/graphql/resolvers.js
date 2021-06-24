@@ -324,7 +324,7 @@ const resolvers = {
         await Event.deleteOne({ _id:args.id })
         return 'Deleted Event with ID ' + args.id
       } catch (error) {
-        throw new UserInputError('Backend problem')
+        throw new UserInputError('Event has visits!')
       }
     }
   }
