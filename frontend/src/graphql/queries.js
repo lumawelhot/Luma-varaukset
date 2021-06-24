@@ -285,3 +285,13 @@ export const DELETE_EXTRA = gql`
     )
   }
 `
+
+export const DELETE_EVENT = gql`
+  mutation deleteEvent(
+    $id: String!
+  ) {
+    deleteEvent(
+      id: $id
+    )
+  }
+`

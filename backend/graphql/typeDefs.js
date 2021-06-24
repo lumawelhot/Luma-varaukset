@@ -15,6 +15,13 @@ const typeDefs = gql`
     startTime: String!,
     endTime: String!
   }
+  type Extra {
+    id: ID!
+    name: String!
+    classes: [Int]!
+    remoteLength: Int!
+    inPersonLength: Int!
+  }
   type Event {
     id: ID!
     title: String!
@@ -31,6 +38,8 @@ const typeDefs = gql`
     visits: [Visit]!
     availableTimes: [TimeSlot]!
     waitingTime: Int!
+    extras: [Extra]
+    duration: Int!
   }
   type Visit {
     id: ID!
@@ -51,13 +60,6 @@ const typeDefs = gql`
   }
   type Token {
     value: String!
-  }
-  type Extra {
-    id: ID!
-    name: String!
-    classes: [Int]!
-    remoteLength: Int!
-    inPersonLength: Int!
   }
   type Query {
     getUsers: [User]!
@@ -95,6 +97,8 @@ const typeDefs = gql`
       remoteVisit: Boolean!
       tags: [TagInput]
       waitingTime: Int!
+      extras: [ID]
+      duration: Int!
     ): Event
     createVisit(
       event: ID!
@@ -120,6 +124,9 @@ const typeDefs = gql`
       inPersonLength: Int!
     ): Extra
     deleteExtra(
+      id: String!
+    ): String
+    deleteEvent(
       id: String!
     ): String
   }
