@@ -67,14 +67,7 @@ When('I click on available event 1', () => {
 })
 
 When('I click on available event 3', () => {
-  cy.get('.rbc-calendar').then(() => {
-    if (cy.get('.rbc-calendar').contains(`${availableEvent3}`)) {
-      cy.contains(`${availableEvent3}`).click()
-    } else {
-      cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
-      cy.contains(`${availableEvent3}`).click()
-    }
-  })
+  cy.findEvent(availableEvent3).click()
 })
 
 Then('available event page has the correct title', () => {
