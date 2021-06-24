@@ -61,8 +61,14 @@ const EventForm = ({
 }) => {
   const history = useHistory()
   const [suggestedTags, setSuggestedTags] = useState([])
-  const [create, result] = useMutation(CREATE_EVENT, {
-    onError: (error) => console.log(error),
+  const [create] = useMutation(CREATE_EVENT, {
+    onError: () => { sendMessage('Tapahtuman luonti epäonnistui! Tarkista tiedot!', 'danger')},
+    onCompleted: (data) => {
+      data.createEvent.booked = false
+      addEvent(data.createEvent)
+      sendMessage('Vierailu luotu', 'success')
+      history.push('/')
+    }
   })
   const tags = useQuery(TAGS)
   const extras = useQuery(EXTRAS)
@@ -74,16 +80,6 @@ const EventForm = ({
   }, [tags.data])
 
   useEffect(() => { }, [extras.data])
-
-  useEffect(() => {
-    if (result.data) {
-      console.log(result.data)
-      result.data.booked = false
-      addEvent(result.data.createEvent)
-      sendMessage('Vierailu luotu', 'success')
-      history.push('/')
-    }
-  }, [result.data])
 
   const formik = useFormik({
     initialValues: {
@@ -98,7 +94,8 @@ const EventForm = ({
       endTime: moment(newEventTimeRange[1]).format('HH:mm'),
       tags: [],
       waitingTime: 15,
-      extras: []
+      extras: [],
+      duration: 60
     },
     validate,
     onSubmit: (values) => {
@@ -133,10 +130,10 @@ const EventForm = ({
             })
           ),
           waitingTime: values.waitingTime,
-          extras: values.extras
+          extras: values.extras,
+          duration: values.duration
         },
       })
-      alert(JSON.stringify(values, null, 2))
     },
   })
 
@@ -167,6 +164,25 @@ const EventForm = ({
             </div>
             {formik.touched.title && formik.errors.title ? (
               <p className="help is-danger">{formik.errors.title}</p>
+            ) : null}
+
+            <div className="field">
+              <label className="label" htmlFor="duration">
+                Tapahtuman kesto minuutteina
+              </label>
+              <div className="control">
+                <input style={{ width: 500 }}
+                  id="duration"
+                  name="duration"
+                  type="number"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.duration}
+                />
+              </div>
+            </div>
+            {formik.touched.duration && formik.errors.duration ? (
+              <p className="help is-danger">{formik.errors.duration}</p>
             ) : null}
 
             <FormikProvider value={formik}>

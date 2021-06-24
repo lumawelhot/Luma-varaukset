@@ -1,48 +1,11 @@
 import React, { useEffect } from 'react'
-import { useFormik/* , FormikProvider */ } from 'formik'
+import { useFormik } from 'formik'
 import { useMutation } from '@apollo/client'
 import { CREATE_VISIT, EVENTS } from '../graphql/queries'
 import { useHistory } from 'react-router'
 import moment from 'moment'
 
 let selectedEvent
-
-/* const tempEvent = {
-  title: 'LumaEvent2',
-  start: new Date('2021-07-09 09:30'),
-  end: new Date('2021-07-09 15:00'),
-  grades: [1,2],
-  inPersonVisit: true,
-  remoteVisit: true,
-  resourceids: [
-    1
-  ],
-  tags: [
-    {
-      name: 'Maantiede',
-      id: '60d4403728314e40885ecd80'
-    },
-    {
-      name: 'Uusitagi',
-      id: '60d440e928314e40885ecd8a'
-    }
-  ],
-  extras: [
-    {
-      name: 'Lisäpalvelu1',
-      id: '60d4404b28314e40885ecd88',
-      inPersonLength: 15,
-      remoteLength: 10
-    },
-    {
-      name: 'Lisäpalvelu2',
-      id: '60d4404e28314e40885ecd89',
-      inPersonLength: 15,
-      remoteLength: 10
-    }
-  ],
-  duration: 75
-} */
 
 const calculateVisitEndTime = (startTimeAsDate, values, selectedEvent) => {
   const selectedExtrasDurationsInPerson = values.extras.length ? selectedEvent.extras
@@ -224,6 +187,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
             grade: values.visitGrade,
             participants: values.participants,
             username: values.username,
+            dataUseAgreement: values.dataUseAgreement,
             extras: values.extras
           }
         })
@@ -236,7 +200,6 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
   const style = { width: 500 }
   useEffect(() => {
     if (result.data) {
-      console.log('result', result)
       sendMessage(`Varaus on tehty onnistuneesti! Varauksen tiedot on lähetetty sähköpostiosoitteeseenne ${result.data.createVisit.clientEmail}.`, 'success')
       history.push('/' + result.data.createVisit.id)
     }
@@ -278,7 +241,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                   <div className="control">
                     <label className="visitMode">
                       <input
-                        type="radio" name="visitMode" value="1" /* checked = {formik.values.visitMode} */
+                        type="radio" name="visitMode" value="1"
                         onChange={() => {
                           formik.touched.visitMode = true
                           formik.setFieldValue('visitMode', '1')
@@ -287,7 +250,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                   </div>
                   <div className="control">
                     <label className="visitMode">
-                      <input type="radio" name="visitMode" value="2" /* checked={!formik.values.visitMode} */
+                      <input type="radio" name="visitMode" value="2"
                         onChange={() => {
                           formik.touched.visitMode = true
                           formik.setFieldValue('visitMode', '2')
@@ -477,13 +440,13 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                           }
                         }}
                       />
-                      {` ${extra.name}`}, pituus lähi: {extra.inPersonLength}min / etä: {extra.remoteLength} min
+                      {` ${extra.name}`}, pituus lähi: {extra.inPersonLength} min / etä: {extra.remoteLength} min
                     </label>
                   </div>
                 )}
               </div>
               {formik.touched.extras && formik.errors.startTime ? (
-                <p className="help is-danger">Tarkista että varaus sis.lisäpalvelut mahtuu annettuihin aikarajoihin!</p>
+                <p className="help is-danger">Tarkista että varaus lisäpalveluineen mahtuu annettuihin aikarajoihin!</p>
               ) : null}
 
               <div className="field">
