@@ -20,7 +20,7 @@ const resolvers = {
       return users
     },
     getEvents: async () => {
-      const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits')
+      const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits').populate('extras')
       return events
     },
     getTags: async () => {
@@ -109,6 +109,8 @@ const resolvers = {
         }
       })
 
+      const extras = await Extra.find({ _id: { $in: args.extras } })
+
       const newEvent = new Event({
         title: args.title,
         start: args.start,
@@ -122,8 +124,10 @@ const resolvers = {
         availableTimes: [{
           startTime: args.start,
           endTime: args.end
-        }]
+        }],
+        duration: args.duration
       })
+      newEvent.extras = extras
       newEvent.tags = mongoTags
       await newEvent.save()
       return newEvent
@@ -302,7 +306,25 @@ const resolvers = {
         await Extra.deleteOne({ _id:args.id })
         return 'Deleted Extra with ID ' + args.id
       } catch (error) {
-        throw new UserInputError('Backend problemo')
+        throw new UserInputError('Backend problem')
+      }
+    },
+    deleteEvent: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
+      if (!args.id) {
+        throw new UserInputError('No ID provided!')
+      }
+      try {
+        const event = await Event.findById(args.id)
+        if (event.visits.length) {
+          throw new UserInputError('Event has visits!')
+        }
+        await Event.deleteOne({ _id:args.id })
+        return 'Deleted Event with ID ' + args.id
+      } catch (error) {
+        throw new UserInputError('Backend problem')
       }
     }
   }

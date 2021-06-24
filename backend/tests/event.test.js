@@ -56,7 +56,8 @@ beforeEach(async () => {
     booked: false,
     inPersonVisit: true,
     remoteVisit: false,
-    waitingTime: 15
+    waitingTime: 15,
+    duration: 60
   }
   const testData2 = {
     title: 'Up-And-Atom!',
@@ -69,7 +70,8 @@ beforeEach(async () => {
     booked: false,
     inPersonVisit: false,
     remoteVisit: true,
-    waitingTime: 15
+    waitingTime: 15,
+    duration: 75
   }
 
   const testEvent1 = new EventModel(testData1)
@@ -132,6 +134,7 @@ it('employee can create new event successfully', async () => {
           grades: [1, 3, 4]
           tags: [{ name: "Matematiikka" }, { name: "Fysiikka" }, { name: "Ohjelmointi" }, { name: "Maantiede" }, { name: "Kemia" } ]
           waitingTime: 15
+          duration: 60
         ){
           title,
           resourceids,
@@ -167,7 +170,8 @@ describe('Event Model Test', () => {
       inPersonVisit: true,
       remoteVisit: false,
       desc: 'Test event desc.',
-      waitingTime: 15
+      waitingTime: 15,
+      duration: 75
     }
 
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useFormik, FormikProvider } from 'formik'
 import { useMutation, useQuery } from '@apollo/client'
-import { CREATE_EVENT, TAGS } from '../graphql/queries'
+import { CREATE_EVENT, TAGS, EXTRAS } from '../graphql/queries'
 import { useHistory } from 'react-router'
 import LumaTagInput from './LumaTagInput/LumaTagInput'
 import moment from 'moment'
@@ -65,12 +65,17 @@ const EventForm = ({
     onError: (error) => console.log(error),
   })
   const tags = useQuery(TAGS)
+  const extras = useQuery(EXTRAS)
+
+
 
   useEffect(() => {
     if (tags.data) {
       setSuggestedTags(tags.data.getTags.map((tag) => tag.name))
     }
   }, [tags.data])
+
+  useEffect(() => {}, [extras.data])
 
   useEffect(() => {
     if (result.data) {
@@ -81,9 +86,6 @@ const EventForm = ({
       history.push('/')
     }
   }, [result.data])
-
-
-
 
   const formik = useFormik({
     initialValues: {
@@ -97,7 +99,8 @@ const EventForm = ({
       startTime: moment(newEventTimeRange[0]).format('HH:mm'),
       endTime: moment(newEventTimeRange[1]).format('HH:mm'),
       tags: [],
-      waitingTime: 15
+      waitingTime: 15,
+      extras: []
     },
     validate,
     onSubmit: (values) => {
@@ -133,7 +136,8 @@ const EventForm = ({
               name: tag,
             })
           ),
-          waitingTime: values.waitingTime
+          waitingTime: values.waitingTime,
+          extras: values.extras.map(extra => extra.id)
         },
       })
 
@@ -367,7 +371,14 @@ const EventForm = ({
               <p className="help is-danger">{formik.errors.scienceClass}</p>
               : null}
 
-
+            {formik.touched.scienceClass && !formik.errors.scienceClass &&
+              (<div>
+                <p>Saatavilla olevat lisäpalvelut:</p>
+                {extras.data.getExtras
+                  .filter(extra => formik.values.scienceClass.some((c,index) => extra.classes.includes(index+1)))
+                  .map(extra => <p key={extra.id}>{extra.name}</p>) }
+              </div>)
+            }
 
             <div className="field">
               <label className="label" htmlFor="date">
