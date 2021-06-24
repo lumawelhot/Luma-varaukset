@@ -57,7 +57,8 @@ beforeEach(async () => {
     inPersonVisit: true,
     remoteVisit: false,
     waitingTime: 15,
-    duration: 60
+    duration: 60,
+    extras: []
   }
   const testData2 = {
     title: 'Up-And-Atom!',
@@ -71,7 +72,8 @@ beforeEach(async () => {
     inPersonVisit: false,
     remoteVisit: true,
     waitingTime: 15,
-    duration: 75
+    duration: 75,
+    extras: []
   }
 
   const testEvent1 = new EventModel(testData1)
@@ -134,7 +136,8 @@ it('employee can create new event successfully', async () => {
           grades: [1, 3, 4]
           tags: [{ name: "Matematiikka" }, { name: "Fysiikka" }, { name: "Ohjelmointi" }, { name: "Maantiede" }, { name: "Kemia" } ]
           waitingTime: 15
-          duration: 60
+          duration: 60,
+          extras: []
         ){
           title,
           resourceids,
@@ -171,7 +174,8 @@ describe('Event Model Test', () => {
       remoteVisit: false,
       desc: 'Test event desc.',
       waitingTime: 15,
-      duration: 75
+      duration: 75,
+      extras: []
     }
 
 
@@ -199,7 +203,9 @@ describe('Event Model Test', () => {
       remoteVisit: false,
       fieldNotInSchema: 'Tiedeluokka Linkki',
       desc: 'Test event desc.',
-      waitingTime: 15
+      waitingTime: 15,
+      duration: 10,
+      extras: []
     })
     const savedEventWithInvalidField = await eventWithInvalidField.save()
     expect(savedEventWithInvalidField._id).toBeDefined()

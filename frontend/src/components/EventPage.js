@@ -7,10 +7,14 @@ import { DELETE_EVENT, EVENTS } from '../graphql/queries'
 const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage }) => {
   const history = useHistory()
 
-  const [deleteEvent, result] = useMutation(DELETE_EVENT, {
+  const [deleteEvent] = useMutation(DELETE_EVENT, {
     refetchQueries: [{ query: EVENTS }],
-    onError: (error) => {
-      console.log('virheviesti: ', error, result)
+    onError: () => {
+      sendMessage('Tapahtumaa ei voi poistaa! (Onko tapahtumalla varauksia?)', 'danger')
+    },
+    onCompleted: () => {
+      sendMessage('Tapahtuma poistettu.', 'success')
+      history.push('/')
     }
   })
 
@@ -38,11 +42,6 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage }
           id: event.id
         }
       })
-        .then(() => {
-          sendMessage('Tapahtuma poistettu.', 'success')
-          history.push('/')
-        })
-        .catch(() => sendMessage('Palvelinvirhe', 'danger'))
     }
   }
 

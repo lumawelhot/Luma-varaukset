@@ -101,7 +101,9 @@ beforeEach(async () => {
     inPersonVisit: false,
     remoteVisit: true,
     availableTimes: [{ startTime: availableDate, endTime: fiveHoursAdded }],
-    waitingTime: 15
+    waitingTime: 15,
+    duration: 60,
+    extras: []
   }
 
   const availableForLoggedInEventData = {
@@ -113,7 +115,9 @@ beforeEach(async () => {
     inPersonVisit: true,
     remoteVisit: false,
     availableTimes: [{ startTime: availableForLoggedInDate, endTime: twoHoursAddedForLoggedIn }],
-    waitingTime: 15
+    waitingTime: 15,
+    duration: 60,
+    extras: []
   }
 
   const unvailableForLoggedInUserEventData = {
@@ -125,7 +129,9 @@ beforeEach(async () => {
     inPersonVisit: true,
     remoteVisit: false,
     availableTimes: [],
-    waitingTime: 15
+    waitingTime: 15,
+    duration: 60,
+    extras: []
   }
 
   //unavailableForAllEvent = new EventModel(unavailableEventForAllData)
