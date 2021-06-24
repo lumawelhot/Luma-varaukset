@@ -102,6 +102,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage }
               </div>
               <p>Tapahtuma alkaa: {moment(event.start).format('DD.MM.YYYY, HH:mm')}</p>
               <p>Tapahtuma päättyy: {moment(event.end).format('DD.MM.YYYY, HH:mm')}</p>
+              <p>Toiminnan kesto: {event.duration} minuuttia</p>
               <div className="field is-grouped">
                 {event.booked || (currentUser && !startsWithin1Hour) || (!currentUser && !startsAfter14Days)
                   ? <p><b>Valitettavasti tämä tapahtuma ei ole varattavissa.</b></p>

@@ -123,6 +123,7 @@ export const CREATE_EVENT = gql`
     $tags: [TagInput],
     $waitingTime: Int!
     $extras: [ID]
+    $duration: Int!
     ) {
     createEvent (
       title: $title,
@@ -136,6 +137,7 @@ export const CREATE_EVENT = gql`
       tags: $tags
       waitingTime: $waitingTime
       extras: $extras
+      duration: $duration
     ) {
       id
       title
@@ -163,6 +165,7 @@ export const CREATE_EVENT = gql`
         inPersonLength,
         remoteLength
       }
+      duration
     }
   }
 `
