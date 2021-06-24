@@ -29,6 +29,8 @@ const typeDefs = gql`
     remoteVisit: Boolean!
     inPersonVisit: Boolean!
     grades: [Int]!
+    remotePlatforms: [Int]
+    otherRemotePlatformOption: String
     start: String!
     end: String!
     desc: String
@@ -87,6 +89,8 @@ const typeDefs = gql`
       title: String!
       scienceClass: [Int]!
       grades: [Int]!
+      remotePlatforms: [Int]
+      otherRemotePlatformOption: String
       start: String!
       end: String!
       desc: String
