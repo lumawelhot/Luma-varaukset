@@ -39,8 +39,6 @@ const App = () => {
   const [currentUser, setUser] = useState(null)
 
   const parseEvent = (event) => {
-    //console.log(event.title, event.availableTimes, event.start)
-    //console.log(event, '<--------------------------------------------------------------')
     const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14
     const startsAfter1Hour = moment(event.start).diff(new Date(), 'minutes') >= 60
     const booked = (!currentUser && !startsAfter14Days) || (currentUser && !startsAfter1Hour)
@@ -51,7 +49,10 @@ const App = () => {
       grades: event.grades,
       inPersonVisit: event.inPersonVisit,
       remoteVisit: event.remoteVisit,
-      tags: event.tags
+      tags: event.tags,
+      extras: event.extras,
+      duration: event.duration,
+      desc: event.desc
     }
     let events = event.availableTimes.map(timeSlot => Object({
       start: new Date(timeSlot.startTime),

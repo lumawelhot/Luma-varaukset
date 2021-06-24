@@ -79,6 +79,8 @@ beforeEach(async () => {
     remoteVisit: true,
     availableTimes: [{ startTime: availableStart, endTime: availableEnd }],
     waitingTime: 10,
+    duration: 60,
+    extras: []
   }
 
   availableEvent = new EventModel(availableEventData)

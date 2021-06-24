@@ -57,6 +57,13 @@ export const EVENTS = gql`
         startTime
         endTime
       }
+      extras {
+        id
+        name
+        inPersonLength
+        remoteLength
+      }
+      duration
     }
   }
 `
@@ -108,14 +115,14 @@ export const CREATE_EVENT = gql`
     $title: String!,
     $start: String!,
     $end: String!,
-    $scienceClass:
-    [Int]!,
+    $scienceClass: [Int]!,
     $grades: [Int]!,
     $remoteVisit: Boolean!,
     $inPersonVisit: Boolean!,
     $desc: String,
     $tags: [TagInput],
     $waitingTime: Int!
+    $extras: [ID]
     ) {
     createEvent (
       title: $title,
@@ -128,6 +135,7 @@ export const CREATE_EVENT = gql`
       inPersonVisit: $inPersonVisit,
       tags: $tags
       waitingTime: $waitingTime
+      extras: $extras
     ) {
       id
       title
@@ -149,6 +157,11 @@ export const CREATE_EVENT = gql`
       availableTimes {
         startTime,
         endTime
+      }
+      extras {
+        name,
+        inPersonLength,
+        remoteLength
       }
     }
   }
@@ -273,6 +286,16 @@ export const DELETE_EXTRA = gql`
     $id: String!
   ) {
     deleteExtra(
+      id: $id
+    )
+  }
+`
+
+export const DELETE_EVENT = gql`
+  mutation deleteEvent(
+    $id: String!
+  ) {
+    deleteEvent(
       id: $id
     )
   }

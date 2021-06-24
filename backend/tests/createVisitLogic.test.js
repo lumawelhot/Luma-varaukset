@@ -62,7 +62,9 @@ beforeEach(async () => {
     inPersonVisit: false,
     remoteVisit: true,
     availableTimes: [{ startTime: availableStart, endTime: availableEnd }],
-    waitingTime: 20
+    waitingTime: 20,
+    duration: 60,
+    extras: []
   }
 
   const start1 = createDate(9, 0)
@@ -79,7 +81,9 @@ beforeEach(async () => {
     inPersonVisit: false,
     remoteVisit: true,
     availableTimes: [{ startTime: start1, endTime: end1 }, { startTime: start2, endTime: end2 }],
-    waitingTime: 15
+    waitingTime: 15,
+    duration: 60,
+    extras: []
   }
 
   availableEvent = new EventModel(availableEventData)
