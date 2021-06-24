@@ -53,6 +53,10 @@ const validate = values => {
   if(!values.remoteVisitGuidelines){
     errors.remoteVisitGuidelines = 'Luethan ohjeet!'
   }
+  if(!values.otherRemotePlatformOption){
+    errors.otherRemotePlatformOption = 'Kirjoita muun etäyhteysalustan nimi'
+  }
+
   return errors
 }
 
@@ -310,6 +314,11 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                               value={formik.values.otherRemotePlatformOption}
                             />
                           </div>
+
+                          {formik.touched.otherRemotePlatformOption && formik.errors.otherRemotePlatformOption ? (
+                            <p className="help is-danger">{formik.errors.otherRemotePlatformOption}</p>
+                          ) : null}
+
                         </div>
                         : null}
 
