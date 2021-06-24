@@ -92,6 +92,8 @@ const resolvers = {
         throw new UserInputError('At least one grade must be selected!')
       }
 
+
+
       if (args.title.length < 5) {
         throw new UserInputError('title too short')
       }
@@ -116,6 +118,8 @@ const resolvers = {
         desc: args.desc,
         resourceids,
         grades,
+        remotePlatforms: args.remotePlatforms,
+        otherRemotePlatformOption: args.otherRemotePlatformOption,
         remoteVisit: args.remoteVisit,
         inPersonVisit: args.inPersonVisit,
         waitingTime: args.waitingTime,

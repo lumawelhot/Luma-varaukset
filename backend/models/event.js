@@ -43,6 +43,11 @@ const eventSchema = mongoose.Schema({
     required: true
   },
   desc: String,
+  remotePlatforms:{
+    type: [Number],
+    required: false
+  },
+  otherRemotePlatformOption: String,
   tags: [
     {
       type: mongoose.Schema.Types.ObjectId,
