@@ -5,12 +5,14 @@ const bcrypt = require('bcrypt')
 
 const EventModel = require('../models/event')
 const UserModel = require('../models/user')
+const ExtraModel = require('../models/extra')
+const TagModel = require('../models/tag')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
-const Tag = require('../models/tag')
+
 let server = null
 let newTags = []
-
+let newExtras = []
 
 beforeAll(async () => {
 
@@ -24,7 +26,15 @@ beforeAll(async () => {
     })
   await UserModel.deleteMany({})
   await EventModel.deleteMany()
-  newTags = await Tag.insertMany({ name: 'Matematiikka' }, { name: 'Fysiikka' })
+  await ExtraModel.deleteMany()
+
+  newTags = await TagModel.insertMany({ name: 'Matematiikka' }, { name: 'Fysiikka' })
+
+  const extra1 = new ExtraModel({ name: 'Kampuskierros', classes: [1, 2, 3, 4], remoteLength: 5, inPersonLength: 15 })
+  const extra2 = new ExtraModel({ name: 'Opiskelijan elämää', remoteLength: 15, inPersonLength: 20, classes: [2, 3, 4] })
+  const savedExtra1 = await extra1.save()
+  const savedExtra2 = await extra2.save()
+  newExtras = [savedExtra1, savedExtra2]
 
   const userPassword = await bcrypt.hash('password', 10)
   const userData = { username: 'employee', passwordHash: userPassword, isAdmin: false }
@@ -51,14 +61,14 @@ beforeEach(async () => {
     grades: [1, 2],
     desc: 'Algebra is one of the broad areas of mathematics, together with number theory, geometry and analysis.',
     tags: newTags,
+    extras: newExtras,
     start: '2021-07-07T09:30:00+0300',
     end: '2021-07-07T12:00:00+0300',
     booked: false,
     inPersonVisit: true,
     remoteVisit: false,
     waitingTime: 15,
-    duration: 60,
-    extras: []
+    duration: 60
   }
   const testData2 = {
     title: 'Up-And-Atom!',
@@ -73,7 +83,7 @@ beforeEach(async () => {
     remoteVisit: true,
     waitingTime: 15,
     duration: 75,
-    extras: []
+    extras: newExtras
   }
 
   const testEvent1 = new EventModel(testData1)
@@ -101,6 +111,9 @@ describe('Event Server Test', () => {
         start
         end
         desc
+        extras {
+          name
+        }
       }
     }
     `
@@ -113,6 +126,8 @@ describe('Event Server Test', () => {
       expect(event.title).toBeDefined()
       expect(event.grades).toBeDefined()
       expect(event.tags).toBeDefined()
+      expect(event.extras).toBeDefined()
+      expect(event.extras.length).toBe(2)
       expect(event.resourceids).toBeDefined()
       expect(event.start).toBeDefined()
       expect(event.end).toBeDefined()
@@ -128,8 +143,8 @@ it('employee can create new event successfully', async () => {
         createEvent(
           title: "Learn JavaScript!"
           scienceClass: [1,4]
-          start: "Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)"
-          end: "Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)"
+          start: "2021-06-01T10:00:00+0300"
+          end: "2021-06-01T12:00:00+0300"
           desc: "JavaScript is the programming language of the Web."
           remoteVisit: true
           inPersonVisit: false
@@ -152,32 +167,31 @@ it('employee can create new event successfully', async () => {
       }
     `
   let response = await mutate({ mutation: CREATE_EVENT })
+
   expect(response.data.createEvent.title).toBe('Learn JavaScript!')
   expect(response.data.createEvent.grades).toEqual([1, 3, 4])
   expect(response.data.createEvent.tags).toEqual([{ name: 'Matematiikka' }, { name: 'Fysiikka' }, { name: 'Ohjelmointi' }, { name: 'Maantiede' }, { name: 'Kemia' } ])
   expect(response.errors).toBeUndefined()
 })
 
-
 describe('Event Model Test', () => {
 
   it('create & save new event successfully', async () => {
-    const tags = await Tag.find({ name: { $in: ['Matematiikka', 'Fysiikka'] } })
+    const tags = await TagModel.find({ name: { $in: ['Matematiikka', 'Fysiikka'] } })
     const eventData = {
       title: 'New-event',
       resourceids: [2],
       grades: [3, 4],
       tags: tags,
-      start: 'Tue Jun 01 2021 10:00:00 GMT+0300 (Eastern European Summer Time)',
-      end: 'Tue Jun 01 2021 12:00:00 GMT+0300 (Eastern European Summer Time)',
+      start: '2021-06-01T10:00:00+0300',
+      end: '2021-06-01T12:00:00+0300',
       inPersonVisit: true,
       remoteVisit: false,
       desc: 'Test event desc.',
       waitingTime: 15,
       duration: 75,
-      extras: []
+      extras: newExtras
     }
-
 
     const validEvent = new EventModel(eventData)
     const savedEvent = await validEvent.save()
@@ -190,6 +204,7 @@ describe('Event Model Test', () => {
     expect(savedEvent.start).toBe(eventData.start)
     expect(savedEvent.end).toBe(eventData.end)
     expect(savedEvent.desc).toBe(eventData.desc)
+    expect(savedEvent.extras.toObject().map(extra => extra.name)).toEqual(['Kampuskierros','Opiskelijan elämää'])
   })
 
   it('insert event successfully, but the field not defined in schema should be "undefined"', async () => {
@@ -197,8 +212,8 @@ describe('Event Model Test', () => {
       title: 'New-event',
       resourceids: [2],
       grades: [1],
-      start: 'Tue Jun 01 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
-      end: 'Wed Jun 02 2021 15:00:00 GMT+0300 (Eastern European Summer Time)',
+      start: '2021-06-01T09:00:00+0300',
+      end: '2021-06-02T15:00:00+0300',
       inPersonVisit: true,
       remoteVisit: false,
       fieldNotInSchema: 'Tiedeluokka Linkki',
@@ -240,6 +255,8 @@ describe('Event Model Test', () => {
 afterAll(async () => {
   await EventModel.deleteMany({})
   await UserModel.deleteMany({})
+  await ExtraModel.deleteMany({})
+  await TagModel.deleteMany({})
   await mongoose.connection.close()
   console.log('test-mongodb connection closed')
 })

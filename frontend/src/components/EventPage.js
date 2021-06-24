@@ -77,15 +77,22 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage }
     const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14
     const startsWithin1Hour = moment(event.start).diff(new Date(), 'hours') > 0
 
+    const description = event.desc ? event.desc : null
+
     return (
       <div className="container">
         <div className="columns is-centered">
           <div className="section">
             <div className="title">{event.title}</div>
             <div>
-              <p>Kuvaus: [Tähän tapahtuman kuvaus]</p>
+              {description
+                ? <p>Kuvaus: {description} </p>
+                : null}
               <p>Tiedeluokka: {eventClass}</p>
-              <p>Valittavissa olevat lisäpalvelut: [Tähän ekstrat]</p>
+              {event.extras.length
+                ? <div>Valittavissa olevat lisäpalvelut: {event.extras.map(extra => <div key={extra.name}>{extra.name}</div>) }</div>
+                : null}
+
               <div>Tarjolla seuraaville luokka-asteille: {eventGrades.map(g =>
                 <div key={g.value}>{g.label}</div>)}
               </div>

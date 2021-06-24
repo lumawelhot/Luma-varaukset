@@ -94,7 +94,7 @@ const typeDefs = gql`
       tags: [TagInput]
       waitingTime: Int!
       extras: [ID]
-      duration: Int!
+      duration: Int
     ): Event
     createVisit(
       event: ID!

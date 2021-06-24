@@ -140,7 +140,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
   ]
 
   const filterEventGrades = (eventGrades) => {
-    const gradesArrays = eventGrades.map(g => grades[g].label)
+    const gradesArrays = eventGrades.map(g => grades[g-1].label)
     return gradesArrays.join(', ')
   }
 
@@ -153,7 +153,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
   ]
 
   const filterEventClass = (eventClasses) => {
-    const classesArray = eventClasses.map(c => classes[c].label)
+    const classesArray = eventClasses.map(c => classes[c-1].label)
     return classesArray.join(', ')
   }
 
