@@ -28,7 +28,7 @@ const VisitList = ({ notify }) => {
   }
 
   const renderedVisits = result.data.getVisits.filter(visit => {
-    return filters.length ? filters.includes(visit.event.resourceids) : true
+    return filters.length ? visit.event.resourceids.some(r => filters.includes(r)) : true
   })
 
   return (
