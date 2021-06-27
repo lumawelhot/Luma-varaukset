@@ -216,6 +216,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
   }, [result.data])
 
   if (event) {
+    console.log(event)
     const eventGrades = filterEventGrades(event.grades)
     const eventClass = filterEventClass(event.resourceids)
     return (
