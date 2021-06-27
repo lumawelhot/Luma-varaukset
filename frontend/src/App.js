@@ -17,7 +17,6 @@ import Toasts from './components/Toasts'
 import { v4 as uuidv4 } from 'uuid'
 import VisitPage from './components/VisitPage'
 import VisitList from './components/VisitList'
-import { differenceInDays, differenceInMinutes, parseISO }  from 'date-fns'
 import ExtrasAdmin from './components/EventExtras/ExtrasAdmin'
 
 const App = () => {
@@ -37,9 +36,6 @@ const App = () => {
   const [currentUser, setUser] = useState(null)
 
   const parseEvent = (event) => {
-    const startsAfter14Days = differenceInDays(parseISO(event.start), new Date()) >= 14
-    const startsAfter1Hour = differenceInMinutes(parseISO(event.start), new Date()) >= 60
-    const booked = (!currentUser && !startsAfter14Days) || (currentUser && !startsAfter1Hour)
     const details = {
       id: event.id,
       title: event.title,
@@ -60,7 +56,7 @@ const App = () => {
       ...details,
       start: new Date(timeSlot.startTime),
       end: new Date(timeSlot.endTime),
-      booked: booked,
+      booked: event.booked,
     }))
     events = events.concat(event.visits.map(visit => Object({
       ...details,

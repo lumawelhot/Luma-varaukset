@@ -24,10 +24,10 @@ const validate = (values) => {
     errors.scienceClass = 'Valitse vähintään yksi tiedeluokka'
   }
 
-  if(!values.remotePlatforms.includes(true)){
+  if(!values.remotePlatforms.includes(true) && values.remoteVisit){
     errors.remotePlatforms = 'Valitse vähintään yksi etäyhteysalusta'
   }
-  if(!values.otherRemotePlatformOption){
+  if(!values.otherRemotePlatformOption && values.remotePlatforms[3] && values.remoteVisit){
     errors.otherRemotePlatformOption = 'Kirjoita muun etäyhteysalustan nimi'
   }
 
@@ -63,7 +63,7 @@ const validate = (values) => {
 const EventForm = ({
   sendMessage,
   addEvent,
-  newEventTimeRange = [null, null],
+  newEventTimeRange = null,
   closeEventForm,
 }) => {
   const history = useHistory()
@@ -98,9 +98,9 @@ const EventForm = ({
       desc: '',
       remotePlatforms: [true,true,true,false],
       otherRemotePlatformOption: '',
-      date: format(newEventTimeRange[0], 'yyyy-MM-dd'),
-      startTime: format(newEventTimeRange[0], 'HH:mm'),
-      endTime: format(newEventTimeRange[1], 'HH:mm'),
+      date: newEventTimeRange ? format(newEventTimeRange[0], 'yyyy-MM-dd') : null,
+      startTime: newEventTimeRange ? format(newEventTimeRange[0], 'HH:mm') : null,
+      endTime: newEventTimeRange ? format(newEventTimeRange[1], 'HH:mm') : null,
       tags: [],
       waitingTime: 15,
       extras: [],

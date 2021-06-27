@@ -21,7 +21,10 @@ Given('an event with title yyyyy is created', () => {
     inPersonVisit: false,
     start,
     end,
-    tags: []
+    tags: [],
+    duration: 60,
+    extras: [],
+    desc: 'Some description'
   })
 })
 
@@ -32,6 +35,7 @@ When('I am on the calendar page', () => {
 
 Then('the event yyyyy is shown with correct information', () => {
   cy.get('.rbc-agenda-view').contains('yyyyy')
+  //console.log(event.parent().children())
 })
 
 Given('User is not logged in', () => {

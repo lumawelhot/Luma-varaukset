@@ -78,7 +78,6 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage }
 
     const startsAfter14Days = differenceInDays(event.start, new Date()) >= 14
     const startsAfter1Hour = differenceInMinutes(event.start, new Date()) >= 60
-
     const description = event.desc ? event.desc : null
 
     return (
@@ -112,10 +111,10 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage }
                 {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days)
                   ? null
                   : <button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>Varaa tapahtuma</button>}
-                {currentUser &&
-                <div className="control">
-                  <button className="button luma" onClick={() => handleRemoveEventClick()}>Poista tapahtuma</button>
-                </div>
+                {!!currentUser && (
+                  <div className="control">
+                    <button className="button luma" onClick={() => handleRemoveEventClick()}>Poista tapahtuma</button>
+                  </div>)
                 }
                 <div className="control">
                   <button className="button luma" onClick={cancel}>Poistu</button>

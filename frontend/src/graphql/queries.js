@@ -95,7 +95,10 @@ export const VISITS = gql`
       clientPhone
       grade
       participants
-      extra
+      extras {
+        id
+        name
+      }
       status
       startTime
       endTime
@@ -195,6 +198,7 @@ export const CREATE_VISIT = gql`
     $startTime: String!
     $endTime: String!
     $dataUseAgreement: Boolean!
+    $extras: [ID]
     $remotePlatform: String
     ) {
     createVisit(
@@ -212,6 +216,7 @@ export const CREATE_VISIT = gql`
       remoteVisit: $remoteVisit
       username: $username
       dataUseAgreement: $dataUseAgreement
+      extras: $extras
       remotePlatform: $remotePlatform
     ) {
       id
@@ -245,6 +250,11 @@ export const FIND_VISIT = gql`
         start
         end
         resourceids
+        desc
+      }
+      extras {
+        id
+        name
       }
       grade
       startTime

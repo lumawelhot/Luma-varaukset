@@ -61,6 +61,12 @@ const visitSchema = mongoose.Schema({
     type: Boolean,
     required: true
   },
+  extras: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Extra'
+    }
+  ],
   remotePlatform: {
     type: String,
     required: false

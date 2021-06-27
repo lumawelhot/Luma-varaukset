@@ -1,6 +1,9 @@
 const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 const User = require('../models/user')
+const Event = require('../models/event')
+const Extra = require('../models/extra')
+const Visit = require('../models/visit')
 
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
@@ -18,14 +21,25 @@ const createAdmin = async () => {
   await userObject.save()
 }
 
-console.log('Initializing Luma-varaukset administrator: ' + ADMIN_USERNAME)
-mongoose.connect('mongodb://luma-varaukset-db:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    createAdmin().then(() => {
-      mongoose.disconnect()
-      console.log('Done.')
+if (ADMIN_USERNAME && ADMIN_PASSWORD ) {
+  console.log('Initializing Luma-varaukset administrator: ' + ADMIN_USERNAME)
+  mongoose.connect('mongodb://luma-varaukset-db:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+      createAdmin().then(() => {
+        mongoose.disconnect()
+        console.log('Done.')
+      })
     })
-  })
-  .catch((error) => {
-    console.log('Error connecting to MongoDB: ', error.message)
-  })
+    .catch((error) => {
+      console.log('Error connecting to MongoDB: ', error.message)
+    })
+}
+
+const resetDbForE2E = async () => {
+  await Visit.deleteMany({})
+  await Extra.deleteMany({})
+  await Event.deleteMany({})
+  console.log('Database reset!')
+}
+
+module.exports = { resetDbForE2E }

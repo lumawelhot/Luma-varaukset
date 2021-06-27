@@ -51,7 +51,7 @@ const typeDefs = gql`
     clientPhone: String!
     grade: String!
     participants: Int!
-    extra: [Int]
+    extras: [Extra]
     status: Boolean!
     startTime: String!
     endTime: String!
@@ -67,7 +67,7 @@ const typeDefs = gql`
     getUsers: [User]!
     me: User!
     getEvents: [Event]!
-    findVisit(id: ID!): Visit!
+    findVisit(id: ID!): Visit
     getVisits: [Visit]
     getTags: [Tag]!
     getExtras: [Extra]!
@@ -100,7 +100,7 @@ const typeDefs = gql`
       tags: [TagInput]
       waitingTime: Int!
       extras: [ID]
-      duration: Int
+      duration: Int!
     ): Event
     createVisit(
       event: ID!
@@ -113,7 +113,7 @@ const typeDefs = gql`
       endTime: String!
       grade: String!
       participants: Int!
-      extra: [Int]
+      extras: [ID]
       username: String
       inPersonVisit: Boolean!
       remoteVisit: Boolean!

@@ -1,11 +1,12 @@
 /* eslint-disable no-undef */
 import { Given, When, Then/* , And */ } from 'cypress-cucumber-preprocessor/steps'
+import { addDays, startOfWeek } from 'date-fns'
 
 Given('Employee is logged in', () => {
   cy.login({ username: 'Admin', password: 'salainen' })
 })
 
-When('I am on the create event page', () => {
+When('I navigate to the create event page', () => {
   cy.visit('http://localhost:3000/event')
 })
 
@@ -25,16 +26,18 @@ When('valid information is entered', () => {
   cy.get(':nth-child(2) > .checkbox2 > input').click()
   cy.wait(100)
   cy.get(':nth-child(3) > .checkbox3 > input').click()
-  cy.get('#date').type('2021-01-31')
+  const eventDate = addDays(startOfWeek(new Date()), 16).toISOString().slice(0,10)
+  cy.get('#date').type(eventDate)
   cy.get('#startTime').type('08:15')
   cy.get('#endTime').type('09:45')
   cy.get('#desc').type('Test description')
   cy.get('[type="submit"]').click()
-  cy.wait(2000)
 })
 
-Then('an event is succesfully created', () => {
-  cy.containsEvent({ title: 'Test event', resourceids: [2] }).should('eq', true)
+Then('an event is succesfully created and success toast is shown', () => {
+  const toast = cy.get('.toast')
+  toast.should('have.class', 'is-success')
+  toast.should('have.text', 'Vierailu luotu')
 })
 
 When('too short a title is entered', () => {
@@ -47,16 +50,16 @@ When('too short a title is entered', () => {
   cy.get(':nth-child(2) > .checkbox2 > input').click()
   cy.wait(100)
   cy.get(':nth-child(3) > .checkbox3 > input').click()
-  cy.get('#date').type('2021-01-31')
+  const eventDate = addDays(startOfWeek(new Date()), 16).toISOString().slice(0,10)
+  cy.get('#date').type(eventDate)
   cy.get('#startTime').type('08:15')
   cy.get('#endTime').type('09:45')
   cy.get('#desc').type('Test description')
   cy.get('[type="submit"]').click()
-  cy.wait(2000)
 })
 
-Then('no event is created and an error message is shown', () => {
-
-  cy.containsEvent({ title: 'test', resourceids: [2] }).should('eq', false)
-  //tähän luotava virheviestin tarkistus sitten, kun backend on korjattu se lähettämään
+Then('no event is created and an error toast is shown', () => {
+  const toast = cy.get('.toast')
+  toast.should('have.class', 'is-danger')
+  toast.should('have.text', 'Tapahtuman luonti epäonnistui! Tarkista tiedot!')
 })
