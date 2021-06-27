@@ -20,7 +20,9 @@ const resolvers = {
       return users
     },
     getEvents: async () => {
-      const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits').populate('extras')
+      date = new Date();
+      date.setDate(date.getDate() - 90)
+      const events = await Event.find({ end: { $gt: date.toISOString() } }).populate('tags', { name: 1, id: 1 }).populate('visits').populate('extras')
       return events
     },
     getTags: async () => {
