@@ -58,6 +58,7 @@ const typeDefs = gql`
     inPersonVisit: Boolean!
     remoteVisit: Boolean!
     dataUseAgreement: Boolean!
+    remotePlatform: String
   }
   type Token {
     value: String!
@@ -117,6 +118,7 @@ const typeDefs = gql`
       inPersonVisit: Boolean!
       remoteVisit: Boolean!
       dataUseAgreement: Boolean!
+      remotePlatform: String
     ): Visit
     cancelVisit(id: ID!): Visit
     createExtra(

@@ -17,9 +17,7 @@ import Toasts from './components/Toasts'
 import { v4 as uuidv4 } from 'uuid'
 import VisitPage from './components/VisitPage'
 import VisitList from './components/VisitList'
-//mport fromUnixTime from 'date-fns/fromUnixTime'
-import moment from 'moment'
-import 'moment/locale/fi'
+import { differenceInDays, differenceInMinutes, parseISO }  from 'date-fns'
 import ExtrasAdmin from './components/EventExtras/ExtrasAdmin'
 
 const App = () => {
@@ -39,8 +37,8 @@ const App = () => {
   const [currentUser, setUser] = useState(null)
 
   const parseEvent = (event) => {
-    const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14
-    const startsAfter1Hour = moment(event.start).diff(new Date(), 'minutes') >= 60
+    const startsAfter14Days = differenceInDays(parseISO(event.start), new Date()) >= 14
+    const startsAfter1Hour = differenceInMinutes(parseISO(event.start), new Date()) >= 60
     const booked = (!currentUser && !startsAfter14Days) || (currentUser && !startsAfter1Hour)
     const details = {
       id: event.id,
@@ -52,19 +50,23 @@ const App = () => {
       tags: event.tags,
       extras: event.extras,
       duration: event.duration,
-      desc: event.desc
+      desc: event.desc,
+      remotePlatform: event.remotePlatform,
+      otherRemotePlatformOption: event.otherRemotePlatformOption
     }
+    delete details.availableTimes
+    delete details.visits
     let events = event.availableTimes.map(timeSlot => Object({
+      ...details,
       start: new Date(timeSlot.startTime),
       end: new Date(timeSlot.endTime),
       booked: booked,
-      ...details
     }))
     events = events.concat(event.visits.map(visit => Object({
+      ...details,
       start: new Date(visit.startTime),
       end: new Date(visit.endTime),
       booked: true,
-      ...details
     })))
 
     return events

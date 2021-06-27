@@ -3,7 +3,7 @@ import { useFormik } from 'formik'
 import { useMutation } from '@apollo/client'
 import { CREATE_VISIT, EVENTS } from '../graphql/queries'
 import { useHistory } from 'react-router'
-import moment from 'moment'
+import format from 'date-fns/format'
 
 let selectedEvent
 
@@ -82,10 +82,10 @@ const validate = values => {
   }
   if (startTimeAsDate < selectedEvent.start) {
     errors.startTime = 'Liian aikainen aloitusaika'
-  if(!values.otherRemotePlatformOption){
+  }
+  if(!values.otherRemotePlatformOption && Number(values.remotePlatform) === 5){
     errors.otherRemotePlatformOption = 'Kirjoita muun etäyhteysalustan nimi'
   }
-
   return errors
 }
 
@@ -176,6 +176,11 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
           startTimeAsDate.setMinutes(values.startTime.slice(3,5))
         }
         const visitEndTime = calculateVisitEndTime(startTimeAsDate, values, selectedEvent)
+        const remotePlatform = (0 < Number(values.remotePlatform) && Number(values.remotePlatform) < 5)
+          ?
+          ['Zoom', 'Google Meet', 'Microsoft Teams', selectedEvent.otherRemotePlatformOption][Number(values.remotePlatform)-1]
+          :
+          (Number(values.remotePlatform) === 5) ? values.otherRemotePlatformOption : null
         create({
           variables: {
             event: event.id,
@@ -193,8 +198,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
             username: values.username,
             dataUseAgreement: values.dataUseAgreement,
             extras: values.extras,
-            remotePlatform: values.remotePlatform,
-            otherRemotePlatformOption: values.otherRemotePlatformOption
+            remotePlatform: remotePlatform,
           }
         })
       } catch (error) {
@@ -212,7 +216,6 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
   }, [result.data])
 
   if (event) {
-    console.log(event)
     const eventGrades = filterEventGrades(event.grades)
     const eventClass = filterEventClass(event.resourceids)
     return (
@@ -233,8 +236,8 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 {event.remoteVisit && !event.inPersonVisit? 'Etäopetuksena' : <></>}
               </div>
               <p><strong>Tapahtuman kesto:</strong> {event.duration} min</p>
-              <p><strong>Vierailun aikaisin alkamisaika:</strong> {moment(event.start).format('DD.MM.YYYY, HH:mm')}</p>
-              <p><strong>Vierailun myöhäisin päättymisaika:</strong> {moment(event.end).format('DD.MM.YYYY, HH:mm')}</p>
+              <p><strong>Vierailun aikaisin alkamisaika:</strong> {format(event.start, 'd.M.yyyy, HH:mm')}</p>
+              <p><strong>Vierailun myöhäisin päättymisaika:</strong> {format(event.end, 'd.M.yyyy, HH:mm')}</p>
             </div>
 
             <br />
@@ -599,8 +602,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
       </div>
     )
   }
-  return (
-    <div>Tapahtumaa haetaan...</div>
-  )
+
 }
+
 export default VisitForm

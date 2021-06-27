@@ -45,23 +45,15 @@ const singleItem = [
             'clientPhone':'4234242',
             'status':true,
             'startTime': null,
-            'endTime': null
+            'endTime': null,
+            'extras': [],
+            'remotePlatform': 'Zoom'
           }
         ],
       },
     },
   },
 ]
-
-// test('Just render the component', async () => {
-//   const { debug } = render(
-//     <MockedProvider mocks={emptyList} addTypename={false}>
-//       <VisitList/>
-//     </MockedProvider>
-//   )
-//   await waitFor(() => new Promise((res) => setTimeout(res, 0))) // Allow component time to render
-//   debug()
-// })
 
 test('Renders without error with empty list', async () => {
   const { container } = render(

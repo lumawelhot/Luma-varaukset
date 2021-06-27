@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { FIND_VISIT, CANCEL_VISIT, EVENTS } from '../graphql/queries'
 import { useMutation, useLazyQuery } from '@apollo/client'
 import { useParams } from 'react-router'
-import moment from 'moment'
+import format from 'date-fns/format'
 import { useHistory } from 'react-router'
 
 const classes = [
@@ -92,8 +92,8 @@ const VisitPage = ({ sendMessage }) => {
               {visit.remoteVisit ? <p>Etäopetus</p> : <></>}
             </div>
             <p>Ilmoitettu osallistujamäärä: {visit.participants}</p>
-            <p>Vierailu alkaa: {moment(visit.startTime).format('DD.MM.YYYY, HH:mm')}</p>
-            <p>Vierailu päättyy: {moment(visit.endTime).format('DD.MM.YYYY, HH:mm')}</p>
+            <p>Vierailu alkaa: {format(visit.startTime, 'd.M.yyyy, HH:mm')}</p>
+            <p>Vierailu päättyy: {format(visit.endTime, 'd.M.yyyy, HH:mm')}</p>
 
             <div className="field is-grouped">
               <div className="control">

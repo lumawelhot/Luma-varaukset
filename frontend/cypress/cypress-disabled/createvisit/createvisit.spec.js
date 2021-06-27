@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import { Given, When, Then, And } from 'cypress-cucumber-preprocessor/steps'
-import moment from 'moment'
+import format from 'date-fns/format'
 
 const eventDate1 = new Date()
 eventDate1.setDate(new Date().getDate() + 16)
@@ -91,7 +91,7 @@ Then('available event page has the correct title', () => {
 })
 
 And('available event page has the correct start date', () => {
-  const formattedDate = moment(eventDate1).format('DD.MM.YYYY')
+  const formattedDate = format(eventDate1, 'dd.MM.yyyy')
   cy.contains(`${formattedDate}`)
 })
 
@@ -121,7 +121,7 @@ Then('unavailable event page has the correct title', () => {
 })
 
 And('unavailable event page has the correct start date', () => {
-  const formattedUnavailableEventDate = moment(unavailableEventDate).format('DD.MM.YYYY')
+  const formattedUnavailableEventDate = format(unavailableEventDate, 'dd.MM.yyyy')
   cy.contains(`${formattedUnavailableEventDate}`)
 })
 

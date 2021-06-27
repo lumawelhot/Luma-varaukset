@@ -1,8 +1,13 @@
 import React from 'react'
-import moment from 'moment'
+import startOfWeek from 'date-fns/startOfWeek'
+import endOfWeek from 'date-fns/endOfWeek'
+import addWeeks from 'date-fns/addWeeks'
+import subWeeks from 'date-fns/subWeeks'
+import addDays from 'date-fns/addDays'
+import subDays from 'date-fns/subDays'
+import format from 'date-fns/format'
 import { Navigate } from 'react-big-calendar'
 import TimeGrid from 'react-big-calendar/lib/TimeGrid'
-//import LumaTimeGrid from './LumaTimeGrid'
 
 class LumaWorkWeek extends React.Component {
   render() {
@@ -15,12 +20,12 @@ class LumaWorkWeek extends React.Component {
 }
 
 LumaWorkWeek.range = date => {
-  let start = moment(date).startOf('week')
-  let end = moment(date).endOf('week').subtract(2,'days')
+  let start = startOfWeek(date, { weekStartsOn: 1 })
+  const end = subDays(endOfWeek(date, { weekStartsOn: 1 }), 2)
   let range = []
   while (start < end) {
-    range.push(start.toDate())
-    start.add(1,'day')
+    range.push(start)
+    start = addDays(start, 1)
   }
   return range
 }
@@ -28,10 +33,10 @@ LumaWorkWeek.range = date => {
 LumaWorkWeek.navigate = (date, action) => {
   switch (action) {
     case Navigate.PREVIOUS:
-      return moment(date).subtract(1, 'week').toDate()
+      return subWeeks(date, 1)
 
     case Navigate.NEXT:
-      return moment(date).add(1,'week').toDate()
+      return addWeeks(date, 1)
 
     default:
       return date
@@ -39,9 +44,9 @@ LumaWorkWeek.navigate = (date, action) => {
 }
 
 LumaWorkWeek.title = date => {
-  let start = moment(date).startOf('week').toDate()
-  let end = moment(date).endOf('week').subtract(2,'days').toDate()
-  return `Viikko ${moment(date).format('w')} (${start.toLocaleDateString()}-${end.toLocaleDateString()})`
+  let start = startOfWeek(date, { weekStartsOn: 1 })
+  let end = subDays(endOfWeek(date, { weekStartsOn: 1 }), 2)
+  return `Viikko ${format(date, 'w')} (${start.toLocaleDateString()}-${end.toLocaleDateString()})`
 }
 
 export default LumaWorkWeek

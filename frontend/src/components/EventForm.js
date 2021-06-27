@@ -4,7 +4,7 @@ import { useMutation, useQuery } from '@apollo/client'
 import { CREATE_EVENT, TAGS, EXTRAS } from '../graphql/queries'
 import { useHistory } from 'react-router'
 import LumaTagInput from './LumaTagInput/LumaTagInput'
-import moment from 'moment'
+import format from 'date-fns/format'
 
 const validate = (values) => {
   const defErrorMessage = 'Vaaditaan!'
@@ -98,9 +98,9 @@ const EventForm = ({
       desc: '',
       remotePlatforms: [true,true,true,false],
       otherRemotePlatformOption: '',
-      date: moment(newEventTimeRange[0]).format('YYYY-MM-DD'),
-      startTime: moment(newEventTimeRange[0]).format('HH:mm'),
-      endTime: moment(newEventTimeRange[1]).format('HH:mm'),
+      date: format(newEventTimeRange[0], 'yyyy-MM-dd'),
+      startTime: format(newEventTimeRange[0], 'HH:mm'),
+      endTime: format(newEventTimeRange[1], 'HH:mm'),
       tags: [],
       waitingTime: 15,
       extras: [],

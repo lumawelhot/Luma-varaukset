@@ -60,6 +60,10 @@ const visitSchema = mongoose.Schema({
   dataUseAgreement: {
     type: Boolean,
     required: true
+  },
+  remotePlatform: {
+    type: String,
+    required: false
   }
 })
 

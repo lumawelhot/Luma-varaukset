@@ -99,6 +99,7 @@ export const VISITS = gql`
       status
       startTime
       endTime
+      remotePlatform
     }
   }
 `
@@ -194,6 +195,7 @@ export const CREATE_VISIT = gql`
     $startTime: String!
     $endTime: String!
     $dataUseAgreement: Boolean!
+    $remotePlatform: String
     ) {
     createVisit(
       event: $event
@@ -210,6 +212,7 @@ export const CREATE_VISIT = gql`
       remoteVisit: $remoteVisit
       username: $username
       dataUseAgreement: $dataUseAgreement
+      remotePlatform: $remotePlatform
     ) {
       id
       event {
@@ -225,6 +228,7 @@ export const CREATE_VISIT = gql`
       endTime
       grade
       participants
+      remotePlatform
     }
   }
 `
