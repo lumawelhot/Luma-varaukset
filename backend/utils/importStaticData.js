@@ -1,3 +1,7 @@
+// This script should be run in production inside the docker container!
+// So, on your server run:
+// docker exec luma-varaukset-app /bin/sh -c "cd /app/backend/utils && node importStaticData.js"
+
 const mongoose = require('mongoose')
 const Event = require('../models/event')
 const Extra = require('../models/extra')
