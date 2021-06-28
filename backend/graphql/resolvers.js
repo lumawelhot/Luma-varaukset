@@ -33,7 +33,7 @@ const resolvers = {
     },
     findVisit: async (root, args) => {
       try {
-        const visit = await Visit.findById(args.id)
+        const visit = await Visit.findById(args.id).populate('extras')
         return visit
       } catch (e) {
         throw new UserInputError('Varausta ei löytynyt!')
@@ -49,7 +49,7 @@ const resolvers = {
   },
   Visit: {
     event: async (root) => {
-      const event = await Event.findById(root.event).populate('tags', { name: 1, id: 1 })
+      const event = await Event.findById(root.event).populate('tags', { name: 1, id: 1 }).populate('extras')
       return event
     },
   },
@@ -92,6 +92,8 @@ const resolvers = {
         throw new UserInputError('At least one grade must be selected!')
       }
 
+
+
       if (args.title.length < 5) {
         throw new UserInputError('title too short')
       }
@@ -118,6 +120,8 @@ const resolvers = {
         desc: args.desc,
         resourceids,
         grades,
+        remotePlatforms: args.remotePlatforms,
+        otherRemotePlatformOption: args.otherRemotePlatformOption,
         remoteVisit: args.remoteVisit,
         inPersonVisit: args.inPersonVisit,
         waitingTime: args.waitingTime,
@@ -172,9 +176,10 @@ const resolvers = {
         ...args,
         event: event,
         status: true,
-        /* startTime: args.startTime,
-        endTime: args.endTime, */
+        extras: []
       })
+      const extras = await Extra.find({ _id: { $in: args.extras } })
+      visit.extras = extras
 
       let savedVisit
       event.availableTimes = event.availableTimes.map(time => {

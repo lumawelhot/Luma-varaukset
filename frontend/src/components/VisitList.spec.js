@@ -37,31 +37,22 @@ const singleItem = [
             },
             'grade':'1. luokka',
             'participants':9,
-            'extra':null,
+            'extras':[],
             'clientName':'Opettaja',
             'schoolName':'Koulu',
             'schoolLocation':'Location',
             'clientEmail':'opettaja@luma.com',
             'clientPhone':'4234242',
             'status':true,
-            'startTime': null,
-            'endTime': null
+            'startTime': new Date().toISOString(),
+            'endTime': new Date().toISOString(),
+            'remotePlatform': 'Zoom'
           }
         ],
       },
     },
   },
 ]
-
-// test('Just render the component', async () => {
-//   const { debug } = render(
-//     <MockedProvider mocks={emptyList} addTypename={false}>
-//       <VisitList/>
-//     </MockedProvider>
-//   )
-//   await waitFor(() => new Promise((res) => setTimeout(res, 0))) // Allow component time to render
-//   debug()
-// })
 
 test('Renders without error with empty list', async () => {
   const { container } = render(

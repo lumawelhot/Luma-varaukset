@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { FIND_VISIT, CANCEL_VISIT, EVENTS } from '../graphql/queries'
 import { useMutation, useLazyQuery } from '@apollo/client'
 import { useParams } from 'react-router'
-import moment from 'moment'
+import { format, parseISO }  from 'date-fns'
 import { useHistory } from 'react-router'
 
 const classes = [
@@ -47,21 +47,24 @@ const VisitPage = ({ sendMessage }) => {
     if (!data) {
       findVisit({ variables: { id } })
     }
-    else if (data) {
-      //console.log(data)
-      setVisit(data.findVisit)
+    else if (data.findVisit) {
+      let parsedVisit = { ...data.findVisit }
+      if (typeof parsedVisit.startTime === 'string') {
+        parsedVisit.startTime=parseISO(data.findVisit.startTime)
+        parsedVisit.endTime=parseISO(data.findVisit.endTime)
+      }
+      setVisit(parsedVisit)
     }
   }, [data])
 
   useEffect(() => {
     if (resultOfCancel.data) {
-      console.log(resultOfCancel.data)
       sendMessage('Vierailu peruttu', 'success')
       history.push('/')
     }
   }, [resultOfCancel.data])
 
-  if (loading || visit === null) {
+  if (loading) {
     return (
       <div>
         <p>Varausta haetaan...</p>
@@ -69,9 +72,17 @@ const VisitPage = ({ sendMessage }) => {
     )
   }
 
-  const handelCancel = (event) => {
+  if (!visit) {
+    return (
+      <div>
+        <p>Varausta ei löytynyt.</p>
+      </div>
+    )
+  }
+
+  const handleCancel = (event) => {
     event.preventDefault()
-    cancelVisit({
+    confirm('Haluatko varmasti perua varauksesi?') && cancelVisit({
       variables: { id }
     })
   }
@@ -83,21 +94,23 @@ const VisitPage = ({ sendMessage }) => {
           <div className="title">Olet varannut seuraavan tapahtuman:</div>
           <div>
             <p><b>{visit.event.title}</b></p>
-            <p>Kuvaus: [Tähän tapahtuman kuvaus]</p>
+            <p>Kuvaus: {visit.event.desc}</p>
             <p>Tiedeluokka: {filterEventClass(visit.event.resourceids)}</p>
-            <p>Valitut lisäpalvelut: [Tähän ekstrat]</p>
+            {visit.extras.length
+              ? <p>Valitut lisäpalvelut: {visit.extras.map(extra => <span key={extra.name}>{extra.name}</span>) }</p>
+              : null}
             <p>Valittu luokka-aste: {visit.grade}</p>
             <div>Opetusmuoto:
-              {visit.inPersonVisit ? <p>Lähiopetus</p> : <></>}
-              {visit.remoteVisit ? <p>Etäopetus</p> : <></>}
+              {visit.inPersonVisit ? ' Lähiopetus' : <></>}
+              {visit.remoteVisit ? ' Etäopetus' : <></>}
             </div>
             <p>Ilmoitettu osallistujamäärä: {visit.participants}</p>
-            <p>Vierailu alkaa: {moment(visit.startTime).format('DD.MM.YYYY, HH:mm')}</p>
-            <p>Vierailu päättyy: {moment(visit.endTime).format('DD.MM.YYYY, HH:mm')}</p>
+            <p>Vierailu alkaa: {format(visit.startTime, 'd.M.yyyy, HH:mm')}</p>
+            <p>Vierailu päättyy: {format(visit.endTime, 'd.M.yyyy, HH:mm')}</p>
 
             <div className="field is-grouped">
               <div className="control">
-                <button className="button is-danger" onClick={handelCancel}>Peru</button>
+                <button className="button is-danger luma" onClick={handleCancel}>Peru</button>
               </div>
               <div className="control">
                 <button className="button luma" onClick={cancel}>Poistu</button>

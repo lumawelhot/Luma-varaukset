@@ -3,7 +3,7 @@ import { useFormik } from 'formik'
 import { useMutation } from '@apollo/client'
 import { CREATE_VISIT, EVENTS } from '../graphql/queries'
 import { useHistory } from 'react-router'
-import moment from 'moment'
+import format from 'date-fns/format'
 
 let selectedEvent
 
@@ -30,7 +30,6 @@ const validate = values => {
   const messageIfMissing = 'Vaaditaan!'
   const messageIfTooShort = 'Liian lyhyt!'
   const errors = {}
-
   if (!values.clientName) {
     errors.clientName = messageIfMissing
   }
@@ -84,12 +83,15 @@ const validate = values => {
   if (startTimeAsDate < selectedEvent.start) {
     errors.startTime = 'Liian aikainen aloitusaika'
   }
-
+  if(!values.otherRemotePlatformOption && Number(values.remotePlatform) === 5){
+    errors.otherRemotePlatformOption = 'Kirjoita muun etäyhteysalustan nimi'
+  }
   return errors
 }
 
 const VisitForm = ({ sendMessage, event, currentUser }) => {
   selectedEvent = event
+
   const history = useHistory()
   if (!event) {
     history.push('/')
@@ -156,7 +158,9 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
       remoteVisitGuidelines: false,
       dataUseAgreement: false,
       username: '',
-      extras: []
+      extras: [],
+      remotePlatform: '',
+      otherRemotePlatformOption: ''
     },
     validate,
     onSubmit: values => {
@@ -172,6 +176,11 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
           startTimeAsDate.setMinutes(values.startTime.slice(3,5))
         }
         const visitEndTime = calculateVisitEndTime(startTimeAsDate, values, selectedEvent)
+        const remotePlatform = (0 < Number(values.remotePlatform) && Number(values.remotePlatform) < 5)
+          ?
+          ['Zoom', 'Google Meet', 'Microsoft Teams', selectedEvent.otherRemotePlatformOption][Number(values.remotePlatform)-1]
+          :
+          (Number(values.remotePlatform) === 5) ? values.otherRemotePlatformOption : null
         create({
           variables: {
             event: event.id,
@@ -188,7 +197,8 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
             participants: values.participants,
             username: values.username,
             dataUseAgreement: values.dataUseAgreement,
-            extras: values.extras
+            extras: values.extras,
+            remotePlatform: remotePlatform,
           }
         })
       } catch (error) {
@@ -206,6 +216,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
   }, [result.data])
 
   if (event) {
+    console.log(event)
     const eventGrades = filterEventGrades(event.grades)
     const eventClass = filterEventClass(event.resourceids)
     return (
@@ -226,8 +237,8 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 {event.remoteVisit && !event.inPersonVisit? 'Etäopetuksena' : <></>}
               </div>
               <p><strong>Tapahtuman kesto:</strong> {event.duration} min</p>
-              <p><strong>Vierailun aikaisin alkamisaika:</strong> {moment(event.start).format('DD.MM.YYYY, HH:mm')}</p>
-              <p><strong>Vierailun myöhäisin päättymisaika:</strong> {moment(event.end).format('DD.MM.YYYY, HH:mm')}</p>
+              <p><strong>Vierailun aikaisin alkamisaika:</strong> {format(event.start, 'd.M.yyyy, HH:mm')}</p>
+              <p><strong>Vierailun myöhäisin päättymisaika:</strong> {format(event.end, 'd.M.yyyy, HH:mm')}</p>
             </div>
 
             <br />
@@ -263,6 +274,92 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 <p className="help is-danger">{formik.errors.location}</p>
               ) : null}
               </div>
+
+              {formik.values.visitMode === '1'
+                ?
+                //
+
+                <div className="field">
+                  <div id="radio-group">Valitse haluamasi etäyhteysalusta</div>
+                  <div className="control">
+                    <label className="remotePlatform">
+                      <input
+                        type="radio" name="remotePlatform" value="1" /* checked = {formik.values.remotePlatform} */
+                        onChange={() => {
+                          formik.touched.remotePlatform = true
+                          formik.setFieldValue('remotePlatform', '1')
+                        }} /> Zoom
+                    </label>
+                  </div>
+                  <div className="control">
+                    <label className="remotePlatform">
+                      <input type="radio" name="remotePlatform" value="2"
+                        onChange={() => {
+                          formik.touched.remotePlatform = true
+                          formik.setFieldValue('remotePlatform', '2')
+                        }} /> Google Meet
+                    </label>
+                  </div>
+                  <div className="control">
+                    <label className="remotePlatform">
+                      <input type="radio" name="remotePlatform" value="3"
+                        onChange={() => {
+                          formik.touched.remotePlatform = true
+                          formik.setFieldValue('remotePlatform', '3')
+                        }} /> Microsoft Teams
+                    </label>
+                  </div>
+
+                  <div className="control">
+                    <label className="remotePlatform">
+                      <input type="radio" name="remotePlatform" value="4"
+                        onChange={() => {
+                          formik.touched.remotePlatform = true
+                          formik.setFieldValue('remotePlatform', '4')
+                        }} /> {event.otherRemotePlatformOption}
+                    </label>
+                  </div>
+
+                  <div className="control">
+                    <label className="remotePlatform">
+                      <input type="radio" name="remotePlatform" value="5"
+                        onChange={() => {
+                          formik.touched.remotePlatform = true
+                          formik.setFieldValue('remotePlatform', '5')
+                        }} /> Muu, mikä?
+                      {formik.values.remotePlatform === '5'
+                        ?
+
+                        <div className="field">
+
+                          <div className="control">
+                            <input
+                              className="input"
+                              style={{ width: 300 }}
+                              id="otherRemotePlatformOption"
+                              name="otherRemotePlatformOption"
+                              type="otherRemotePlatformOption"
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              value={formik.values.otherRemotePlatformOption}
+                            />
+                          </div>
+
+                          {formik.touched.otherRemotePlatformOption && formik.errors.otherRemotePlatformOption ? (
+                            <p className="help is-danger">{formik.errors.otherRemotePlatformOption}</p>
+                          ) : null}
+
+                        </div>
+                        : null}
+
+                    </label>
+                  </div>
+
+
+                </div>
+
+                //
+                :null }
 
 
               <div className="field">
@@ -506,8 +603,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
       </div>
     )
   }
-  return (
-    <div>Tapahtumaa haetaan...</div>
-  )
+
 }
+
 export default VisitForm

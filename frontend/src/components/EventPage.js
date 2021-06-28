@@ -1,5 +1,7 @@
 import React from 'react'
-import moment from 'moment'
+import differenceInDays from 'date-fns/differenceInDays'
+import differenceInMinutes from 'date-fns/differenceInMinutes'
+import format from 'date-fns/format'
 import { useHistory } from 'react-router'
 import { useMutation } from '@apollo/client'
 import { DELETE_EVENT, EVENTS } from '../graphql/queries'
@@ -74,9 +76,8 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage }
     const eventClass = filterEventClass(event.resourceids)
     const eventGrades = filterEventGrades(event.grades)
 
-    const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14
-    const startsWithin1Hour = moment(event.start).diff(new Date(), 'hours') > 0
-
+    const startsAfter14Days = differenceInDays(event.start, new Date()) >= 14
+    const startsAfter1Hour = differenceInMinutes(event.start, new Date()) >= 60
     const description = event.desc ? event.desc : null
 
     return (
@@ -96,21 +97,24 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage }
               <div>Tarjolla seuraaville luokka-asteille: {eventGrades.map(g =>
                 <div key={g.value}>{g.label}</div>)}
               </div>
-              <div>Tapahtuma tarjolla:
-                {event.inPersonVisit ? <p>Lähiopetuksena</p> : <></>}
-                {event.remoteVisit ? <p>Etäopetuksena</p> : <></>}
+              <div><strong>Tapahtuma tarjolla: </strong>
+                {event.inPersonVisit ? 'Lähiopetuksena' : <></>}
+                {event.inPersonVisit && event.remoteVisit && ' ja etäopetuksena'}
+                {event.remoteVisit && !event.inPersonVisit? 'Etäopetuksena' : <></>}
               </div>
-              <p>Tapahtuma alkaa: {moment(event.start).format('DD.MM.YYYY, HH:mm')}</p>
-              <p>Tapahtuma päättyy: {moment(event.end).format('DD.MM.YYYY, HH:mm')}</p>
+              <p>Tapahtuma alkaa: {format(event.start, 'd.M.yyyy, HH:mm')}</p>
+              <p>Tapahtuma päättyy: {format(event.end, 'd.M.yyyy, HH:mm')}</p>
               <p>Toiminnan kesto: {event.duration} minuuttia</p>
+              {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days) ?
+                <p><b>Valitettavasti tämä tapahtuma ei ole varattavissa.</b></p> : null}
               <div className="field is-grouped">
-                {event.booked || (currentUser && !startsWithin1Hour) || (!currentUser && !startsAfter14Days)
-                  ? <p><b>Valitettavasti tämä tapahtuma ei ole varattavissa.</b></p>
+                {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days)
+                  ? null
                   : <button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>Varaa tapahtuma</button>}
-                {currentUser &&
-                <div className="control">
-                  <button className="button luma" onClick={() => handleRemoveEventClick()}>Poista tapahtuma</button>
-                </div>
+                {!!currentUser && (
+                  <div className="control">
+                    <button className="button luma" onClick={() => handleRemoveEventClick()}>Poista tapahtuma</button>
+                  </div>)
                 }
                 <div className="control">
                   <button className="button luma" onClick={cancel}>Poistu</button>

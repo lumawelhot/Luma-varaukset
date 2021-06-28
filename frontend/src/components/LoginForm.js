@@ -50,6 +50,7 @@ const LoginForm = ({ getUser, sendMessage }) => {
               <div className="control">
                 <input
                   id="username"
+                  type="text"
                   className="input"
                   {...username.field}
                   style={style}
@@ -61,6 +62,7 @@ const LoginForm = ({ getUser, sendMessage }) => {
               <div className="control">
                 <input
                   id="password"
+                  type="password"
                   className="input"
                   {...password.field}
                   style={style}

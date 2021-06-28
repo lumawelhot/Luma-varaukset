@@ -29,6 +29,8 @@ const typeDefs = gql`
     remoteVisit: Boolean!
     inPersonVisit: Boolean!
     grades: [Int]!
+    remotePlatforms: [Int]
+    otherRemotePlatformOption: String
     start: String!
     end: String!
     desc: String
@@ -49,13 +51,14 @@ const typeDefs = gql`
     clientPhone: String!
     grade: String!
     participants: Int!
-    extra: [Int]
+    extras: [Extra]
     status: Boolean!
     startTime: String!
     endTime: String!
     inPersonVisit: Boolean!
     remoteVisit: Boolean!
     dataUseAgreement: Boolean!
+    remotePlatform: String
   }
   type Token {
     value: String!
@@ -64,7 +67,7 @@ const typeDefs = gql`
     getUsers: [User]!
     me: User!
     getEvents: [Event]!
-    findVisit(id: ID!): Visit!
+    findVisit(id: ID!): Visit
     getVisits: [Visit]
     getTags: [Tag]!
     getExtras: [Extra]!
@@ -87,6 +90,8 @@ const typeDefs = gql`
       title: String!
       scienceClass: [Int]!
       grades: [Int]!
+      remotePlatforms: [Int]
+      otherRemotePlatformOption: String
       start: String!
       end: String!
       desc: String
@@ -95,7 +100,7 @@ const typeDefs = gql`
       tags: [TagInput]
       waitingTime: Int!
       extras: [ID]
-      duration: Int
+      duration: Int!
     ): Event
     createVisit(
       event: ID!
@@ -108,11 +113,12 @@ const typeDefs = gql`
       endTime: String!
       grade: String!
       participants: Int!
-      extra: [Int]
+      extras: [ID]
       username: String
       inPersonVisit: Boolean!
       remoteVisit: Boolean!
       dataUseAgreement: Boolean!
+      remotePlatform: String
     ): Visit
     cancelVisit(id: ID!): Visit
     createExtra(

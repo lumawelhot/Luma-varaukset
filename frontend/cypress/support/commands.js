@@ -43,9 +43,8 @@ Cypress.Commands.add('login', ({ username, password }) => {
     }
   }).then(({ body }) => {
     localStorage.setItem('app-token', body.data.login.value)
+    cy.visit('http://localhost:3000')
   })
-
-  cy.visit('http://localhost:3000')
 })
 
 Cypress.Commands.add('createUser', ({ username, password, isAdmin }) => {
@@ -87,15 +86,16 @@ Cypress.Commands.add('createEvent', ({ title, scienceClass, remoteVisit, inPerso
         createEvent(
           title: "${title}"
           scienceClass: [1,2,3]
-          start: "${start}"
-          end: "${end}"
+          start: "${start.toISOString()}"
+          end: "${end.toISOString()}"
           desc: "${desc}"
           grades: [1, 2]
           remoteVisit: ${remoteVisit}
           inPersonVisit: ${inPersonVisit}
           tags: [{ name: "Matematiikka" }, { name: "Fysiikka" }]
           waitingTime: 15
-          duration: 60
+          duration: 60,
+          extras: []
         ){
           title,
           resourceids,
