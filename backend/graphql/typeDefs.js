@@ -43,7 +43,7 @@ const typeDefs = gql`
   }
   type Visit {
     id: ID!
-    event: Event!
+    event: Event
     clientName: String!
     schoolName: String!
     schoolLocation: String!

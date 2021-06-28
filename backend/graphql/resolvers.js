@@ -20,7 +20,12 @@ const resolvers = {
       return users
     },
     getEvents: async () => {
-      const events = await Event.find({}).populate('tags', { name: 1, id: 1 }).populate('visits').populate('extras')
+      const date = new Date()
+      date.setDate(date.getDate() - 90)
+      const events = await Event.find({ end: { $gt: date.toISOString() } })
+        .populate('tags', { name: 1, id: 1 })
+        .populate('visits')
+        .populate('extras')
       return events
     },
     getTags: async () => {
@@ -28,7 +33,9 @@ const resolvers = {
       return tags
     },
     getVisits: async () => {
-      const visits = await Visit.find({}).populate('event', { id: 1, title: 1, resourceids: 1, remoteVisit: 1, inPersonVisit : 1 })
+      const visits = await Visit.find({})
+        .populate('event', { id: 1, title: 1, resourceids: 1, remoteVisit: 1, inPersonVisit : 1 })
+        .populate('extras')
       return visits
     },
     findVisit: async (root, args) => {
