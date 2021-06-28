@@ -234,6 +234,7 @@ export const CREATE_VISIT = gql`
       grade
       participants
       remotePlatform
+      status
     }
   }
 `
@@ -262,6 +263,7 @@ export const FIND_VISIT = gql`
       participants
       inPersonVisit
       remoteVisit
+      status
     }
   }
 `

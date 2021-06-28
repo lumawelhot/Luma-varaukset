@@ -215,6 +215,12 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
     }
   }, [result.data])
 
+  if (!event) {
+    return (
+      <div>Tapahtumaa haetaan...</div>
+    )
+  }
+
   if (event) {
     console.log(event)
     const eventGrades = filterEventGrades(event.grades)
@@ -505,6 +511,8 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                   <label htmlFor="startTime" className="label" style={{ fontWeight:'normal' }}>
                   Varauksen alkamisaika
                   </label>
+                  <p>Aikaisin alkamisaika: {format(event.start, 'HH:mm')}</p>
+                  <p>Myöhäisin päättymisaika: {format(event.end, 'HH:mm')}</p>
                   <input
                     type="time"
                     id="startTime"
@@ -520,31 +528,34 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 <p className="help is-danger">{formik.errors.startTime}</p>
               ) : null}
 
-              <div className="field">
-                <label htmlFor="extras">Lisäpalvelut </label>
+              {!!event.extras.length && (
+                <div className="field">
+                  <label htmlFor="extras">Lisäpalvelut </label>
 
-                {event.extras.map(extra =>
-                  <div className="control" key={extra.id}>
-                    <label className="privacyPolicy" >
-                      <input
-                        type="checkbox"
-                        checked={formik.values.extras.includes(extra.id)}
-                        onChange={() => {
-                          if (formik.values.extras.includes(extra.id)) {
-                            formik.setFieldValue('extras', formik.values.extras.filter(e => e !== extra.id))
-                          } else {
-                            formik.setFieldValue('extras', formik.values.extras.concat(extra.id))
-                          }
-                        }}
-                      />
-                      {` ${extra.name}`}, pituus lähi: {extra.inPersonLength} min / etä: {extra.remoteLength} min
-                    </label>
-                  </div>
-                )}
-              </div>
+                  {event.extras.map(extra =>
+                    <div className="control" key={extra.id}>
+                      <label className="privacyPolicy" >
+                        <input
+                          type="checkbox"
+                          checked={formik.values.extras.includes(extra.id)}
+                          onChange={() => {
+                            if (formik.values.extras.includes(extra.id)) {
+                              formik.setFieldValue('extras', formik.values.extras.filter(e => e !== extra.id))
+                            } else {
+                              formik.setFieldValue('extras', formik.values.extras.concat(extra.id))
+                            }
+                          }}
+                        />
+                        {` ${extra.name}`}, pituus lähi: {extra.inPersonLength} min / etä: {extra.remoteLength} min
+                      </label>
+                    </div>
+                  )}
+                </div>
+              )}
               {formik.touched.extras && formik.errors.startTime ? (
                 <p className="help is-danger">Tarkista että varaus lisäpalveluineen mahtuu annettuihin aikarajoihin!</p>
               ) : null}
+              <hr></hr>
 
               <div className="field">
                 <div id="checkbox-group"></div>
