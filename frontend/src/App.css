@@ -1028,3 +1028,19 @@ input.hidden {
   background-color: transparent;
   border: none;
 }
+
+.visits th p {
+  cursor: pointer;
+}
+
+.visits th p:hover {
+  font-weight: bold;
+}
+
+.visits th p.ascending::after {
+  content: '\2191';
+}
+
+.visits th p.descending::after {
+  content: '\2193';
+}

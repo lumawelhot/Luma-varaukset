@@ -1,21 +1,18 @@
 /* eslint-disable no-undef */
 import { Given, When, Then, And } from 'cypress-cucumber-preprocessor/steps'
-import moment from 'moment'
+import { format, set, addBusinessDays } from 'date-fns'
 
-const eventDate1 = new Date()
-eventDate1.setDate(new Date().getDate() + 16)
-const eventDate2 = new Date()
-eventDate2.setDate(new Date().getDate() + 16)
-const eventDate3 = new Date()
-eventDate3.setDate(new Date().getDate() + 15)
-const availableEvent1 = 'Test available event 1 both remote and inPerson'
-const availableEvent2 = 'Test available event 2 for invalid client name'
-const availableEvent3 = 'Test available event 3 only remote'
+const eventDate1 = addBusinessDays(set(new Date(), { hours: 10, minutes: 0, seconds: 0, milliseconds: 0 }), 14)
+const eventDate2 = addBusinessDays(set(new Date(), { hours: 10, minutes: 0, seconds: 0, milliseconds: 0 }), 16)
+const eventDate3 = addBusinessDays(set(new Date(), { hours: 10, minutes: 0, seconds: 0, milliseconds: 0 }), 15)
+const availableEvent1 = 'EVENT1'
+const availableEvent2 = 'EVENT2'
+const availableEvent3 = 'EVENT3'
 const unavailableEventName = 'Test unavailable event'
-const unavailableEventDate = new Date()
-unavailableEventDate.setDate(new Date().getDate() + 5)
+const unavailableEventDate = addBusinessDays(set(new Date(), { hours: 10, minutes: 0, seconds: 0, milliseconds: 0 }), 3)
 
 it('Initialize tests', () => {
+  cy.request('http://localhost:3001/reset')
   cy.login({ username: 'Admin', password: 'salainen' })
   cy.createEvent({
     title: availableEvent1,
@@ -24,7 +21,7 @@ it('Initialize tests', () => {
     scienceClass: [1,3],
     remoteVisit: true,
     inPersonVisit: true,
-    desc: 'Test event description'
+    desc: 'Test event description',
   })
   cy.createEvent({
     title: availableEvent2,
@@ -33,7 +30,7 @@ it('Initialize tests', () => {
     scienceClass: [3],
     inPersonVisit: true,
     remoteVisit: false,
-    desc: 'Test event description'
+    desc: 'Test event description',
   })
   cy.createEvent({
     title: availableEvent3,
@@ -68,7 +65,7 @@ And('there is an event 2 more than two weeks ahead', () => {
 })
 
 And('there is an event 3 more than two weeks ahead', () => {
-
+  cy.findEvent(availableEvent3)
 })
 
 When('I click on available event 1', () => {
@@ -91,7 +88,7 @@ Then('available event page has the correct title', () => {
 })
 
 And('available event page has the correct start date', () => {
-  const formattedDate = moment(eventDate1).format('DD.MM.YYYY')
+  const formattedDate = format(eventDate1, 'd.M.yyyy')
   cy.contains(`${formattedDate}`)
 })
 
@@ -110,6 +107,7 @@ Then('booking form opens', () => {
 })
 
 And('there is an event less than two weeks ahead', () => {
+  cy.contains(unavailableEventName)
 })
 
 When('I click on the unavailable event', () => {
@@ -121,7 +119,7 @@ Then('unavailable event page has the correct title', () => {
 })
 
 And('unavailable event page has the correct start date', () => {
-  const formattedUnavailableEventDate = moment(unavailableEventDate).format('DD.MM.YYYY')
+  const formattedUnavailableEventDate = format(unavailableEventDate, 'd.M.yyyy')
   cy.contains(`${formattedUnavailableEventDate}`)
 })
 
@@ -131,6 +129,7 @@ And('unavailable event page contains correct info text', () => {
 
 And('valid information is entered and visit mode selected', () => {
   cy.get(':nth-child(2) > .visitMode').click()
+  cy.get(':nth-child(2) > .remotePlatform > input').click()
   cy.get('#clientName').type('Teacher')
   cy.get('#schoolName').type('School')
   cy.get('#schoolLocation').type('Location')
@@ -139,6 +138,7 @@ And('valid information is entered and visit mode selected', () => {
   cy.get('#clientPhone').type('040-1234567')
   cy.get('#visitGrade').type('1. grade')
   cy.get('#participants').type('9')
+  cy.get('#startTime').type('10:00')
   cy.get('.privacyPolicy > input').click()
   cy.get('.remoteVisitGuidelines > input').click()
   cy.get('#create').click()
@@ -155,6 +155,7 @@ And('valid information is entered and visit mode predetermined', () => {
   cy.get('#clientPhone').type('040-1234567')
   cy.get('#visitGrade').type('1. grade')
   cy.get('#participants').type('9')
+  cy.get('#startTime').type('10:00')
   cy.get('.privacyPolicy > input').click()
   cy.get('.remoteVisitGuidelines > input').click()
   cy.get('#create').click()
@@ -163,7 +164,7 @@ And('valid information is entered and visit mode predetermined', () => {
 })
 
 Then('booked event turns grey in calendar view', () => {
-  cy.findEvent(availableEvent1).should('have.class', 'booked')
+  cy.findEvent(availableEvent1).parent().should('have.class', 'booked')
 })
 
 When('I click on available event 2', () => {
@@ -188,6 +189,7 @@ Then('an error message is shown', () => {
 
 Given('admin logs in', () => {
   cy.login({ username: 'Admin', password: 'salainen' })
+  cy.get('.level > .button').should('have.text', 'Kirjaudu ulos')
 })
 
 Then('unavailable event page contains booking button', () => {

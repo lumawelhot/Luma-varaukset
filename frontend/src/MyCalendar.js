@@ -1,13 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import { Calendar, momentLocalizer } from 'react-big-calendar'
-import moment from 'moment'
-import 'moment/locale/fi'
+import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
 import { messages } from './helpers/calendar-messages-fi'
 import { bookedEventColor, resourceColorsLUMA } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
 import CalendarFilter from './components/CalendarFilter'
 
-const localizer = momentLocalizer(moment)
+import format from 'date-fns/format'
+import parse from 'date-fns/parse'
+import startOfWeek from 'date-fns/startOfWeek'
+import getDay from 'date-fns/getDay'
+import set from 'date-fns/set'
+import { fi } from 'date-fns/locale'
+import { differenceInDays, differenceInMinutes }  from 'date-fns'
+
+const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  locales: { fi },
+})
 
 const resourceMap = [
   { resourceids: 1, resourceTitle: 'Summamutikka' },
@@ -31,7 +43,6 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
   }
 
   const handleView = (view) => {
-    console.log(view)
     if (view) setCurrentView(view)
   }
 
@@ -51,39 +62,54 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
   }
 
   const customEventPropGetter = event => {
-    /* const startsAfter14Days = moment(event.start).diff(new Date(), 'days') >= 14
-    const startsAfter1Hour = moment(event.start).diff(new Date(), 'minutes') >= 60 */
-    if (event.booked/*  || (!currentUser && !startsAfter14Days) || (currentUser && !startsAfter1Hour) */) {
+    const startsAfter14Days = differenceInDays(event.start, new Date()) >= 14
+    const startsAfter1Hour = differenceInMinutes(event.start, new Date()) >= 60
+    const booked = (!currentUser && !startsAfter14Days) || (currentUser && !startsAfter1Hour) || event.booked
+    if (booked) {
       return { className: 'booked' , }
     }
     return { className: event.resourceids.length > 1 ? 'multiple' : resourceMap[event.resourceids[0]-1]?.resourceTitle.toLowerCase() || '' }
   }
 
   const AgendaEvent = ({ event }) => {
-    const resourceName = resourceMap[event.resourceids[0]-1]?.resourceTitle || null
-    console.log(event.booked)
+    const resourceNames = event.resourceids.map(id => { return { name: resourceMap[id-1]?.resourceTitle || null, color: resourceColorsLUMA[id - 1] }})
     if (event.booked) {
-      console.log(event.booked)
       return (
-        <div className="block">
-          {resourceName &&
-            <span className='tag is-small is-link' style={{ backgroundColor: bookedEventColor[0] }}>{resourceName}</span>
-          }
-          <span> {event.title}</span>
-          <p>{event.desc}</p>
+        <div className="media">
+          {!!resourceNames.length && <div className="media-left" style={{ width: 100 }}><div className="tags">
+            {resourceNames.map(r =>
+              <span key={r.name} className='tag is-small is-link' style={{ backgroundColor: bookedEventColor }}>{r.name}</span>)}
+          </div></div>}
+          <div className="media-content">
+            <strong>{event.title}</strong>
+            <p>{event.desc}</p>
+          </div>
         </div>
       )
     }
     return (
-      <div className="block">
-        {resourceName &&
-          <span className='tag is-small is-link' style={{ backgroundColor: resourceColorsLUMA[event.resourceId - 1] }}>{resourceName}</span>
-        }
-        <span> {event.title}</span>
-        <p>{event.desc}</p>
+      <div className="media">
+        {!!resourceNames.length && <div className="media-left" style={{ width: 100 }}><div className="tags">
+          {resourceNames.map(r =>
+            <span key={r.name} className='tag is-small is-link' style={{ backgroundColor: r.color }}>{r.name}</span>)}
+        </div></div>}
+        <div className="media-content">
+          <strong>{event.title}</strong>
+          <p>{event.desc}</p>
+        </div>
       </div>
     )
   }
+
+  let formats = {
+    monthHeaderFormat: (date, culture, localizer) =>
+      localizer.format(date, 'LLLL yyyy', culture),
+    dayHeaderFormat: (date, culture, localizer) =>
+      localizer.format(date, 'cccc, d. MMMM yyyy', culture),
+    dayFormat: (date, culture, localizer) =>
+      localizer.format(date, 'cccccc d.M.', culture)
+  }
+
 
   return (
     <div>
@@ -91,6 +117,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
       <Calendar
         culture='fi'
         localizer={localizer}
+        formats={formats}
         messages={messages}
         views={{
           month: true,
@@ -102,16 +129,12 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
         events={localEvents.filter(event => filterFunction(event))}
         startAccessor='start'
         endAccessor='end'
-        min={moment('8:00am', 'h:mma').toDate()}
-        max={moment('5:00pm', 'h:mma').toDate()}
-        //resources={resourceMap}
-        //resourceidsAccessor="resourceids"
-        //resourceTitleAccessor="resourceTitle"
+        min={set(new Date(), { hours: 8, minutes: 0, seconds:0, milliseconds: 0 })}
+        max={set(new Date(), { hours: 17, minutes: 0, seconds:0, milliseconds: 0 })}
         selectable={currentUser?.isAdmin}
-        onSelectEvent={(event) => handleEventClick(event)/* alert(JSON.stringify(event)) */}
+        onSelectEvent={(event) => handleEventClick(event)}
         onSelectSlot={handleSelect}
         components={{
-          //eventWrapper: LumaEventWrapper,
           agenda: {
             event: AgendaEvent
           }

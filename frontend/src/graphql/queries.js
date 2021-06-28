@@ -40,6 +40,8 @@ export const EVENTS = gql`
       title
       resourceids
       grades
+      remotePlatforms
+      otherRemotePlatformOption
       tags {
         id
         name
@@ -93,10 +95,14 @@ export const VISITS = gql`
       clientPhone
       grade
       participants
-      extra
+      extras {
+        id
+        name
+      }
       status
       startTime
       endTime
+      remotePlatform
     }
   }
 `
@@ -117,6 +123,8 @@ export const CREATE_EVENT = gql`
     $end: String!,
     $scienceClass: [Int]!,
     $grades: [Int]!,
+    $remotePlatforms: [Int],
+    $otherRemotePlatformOption: String,
     $remoteVisit: Boolean!,
     $inPersonVisit: Boolean!,
     $desc: String,
@@ -132,6 +140,8 @@ export const CREATE_EVENT = gql`
       scienceClass: $scienceClass,
       desc: $desc,
       grades: $grades,
+      remotePlatforms: $remotePlatforms,
+      otherRemotePlatformOption: $otherRemotePlatformOption,
       remoteVisit: $remoteVisit,
       inPersonVisit: $inPersonVisit,
       tags: $tags
@@ -143,6 +153,8 @@ export const CREATE_EVENT = gql`
       title
       resourceids
       grades
+      remotePlatforms
+      otherRemotePlatformOption
       start
       end
       tags {
@@ -186,6 +198,8 @@ export const CREATE_VISIT = gql`
     $startTime: String!
     $endTime: String!
     $dataUseAgreement: Boolean!
+    $extras: [ID]
+    $remotePlatform: String
     ) {
     createVisit(
       event: $event
@@ -202,6 +216,8 @@ export const CREATE_VISIT = gql`
       remoteVisit: $remoteVisit
       username: $username
       dataUseAgreement: $dataUseAgreement
+      extras: $extras
+      remotePlatform: $remotePlatform
     ) {
       id
       event {
@@ -217,6 +233,8 @@ export const CREATE_VISIT = gql`
       endTime
       grade
       participants
+      remotePlatform
+      status
     }
   }
 `
@@ -233,6 +251,11 @@ export const FIND_VISIT = gql`
         start
         end
         resourceids
+        desc
+      }
+      extras {
+        id
+        name
       }
       grade
       startTime
@@ -240,6 +263,7 @@ export const FIND_VISIT = gql`
       participants
       inPersonVisit
       remoteVisit
+      status
     }
   }
 `

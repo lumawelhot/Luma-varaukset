@@ -138,6 +138,11 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
         console.log('error connecting to MongoDB: ', error.message)
       })
   })
+  const { resetDbForE2E } = require('./utils/mongoinit')
+  app.get('/reset', async (req, res) => {
+    await resetDbForE2E()
+    res.json({ message: 'Database reset for E2E tests' })
+  })
 } else if (process.env.NODE_ENV === 'production') { // production mode
   mongoose.set('useFindAndModify', false)
   mongoose.set('useCreateIndex', true)
