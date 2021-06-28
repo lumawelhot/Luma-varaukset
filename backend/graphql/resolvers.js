@@ -225,6 +225,7 @@ const resolvers = {
     },
     cancelVisit: async (root, args) => {
       const visit = await Visit.findById(args.id)
+      if (!visit || visit.status === false) throw new UserInputError('Varausta ei löydy')
       const event = await Event.findById(visit.event)
       const visitTime = {
         start: sub(new Date(visit.startTime), { minutes: event.waitingTime }),

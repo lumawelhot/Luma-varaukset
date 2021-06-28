@@ -71,8 +71,7 @@ const VisitPage = ({ sendMessage }) => {
       </div>
     )
   }
-
-  if (!visit) {
+  if (!visit || visit.status === false) {
     return (
       <div>
         <p>Varausta ei löytynyt.</p>
