@@ -9,6 +9,7 @@ const ExtraModel = require('../models/extra')
 const TagModel = require('../models/tag')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
+const { subDays, set } = require('date-fns')
 
 let server = null
 let newTags = []
@@ -62,8 +63,8 @@ beforeEach(async () => {
     desc: 'Algebra is one of the broad areas of mathematics, together with number theory, geometry and analysis.',
     tags: newTags,
     extras: newExtras,
-    start: '2021-07-07T09:30:00+0300',
-    end: '2021-07-07T12:00:00+0300',
+    start: set(new Date(), { hours: 9, minutes: 30, seconds: 0, milliseconds: 0 }).toISOString(),
+    end: set(new Date(), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }).toISOString(),
     booked: false,
     inPersonVisit: true,
     remoteVisit: false,
@@ -76,8 +77,23 @@ beforeEach(async () => {
     grades: [4],
     desc: 'Atom is a programming text editor developed by GitHub.',
     tags: newTags,
-    start: '2021-05-21T09:00:00+0300',
-    end: '2021-05-21T11:00:00+0300',
+    start: set(new Date(), { hours: 9, minutes: 30, seconds: 0, milliseconds: 0 }).toISOString(),
+    end: set(new Date(), { hours: 11, minutes: 0, seconds: 0, milliseconds: 0 }).toISOString(),
+    booked: false,
+    inPersonVisit: false,
+    remoteVisit: true,
+    waitingTime: 15,
+    duration: 75,
+    extras: newExtras
+  }
+  const testData3 = {
+    title: 'Old event!',
+    resourceids: [1],
+    grades: [2],
+    desc: '3',
+    tags: newTags,
+    start: subDays(new Date(), 100).toISOString(),
+    end: subDays(new Date(), 100).toISOString(),
     booked: false,
     inPersonVisit: false,
     remoteVisit: true,
@@ -88,9 +104,11 @@ beforeEach(async () => {
 
   const testEvent1 = new EventModel(testData1)
   const testEvent2 = new EventModel(testData2)
+  const testEvent3 = new EventModel(testData3)
 
   await testEvent1.save()
   await testEvent2.save()
+  await testEvent3.save()
 })
 
 describe('Event Server Test', () => {
@@ -251,6 +269,8 @@ describe('Event Model Test', () => {
     })
   }) */
 })
+
+
 
 afterAll(async () => {
   await EventModel.deleteMany({})
