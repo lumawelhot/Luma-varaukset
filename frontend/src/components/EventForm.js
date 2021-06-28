@@ -117,7 +117,7 @@ const EventForm = ({
         }
       })
       const scienceClassList = []
-      values.grades.forEach((element, index) => {
+      values.scienceClass.forEach((element, index) => {
         if (element) {
           scienceClassList.push(index + 1)
         }
