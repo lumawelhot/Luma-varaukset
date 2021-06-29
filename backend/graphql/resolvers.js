@@ -32,7 +32,10 @@ const resolvers = {
       const tags = await Tag.find({})
       return tags
     },
-    getVisits: async () => {
+    getVisits: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        return []
+      }
       const visits = await Visit.find({})
         .populate('event', { id: 1, title: 1, resourceids: 1, remoteVisit: 1, inPersonVisit : 1 })
         .populate('extras')
