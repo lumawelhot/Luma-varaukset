@@ -98,14 +98,25 @@ const VisitPage = ({ sendMessage }) => {
             {visit.extras.length
               ? <p>Valitut lisäpalvelut: {visit.extras.map(extra => <span key={extra.name}>{extra.name}</span>) }</p>
               : null}
-            <p>Valittu luokka-aste: {visit.grade}</p>
             <div>Opetusmuoto:
               {visit.inPersonVisit ? ' Lähiopetus' : <></>}
               {visit.remoteVisit ? ' Etäopetus' : <></>}
             </div>
-            <p>Ilmoitettu osallistujamäärä: {visit.participants}</p>
             <p>Vierailu alkaa: {format(visit.startTime, 'd.M.yyyy, HH:mm')}</p>
             <p>Vierailu päättyy: {format(visit.endTime, 'd.M.yyyy, HH:mm')}</p>
+            <hr></hr>
+            <label htmlFor="clientInfo" className="label" style={{ fontWeight:'normal' }}>
+              <p><b>Varaajan antamat tiedot:</b></p>
+            </label>
+            <p>Varaajan nimi: {visit.clientName}</p>
+            <p>Varaajan sähköpostiosoite: {visit.clientEmail}</p>
+            <p>Varaajan puhelinnumero: {visit.clientPhone}</p>
+
+            <p>Ilmoitettu oppimisyhteisön nimi: {visit.schoolName}</p>
+            <p>Ilmoitettu oppimisyhteisön paikkakunta: {visit.schoolLocation}</p>
+
+            <p>Valittu luokka-aste: {visit.grade}</p>
+            <p>Ilmoitettu osallistujamäärä: {visit.participants}</p>
 
             <div className="field is-grouped">
               <div className="control">
