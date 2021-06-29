@@ -6,7 +6,7 @@ Given('I am on the main page', () => {
 })
 
 When('the user presses login key icon', () => {
-  cy.get('svg').click()
+  cy.get('.admin-button').click()
 })
 
 Then('the user is on the login page', () => {
