@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import ReactDOM from 'react-dom'
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
 import { messages } from './helpers/calendar-messages-fi'
 import { bookedEventColor, resourceColorsLUMA } from './helpers/styles'
@@ -29,6 +30,18 @@ const resourceMap = [
   { resourceids: 4, resourceTitle: 'Geopiste' },
   { resourceids: 5, resourceTitle: 'Gadolin' },
 ]
+
+const Wrapper = (props) => {
+  const domNode = document.getElementById(props.elementId)
+  if (domNode) {
+    return ReactDOM.createPortal(
+      props.children,
+      domNode
+    )
+  } else {
+    return null
+  }
+}
 
 const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, currentDate, setCurrentDate, currentView, setCurrentView }) => {
 
@@ -114,7 +127,9 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
 
   return (
     <div>
-      <CalendarFilter filterFunction={filterFunction} setFilterFunction={setFilterFunction} />
+      <Wrapper elementId='filterdiv'>
+        <CalendarFilter filterFunction={filterFunction} setFilterFunction={setFilterFunction} />
+      </Wrapper>
       <Calendar
         culture='fi'
         localizer={localizer}
