@@ -73,7 +73,7 @@ Cypress.Commands.add('createUser', ({ username, password, isAdmin }) => {
   })
 })
 //eslint-disable-next-line
-Cypress.Commands.add('createEvent', ({ title, scienceClass, remoteVisit, inPersonVisit, start, end, desc }) => {
+Cypress.Commands.add('createEvent', ({ title, scienceClass, remoteVisit, inPersonVisit, start, end, desc, remotePlatforms=[] }) => {
   cy.request({
     url: 'http://localhost:3001/graphql',
     method: 'POST',
@@ -95,7 +95,8 @@ Cypress.Commands.add('createEvent', ({ title, scienceClass, remoteVisit, inPerso
           tags: [{ name: "Matematiikka" }, { name: "Fysiikka" }]
           waitingTime: 15
           duration: 60,
-          extras: []
+          extras: [],
+          remotePlatforms: ${JSON.stringify(remotePlatforms)}
         ){
           title,
           resourceids,

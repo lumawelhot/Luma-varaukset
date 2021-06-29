@@ -264,6 +264,7 @@ export const FIND_VISIT = gql`
       inPersonVisit
       remoteVisit
       status
+      remotePlatform
     }
   }
 `
