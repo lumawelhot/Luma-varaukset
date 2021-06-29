@@ -12,7 +12,7 @@ const EventModel = require('../models/event')
 const VisitModel = require('../models/visit')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
-const { CREATE_VISIT, FIND_VISIT, LOGIN } = require('./testHelpers.js')
+const { GET_ALL_VISITS, CREATE_VISIT, FIND_VISIT, LOGIN } = require('./testHelpers.js')
 const setMilliseconds = require('date-fns/setMilliseconds')
 
 let availableEvent
@@ -400,6 +400,15 @@ describe('Visit server test', () => {
 
     const event = await EventModel.findById(cancelledVisit.event)
     expect(event.visits.length).toBe(0)
+  })
+
+  it('anonymous user gets an empty list', async () => {
+    const { query } = createTestClient(serverNoUser)
+    const { data } = await query({
+      query: GET_ALL_VISITS
+    })
+    const { getVisits } = data
+    expect(getVisits.length).toBe(0)
   })
 })
 
