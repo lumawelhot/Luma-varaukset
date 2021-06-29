@@ -235,7 +235,6 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
     },
   })
 
-  const style = { width: 500 }
   useEffect(() => {
     if (result.data) {
       sendMessage(`Varaus on tehty onnistuneesti! Varauksen tiedot on lähetetty sähköpostiosoitteeseenne ${result.data.createVisit.clientEmail}.`, 'success')
@@ -258,8 +257,8 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
         <div className="columns is-centered">
           <div className="section">
             <div className="title">Varaa vierailu </div>
-            <div>
-              <p className="subtitle"><strong>Tapahtuman tiedot:</strong></p>
+            <div className="box">
+              <p className="subtitle"><strong>Tapahtuman tiedot</strong></p>
               <p><strong>Nimi:</strong> {event.title}</p>
               <p><strong>Kuvaus:</strong> {event.desc || 'Ei kuvausta'}</p>
               <p><strong>Tiedeluokka:</strong> {eventClass}</p>
@@ -276,15 +275,15 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
             </div>
 
             <br />
-            <h1>Syötä varauksen tiedot</h1>
+            <h1 className="title">Syötä varauksen tiedot</h1>
 
-            <form onSubmit={formik.handleSubmit}>
+            <form onSubmit={formik.handleSubmit} className="box luma">
 
-              <div>{event.inPersonVisit && event.remoteVisit ? (
+              {event.inPersonVisit && event.remoteVisit ? (
                 <div className="field">
-                  <div id="radio-group">Valitse etä- tai lähiopetus</div>
+                  <label className="label" id="radio-group">Valitse etä- tai lähiopetus</label>
                   <div className="control">
-                    <label className="visitMode">
+                    <label>
                       <input
                         type="radio" name="visitMode" value="1"
                         onChange={() => {
@@ -294,7 +293,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                     </label>
                   </div>
                   <div className="control">
-                    <label className="visitMode">
+                    <label>
                       <input type="radio" name="visitMode" value="2"
                         onChange={() => {
                           formik.touched.visitMode = true
@@ -307,16 +306,15 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
               {formik.touched.clientName && formik.errors.location ? (
                 <p className="help is-danger">{formik.errors.location}</p>
               ) : null}
-              </div>
 
               {formik.values.visitMode === '1' || (formik.values.visitMode === '0' && event.remoteVisit && !event.inPersonVisit)
                 ?
                 <div className="field">
-                  <div id="radio-group">Valitse haluamasi etäyhteysalusta</div>
+                  <label className="label" id="radio-group">Valitse haluamasi etäyhteysalusta</label>
                   {eventPlatforms.map((platform, index) => {
                     return (
                       <div key={index} className="control">
-                        <label className="remotePlatform">
+                        <label>
                           <input
                             type="radio" name="remotePlatform" value={index}
                             onChange={() => {
@@ -329,7 +327,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                   })}
 
                   <div className="control">
-                    <label className="remotePlatform">
+                    <label>
                       <input type="radio" name="remotePlatform" value={parseInt(eventPlatforms.length+1)}
                         onChange={() => {
                           formik.touched.remotePlatform = true
@@ -343,10 +341,9 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                           <div className="control">
                             <input
                               className="input"
-                              style={{ width: 300 }}
                               id="otherRemotePlatformOption"
                               name="otherRemotePlatformOption"
-                              type="otherRemotePlatformOption"
+                              type="input"
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               value={formik.values.otherRemotePlatformOption}
@@ -366,13 +363,14 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 :null }
 
               <div className="field">
-                <label htmlFor="clientName">Varaajan nimi </label>
+                <label className="label" htmlFor="clientName">Varaajan nimi </label>
                 <div className="control">
 
-                  <input style={style}
+                  <input
                     id="clientName"
                     name="clientName"
-                    type="clientName"
+                    type="input"
+                    className="input"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.clientName}
@@ -384,12 +382,13 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
               ) : null}
 
               <div className="field">
-                <label htmlFor="schoolName">Oppimisyhteisön nimi </label>
+                <label className="label" htmlFor="schoolName">Oppimisyhteisön nimi </label>
                 <div className="control">
-                  <input style={{ width: 500 }}
+                  <input
                     id="schoolName"
                     name="schoolName"
-                    type="schoolName"
+                    type="input"
+                    className="input"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.schoolName}
@@ -401,12 +400,13 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
               ) : null}
 
               <div className="field">
-                <label htmlFor="schoolLocation">Oppimisyhteisön paikkakunta </label>
+                <label htmlFor="schoolLocation" className="label">Oppimisyhteisön paikkakunta </label>
                 <div className="control">
-                  <input style={{ width: 500 }}
+                  <input
                     id="schoolLocation"
                     name="schoolLocation"
-                    type="schoolLocation"
+                    type="input"
+                    className="input"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.schoolLocation}
@@ -418,12 +418,13 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
               ) : null}
 
               <div className="field">
-                <label htmlFor="clientEmail">Varaajan sähköpostiosoite </label>
+                <label htmlFor="clientEmail" className="label">Varaajan sähköpostiosoite </label>
                 <div className="control">
-                  <input style={style}
+                  <input
                     id="clientEmail"
                     name="clientEmail"
                     type="email"
+                    className="input"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.clientEmail}
@@ -435,12 +436,13 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
               </div>
 
               <div className="field">
-                <label htmlFor="verifyEmail">Sähköpostiosoite uudestaan </label>
+                <label htmlFor="verifyEmail" className="label">Sähköpostiosoite uudestaan </label>
                 <div className="control">
-                  <input style={{ width: 500 }}
+                  <input
                     id="verifyEmail"
                     name="verifyEmail"
                     type="email"
+                    className="input"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.verifyEmail}
@@ -452,13 +454,14 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
               </div>
 
               <div className="field">
-                <label htmlFor="clientPhone">Varaajan puhelinnumero </label>
+                <label htmlFor="clientPhone" className="label">Varaajan puhelinnumero </label>
                 <div className="control">
 
-                  <input style={style}
+                  <input
                     id="clientPhone"
                     name="clientPhone"
-                    type="clientPhone"
+                    type="input"
+                    className="input"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.clientPhone}
@@ -468,44 +471,47 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
               {formik.touched.clientPhone && formik.errors.clientPhone ? (
                 <p className="help is-danger">{formik.errors.clientPhone}</p>
               ) : null}
-
-              <div className="field">
-                <label htmlFor="visitGrade">Luokka-aste/kurssi </label>
-                <div className="control">
-                  <input style={{ width: 500 }}
-                    id="visitGrade"
-                    name="visitGrade"
-                    type="visitGrade"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.visitGrade}
-                  />
+              <hr></hr>
+              <div className="field is-grouped" style={{ justifyContent: 'space-between' }}>
+                <div className="field" style={{ width: 360 }}>
+                  <label htmlFor="visitGrade" className="label">Luokka-aste/kurssi </label>
+                  <div className="control">
+                    <input
+                      id="visitGrade"
+                      name="visitGrade"
+                      type="input"
+                      className="input"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.visitGrade}
+                    />
+                  </div>
                 </div>
-              </div>
-              {formik.touched.visitGrade && formik.errors.visitGrade ? (
-                <p className="help is-danger">{formik.errors.visitGrade}</p>
-              ) : null}
+                {formik.touched.visitGrade && formik.errors.visitGrade ? (
+                  <p className="help is-danger">{formik.errors.visitGrade}</p>
+                ) : null}
 
-              <div className="field">
-                <label htmlFor="participants">Osallistujamäärä </label>
-                <div className="control">
-                  <input style={{ width: 500 }}
-                    id="participants"
-                    name="participants"
-                    type="number"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.participants}
-                  />
+                <div className="field">
+                  <label htmlFor="participants" className="label">Osallistujamäärä </label>
+                  <div className="control">
+                    <input
+                      id="participants"
+                      name="participants"
+                      type="number"
+                      className="input"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.participants}
+                    />
+                  </div>
                 </div>
+                {formik.touched.participants && formik.errors.participants ? (
+                  <p className="help is-danger">{formik.errors.participants}</p>
+                ) : null}
               </div>
-              {formik.touched.participants && formik.errors.participants ? (
-                <p className="help is-danger">{formik.errors.participants}</p>
-              ) : null}
-
               {!!event.extras.length && (
                 <div className="field">
-                  <label htmlFor="extras">Lisäpalvelut </label>
+                  <label className="label" htmlFor="extras">Valitse haluamasi lisäpalvelut </label>
 
                   {event.extras.map(extra =>
                     <div className="control" key={extra.id}>
@@ -541,13 +547,13 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
               {formik.touched.extras && formik.errors.startTime ? (
                 <p className="help is-danger">Tarkista että varaus lisäpalveluineen mahtuu annettuihin aikarajoihin!</p>
               ) : null}
-
-              <div className="field">
-                <div className="control">
-                  <label htmlFor="startTime" className="label" style={{ fontWeight:'normal' }}>
+              <label htmlFor="startTime" className="label">
                   Syötä varauksen alkamisaika (aikaikkuna: {format(event.start, 'HH:mm')} - {format(event.end, 'HH:mm')})
-                  </label>
+              </label>
+              <div className="field is-grouped level">
+                <div className="control">
                   <input
+                    className="input"
                     type="time"
                     id="startTime"
                     name="startTime"
@@ -563,8 +569,9 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                       formik.setFieldValue('finalEndTime', endTime.toISOString())
                     }}
                     onBlur={formik.handleBlur}
-                  /> - {format(new Date(finalEndTime/* formik.values.finalEndTime */), 'HH:mm')}
+                  />
                 </div>
+                <span>- {format(new Date(finalEndTime), 'HH:mm')}</span>
               </div>
               {formik.touched.startTime && formik.errors.startTime ? (
                 <p className="help is-danger">{formik.errors.startTime}</p>

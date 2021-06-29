@@ -60,7 +60,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage }
   }
 
   const grades = [
-    { value: 1, label: 'Varhaiskasvatus' },
+    { value: 1, label: 'varhaiskasvatus' },
     { value: 2, label: '1.-2. luokka' },
     { value: 3, label: '3.-6. luokka' },
     { value: 4, label: '7.-9 luokka' },
@@ -84,40 +84,54 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage }
       <div className="container">
         <div className="columns is-centered">
           <div className="section">
-            <div className="title">{event.title}</div>
-            <div>
-              {description
-                ? <p>Kuvaus: {description} </p>
-                : null}
-              <p>Tiedeluokka: {eventClass}</p>
-              {event.extras.length
-                ? <div>Valittavissa olevat lisäpalvelut: {event.extras.map(extra => <div key={extra.name}>{extra.name}</div>) }</div>
-                : null}
-
-              <div>Tarjolla seuraaville luokka-asteille: {eventGrades.map(g =>
-                <div key={g.value}>{g.label}</div>)}
-              </div>
-              <div><strong>Tapahtuma tarjolla: </strong>
-                {event.inPersonVisit ? 'Lähiopetuksena' : <></>}
-                {event.inPersonVisit && event.remoteVisit && ' ja etäopetuksena'}
-                {event.remoteVisit && !event.inPersonVisit? 'Etäopetuksena' : <></>}
-              </div>
-              <p>Tapahtuma alkaa: {format(event.start, 'd.M.yyyy, HH:mm')}</p>
-              <p>Tapahtuma päättyy: {format(event.end, 'd.M.yyyy, HH:mm')}</p>
-              <p>Toiminnan kesto: {event.duration} minuuttia</p>
-              {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days) ?
-                <p><b>Valitettavasti tämä tapahtuma ei ole varattavissa.</b></p> : null}
-              <div className="field is-grouped">
-                {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days)
-                  ? null
-                  : <button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>Varaa tapahtuma</button>}
-                {!!currentUser && (
-                  <div className="control">
-                    <button className="button luma" onClick={() => handleRemoveEventClick()}>Poista tapahtuma</button>
-                  </div>)
-                }
-                <div className="control">
-                  <button className="button luma" onClick={cancel}>Poistu</button>
+            <div className="box">
+              <div className="content">
+                <div className="title">{event.title}</div>
+                <div>
+                  {description
+                    ? <p><strong>Kuvaus:</strong> {description} </p>
+                    : null}
+                  <p><strong>Tiedeluokka:</strong> {eventClass}</p>
+                  {event.extras.length
+                    ? <div>
+                      <strong>Valittavissa olevat lisäpalvelut:</strong>
+                      <ul>
+                        {event.extras.map(extra => <li key={extra.name}>{extra.name}</li>) }
+                      </ul>
+                      <br/>
+                    </div>
+                    : null}
+                  <div>
+                    <strong>Tarjolla seuraaville luokka-asteille:</strong>
+                    <ul>
+                      {eventGrades.map(g => <li key={g.value}>{g.label}</li>)}
+                    </ul>
+                  </div>
+                  <br/>
+                  <p><strong>Tapahtuma tarjolla: </strong>
+                    {event.inPersonVisit ? 'Lähiopetuksena' : <></>}
+                    {event.inPersonVisit && event.remoteVisit && ' ja etäopetuksena'}
+                    {event.remoteVisit && !event.inPersonVisit? 'Etäopetuksena' : <></>}
+                  </p>
+                  <p><strong>Tapahtuman päivämäärä:</strong> {format(event.start, 'd.M.yyyy')}</p>
+                  <p><strong>Tapahtuma alkaa:</strong> {format(event.start, 'HH:mm')}</p>
+                  <p><strong>Tapahtuma päättyy:</strong> {format(event.end, 'HH:mm')}</p>
+                  <p><strong>Toiminnan kesto:</strong> {event.duration} minuuttia</p>
+                  {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days) ?
+                    <p className="subtitle unfortunately"><b>Valitettavasti tämä tapahtuma ei ole varattavissa.</b></p> : null}
+                  <div className="field is-grouped">
+                    {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days)
+                      ? null
+                      : <button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>Varaa tapahtuma</button>}
+                    {!!currentUser && (
+                      <div className="control">
+                        <button className="button luma" onClick={() => handleRemoveEventClick()}>Poista tapahtuma</button>
+                      </div>)
+                    }
+                    <div className="control">
+                      <button className="button luma" onClick={cancel}>Poistu</button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
