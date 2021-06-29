@@ -72,8 +72,8 @@ const LumaToolbar = (props) => {
         <span>Suodata</span>
       </button>
       <div className="filterbox" style={{ display: showFilterOptions ? 'block' : 'none' }}>
-        <div id="filterdiv" className="box">
-          {/* Content will be injected here */}
+        <div className="box">
+          <div id="filterdiv"></div>
           <button className="button luma is-small" onClick={() => setShowFilterOptions(!showFilterOptions)}>OK</button>
         </div>
       </div>

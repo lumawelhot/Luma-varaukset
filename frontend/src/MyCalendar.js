@@ -5,7 +5,7 @@ import { messages } from './helpers/calendar-messages-fi'
 import { bookedEventColor, resourceColorsLUMA } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
 import LumaToolbar from './components/Custom/LumaToolbar'
-import CalendarFilter from './components/CalendarFilter'
+import CalendarFilter from './components/Filter/CalendarFilter'
 
 import format from 'date-fns/format'
 import parse from 'date-fns/parse'
