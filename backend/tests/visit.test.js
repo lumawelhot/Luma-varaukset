@@ -12,7 +12,7 @@ const EventModel = require('../models/event')
 const VisitModel = require('../models/visit')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
-const { CREATE_VISIT, FIND_VISIT, LOGIN } = require('./testHelpers.js')
+const { GET_ALL_VISITS, CREATE_VISIT, FIND_VISIT, LOGIN } = require('./testHelpers.js')
 const setMilliseconds = require('date-fns/setMilliseconds')
 
 let availableEvent
@@ -400,6 +400,34 @@ describe('Visit server test', () => {
 
     const event = await EventModel.findById(cancelledVisit.event)
     expect(event.visits.length).toBe(0)
+  })
+
+  it('logged in user gets a list of visits', async () => {
+    const { query } = createTestClient(server)
+    const { data } = await query({
+      query: GET_ALL_VISITS
+    })
+    const { getVisits } = data
+    getVisits.map(visit => {
+      expect(visit.event.id).toBeDefined()
+      expect(visit.grade).toBeDefined()
+      expect(visit.clientName).toBeDefined()
+      expect(visit.schoolName).toBeDefined()
+      expect(visit.schoolLocation).toBeDefined()
+      expect(visit.participants).toBeDefined()
+      expect(visit.clientEmail).toBeDefined()
+      expect(visit.clientPhone).toBeDefined()
+      expect(visit.dataUseAgreement).toBeDefined()
+    })
+  })
+
+  it('anonymous user gets an empty list', async () => {
+    const { query } = createTestClient(serverNoUser)
+    const { data } = await query({
+      query: GET_ALL_VISITS
+    })
+    const { getVisits } = data
+    expect(getVisits.length).toBe(0)
   })
 })
 

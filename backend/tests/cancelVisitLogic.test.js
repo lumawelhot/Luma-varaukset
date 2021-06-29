@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const { createTestClient } = require('apollo-server-testing')
 const { ApolloServer } = require('apollo-server-express')
+const bcrypt = require('bcrypt')
 
 const {
   CREATE_VISIT,
@@ -11,6 +12,7 @@ const {
   CANCEL_VISIT,
 } = require('./testHelpers.js')
 
+const UserModel = require('../models/user')
 const EventModel = require('../models/event')
 const VisitModel = require('../models/visit')
 const typeDefs = require('../graphql/typeDefs')
@@ -56,9 +58,21 @@ beforeAll(async () => {
       console.log('connection error: ', error.message)
     })
 
+  await UserModel.deleteMany()
+
+  const userPassword = await bcrypt.hash('password', 10)
+  const userData = { username: 'employee', passwordHash: userPassword, isAdmin: false }
+
+  const user = new UserModel(userData)
+  const savedUser = await user.save()
+
   server = new ApolloServer({
     typeDefs,
     resolvers,
+    context: async () => {
+      const currentUser = savedUser
+      return { currentUser }
+    }
   })
 })
 
