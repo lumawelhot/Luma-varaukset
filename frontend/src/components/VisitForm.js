@@ -7,6 +7,7 @@ import format from 'date-fns/format'
 import add from 'date-fns/add'
 
 let selectedEvent
+let eventPlatforms
 
 const calculateVisitEndTime = (startTimeAsDate, values, selectedEvent, extras) => {
   //console.log('calculateVisitEndTimen saamat parametrit: ', startTimeAsDate, values, selectedEvent)
@@ -136,6 +137,21 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
     return classesArray.join(', ')
   }
 
+  const platformList = [
+    { value: 1, label: 'Zoom' },
+    { value: 2, label: 'Google Meet' },
+    { value: 3, label: 'Microsoft Teams' },
+    { value: 4, label: '' }
+  ]
+
+  const filterEventPlatforms = (platforms, otherOption) => {
+    console.log(otherOption)
+    if (otherOption) platformList[3].label = otherOption
+    const platformArray = platforms.map(c => platformList[c-1].label)
+    //if (otherOption) return platformArray.concat(otherOption)
+    return platformArray
+  }
+
   const [create, result] = useMutation(CREATE_VISIT, {
     refetchQueries: [{ query: EVENTS }],
     onError: (error) => {
@@ -173,7 +189,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
       dataUseAgreement: false,
       username: '',
       extras: [],
-      remotePlatform: '',
+      remotePlatform: '0',
       otherRemotePlatformOption: '',
       finalEndTime: null
     },
@@ -190,12 +206,10 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
           startTimeAsDate.setHours(values.startTime.slice(0,2))
           startTimeAsDate.setMinutes(values.startTime.slice(3,5))
         }
-        //const visitEndTime = calculateVisitEndTime(startTimeAsDate, values, selectedEvent)
-        const remotePlatform = (0 < Number(values.remotePlatform) && Number(values.remotePlatform) < 5)
-          ?
-          [selectedEvent.remotePlatform, selectedEvent.otherRemotePlatformOption][Number(values.remotePlatform)-1]
-          :
-          (Number(values.remotePlatform) === 5) ? values.otherRemotePlatformOption : null
+
+        const remotePlatform = (0 === Number(values.remotePlatform))
+          ? ''
+          : [eventPlatforms][Number(values.remotePlatform)-1]
         create({
           variables: {
             event: event.id,
@@ -239,6 +253,9 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
   if (event) {
     const eventGrades = filterEventGrades(event.grades)
     const eventClass = filterEventClass(event.resourceids)
+    console.log(event)
+    eventPlatforms = filterEventPlatforms(event.remotePlatforms, event.otherRemotePlatformOption)
+    console.log('eventPlatforms: ', eventPlatforms)
     return (
       <div className="container">
         <div className="columns is-centered">
@@ -301,17 +318,21 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
 
                 <div className="field">
                   <div id="radio-group">Valitse haluamasi etäyhteysalusta</div>
-                  <div className="control">
-                    <label className="remotePlatform">
-                      <input
-                        type="radio" name="remotePlatform" value="1" /* checked = {formik.values.remotePlatform} */
-                        onChange={() => {
-                          formik.touched.remotePlatform = true
-                          formik.setFieldValue('remotePlatform', '1')
-                        }} /> Zoom
-                    </label>
-                  </div>
-                  <div className="control">
+                  {eventPlatforms.map((platform, index) => {
+                    return (
+                      <div key={index} className="control">
+                        <label className="remotePlatform">
+                          <input
+                            type="radio" name="remotePlatform" value={index} /* checked = {formik.values.remotePlatform} */
+                            onChange={() => {
+                              formik.touched.remotePlatform = true
+                              formik.setFieldValue('remotePlatform', index.toString())
+                            }} /> {platform}
+                        </label>
+                      </div>
+                    )
+                  })}
+                  {/* <div className="control">
                     <label className="remotePlatform">
                       <input type="radio" name="remotePlatform" value="2"
                         onChange={() => {
@@ -338,7 +359,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                             formik.setFieldValue('remotePlatform', '4')
                           }} /> {event.otherRemotePlatformOption}
                       </label>
-                    </div> : <></>}
+                    </div> : <></>}*/}
 
                   <div className="control">
                     <label className="remotePlatform">
