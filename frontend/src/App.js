@@ -47,7 +47,7 @@ const App = () => {
       extras: event.extras,
       duration: event.duration,
       desc: event.desc,
-      remotePlatform: event.remotePlatform,
+      remotePlatforms: event.remotePlatforms,
       otherRemotePlatformOption: event.otherRemotePlatformOption
     }
     delete details.availableTimes

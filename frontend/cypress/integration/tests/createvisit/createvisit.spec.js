@@ -21,6 +21,7 @@ it('Initialize tests', () => {
     scienceClass: [1,3],
     remoteVisit: true,
     inPersonVisit: true,
+    remotePlatforms: [1],
     desc: 'Test event description',
   })
   cy.createEvent({
@@ -39,6 +40,7 @@ it('Initialize tests', () => {
     end: new Date(eventDate3.setHours(12,0)),
     inPersonVisit: false,
     remoteVisit: true,
+    remotePlatforms: [1],
     desc: 'Test event description'
   })
   cy.createEvent({

@@ -1,27 +1,36 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import { useMutation } from '@apollo/client'
 import { CREATE_VISIT, EVENTS } from '../graphql/queries'
 import { useHistory } from 'react-router'
 import format from 'date-fns/format'
+import add from 'date-fns/add'
 
 let selectedEvent
+let eventPlatforms
 
-const calculateVisitEndTime = (startTimeAsDate, values, selectedEvent) => {
-  const selectedExtrasDurationsInPerson = values.extras.length ? selectedEvent.extras
-    .filter(e => values.extras.includes(e.id))
+const calculateVisitEndTime = (startTimeAsDate, values, selectedEvent, extras) => {
+  const selectedExtrasDurationsInPerson = extras.length ? selectedEvent.extras
+    .filter(e => extras.includes(e.id))
     .reduce((acc,val) => acc + val.inPersonLength, 0)
     : 0
-  const selectedExtrasDurationsRemote = values.extras.length ? selectedEvent.extras
-    .filter(e => values.extras.includes(e.id))
+
+  const selectedExtrasDurationsRemote = extras.length ? selectedEvent.extras
+    .filter(e => extras.includes(e.id))
     .reduce((acc,val) => acc + val.remoteLength, 0)
     : 0
+
   const visitDurationWithExtras = values.visitMode === '1' ?
     selectedEvent.duration + selectedExtrasDurationsRemote
     : values.visitMode === '2' ?
       selectedEvent.duration + selectedExtrasDurationsInPerson
-      : selectedEvent.duration
+      : values.visitMode === '0' && selectedEvent.inPersonVisit !== selectedEvent.remoteVisit ?
+        selectedEvent.inPersonVisit ?
+          selectedEvent.duration + selectedExtrasDurationsInPerson
+          : selectedEvent.duration + selectedExtrasDurationsRemote
+        : selectedEvent.duration
   const visitEndTime = new Date(startTimeAsDate.getTime() + visitDurationWithExtras*60000)
+
   return visitEndTime
 }
 
@@ -76,14 +85,14 @@ const validate = values => {
     startTimeAsDate.setHours(values.startTime.slice(0,2))
     startTimeAsDate.setMinutes(values.startTime.slice(3,5))
   }
-  const visitEndTime = calculateVisitEndTime(startTimeAsDate, values, selectedEvent)
+  const visitEndTime = calculateVisitEndTime(startTimeAsDate, values, selectedEvent, values.extras)
   if (visitEndTime > selectedEvent.end) {
     errors.startTime = 'Varaus ei mahdu aikaikkunaan'
   }
   if (startTimeAsDate < selectedEvent.start) {
     errors.startTime = 'Liian aikainen aloitusaika'
   }
-  if(!values.otherRemotePlatformOption && Number(values.remotePlatform) === 5){
+  if(values.visitMode !== '2' && !values.otherRemotePlatformOption && Number(values.remotePlatform) === eventPlatforms.length+1){
     errors.otherRemotePlatformOption = 'Kirjoita muun etäyhteysalustan nimi'
   }
   return errors
@@ -96,6 +105,9 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
   if (!event) {
     history.push('/')
   }
+
+  const [finalEndTime, setFinalEndTime] = useState(new Date(add(event.start, { minutes: event.duration })))
+
   const grades = [
     { value: 1, label: 'Varhaiskasvatus' },
     { value: 2, label: '1.-2. luokka' },
@@ -122,6 +134,19 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
     return classesArray.join(', ')
   }
 
+  const platformList = [
+    { value: 1, label: 'Zoom' },
+    { value: 2, label: 'Google Meet' },
+    { value: 3, label: 'Microsoft Teams' },
+    { value: 4, label: '' }
+  ]
+
+  const filterEventPlatforms = (platforms, otherOption) => {
+    if (otherOption) platformList[3].label = otherOption
+    const platformArray = platforms.map(c => platformList[c-1].label)
+    return platformArray
+  }
+
   const [create, result] = useMutation(CREATE_VISIT, {
     refetchQueries: [{ query: EVENTS }],
     onError: (error) => {
@@ -146,7 +171,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
       clientName: '',
       schoolName: '',
       visitMode: '0',
-      startTime: event.start,
+      startTime: format(event.start, 'HH:mm'),
       endTime: event.end,
       schoolLocation: '',
       clientEmail: '',
@@ -159,8 +184,9 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
       dataUseAgreement: false,
       username: '',
       extras: [],
-      remotePlatform: '',
-      otherRemotePlatformOption: ''
+      remotePlatform: '0',
+      otherRemotePlatformOption: '',
+      finalEndTime: null
     },
     validate,
     onSubmit: values => {
@@ -171,16 +197,18 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
         const remoteVisit = (values.visitMode === '0')? event.remoteVisit : (values.visitMode === '1') ? true : false
         const inPersonVisit = (values.visitMode === '0')? event.inPersonVisit : (values.visitMode === '2') ? true : false
         const startTimeAsDate = (typeof values.startTime === 'object') ? values.startTime : new Date(selectedEvent.start)
+
         if (typeof values.startTime === 'string') {
           startTimeAsDate.setHours(values.startTime.slice(0,2))
           startTimeAsDate.setMinutes(values.startTime.slice(3,5))
         }
-        const visitEndTime = calculateVisitEndTime(startTimeAsDate, values, selectedEvent)
-        const remotePlatform = (0 < Number(values.remotePlatform) && Number(values.remotePlatform) < 5)
-          ?
-          ['Zoom', 'Google Meet', 'Microsoft Teams', selectedEvent.otherRemotePlatformOption][Number(values.remotePlatform)-1]
-          :
-          (Number(values.remotePlatform) === 5) ? values.otherRemotePlatformOption : null
+
+        const remotePlatform = Number(values.remotePlatform) === 0
+          ? ''
+          : values.remotePlatform <= eventPlatforms.length ?
+            eventPlatforms[Number(values.remotePlatform)]
+            : values.otherRemotePlatformOption
+
         create({
           variables: {
             event: event.id,
@@ -190,7 +218,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
             inPersonVisit: inPersonVisit,
             schoolLocation: values.schoolLocation,
             startTime: startTimeAsDate.toISOString(),
-            endTime: visitEndTime.toISOString(),
+            endTime: finalEndTime,
             clientEmail: values.clientEmail,
             clientPhone: values.clientPhone,
             grade: values.visitGrade,
@@ -222,9 +250,9 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
   }
 
   if (event) {
-    console.log(event)
     const eventGrades = filterEventGrades(event.grades)
     const eventClass = filterEventClass(event.resourceids)
+    eventPlatforms = filterEventPlatforms(event.remotePlatforms, event.otherRemotePlatformOption)
     return (
       <div className="container">
         <div className="columns is-centered">
@@ -281,59 +309,33 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
               ) : null}
               </div>
 
-              {formik.values.visitMode === '1'
+              {formik.values.visitMode === '1' || (formik.values.visitMode === '0' && event.remoteVisit && !event.inPersonVisit)
                 ?
-                //
-
                 <div className="field">
                   <div id="radio-group">Valitse haluamasi etäyhteysalusta</div>
-                  <div className="control">
-                    <label className="remotePlatform">
-                      <input
-                        type="radio" name="remotePlatform" value="1" /* checked = {formik.values.remotePlatform} */
-                        onChange={() => {
-                          formik.touched.remotePlatform = true
-                          formik.setFieldValue('remotePlatform', '1')
-                        }} /> Zoom
-                    </label>
-                  </div>
-                  <div className="control">
-                    <label className="remotePlatform">
-                      <input type="radio" name="remotePlatform" value="2"
-                        onChange={() => {
-                          formik.touched.remotePlatform = true
-                          formik.setFieldValue('remotePlatform', '2')
-                        }} /> Google Meet
-                    </label>
-                  </div>
-                  <div className="control">
-                    <label className="remotePlatform">
-                      <input type="radio" name="remotePlatform" value="3"
-                        onChange={() => {
-                          formik.touched.remotePlatform = true
-                          formik.setFieldValue('remotePlatform', '3')
-                        }} /> Microsoft Teams
-                    </label>
-                  </div>
+                  {eventPlatforms.map((platform, index) => {
+                    return (
+                      <div key={index} className="control">
+                        <label className="remotePlatform">
+                          <input
+                            type="radio" name="remotePlatform" value={index}
+                            onChange={() => {
+                              formik.touched.remotePlatform = true
+                              formik.setFieldValue('remotePlatform', index.toString())
+                            }} /> {platform}
+                        </label>
+                      </div>
+                    )
+                  })}
 
                   <div className="control">
                     <label className="remotePlatform">
-                      <input type="radio" name="remotePlatform" value="4"
+                      <input type="radio" name="remotePlatform" value={parseInt(eventPlatforms.length+1)}
                         onChange={() => {
                           formik.touched.remotePlatform = true
-                          formik.setFieldValue('remotePlatform', '4')
-                        }} /> {event.otherRemotePlatformOption}
-                    </label>
-                  </div>
-
-                  <div className="control">
-                    <label className="remotePlatform">
-                      <input type="radio" name="remotePlatform" value="5"
-                        onChange={() => {
-                          formik.touched.remotePlatform = true
-                          formik.setFieldValue('remotePlatform', '5')
+                          formik.setFieldValue('remotePlatform', parseInt(eventPlatforms.length+1))
                         }} /> Muu, mikä?
-                      {formik.values.remotePlatform === '5'
+                      {formik.values.remotePlatform === parseInt(eventPlatforms.length+1)
                         ?
 
                         <div className="field">
@@ -360,13 +362,8 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
 
                     </label>
                   </div>
-
-
                 </div>
-
-                //
                 :null }
-
 
               <div className="field">
                 <label htmlFor="clientName">Varaajan nimi </label>
@@ -506,28 +503,6 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                 <p className="help is-danger">{formik.errors.participants}</p>
               ) : null}
 
-              <div className="field">
-                <div className="control">
-                  <label htmlFor="startTime" className="label" style={{ fontWeight:'normal' }}>
-                  Varauksen alkamisaika
-                  </label>
-                  <p>Aikaisin alkamisaika: {format(event.start, 'HH:mm')}</p>
-                  <p>Myöhäisin päättymisaika: {format(event.end, 'HH:mm')}</p>
-                  <input
-                    type="time"
-                    id="startTime"
-                    name="startTime"
-                    value={formik.values.startTime}
-                    min={event.start.toTimeString().slice(0,5)}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
-                </div>
-              </div>
-              {formik.touched.startTime && formik.errors.startTime ? (
-                <p className="help is-danger">{formik.errors.startTime}</p>
-              ) : null}
-
               {!!event.extras.length && (
                 <div className="field">
                   <label htmlFor="extras">Lisäpalvelut </label>
@@ -539,11 +514,22 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                           type="checkbox"
                           checked={formik.values.extras.includes(extra.id)}
                           onChange={() => {
+                            let newValueForExtras = formik.values.extras
                             if (formik.values.extras.includes(extra.id)) {
-                              formik.setFieldValue('extras', formik.values.extras.filter(e => e !== extra.id))
+                              newValueForExtras = formik.values.extras.filter(e => e !== extra.id)
+                              formik.setFieldValue('extras', newValueForExtras)
+
                             } else {
-                              formik.setFieldValue('extras', formik.values.extras.concat(extra.id))
+                              newValueForExtras = formik.values.extras.concat(extra.id)
+                              formik.setFieldValue('extras', newValueForExtras)
                             }
+                            const startTimeAsDate = (typeof formik.values.startTime === 'object') ? formik.values.startTime : new Date(selectedEvent.start)
+                            if (typeof formik.values.startTime === 'string') {
+                              startTimeAsDate.setHours(formik.values.startTime.slice(0,2))
+                              startTimeAsDate.setMinutes(formik.values.startTime.slice(3,5))
+                            }
+                            const endTime = calculateVisitEndTime(startTimeAsDate, formik.values, selectedEvent, newValueForExtras)
+                            setFinalEndTime(endTime)
                           }}
                         />
                         {` ${extra.name}`}, pituus lähi: {extra.inPersonLength} min / etä: {extra.remoteLength} min
@@ -555,6 +541,35 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
               {formik.touched.extras && formik.errors.startTime ? (
                 <p className="help is-danger">Tarkista että varaus lisäpalveluineen mahtuu annettuihin aikarajoihin!</p>
               ) : null}
+
+              <div className="field">
+                <div className="control">
+                  <label htmlFor="startTime" className="label" style={{ fontWeight:'normal' }}>
+                  Syötä varauksen alkamisaika (aikaikkuna: {format(event.start, 'HH:mm')} - {format(event.end, 'HH:mm')})
+                  </label>
+                  <input
+                    type="time"
+                    id="startTime"
+                    name="startTime"
+                    value={formik.values.startTime}
+                    min={event.start.toTimeString().slice(0,5)}
+                    onChange={(event) => {
+                      const startTimeAsDate = new Date(selectedEvent.start)
+                      startTimeAsDate.setHours(event.target.value.slice(0,2))
+                      startTimeAsDate.setMinutes(event.target.value.slice(3,5))
+                      formik.setFieldValue('startTime', format(startTimeAsDate, 'HH:mm'))
+                      const endTime = calculateVisitEndTime(startTimeAsDate, formik.values, selectedEvent, formik.values.extras)
+                      setFinalEndTime(endTime)
+                      formik.setFieldValue('finalEndTime', endTime.toISOString())
+                    }}
+                    onBlur={formik.handleBlur}
+                  /> - {format(new Date(finalEndTime/* formik.values.finalEndTime */), 'HH:mm')}
+                </div>
+              </div>
+              {formik.touched.startTime && formik.errors.startTime ? (
+                <p className="help is-danger">{formik.errors.startTime}</p>
+              ) : null}
+
               <hr></hr>
 
               <div className="field">
@@ -597,7 +612,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
                       onChange={() => {
                         formik.touched.remoteVisitGuidelines = !formik.values.remoteVisitGuidelines
                         formik.setFieldValue('remoteVisitGuidelines', !formik.values.remoteVisitGuidelines)
-                      }} /> Olen lukenut <a href="https://www2.helsinki.fi/fi/tiedekasvatus/opettajille-ja-oppimisyhteisoille/varaa-opintokaynti">etäopintokäyntien ohjeistuksen</a> ja hyväksyn käytänteet.
+                      }} /> Olen lukenut <a href="https://www2.helsinki.fi/fi/tiedekasvatus/opettajille-ja-oppimisyhteisoille/varaa-opintokaynti">opintokäyntien ohjeistuksen</a> ja hyväksyn käytänteet.
                   </label>
                 </div>
               </div>

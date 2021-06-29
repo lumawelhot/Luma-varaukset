@@ -86,6 +86,26 @@ const VisitPage = ({ sendMessage }) => {
     })
   }
 
+  /* seuraavat pitäisi näkyä:
+     id: ID!
+    event: Event
+    clientName: String!
+    schoolName: String!
+    schoolLocation: String!
+    clientEmail: String!
+    clientPhone: String!
+    grade: String!
+    participants: Int!
+    extras: [Extra]
+    status: Boolean!
+    startTime: String!
+    endTime: String!
+    inPersonVisit: Boolean!
+    remoteVisit: Boolean!
+    dataUseAgreement: Boolean!
+    remotePlatform: String
+    */
+
   return (
     <div className="container">
       <div className="columns is-centered">
@@ -117,6 +137,9 @@ const VisitPage = ({ sendMessage }) => {
 
             <p>Valittu luokka-aste: {visit.grade}</p>
             <p>Ilmoitettu osallistujamäärä: {visit.participants}</p>
+            {visit.remoteVisit &&
+              <p>Käytettävä etäyhteysalusta: {visit.remotePlatform}</p>
+            }
 
             <div className="field is-grouped">
               <div className="control">
