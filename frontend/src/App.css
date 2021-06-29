@@ -820,12 +820,12 @@ button.button.luma {
 }
 
 .rbc-event.booked {
-  background-color: #dcdcdc;
+  background-color: #8a8a8a;
 }
 
 .rbc-event.booked .rbc-event-label {
   width: 100%;
-  background-color: #dcdcdc;
+  background-color: #8a8a8a;
 }
 
 .rbc-event.multiple {
