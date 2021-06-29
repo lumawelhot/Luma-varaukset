@@ -1051,7 +1051,7 @@ input.hidden {
   top: 109px;
   z-index: 10;
   right: 10px;
-  width: 300px;
+  width: 820px;
   border: 1px solid #d9d9d9;
 }
 
@@ -1064,7 +1064,7 @@ input.hidden {
   background: #fff;
   z-index: 1000;
   top: -7px;
-  left: 222px;
+  right: 30px;
   border-top: 1px solid #d9d9d9;
   border-right: 1px solid #d9d9d9;
   -webkit-transform: rotate(-45deg);
