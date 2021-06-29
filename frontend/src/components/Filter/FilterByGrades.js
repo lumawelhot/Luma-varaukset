@@ -8,38 +8,54 @@ const FilterByGrades = ({ grades, setGrades }) => {
   }
 
   return (
-    <div className="field is-grouped">
-      <div className="field">
-        <label className="label">
-          <input type="checkbox" checked={grades.includes(1)} onChange={() => muuta(1)}/>
+    <>
+      <p className="label">Suodata luokka-asteen mukaan</p>
+      <div className="field is-grouped">
+        <div className="field">
+          <button
+            className={`button luma ${grades.includes(1) ? 'active' : ''}`}
+            onClick={() => muuta(1)}
+          >
           Varhaiskasvatus
-        </label>
-      </div>
-      <div className="field">
-        <label className="label">
-          <input type="checkbox" checked={grades.includes(2)} onChange={() => muuta(2)}/>
+          </button>
+        </div>
+        <div className="field">
+          <button
+            className={`button luma ${grades.includes(2) ? 'active' : ''}`}
+            onClick={() => muuta(2)}
+          >
           1.-2. luokka
-        </label>
-      </div>
-      <div className="field">
-        <label className="label">
-          <input type="checkbox" checked={grades.includes(3)} onChange={() => muuta(3)}/>
+          </button>
+        </div>
+        <div className="field">
+
+          <button
+            className={`button luma ${grades.includes(3) ? 'active' : ''}`}
+            onClick={() => muuta(3)}
+          >
           3.-6. luokka
-        </label>
-      </div>
-      <div className="field">
-        <label className="label">
-          <input type="checkbox" checked={grades.includes(4)} onChange={() => muuta(4)}/>
+          </button>
+        </div>
+        <div className="field">
+
+          <button
+            className={`button luma ${grades.includes(4) ? 'active' : ''}`}
+            onClick={() => muuta(4)}
+          >
           7.-9. luokka
-        </label>
-      </div>
-      <div className="field">
-        <label className="label">
-          <input type="checkbox" checked={grades.includes(5)} onChange={() => muuta(5)}/>
+          </button>
+        </div>
+        <div className="field">
+
+          <button
+            className={`button luma ${grades.includes(5) ? 'active' : ''}`}
+            onClick={() => muuta(5)}
+          >
           Toinen aste
-        </label>
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

@@ -2,20 +2,27 @@ import React from 'react'
 
 const FilterByVisitType = (props) => {
   return (
-    <div className="field is-grouped">
-      <div className="field">
-        <label className="label">
-          <input type="checkbox" checked={props.inPerson} onChange={() => props.setInPerson(!props.inPerson)}/>
+    <>
+      <p className="label">Suodata vierailutyypin mukaan</p>
+      <div className="field is-grouped">
+        <div className="field">
+          <button
+            className={`button luma ${props.inPerson ? 'active' : ''}`}
+            onClick={() => props.setInPerson(!props.inPerson)}
+          >
           Lähiopetus
-        </label>
-      </div>
-      <div className="field">
-        <label className="label">
-          <input type="checkbox" checked={props.remote} onChange={() => props.setRemote(!props.remote)}/>
+          </button>
+        </div>
+        <div className="field">
+          <button
+            className={`button luma ${props.remote ? 'active' : ''}`}
+            onClick={() => props.setRemote(!props.remote)}
+          >
           Etäopetus
-        </label>
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

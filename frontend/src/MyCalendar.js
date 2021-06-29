@@ -147,7 +147,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
         endAccessor='end'
         min={set(new Date(), { hours: 8, minutes: 0, seconds:0, milliseconds: 0 })}
         max={set(new Date(), { hours: 17, minutes: 0, seconds:0, milliseconds: 0 })}
-        selectable={currentUser?.isAdmin}
+        selectable={!!currentUser}
         onSelectEvent={(event) => handleEventClick(event)}
         onSelectSlot={handleSelect}
         components={{

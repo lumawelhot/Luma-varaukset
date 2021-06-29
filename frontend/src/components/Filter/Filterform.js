@@ -8,13 +8,8 @@ const Filterform = ({ values, setValues }) => {
   }
 
   return (
-    <div className="field is-grouped">
-      <div className="field">
-        <button className="button luma" onClick={() => setValues([])}>Näytä kaikki</button>
-      </div>
-      <div className="field-label is-normal">
-        <label className="label">Suodata tiedeluokan mukaan: </label>
-      </div>
+    <div>
+      <p className="label">Suodata tiedeluokan mukaan: </p>
       <div className="field is-grouped">
         <button
           className={`button luma ${values.includes(1) ? 'active' : ''}`}
