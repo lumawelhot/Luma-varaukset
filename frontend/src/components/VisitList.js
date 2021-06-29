@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { useHistory } from 'react-router'
 import { VISITS } from '../graphql/queries'
-import Filterform from './Filterform'
+import Filterform from './Filter/Filterform'
 import VisitListSortable from './VisitListSortable'
 
 const VisitList = ({ notify }) => {

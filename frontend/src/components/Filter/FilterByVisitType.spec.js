@@ -18,9 +18,9 @@ test('Checkboxes working', async () => {
     />
   )
   await waitFor(() => new Promise((res) => setTimeout(res, 0)))
-  let checkbox = await component.findByLabelText('Lähiopetus')
+  let checkbox = await component.findByText('Lähiopetus')
   fireEvent.click(checkbox)
-  checkbox = await component.findByLabelText('Etäopetus')
+  checkbox = await component.findByText('Etäopetus')
   fireEvent.click(checkbox)
   expect(setRemote.mock.calls).toHaveLength(1)
   expect(setInPerson.mock.calls).toHaveLength(1)
