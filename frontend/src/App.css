@@ -1029,7 +1029,8 @@ input.hidden {
   border: none;
 }
 
-.visits th p {
+.visits th p,
+.media.luma-agenda {
   cursor: pointer;
 }
 
@@ -1043,4 +1044,30 @@ input.hidden {
 
 .visits th p.descending::after {
   content: '\2193';
+}
+
+.filterbox {
+  position: absolute;
+  top: 109px;
+  z-index: 10;
+  right: 10px;
+  width: 300px;
+  border: 1px solid #d9d9d9;
+}
+
+.filterbox:before {
+  display: block;
+  position: absolute;
+  content: '';
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  z-index: 1000;
+  top: -7px;
+  left: 222px;
+  border-top: 1px solid #d9d9d9;
+  border-right: 1px solid #d9d9d9;
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  border-radius: 2px;
 }

@@ -3,6 +3,7 @@ import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
 import { messages } from './helpers/calendar-messages-fi'
 import { bookedEventColor, resourceColorsLUMA } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
+import LumaToolbar from './components/Custom/LumaToolbar'
 import CalendarFilter from './components/CalendarFilter'
 
 import format from 'date-fns/format'
@@ -75,7 +76,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
     const resourceNames = event.resourceids.map(id => { return { name: resourceMap[id-1]?.resourceTitle || null, color: resourceColorsLUMA[id - 1] }})
     if (event.booked) {
       return (
-        <div className="media">
+        <div className="media luma-agenda" onClick={() => handleEventClick(event)}>
           {!!resourceNames.length && <div className="media-left" style={{ width: 100 }}><div className="tags">
             {resourceNames.map(r =>
               <span key={r.name} className='tag is-small is-link' style={{ backgroundColor: bookedEventColor }}>{r.name}</span>)}
@@ -88,7 +89,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
       )
     }
     return (
-      <div className="media">
+      <div className="media luma-agenda" onClick={() => handleEventClick(event)}>
         {!!resourceNames.length && <div className="media-left" style={{ width: 100 }}><div className="tags">
           {resourceNames.map(r =>
             <span key={r.name} className='tag is-small is-link' style={{ backgroundColor: r.color }}>{r.name}</span>)}
@@ -135,6 +136,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
         onSelectEvent={(event) => handleEventClick(event)}
         onSelectSlot={handleSelect}
         components={{
+          toolbar: LumaToolbar,
           agenda: {
             event: AgendaEvent
           }
