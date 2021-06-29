@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
+import ReactDOM from 'react-dom'
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
 import { messages } from './helpers/calendar-messages-fi'
 import { bookedEventColor, resourceColorsLUMA } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
-import CalendarFilter from './components/CalendarFilter'
+import LumaToolbar from './components/Custom/LumaToolbar'
+import CalendarFilter from './components/Filter/CalendarFilter'
 
 import format from 'date-fns/format'
 import parse from 'date-fns/parse'
@@ -28,6 +30,18 @@ const resourceMap = [
   { resourceids: 4, resourceTitle: 'Geopiste' },
   { resourceids: 5, resourceTitle: 'Gadolin' },
 ]
+
+const Wrapper = (props) => {
+  const domNode = document.getElementById(props.elementId)
+  if (domNode) {
+    return ReactDOM.createPortal(
+      props.children,
+      domNode
+    )
+  } else {
+    return null
+  }
+}
 
 const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, currentDate, setCurrentDate, currentView, setCurrentView }) => {
 
@@ -75,7 +89,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
     const resourceNames = event.resourceids.map(id => { return { name: resourceMap[id-1]?.resourceTitle || null, color: resourceColorsLUMA[id - 1] }})
     if (event.booked) {
       return (
-        <div className="media">
+        <div className="media luma-agenda" onClick={() => handleEventClick(event)}>
           {!!resourceNames.length && <div className="media-left" style={{ width: 100 }}><div className="tags">
             {resourceNames.map(r =>
               <span key={r.name} className='tag is-small is-link' style={{ backgroundColor: bookedEventColor }}>{r.name}</span>)}
@@ -88,7 +102,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
       )
     }
     return (
-      <div className="media">
+      <div className="media luma-agenda" onClick={() => handleEventClick(event)}>
         {!!resourceNames.length && <div className="media-left" style={{ width: 100 }}><div className="tags">
           {resourceNames.map(r =>
             <span key={r.name} className='tag is-small is-link' style={{ backgroundColor: r.color }}>{r.name}</span>)}
@@ -113,7 +127,9 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
 
   return (
     <div>
-      <CalendarFilter filterFunction={filterFunction} setFilterFunction={setFilterFunction} />
+      <Wrapper elementId='filterdiv'>
+        <CalendarFilter filterFunction={filterFunction} setFilterFunction={setFilterFunction} />
+      </Wrapper>
       <Calendar
         culture='fi'
         localizer={localizer}
@@ -131,10 +147,11 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
         endAccessor='end'
         min={set(new Date(), { hours: 8, minutes: 0, seconds:0, milliseconds: 0 })}
         max={set(new Date(), { hours: 17, minutes: 0, seconds:0, milliseconds: 0 })}
-        selectable={currentUser?.isAdmin}
+        selectable={!!currentUser}
         onSelectEvent={(event) => handleEventClick(event)}
         onSelectSlot={handleSelect}
         components={{
+          toolbar: LumaToolbar,
           agenda: {
             event: AgendaEvent
           }
