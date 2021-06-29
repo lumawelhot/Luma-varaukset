@@ -86,60 +86,40 @@ const VisitPage = ({ sendMessage }) => {
     })
   }
 
-  /* seuraavat pitäisi näkyä:
-     id: ID!
-    event: Event
-    clientName: String!
-    schoolName: String!
-    schoolLocation: String!
-    clientEmail: String!
-    clientPhone: String!
-    grade: String!
-    participants: Int!
-    extras: [Extra]
-    status: Boolean!
-    startTime: String!
-    endTime: String!
-    inPersonVisit: Boolean!
-    remoteVisit: Boolean!
-    dataUseAgreement: Boolean!
-    remotePlatform: String
-    */
-
   return (
     <div className="container">
       <div className="columns is-centered">
         <div className="section">
           <div className="title">Olet varannut seuraavan tapahtuman:</div>
-          <div>
-            <p><b>{visit.event.title}</b></p>
-            <p>Kuvaus: {visit.event.desc}</p>
-            <p>Tiedeluokka: {filterEventClass(visit.event.resourceids)}</p>
-            {visit.extras.length
-              ? <p>Valitut lisäpalvelut: {visit.extras.map(extra => <span key={extra.name}>{extra.name}</span>) }</p>
-              : null}
-            <div>Opetusmuoto:
-              {visit.inPersonVisit ? ' Lähiopetus' : <></>}
-              {visit.remoteVisit ? ' Etäopetus' : <></>}
+          <div className="box">
+            <div className="content luma">
+              <p className="title">{visit.event.title}</p>
+              <p><strong>Kuvaus:</strong> {visit.event.desc}</p>
+              <p><strong>Tiedeluokka</strong>: {filterEventClass(visit.event.resourceids)}</p>
+              {visit.extras.length
+                ? <p><strong>Lisäpalvelut:</strong> {visit.extras.map(extra => <span key={extra.name}>{extra.name}</span>) }</p>
+                : null}
+              <p><strong>Opetusmuoto:</strong>
+                {visit.inPersonVisit ? ' Lähiopetus' : <></>}
+                {visit.remoteVisit ? ' Etäopetus' : <></>}
+              </p>
+              <p><strong>Vierailun päivämäärä:</strong> {format(visit.startTime, 'd.M.yyyy')}</p>
+              <p><strong>Vierailu alkaa:</strong> {format(visit.startTime, 'HH:mm')}</p>
+              <p><strong>Vierailu päättyy:</strong> {format(visit.endTime, 'HH:mm')}</p>
+              <hr></hr>
+              <p className='subtitle'><b>Antamasi tiedot:</b></p>
+              <p><strong>Varaajan nimi:</strong> {visit.clientName}</p>
+              <p><strong>Varaajan sähköpostiosoite:</strong> {visit.clientEmail}</p>
+              <p><strong>Varaajan puhelinnumero:</strong> {visit.clientPhone}</p>
+              <p><strong>Ilmoitettu oppimisyhteisön nimi:</strong> {visit.schoolName}</p>
+              <p><strong>Ilmoitettu oppimisyhteisön paikkakunta:</strong> {visit.schoolLocation}</p>
+              <p><strong>Valittu luokka-aste:</strong> {visit.grade}</p>
+              <p><strong>Ilmoitettu osallistujamäärä:</strong> {visit.participants}</p>
+
+              {visit.remoteVisit &&
+              <p><strong>Käytettävä etäyhteysalusta:</strong> {visit.remotePlatform}</p>
+              }
             </div>
-            <p>Vierailu alkaa: {format(visit.startTime, 'd.M.yyyy, HH:mm')}</p>
-            <p>Vierailu päättyy: {format(visit.endTime, 'd.M.yyyy, HH:mm')}</p>
-            <hr></hr>
-            <label htmlFor="clientInfo" className="label" style={{ fontWeight:'normal' }}>
-              <p><b>Varaajan antamat tiedot:</b></p>
-            </label>
-            <p>Varaajan nimi: {visit.clientName}</p>
-            <p>Varaajan sähköpostiosoite: {visit.clientEmail}</p>
-            <p>Varaajan puhelinnumero: {visit.clientPhone}</p>
-
-            <p>Ilmoitettu oppimisyhteisön nimi: {visit.schoolName}</p>
-            <p>Ilmoitettu oppimisyhteisön paikkakunta: {visit.schoolLocation}</p>
-
-            <p>Valittu luokka-aste: {visit.grade}</p>
-            <p>Ilmoitettu osallistujamäärä: {visit.participants}</p>
-            {visit.remoteVisit &&
-              <p>Käytettävä etäyhteysalusta: {visit.remotePlatform}</p>
-            }
 
             <div className="field is-grouped">
               <div className="control">

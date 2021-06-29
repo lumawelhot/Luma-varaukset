@@ -870,20 +870,14 @@ button.button.luma {
   color: #363636;
 }
 
-/*.taginput .taginput-container .autocomplete input {
-  height: calc(2em - 1px);
-  margin-bottom: calc(0.275em - 1px);
-  padding-top: 0;
-  padding-bottom: 0;
-  border: none;
-  box-shadow: none;
-  min-width: 8em;
-}*/
+.modal-content {
+  width: 80%;
+}
 
-.modal-content,
 .luma-eventform {
-  background: antiquewhite;
-  border-radius: 20px;
+  background: #0479a5;
+  width: fit-content;
+  margin-top: 3rem;
 }
 
 .admin-button {
@@ -1071,4 +1065,46 @@ input.hidden {
   -webkit-transform: rotate(-45deg);
   transform: rotate(-45deg);
   border-radius: 2px;
+}
+
+.hero.luma {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  background-color: #0479a5;
+}
+
+.hero.luma .title {
+  color: #dedede;
+}
+
+.hero.luma .subtitle {
+  color: #ccc;
+}
+
+.hero.luma a {
+  color: #f1f1f1;
+}
+
+.subtitle.unfortunately {
+  color: brown;
+}
+
+form.luma hr,
+.content.luma hr {
+  margin-left: -20px;
+  margin-right: -20px;
+}
+
+.field.is-grouped.luma {
+  justify-content: space-between;
+}
+
+.field.is-grouped.luma .field {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.field-is-grouped.luma:last-child {
+  flex-grow: 1;
+  margin-right: 0px;
 }

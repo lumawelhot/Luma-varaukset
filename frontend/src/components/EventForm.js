@@ -156,12 +156,10 @@ const EventForm = ({
     },
   })
 
-  const style = { width: 500 }
-
   return (
-    <div className="section">
-      <div className="columns is-centered">
-        <div className="section luma-eventform">
+    <div className="columns is-centered">
+      <div className="box luma-eventform">
+        <div className="box">
           <div className="title">Luo uusi vierailu</div>
           <form onSubmit={formik.handleSubmit}>
             <div className="field">
@@ -171,7 +169,6 @@ const EventForm = ({
               <div className="control">
                 <input
                   className="input"
-                  style={style}
                   id="title"
                   name="title"
                   type="title"
@@ -190,7 +187,8 @@ const EventForm = ({
                 Tapahtuman kesto minuutteina
               </label>
               <div className="control">
-                <input style={{ width: 500 }}
+                <input
+                  className="input"
                   id="duration"
                   name="duration"
                   type="number"
@@ -212,40 +210,33 @@ const EventForm = ({
                   formik.setFieldValue('tags', tags)
                 }}
                 suggestedTags={suggestedTags}
-                style={style}
               />
             </FormikProvider>
 
-            <div className="field">
+            <div className="block">
               <label className="label" id="checkbox-group">
                 Valitse etä- ja/tai lähivierailu
               </label>
               <div className="control">
-                <label className="checkbox1">
+                <label className="checkbox">
                   <input
                     type="checkbox" name="remoteVisit" checked={formik.values.remoteVisit}
                     onChange={() => {
                       formik.touched.remoteVisit = true
 
                       formik.setFieldValue('remoteVisit', !formik.values.remoteVisit)
-                    }} />
-
-
-                  Etävierailu
+                    }} /> Etävierailu
                 </label>
               </div>
               <div className="control">
-                <label className="checkbox1">
+                <label className="checkbox">
                   <input type="checkbox" name="inPersonVisit" checked={formik.values.inPersonVisit}
                     onChange={() => {
                       formik.touched.inPersonVisit = true
 
                       formik.setFieldValue('inPersonVisit', !formik.values.inPersonVisit)
                     }
-                    } />
-
-
-                  Lähivierailu
+                    } /> Lähivierailu
                 </label>
               </div>
             </div>
@@ -259,7 +250,7 @@ const EventForm = ({
               <div className="field">
                 <div  className="label" id="checkbox-group">Valitse etäyhteysalusta(t)</div>
                 <div className="control">
-                  <label className="remotePlatforms">
+                  <label className="checkbox">
                     <input
                       type="checkbox"  value="0" checked = {formik.values.remotePlatforms[0]}
                       onChange={() => {
@@ -267,12 +258,11 @@ const EventForm = ({
                         formik.values.remotePlatforms[0] = !formik.values.remotePlatforms[0]
                         formik.setFieldValue('remotePlatforms', [formik.values.remotePlatforms[0],formik.values.remotePlatforms[1],formik.values.remotePlatforms[2],formik.values.remotePlatforms[3]])
 
-                      }} />
-                  Zoom
+                      }} /> Zoom
                   </label>
                 </div>
                 <div className="control">
-                  <label className="remotePlatforms">
+                  <label className="checkbox">
                     <input type="checkbox" value="1" checked = {formik.values.remotePlatforms[1]}
                       onChange={() => {
                         formik.touched.remotePlatforms = true
@@ -280,12 +270,11 @@ const EventForm = ({
                         formik.values.remotePlatforms[1] = !formik.values.remotePlatforms[1]
                         formik.setFieldValue('remotePlatforms', [formik.values.remotePlatforms[0],formik.values.remotePlatforms[1],formik.values.remotePlatforms[2],formik.values.remotePlatforms[3]])
 
-                      }} />
-                  Google Meet
+                      }} /> Google Meet
                   </label>
                 </div>
                 <div className="control">
-                  <label className="remotePlatforms">
+                  <label className="checkbox">
                     <input type="checkbox" value="2" checked = {formik.values.remotePlatforms[2]}
                       onChange={() => {
                         formik.touched.remotePlatforms = true
@@ -293,19 +282,17 @@ const EventForm = ({
                         formik.values.remotePlatforms[2] = !formik.values.remotePlatforms[2]
                         formik.setFieldValue('remotePlatforms', [formik.values.remotePlatforms[0],formik.values.remotePlatforms[1],formik.values.remotePlatforms[2],formik.values.remotePlatforms[3]])
 
-                      }} />
-                  Microsoft Teams
+                      }} /> Microsoft Teams
                   </label>
                 </div>
                 <div className="control">
-                  <label className="remotePlatforms">
+                  <label className="checkbox">
                     <input type="checkbox" value="3" checked = {formik.values.remotePlatforms[3]}
                       onChange={() => {
                         formik.touched.remotePlatforms = true
                         formik.values.remotePlatforms[3] = !formik.values.remotePlatforms[3]
                         formik.setFieldValue('remotePlatforms', [formik.values.remotePlatforms[0],formik.values.remotePlatforms[1],formik.values.remotePlatforms[2],formik.values.remotePlatforms[3]])
-                      }} />
-                  Muu, mikä?
+                      }} /> Muu, mikä?
                     {formik.values.remotePlatforms[3]
                       ?
 
@@ -314,7 +301,6 @@ const EventForm = ({
                         <div className="control">
                           <input
                             className="input"
-                            style={{ width: 300 }}
                             id="otherRemotePlatformOption"
                             name="otherRemotePlatformOption"
                             type="otherRemotePlatformOption"
@@ -359,10 +345,7 @@ const EventForm = ({
                       formik.touched.grades = true
 
                       formik.values.grades[0] = !formik.values.grades[0]
-                    }} />
-
-
-                  Varhaiskasvatus
+                    }} /> Varhaiskasvatus
                 </label>
               </div>
               <div className="control">
@@ -373,10 +356,7 @@ const EventForm = ({
 
                       formik.values.grades[1] = !formik.values.grades[1]
                     }
-                    } />
-
-
-                  1.-2. luokka
+                    } /> 1.-2. luokka
                 </label>
               </div>
               <div className="control">
@@ -387,10 +367,7 @@ const EventForm = ({
 
                       formik.values.grades[2] = !formik.values.grades[2]
                     }
-                    } />
-
-
-                  3.-6. luokka
+                    } /> 3.-6. luokka
                 </label>
               </div>
 
@@ -402,10 +379,7 @@ const EventForm = ({
 
                       formik.values.grades[3] = !formik.values.grades[3]
                     }
-                    } />
-
-
-                  7.-9. luokka
+                    } /> 7.-9. luokka
                 </label>
               </div>
 
@@ -417,10 +391,7 @@ const EventForm = ({
 
                       formik.values.grades[4] = !formik.values.grades[4]
                     }
-                    } />
-
-
-                  toinen aste
+                    } /> toinen aste
                 </label>
               </div>
 
@@ -443,10 +414,7 @@ const EventForm = ({
                       formik.touched.scienceClass = true
 
                       formik.values.scienceClass[0] = !formik.values.scienceClass[0]
-                    }} />
-
-
-                  SUMMAMUTIKKA
+                    }} /> SUMMAMUTIKKA
                 </label>
               </div>
               <div className="control">
@@ -457,10 +425,7 @@ const EventForm = ({
 
                       formik.values.scienceClass[1] = !formik.values.scienceClass[1]
                     }
-                    } />
-
-
-                  FOTONI
+                    } /> FOTONI
                 </label>
               </div>
               <div className="control">
@@ -471,10 +436,7 @@ const EventForm = ({
 
                       formik.values.scienceClass[2] = !formik.values.scienceClass[2]
                     }
-                    } />
-
-
-                  LINKKI
+                    } /> LINKKI
                 </label>
               </div>
 
@@ -486,10 +448,7 @@ const EventForm = ({
 
                       formik.values.scienceClass[3] = !formik.values.scienceClass[3]
                     }
-                    } />
-
-
-                  GEOPISTE
+                    } /> GEOPISTE
                 </label>
               </div>
 
@@ -501,10 +460,7 @@ const EventForm = ({
 
                       formik.values.scienceClass[4] = !formik.values.scienceClass[4]
                     }
-                    } />
-
-
-                  GADOLIN
+                    } /> GADOLIN
                 </label>
               </div>
             </div>
@@ -531,120 +487,115 @@ const EventForm = ({
                           formik.values.extras.push(extra.id)
                         }
                       }
-                      } />
-                    {extra.name}
-                    {(extra.remoteLength > 0) ? <p>(tarjolla etävierailuihin, kesto {extra.remoteLength} minuuttia)</p> : null}
-                    {(extra.inPersonLength > 0) ? <p>(tarjolla lähivierailuihin, kesto {extra.inPersonLength} minuuttia)</p> : null}
+                      } /> {extra.name}, pituus lähi: {extra.inPersonLength} min / etä: {extra.remoteLength} min
+                    {/* {(extra.remoteLength > 0) ? <p>(tarjolla etävierailuihin, kesto {extra.remoteLength} minuuttia)</p> : null}
+                    {(extra.inPersonLength > 0) ? <p>(tarjolla lähivierailuihin, kesto {extra.inPersonLength} minuuttia)</p> : null} */}
                   </label>
                 </div></div>)}
             </div>
-
-            <div className="field">
-              <label className="label" htmlFor="date">
+            <div className="field is-grouped luma">
+              <div className="field">
+                <label className="label" htmlFor="date">
                 Päivämäärä
-              </label>
-              <div className="control">
-                <input
-                  className={`input ${formik.touched.date
-                    ? formik.errors.date
-                      ? 'is-danger'
-                      : 'is-success'
-                    : ''
-                  }`}
-                  style={style}
-                  id="date"
-                  name="date"
-                  type="date"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.date}
-                />
+                </label>
+                <div className="control">
+                  <input
+                    className={`input ${formik.touched.date
+                      ? formik.errors.date
+                        ? 'is-danger'
+                        : 'is-success'
+                      : ''
+                    }`}
+                    id="date"
+                    name="date"
+                    type="date"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.date}
+                  />
+                </div>
               </div>
-            </div>
-            {formik.touched.date && formik.errors.date ? (
-              <p className="help is-danger">{formik.errors.date}</p>
-            ) : null}
+              {formik.touched.date && formik.errors.date ? (
+                <p className="help is-danger">{formik.errors.date}</p>
+              ) : null}
 
-            <div className="field">
-              <label className="label" htmlFor="startTime">
+              <div className="field">
+                <label className="label" htmlFor="startTime">
                 Aloituskellonaika
-              </label>
-              <div className="control">
-                <input
-                  className={`input ${formik.touched.startTime
-                    ? formik.errors.startTime
-                      ? 'is-danger'
-                      : 'is-success'
-                    : ''
-                  }`}
-                  style={style}
-                  id="startTime"
-                  name="startTime"
-                  type="time"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.startTime}
-                />
+                </label>
+                <div className="control">
+                  <input
+                    className={`input ${formik.touched.startTime
+                      ? formik.errors.startTime
+                        ? 'is-danger'
+                        : 'is-success'
+                      : ''
+                    }`}
+                    id="startTime"
+                    name="startTime"
+                    type="time"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.startTime}
+                  />
+                </div>
               </div>
-            </div>
-            {formik.touched.startTime && formik.errors.startTime ? (
-              <p className="help is-danger">{formik.errors.startTime}</p>
-            ) : null}
+              {formik.touched.startTime && formik.errors.startTime ? (
+                <p className="help is-danger">{formik.errors.startTime}</p>
+              ) : null}
 
-            <div className="field">
-              <label className="label" htmlFor="endTime">
+              <div className="field">
+                <label className="label" htmlFor="endTime">
                 Lopetuskellonaika
-              </label>
-              <div className="control">
-                <input
-                  className={`input ${formik.touched.endTime
-                    ? formik.errors.endTime
-                      ? 'is-danger'
-                      : 'is-success'
-                    : ''
-                  }`}
-                  style={style}
-                  id="endTime"
-                  name="endTime"
-                  type="time"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.endTime}
-                />
+                </label>
+                <div className="control">
+                  <input
+                    className={`input ${formik.touched.endTime
+                      ? formik.errors.endTime
+                        ? 'is-danger'
+                        : 'is-success'
+                      : ''
+                    }`}
+
+                    id="endTime"
+                    name="endTime"
+                    type="time"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.endTime}
+                  />
+                </div>
               </div>
-            </div>
 
-            {formik.touched.endTime && formik.errors.endTime ? (
-              <p className="help is-danger">{formik.errors.endTime}</p>
-            ) : null}
-
-            <div className="field">
-              <label className="label" htmlFor="endTime">
+              {formik.touched.endTime && formik.errors.endTime ? (
+                <p className="help is-danger">{formik.errors.endTime}</p>
+              ) : null}
+              <div className="field">
+                <label className="label" htmlFor="endTime">
                 Minimiaika varausten välillä
-              </label>
-              <div className="control">
-                <input
-                  className={`input ${formik.touched.waitingTime
-                    ? formik.errors.waitingTime
-                      ? 'is-danger'
-                      : 'is-success'
-                    : ''
-                  }`}
-                  style={{ width: 300 }}
-                  id="waitingTime"
-                  name="waitingTime"
-                  type="number"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.waitingTime}
-                />
+                </label>
+                <div className="control">
+                  <input
+                    className={`input ${formik.touched.waitingTime
+                      ? formik.errors.waitingTime
+                        ? 'is-danger'
+                        : 'is-success'
+                      : ''
+                    }`}
+                    id="waitingTime"
+                    name="waitingTime"
+                    type="number"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.waitingTime}
+                  />
+                </div>
               </div>
+
+              {formik.touched.endTime && formik.errors.endTime ? (
+                <p className="help is-danger">{formik.errors.endTime}</p>
+              ) : null}
             </div>
-
-            {formik.touched.endTime && formik.errors.endTime ? (
-              <p className="help is-danger">{formik.errors.endTime}</p>
-            ) : null}
-
             <div className="field">
               <label className="label" htmlFor="desc">
                 Kuvaus
@@ -657,7 +608,6 @@ const EventForm = ({
                       : 'is-success'
                     : ''
                   }`}
-                  style={style}
                   id="desc"
                   name="desc"
                   placeholder="Kirjoita tähän lyhyt kuvaus vierailusta."

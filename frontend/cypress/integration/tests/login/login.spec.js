@@ -10,7 +10,7 @@ When('the user presses login key icon', () => {
 })
 
 Then('the user is on the login page', () => {
-  cy.get('.title').should('have.text', 'Kirjautuminen (Luma-Varaukset)')
+  cy.get('.section > .title').should('have.text', 'Kirjautuminen (Luma-Varaukset)')
 })
 
 Given('I am on the login page', () => {
