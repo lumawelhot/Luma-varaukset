@@ -41,7 +41,7 @@
 
 3. Siirry sitten `backend`-hakemistoon ja aja komento 
         
-       npm  install
+       npm install
 
 4. Käynnistä sovelluksen kehitysversion `backend` kirjoittamalla komento
 
