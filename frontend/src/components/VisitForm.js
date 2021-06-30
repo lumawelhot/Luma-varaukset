@@ -244,7 +244,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
 
   if (!event) {
     return (
-      <div>Tapahtumaa haetaan...</div>
+      <div>Vierailua haetaan...</div>
     )
   }
 
@@ -258,18 +258,18 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
           <div className="section">
             <div className="title">Varaa vierailu </div>
             <div className="box">
-              <p className="subtitle"><strong>Tapahtuman tiedot</strong></p>
+              <p className="subtitle"><strong>Vierailun tiedot</strong></p>
               <p><strong>Nimi:</strong> {event.title}</p>
               <p><strong>Kuvaus:</strong> {event.desc || 'Ei kuvausta'}</p>
               <p><strong>Tiedeluokka:</strong> {eventClass}</p>
               <div><strong>Tarjolla seuraaville luokka-asteille:</strong> {eventGrades}
               </div>
-              <div><strong>Tapahtuma tarjolla: </strong>
+              <div><strong>Vierailu tarjolla: </strong>
                 {event.inPersonVisit ? 'Lähiopetuksena' : <></>}
                 {event.inPersonVisit && event.remoteVisit && ' ja etäopetuksena'}
                 {event.remoteVisit && !event.inPersonVisit? 'Etäopetuksena' : <></>}
               </div>
-              <p><strong>Tapahtuman kesto:</strong> {event.duration} min</p>
+              <p><strong>Vierailun kesto:</strong> {event.duration} min</p>
               <p><strong>Vierailun aikaisin alkamisaika:</strong> {format(event.start, 'd.M.yyyy, HH:mm')}</p>
               <p><strong>Vierailun myöhäisin päättymisaika:</strong> {format(event.end, 'd.M.yyyy, HH:mm')}</p>
             </div>

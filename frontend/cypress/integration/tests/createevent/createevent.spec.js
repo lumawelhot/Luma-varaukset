@@ -61,5 +61,5 @@ When('too short a title is entered', () => {
 Then('no event is created and an error toast is shown', () => {
   const toast = cy.get('.toast')
   toast.should('have.class', 'is-danger')
-  toast.should('have.text', 'Tapahtuman luonti epäonnistui! Tarkista tiedot!')
+  toast.should('have.text', 'Vierailun luonti epäonnistui! Tarkista tiedot!')
 })

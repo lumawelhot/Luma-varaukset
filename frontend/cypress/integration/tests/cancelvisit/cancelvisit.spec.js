@@ -26,7 +26,7 @@ When('I have made a booking for that event', () => {
   cy.findEvent(eventName).click()
 
   // Open visit form
-  cy.contains('Varaa tapahtuma').click()
+  cy.contains('Varaa vierailu').click()
 
   // Fill in the form
   cy.get('#clientName').type('Teacher')
@@ -53,5 +53,5 @@ Then('I can cancel that booking', () => {
 And('the event is available for booking', () => {
   cy.visit('http://localhost:3000')
   cy.findEvent(eventName).click()
-  cy.contains('Varaa tapahtuma')
+  cy.contains('Varaa vierailu')
 })
