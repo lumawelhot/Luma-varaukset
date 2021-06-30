@@ -95,11 +95,11 @@ And('available event page has the correct start date', () => {
 })
 
 And('available event page contains booking button', () => {
-  cy.contains('Varaa tapahtuma')
+  cy.contains('Varaa vierailu')
 })
 
 And('I click the booking button', () => {
-  cy.contains('Varaa tapahtuma').click()
+  cy.contains('Varaa vierailu').click()
 })
 
 Then('booking form opens', () => {
@@ -109,11 +109,18 @@ Then('booking form opens', () => {
 })
 
 And('there is an event less than two weeks ahead', () => {
-  cy.contains(unavailableEventName)
+  cy.findEvent(unavailableEventName)
 })
 
 When('I click on the unavailable event', () => {
-  cy.contains(unavailableEventName).click()
+  cy.get('.rbc-calendar').then(() => {
+    if (cy.get('.rbc-calendar').contains(`${unavailableEventName}`)) {
+      cy.contains(`${unavailableEventName}`).click()
+    } else {
+      cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
+      cy.contains(`${unavailableEventName}`).click()
+    }
+  })
 })
 
 Then('unavailable event page has the correct title', () => {
@@ -126,7 +133,7 @@ And('unavailable event page has the correct start date', () => {
 })
 
 And('unavailable event page contains correct info text', () => {
-  cy.contains('Valitettavasti tämä tapahtuma ei ole varattavissa.')
+  cy.contains('Valitettavasti tämä vierailu ei ole varattavissa.')
 })
 
 And('valid information is entered and visit mode selected', () => {
@@ -195,7 +202,7 @@ Given('admin logs in', () => {
 })
 
 Then('unavailable event page contains booking button', () => {
-  cy.contains('Varaa tapahtuma')
+  cy.contains('Varaa vierailu')
 })
 
 Then('unavailable event turns grey in calendar view', () => {

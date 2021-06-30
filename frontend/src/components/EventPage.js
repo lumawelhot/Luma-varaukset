@@ -12,10 +12,10 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage }
   const [deleteEvent] = useMutation(DELETE_EVENT, {
     refetchQueries: [{ query: EVENTS }],
     onError: () => {
-      sendMessage('Tapahtumaa ei voi poistaa! (Onko tapahtumalla varauksia?)', 'danger')
+      sendMessage('Vierailua ei voi poistaa! (Onko vierailulla varauksia?)', 'danger')
     },
     onCompleted: () => {
-      sendMessage('Tapahtuma poistettu.', 'success')
+      sendMessage('Vierailu poistettu.', 'success')
       history.push('/')
     }
   })
@@ -38,7 +38,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage }
   }
 
   const handleRemoveEventClick = () => {
-    if (confirm('Haluatko varmasti poistaa tapahtuman?')) {
+    if (confirm('Haluatko varmasti poistaa vierailun?')) {
       deleteEvent({
         variables: {
           id: event.id
@@ -108,24 +108,24 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage }
                     </ul>
                   </div>
                   <br/>
-                  <p><strong>Tapahtuma tarjolla: </strong>
+                  <p><strong>Vierailu tarjolla: </strong>
                     {event.inPersonVisit ? 'Lähiopetuksena' : <></>}
                     {event.inPersonVisit && event.remoteVisit && ' ja etäopetuksena'}
                     {event.remoteVisit && !event.inPersonVisit? 'Etäopetuksena' : <></>}
                   </p>
-                  <p><strong>Tapahtuman päivämäärä:</strong> {format(event.start, 'd.M.yyyy')}</p>
-                  <p><strong>Tapahtuma alkaa:</strong> {format(event.start, 'HH:mm')}</p>
-                  <p><strong>Tapahtuma päättyy:</strong> {format(event.end, 'HH:mm')}</p>
+                  <p><strong>Vierailun päivämäärä:</strong> {format(event.start, 'd.M.yyyy')}</p>
+                  <p><strong>Vierailu alkaa:</strong> {format(event.start, 'HH:mm')}</p>
+                  <p><strong>Vierailu päättyy:</strong> {format(event.end, 'HH:mm')}</p>
                   <p><strong>Toiminnan kesto:</strong> {event.duration} minuuttia</p>
                   {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days) ?
-                    <p className="subtitle unfortunately"><b>Valitettavasti tämä tapahtuma ei ole varattavissa.</b></p> : null}
+                    <p className="subtitle unfortunately"><b>Valitettavasti tämä vierailu ei ole varattavissa.</b></p> : null}
                   <div className="field is-grouped">
                     {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days)
                       ? null
-                      : <button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>Varaa tapahtuma</button>}
+                      : <button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>Varaa vierailu</button>}
                     {!!currentUser && (
                       <div className="control">
-                        <button className="button luma" onClick={() => handleRemoveEventClick()}>Poista tapahtuma</button>
+                        <button className="button luma" onClick={() => handleRemoveEventClick()}>Poista vierailu</button>
                       </div>)
                     }
                     <div className="control">
@@ -141,7 +141,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage }
     )
   }
   return (
-    <div>Tapahtumaa haetaan...</div>
+    <div>Vierailua haetaan...</div>
   )
 }
 
