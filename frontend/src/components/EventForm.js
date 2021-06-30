@@ -69,7 +69,7 @@ const EventForm = ({
   const history = useHistory()
   const [suggestedTags, setSuggestedTags] = useState([])
   const [create] = useMutation(CREATE_EVENT, {
-    onError: () => { sendMessage('Tapahtuman luonti epäonnistui! Tarkista tiedot!', 'danger')},
+    onError: () => { sendMessage('Vierailun luonti epäonnistui! Tarkista tiedot!', 'danger')},
     onCompleted: (data) => {
       data.createEvent.booked = false
       addEvent(data.createEvent)
@@ -164,7 +164,7 @@ const EventForm = ({
           <form onSubmit={formik.handleSubmit}>
             <div className="field">
               <label className="label" htmlFor="title">
-                Tapahtuman nimi{' '}
+                Vierailun nimi{' '}
               </label>
               <div className="control">
                 <input
@@ -184,7 +184,7 @@ const EventForm = ({
 
             <div className="field">
               <label className="label" htmlFor="duration">
-                Tapahtuman kesto minuutteina
+                Vierailun kesto minuutteina
               </label>
               <div className="control">
                 <input

@@ -70,7 +70,7 @@ test('Booking button should not be visible for an anonymous user', async () => {
   await waitFor(() => new Promise((res) => setTimeout(res, 0)))
   const button = document.getElementById('booking-button')
   expect(button).toBe(null)
-  expect(container.innerHTML).toContain('Valitettavasti tämä tapahtuma ei ole varattavissa.')
+  expect(container.innerHTML).toContain('Valitettavasti tämä vierailu ei ole varattavissa.')
 })
 
 test('Booking button should be visible for a logged in user', async () => {
@@ -81,8 +81,8 @@ test('Booking button should be visible for a logged in user', async () => {
   )
   await waitFor(() => new Promise((res) => setTimeout(res, 0)))
   const button = document.getElementById('booking-button')
-  expect(container.innerHTML).not.toContain('Valitettavasti tämä tapahtuma ei ole varattavissa.')
-  expect(button.innerHTML).toContain('Varaa tapahtuma')
+  expect(container.innerHTML).not.toContain('Valitettavasti tämä vierailu ei ole varattavissa.')
+  expect(button.innerHTML).toContain('Varaa vierailu')
 })
 
 test('Booking button should not be visible for a booked event', async () => {
@@ -95,5 +95,5 @@ test('Booking button should not be visible for a booked event', async () => {
   await waitFor(() => new Promise((res) => setTimeout(res, 0)))
   const button = document.getElementById('booking-button')
   expect(button).toBe(null)
-  expect(container.innerHTML).toContain('Valitettavasti tämä tapahtuma ei ole varattavissa.')
+  expect(container.innerHTML).toContain('Valitettavasti tämä vierailu ei ole varattavissa.')
 })
