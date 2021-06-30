@@ -9,11 +9,13 @@ LUMA-varaukset on Helsingin yliopiston LUMA-tiedeluokkien tiedevierailujen varaa
 
 Sovellus on toteutettu Helsingin yliopiston aineopintojen kurssille Ohjelmistotuotantoprojekti (kesä 2021). Ensimmäinen release on julkaistu 30.6.2021, ja sovelluskehitys jatkuu kurssin päätyttyä muissa projekteissa.
 
+Sovellus on tällä hetkellä käytettävissä [staging-palvelimella](https://ohtup-staging.cs.helsinki.fi/luma-varaukset/).
+
 ---
 
 _LUMA-varaukset is an online reservation system for arranging visits to the LUMA Science Labs of the University of Helsinki. The application offers a calendar view for browsing available timeslots as well as functionality for booking and cancelling a reservation._
 
-_The application has been created for the Helsinki University course Software Engineering Lab (summer 2021). The first release was published 30 June 2021, and development continues in other projects._
+_The application has been created for the Helsinki University course Software Engineering Lab (summer 2021). The first release was published 30 June 2021, and development continues in other projects. You can view the current version of the software [here](https://ohtup-staging.cs.helsinki.fi/luma-varaukset/)._
 
 _Documentation is available only in Finnish._
 
