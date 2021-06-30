@@ -4,26 +4,26 @@
 
  Jotta sovellusta voidaan ajaa, koneelle on asennettava [Node.js](https://nodejs.org/), jonka mukana asentuu myös npm-pakkaustenhallintatyökalu. 
 
-- Kloonaa tämä github-repositio:
+1. Kloonaa tämä github-repositio:
 
       git clone https://github.com/lumawelhot/Luma-varaukset
-- Asenna projektien `frontend` ja `backend` riippuvuudet:
-  1. Siirry `frontend` hakemistoon `cd frontend/` ja asenna tarvittavat riippuvuudet kirjoittamalla komennon 
-  
-          npm install
-  
-  2. Siirry `backend` hakemistoon `cd backend/` ja asenna tarvittavat riippuvuudet kirjoittamalla komennon
-  
-          npm install
-  
-  3. Luo backendin juureen .env-tiedosto ja lisää sinne seuraavat rivit (älä käytä missään kohdassa lainausmerkkejä):
+2. Asenna projektien `frontend` ja `backend` riippuvuudet:
+    - Siirry `frontend` hakemistoon `cd frontend/` ja asenna tarvittavat riippuvuudet kirjoittamalla komennon 
 
-          SECRET=kirjoita tähän satunnainen pitkä merkkijono tai numero 
-          PORT=3001
-          EMAILHOST=SMTP-palvelimen osoite, esim. Ethereal-palvelimen osoite
-          EMAILUSER=SMPTP-palvelimelle luotu käyttäjätunnus
-          EMAILPASSWORD=käyttäjätunnuksen salasana
-          EMAILPORT=587
+            npm install
+
+    - Siirry `backend` hakemistoon `cd backend/` ja asenna tarvittavat riippuvuudet kirjoittamalla komennon
+
+            npm install
+
+    - Luo backendin juureen .env-tiedosto ja lisää sinne seuraavat rivit (älä käytä missään kohdassa lainausmerkkejä):
+
+            SECRET=kirjoita tähän satunnainen pitkä merkkijono tai numero 
+            PORT=3001
+            EMAILHOST=SMTP-palvelimen osoite, esim. Ethereal-palvelimen osoite
+            EMAILUSER=SMPTP-palvelimelle luotu käyttäjätunnus
+            EMAILPASSWORD=käyttäjätunnuksen salasana
+            EMAILPORT=587
 
 ---
 
