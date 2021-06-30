@@ -18,6 +18,9 @@ mikä siirtää selaimen vierailun luovaan lomakkeelle.
 
 Lomakkeeseen lisättävät tiedot ovat:
  * tapahtuman nimi,
+ * kesto,
+ * vierailutapa (etä/lähi),
+ * etäyhteysalusta,
  * tagit,
  * tapahtuman luokka-aste,
  * tiedeluokka,
@@ -29,6 +32,12 @@ Sen jälkeen kun olet syöttänyt lomakkeeseen tarvittavat tiedot, napsauta ```T
 
 <img src="./img/luo-uusi-tapahtuma.png" height="600" />
 
+## Tapahtumien suodatus
+Kalenterissa näkyvät tapahtumat voi suodata sivustolla olevan
+suodatuslomakkeen avulla.
+
+<img src="./img/filtering.png" height="300" />
+
 ## Tapahtuman katselu
 Tapahtuman voi valita kalenterinäkymästä,
 joilloin selain ohjautuu tapahtuman sivulle.
@@ -37,18 +46,24 @@ ja sieltä voi tehda tapahtumaan vieraulun varauksen.
 
 <img src="./img/event-page.png" height="300" />
 
+## Varauksen listaus
+Kirjautunut käyttäjä voi listata varaukset
+napsauttamalla sivun pohjalta lyötyvää ```Varaukset```-näppäintä.
+
+<img src="./img/list-visit.png" width="600" />
+
+
 ## Varauksen luonti
 Kun käyttäjä on napsauttanut tapahtuman sivusta lyötyvää ```Varaa vierailu```-näppäintä,
 hänet ohjataan vieraulun varaussivulle. Kun käyttäjä on syöttänyt lomakkeeseen tiedot ja
-napsauttanut ```Tallenna```-näppäintä, hän saa varauksen tunnuksen ja
-varauksen perumista varten pin-koodin.
+napsauttanut ```Tallenna```-näppäintä, hän saa varauksen tunnuksen.
 
 <img src="./img/book-visit.png" height="600" />
 
 ## Käyttäjien listaus
 Ylläpitäjä voi nähdä sovelluseen rekisteröidyt käyttäjät siirtymällä osoitteelle ```/users```.
 
-<img src="./img/users-list.png" height="200" />
+<img src="./img/users-list.png" height="300" />
 
 ## Uuden käyttäjän luonti
 Ylläpitäjä voi luoda käyttäjän varausjärjestelmään siirtymällä osoitteelle ```/users/create```.
