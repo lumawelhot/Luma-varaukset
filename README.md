@@ -36,14 +36,9 @@ _Documentation is available only in Finnish._
 [LUMA-varaukset 1.0](https://github.com/lumawelhot/Luma-varaukset/releases/tag/v1.0) (tulossa)
 
 
-## Jatkokehityskäytänteet
-
-_Tulossa._
-
-
 ## Kiitokset
 
-Sovellus hyödyntää kalenterinäkymässä [react-big-calendar](https://github.com/jquense/react-big-calendar) -komponenttia.
+Sovellus hyödyntää kalenterinäkymässä [react-big-calendar](https://github.com/jquense/react-big-calendar) -komponenttia. Automaattiseen sähköpostin lähetykseen käytetään [Nodemaileria](https://nodemailer.com/about/). Lisäksi sovellus käyttää [Apollo](https://www.apollographql.com/docs/apollo-server/)-serveriä ja [Bulma](https://bulma.io/)-tyylikirjastoa.
 
 
 ## Projektin dokumentaatio
