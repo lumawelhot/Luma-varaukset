@@ -109,11 +109,18 @@ Then('booking form opens', () => {
 })
 
 And('there is an event less than two weeks ahead', () => {
-  cy.contains(unavailableEventName)
+  cy.findEvent(unavailableEventName)
 })
 
 When('I click on the unavailable event', () => {
-  cy.contains(unavailableEventName).click()
+  cy.get('.rbc-calendar').then(() => {
+    if (cy.get('.rbc-calendar').contains(`${unavailableEventName}`)) {
+      cy.contains(`${unavailableEventName}`).click()
+    } else {
+      cy.get('.rbc-toolbar > :nth-child(1) > :nth-child(3)').click()
+      cy.contains(`${unavailableEventName}`).click()
+    }
+  })
 })
 
 Then('unavailable event page has the correct title', () => {
