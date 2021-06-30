@@ -9,7 +9,7 @@ export const messages = {
   agenda: 'Agenda',
   date: 'Päivämäärä',
   time: 'Aika',
-  event: 'Tapahtuma',
+  event: 'Vierailu',
   noEventsInRange: 'Ei tapahtumia',
   showMore: (total) => `+ Näytä lisää (${total})`,
   work_week: 'Viikko',

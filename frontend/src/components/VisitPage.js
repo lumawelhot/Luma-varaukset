@@ -90,7 +90,7 @@ const VisitPage = ({ sendMessage }) => {
     <div className="container">
       <div className="columns is-centered">
         <div className="section">
-          <div className="title">Olet varannut seuraavan tapahtuman:</div>
+          <div className="title">Olet varannut seuraavan vierailun:</div>
           <div className="box">
             <div className="content luma">
               <p className="title">{visit.event.title}</p>
