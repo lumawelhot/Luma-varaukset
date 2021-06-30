@@ -24,16 +24,16 @@ The application has been created for the Helsinki University course Software Eng
 
 [Ohjelmiston arkkitehtuuri](./docs/img/architecture.png)
 
-## Contributing
+## Jatkokehityskäytänteet
 
 _To be added._
 
-## Credits
+## Kiitokset
 
 _To be added._
 
-## Project Documentation
+## Projektin dokumentaatio
 
-## License
+## Lisenssi
 
 See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT).
