@@ -9,6 +9,7 @@ const eventEnd = set(new Date(eventDate), { hours: 12 })
 
 Given('there is an available event in more than two weeks ahead', () => {
   cy.request('http://localhost:3001/reset')
+  cy.intercept('POST', 'http://localhost:3001/graphql').as('GraphQL')
   cy.login({ username: 'Admin', password: 'salainen' })
   cy.createEvent({
     title: eventName,
@@ -19,6 +20,9 @@ Given('there is an available event in more than two weeks ahead', () => {
     inPersonVisit: false,
     desc: 'Test event description'
   })
+  cy.wait('@GraphQL')
+  cy.visit('http://localhost:3000')
+  cy.wait('@GraphQL')
   cy.wait(500)
 })
 

@@ -1,4 +1,4 @@
-Feature: As a admin I want to create a new user
+Feature: As an admin I want to create a new user
 
 Scenario: A new user is succesfully created by an admin with valid information
     Given Admin is logged in
