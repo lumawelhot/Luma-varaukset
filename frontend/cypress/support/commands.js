@@ -113,10 +113,6 @@ Cypress.Commands.add('createEvent', ({ title, scienceClass, remoteVisit, inPerso
       }
     `
     }
-  }).then(({ body }) => {
-    console.log(body)
-    cy.log(body)
-    cy.visit('http://localhost:3000')
   })
 })
 

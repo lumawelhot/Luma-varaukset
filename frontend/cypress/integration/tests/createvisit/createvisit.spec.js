@@ -13,6 +13,7 @@ const unavailableEventDate = addBusinessDays(set(new Date(), { hours: 10, minute
 
 it('Initialize tests', () => {
   cy.request('http://localhost:3001/reset')
+  cy.intercept('POST', 'http://localhost:3001/graphql').as('GraphQL')
   cy.login({ username: 'Admin', password: 'salainen' })
   cy.createEvent({
     title: availableEvent1,
@@ -52,10 +53,13 @@ it('Initialize tests', () => {
     end: new Date(unavailableEventDate.setHours(12,0)),
     desc: 'Unavailable event description'
   })
+  cy.wait('@GraphQL')
+  cy.visit('http://localhost:3000')
 })
 
 Given('I am on the front page', () => {
   cy.visit('http://localhost:3000')
+  cy.wait(1000)
 })
 
 And('there is an event 1 more than two weeks ahead', () => {
@@ -150,9 +154,10 @@ And('valid information is entered and visit mode selected', () => {
   cy.get('#startTime').type('10:00')
   cy.get('.privacyPolicy > input').click()
   cy.get('.remoteVisitGuidelines > input').click()
+  cy.intercept('POST', 'http://localhost:3001/graphql').as('GraphQL')
   cy.get('#create').click()
-  cy.wait(2000)
-  cy.visit('http://localhost:3000')
+  cy.wait('@GraphQL')
+  cy.contains('Poistu').click()
 })
 
 And('valid information is entered and visit mode predetermined', () => {
@@ -167,9 +172,10 @@ And('valid information is entered and visit mode predetermined', () => {
   cy.get('#startTime').type('10:00')
   cy.get('.privacyPolicy > input').click()
   cy.get('.remoteVisitGuidelines > input').click()
+  cy.intercept('POST', 'http://localhost:3001/graphql').as('GraphQL')
   cy.get('#create').click()
-  cy.wait(2000)
-  cy.visit('http://localhost:3000')
+  cy.wait('@GraphQL')
+  cy.contains('Poistu').click()
 })
 
 Then('booked event turns grey in calendar view', () => {
@@ -199,6 +205,7 @@ Then('an error message is shown', () => {
 Given('admin logs in', () => {
   cy.login({ username: 'Admin', password: 'salainen' })
   cy.get('.level > .button').should('have.text', 'Kirjaudu ulos')
+  cy.contains(unavailableEventName)
 })
 
 Then('unavailable event page contains booking button', () => {
