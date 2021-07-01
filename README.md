@@ -33,7 +33,7 @@ _Documentation is available only in Finnish._
 
 ## Releaset
 
-[LUMA-varaukset 1.0](https://github.com/lumawelhot/Luma-varaukset/releases/tag/v1.0) (tulossa)
+[LUMA-varaukset 1.0](https://github.com/lumawelhot/Luma-varaukset/releases/tag/v1.0)
 
 
 ## Kiitokset
