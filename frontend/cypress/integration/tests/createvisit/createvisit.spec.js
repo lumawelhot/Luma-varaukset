@@ -71,6 +71,7 @@ And('there is an event 3 more than two weeks ahead', () => {
 })
 
 When('I click on available event 1', () => {
+  cy.wait(500)
   cy.findEvent(availableEvent1).click()
 })
 
@@ -109,6 +110,7 @@ Then('booking form opens', () => {
 })
 
 And('there is an event less than two weeks ahead', () => {
+  cy.wait(500)
   cy.findEvent(unavailableEventName)
 })
 
@@ -173,10 +175,12 @@ And('valid information is entered and visit mode predetermined', () => {
 })
 
 Then('booked event turns grey in calendar view', () => {
+  cy.wait(500)
   cy.findEvent(availableEvent1).parent().should('have.class', 'booked')
 })
 
 When('I click on available event 2', () => {
+  cy.wait(500)
   cy.findEvent(availableEvent2).click()
 })
 
@@ -206,5 +210,6 @@ Then('unavailable event page contains booking button', () => {
 })
 
 Then('unavailable event turns grey in calendar view', () => {
+  cy.wait(500)
   cy.findEvent(unavailableEventName).parent().should('have.class', 'booked')
 })
