@@ -342,6 +342,23 @@ const resolvers = {
       } catch (error) {
         throw new UserInputError('Event has visits!')
       }
+    },
+    deleteUser: async (root, args, { currentUser }) => {
+      if (!currentUser || !currentUser.isAdmin) {
+        throw new AuthenticationError('not authenticated or no admin priviledges')
+      }
+      if (args.id === currentUser.id) {
+        throw new UserInputError('This user cannot be removed')
+      }
+      if (!args.id) {
+        throw new UserInputError('No ID provided!')
+      }
+      try {
+        await User.deleteOne({ _id: args.id })
+        return 'Deleted user with ID ' + args.id
+      } catch (error) {
+        throw new UserInputError('User deletion failed')
+      }
     }
   }
 }

@@ -186,7 +186,7 @@ const App = () => {
         </Route>
         <Route path='/users'>
           {currentUser && currentUser.isAdmin &&
-            <UserList />
+            <UserList sendMessage={notify} currentUser={currentUser} />
           }
           {!(currentUser && currentUser.isAdmin) && <p>Sinulla ei ole tarvittavia oikeuksia.</p>}
         </Route>

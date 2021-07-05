@@ -28,7 +28,8 @@ export const USERS = gql`
   query getUsers {
     getUsers {
       username,
-      isAdmin
+      isAdmin,
+      id
     }
   }
 `
@@ -111,7 +112,8 @@ export const CURRENT_USER = gql`
   query me {
     me {
       username,
-      isAdmin
+      isAdmin,
+      id
     }
   }
 `
@@ -326,6 +328,16 @@ export const DELETE_EVENT = gql`
     $id: String!
   ) {
     deleteEvent(
+      id: $id
+    )
+  }
+`
+
+export const DELETE_USER = gql`
+  mutation deleteUser(
+    $id: String!
+  ) {
+    deleteUser(
       id: $id
     )
   }
