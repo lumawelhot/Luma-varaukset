@@ -133,6 +133,9 @@ const typeDefs = gql`
     deleteEvent(
       id: String!
     ): String
+    deleteUser(
+      id: String!
+    ): String
   }
 `
 module.exports = typeDefs

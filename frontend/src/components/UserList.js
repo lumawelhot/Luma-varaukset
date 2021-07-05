@@ -1,13 +1,22 @@
-import { useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import React from 'react'
 import { useHistory } from 'react-router'
-import { USERS } from '../graphql/queries'
+import { DELETE_USER, USERS } from '../graphql/queries'
 
-const UserList = () => {
-  const result = useQuery(USERS)
+const UserList = ({ sendMessage, currentUser }) => {
+  const users = useQuery(USERS)
   const history = useHistory()
+  const [deleteUser,] = useMutation(DELETE_USER, {
+    refetchQueries: [{ query: USERS }],
+    onCompleted: () => {
+      sendMessage('Käyttäjä poistettu.', 'success')
+    },
+    onError: (error) => {
+      sendMessage(error.message, 'danger')
+    }
+  })
 
-  if (result.loading) return <></>
+  if (users.loading) return <></>
 
   const create = (event) => {
     event.preventDefault()
@@ -20,23 +29,34 @@ const UserList = () => {
     history.push('/')
   }
 
+  const handleRemove = (id) => {
+    deleteUser({
+      variables: {
+        id
+      }
+    })
+  }
+  console.log(currentUser)
+
   return (
-    <div>
-      <h1 className="title">Users</h1>
+    <div className="section">
+      <h1 className="title">KÄYTTÄJÄT</h1>
       <table className="table">
         <thead>
           <tr>
-            <th>Username</th>
-            <th>Account type</th>
+            <th>Käyttäjätunnus</th>
+            <th>Oikeudet</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
-          {result.data.getUsers.map((user, index) =>
-            <tr key={index}>
+          {users.data.getUsers.map(user => (
+            <tr key={user.id}>
               <td>{user.username}</td>
-              <td>{(user.isAdmin) ? 'admin' : 'default'}</td>
+              <td>{user.isAdmin ? 'admin' : 'tavallinen'}</td>
+              <td>{user.id !== currentUser.id && <button className='button luma' onClick={() => handleRemove(user.id)}>Poista</button>}</td>
             </tr>
-          )}
+          ))}
         </tbody>
       </table>
       <div className="field is-grouped">

@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client'
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
-import { CREATE_USER } from '../graphql/queries'
+import { CREATE_USER, USERS } from '../graphql/queries'
 import { useField } from '../hooks'
 
 const UserForm = ({ sendMessage }) => {
@@ -11,6 +11,7 @@ const UserForm = ({ sendMessage }) => {
   const [isAdmin, setPermissions] = useState(null)
 
   const [createUser, result] = useMutation(CREATE_USER, {
+    refetchQueries: [{ query: USERS }],
     onError: (error) => sendMessage(error.graphQLErrors[0].message, 'danger')
   })
 
