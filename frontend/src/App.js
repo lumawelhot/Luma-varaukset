@@ -22,7 +22,7 @@ import ExtrasAdmin from './components/EventExtras/ExtrasAdmin'
 const App = () => {
   const history = useHistory()
   const [currentDate, setCurrentDate] = useState(null)
-  const [currentView, setCurrentView] = useState('month')
+  const [currentView, setCurrentView] = useState('work_week')
   const [events, setEvents] = useState([])
   const client = useApolloClient()
   const result = useQuery(EVENTS)

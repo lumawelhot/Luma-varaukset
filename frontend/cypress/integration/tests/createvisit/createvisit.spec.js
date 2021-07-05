@@ -56,6 +56,7 @@ it('Initialize tests', () => {
 
 Given('I am on the front page', () => {
   cy.visit('http://localhost:3000')
+  cy.get('.rbc-toolbar > :nth-child(3) > :nth-child(1)').click()
 })
 
 And('there is an event 1 more than two weeks ahead', () => {
@@ -71,6 +72,7 @@ And('there is an event 3 more than two weeks ahead', () => {
 })
 
 When('I click on available event 1', () => {
+  cy.wait(500)
   cy.findEvent(availableEvent1).click()
 })
 
@@ -109,6 +111,7 @@ Then('booking form opens', () => {
 })
 
 And('there is an event less than two weeks ahead', () => {
+  cy.wait(500)
   cy.findEvent(unavailableEventName)
 })
 
@@ -153,6 +156,7 @@ And('valid information is entered and visit mode selected', () => {
   cy.get('#create').click()
   cy.wait(2000)
   cy.visit('http://localhost:3000')
+  cy.get('.rbc-toolbar > :nth-child(3) > :nth-child(1)').click()
 })
 
 And('valid information is entered and visit mode predetermined', () => {
@@ -170,13 +174,16 @@ And('valid information is entered and visit mode predetermined', () => {
   cy.get('#create').click()
   cy.wait(2000)
   cy.visit('http://localhost:3000')
+  cy.get('.rbc-toolbar > :nth-child(3) > :nth-child(1)').click()
 })
 
 Then('booked event turns grey in calendar view', () => {
+  cy.wait(500)
   cy.findEvent(availableEvent1).parent().should('have.class', 'booked')
 })
 
 When('I click on available event 2', () => {
+  cy.wait(500)
   cy.findEvent(availableEvent2).click()
 })
 
@@ -206,5 +213,6 @@ Then('unavailable event page contains booking button', () => {
 })
 
 Then('unavailable event turns grey in calendar view', () => {
+  cy.wait(500)
   cy.findEvent(unavailableEventName).parent().should('have.class', 'booked')
 })

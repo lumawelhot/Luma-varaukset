@@ -24,8 +24,8 @@ When('valid username and password are entered', () => {
 })
 
 Then('user is logged in', () => {
-  cy.get('.rbc-active').should('have.text', 'Kuukausi')
-  cy.get('.rbc-toolbar > :nth-child(3) > :nth-child(2)').should('have.text', 'Viikko')
+  cy.get('.rbc-active').should('have.text', 'Viikko')
+  cy.get('.rbc-toolbar > :nth-child(3) > :nth-child(1)').should('have.text', 'Kuukausi')
 })
 
 When('valid username and invalid password are entered', () => {
