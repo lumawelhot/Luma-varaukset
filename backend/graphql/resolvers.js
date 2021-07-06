@@ -1,7 +1,7 @@
 const { UserInputError, AuthenticationError } = require('apollo-server-errors')
 const { readMessage } = require('../services/fileReader')
 const { add, sub } = require('date-fns')
-const { findValidTimeSlot, findClosestTimeSlot, generateAvailableTime } = require('../utils/timeCalculation')
+const { findValidTimeSlot, generateAvailableTime, calculateAvailabelTimes } = require('../utils/timeCalculation')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const mailer = require('../services/mailer')
@@ -236,33 +236,20 @@ const resolvers = {
     cancelVisit: async (root, args) => {
       const visit = await Visit.findById(args.id)
       if (!visit || visit.status === false) throw new UserInputError('Varausta ei löydy')
-      const event = await Event.findById(visit.event)
-      const visitTime = {
-        start: sub(new Date(visit.startTime), { minutes: event.waitingTime }),
-        end: add(new Date(visit.endTime), { minutes: event.waitingTime })
-      }
+      const event = await Event.findById(visit.event).populate('visits', { startTime: 1, endTime: 1 })
+      const oldAvailableTimes = event.availableTimes.map(time => ({
+        startTime: new Date(time.startTime),
+        endTime: new Date(time.endTime)
+      }))
+      const visitTimes = event.visits.filter(v => v.id !== visit.id)
+
       const eventTime = {
         start: new Date(event.start),
         end: new Date(event.end)
       }
-      if (visitTime.end > eventTime.end) visitTime.end = eventTime.end
-      if (visitTime.start < eventTime.start) visitTime.start = eventTime.start
+      let newAvailTimes = calculateAvailabelTimes(visitTimes, eventTime, event.waitingTime, event.duration)
 
-      const availableTimes = event.availableTimes.map(time => ({
-        startTime: new Date(time.startTime),
-        endTime: new Date(time.endTime)
-      }))
-
-      const newAvailTime = findClosestTimeSlot(availableTimes, visitTime, eventTime)
-
-      let filteredAvailTimes = availableTimes.filter(time => {
-        return !(
-          time.startTime >= newAvailTime.startTime &&
-          time.endTime <= newAvailTime.endTime
-        )
-      })
-      filteredAvailTimes.push(newAvailTime)
-      filteredAvailTimes = filteredAvailTimes.map(time => {
+      newAvailTimes = newAvailTimes.map(time => {
         if (typeof time.startTime === 'string') return time
         return {
           startTime: time.startTime.toISOString(),
@@ -271,15 +258,15 @@ const resolvers = {
       })
 
       try {
-        event.visits = event.visits.filter(v => v.toString() !== visit.id)
-        event.availableTimes = filteredAvailTimes
+        event.visits = event.visits.filter(v => v.id.toString() !== visit.id)
+        event.availableTimes = newAvailTimes
         visit.status = false
         await visit.save()
         await event.save()
         return visit
       } catch (error) {
         event.visits = event.visits.concat(visit._id)
-        event.availableTimes = availableTimes
+        event.availableTimes = oldAvailableTimes
         visit.status = true
         await event.save()
         await visit.save()

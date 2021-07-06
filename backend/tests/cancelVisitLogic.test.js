@@ -265,6 +265,25 @@ describe('Cancelling a visit results in correct availableTimes', () => {
     expect(timeListAfterCancellation).toEqual(expect.arrayContaining(availableListAfter))
     expect(eventAfterCancellation.visits.length).toEqual(2)
   })
+
+  it('if two visits are close to each other', async () => {
+    const event = savedAvailableEvent.id
+    const { data } = await visitResponse(event, createDate(11, 30), createDate(11, 45))
+    await visitResponse(event, createDate(11, 55), createDate(12, 30))
+
+    const modifiedEvent = await EventModel.findById(event)
+    const timeList = createTimeList([[9, 0], [12, 40]], [[11, 20], [15, 0]])
+    const availableList = createAvailableList(modifiedEvent.availableTimes)
+    expect(timeList).toEqual(expect.arrayContaining(availableList))
+
+    const response = await cancelVisit(data.createVisit.id)
+    expect(response.errors).toBeUndefined()
+    const eventAfterCancellation = await EventModel.findById(event)
+    const timeListAfterCancellation = createTimeList([[9, 0], [12, 40]], [[11, 45], [15, 0]])
+    const availableListAfter = createAvailableList(eventAfterCancellation.availableTimes)
+    expect(timeListAfterCancellation).toEqual(expect.arrayContaining(availableListAfter))
+    expect(eventAfterCancellation.visits.length).toEqual(1)
+  })
 })
 
 afterAll(async () => {

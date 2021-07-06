@@ -25,23 +25,27 @@ const findValidTimeSlot = (availableTimes, visitTime) => {
 [[10, 10],[15, 0]]
 */
 
-const findClosestTimeSlot = (availableTimes, visitTime, eventTime) => {
-  let startPoint
-  let endPoint
-  availableTimes.forEach(availableTime => {
-    if (availableTime.startTime.getTime() === visitTime.end.getTime()) {
-      endPoint = availableTime.endTime
+const calculateAvailabelTimes = (visitTimes, eventTime, waitingTime, duration) => {
+  let previous = eventTime.start
+  const availableTimes = []
+  visitTimes.forEach(time => {
+    const start = new Date(time.startTime)
+    const end = new Date(time.endTime)
+    if (start.getTime() - previous.getTime() - waitingTime * 60000 >= duration * 60000) {
+      availableTimes.push({
+        startTime: previous,
+        endTime: new Date(start.getTime() - waitingTime * 60000)
+      })
     }
-    if (availableTime.endTime.getTime() === visitTime.start.getTime()) {
-      startPoint = availableTime.startTime
-    }
+    previous = new Date(end.getTime() + waitingTime * 60000)
   })
-  if (!startPoint) startPoint = eventTime.start
-  if (!endPoint) endPoint = eventTime.end
-  return {
-    startTime: startPoint,
-    endTime: endPoint
+  if (eventTime.end.getTime() - previous.getTime() - waitingTime * 60000 >= duration * 60000) {
+    availableTimes.push({
+      startTime: previous,
+      endTime: eventTime.end
+    })
   }
+  return availableTimes
 }
 
 const generateAvailableTime = (start, end) => {
@@ -55,4 +59,4 @@ const generateAvailableTime = (start, end) => {
   return result
 }
 
-module.exports = { findValidTimeSlot, findClosestTimeSlot, generateAvailableTime }
+module.exports = { findValidTimeSlot, generateAvailableTime, calculateAvailabelTimes }
