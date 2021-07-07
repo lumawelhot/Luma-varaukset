@@ -327,7 +327,7 @@ describe('Cancelling a visit results in correct availableTimes', () => {
     const { data } = await visitResponse(event, createDate(13, 50), createDate(14, 20))
     await visitResponse(event, createDate(14, 30), createDate(15, 0))
 
-    const modifiedEvent = await EventModel.findById(event)
+    const modifiedEvent = await EventModel.findById(event).populate('visits', { startTime: 1, endTime: 1 })
     const timeList = createTimeList([[9, 0]], [[13, 0]])
     const availableList = createAvailableList(modifiedEvent.availableTimes)
     expect(timeList).toEqual(expect.arrayContaining(availableList))

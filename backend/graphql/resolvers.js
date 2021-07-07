@@ -1,7 +1,6 @@
 const { UserInputError, AuthenticationError } = require('apollo-server-errors')
 const { readMessage } = require('../services/fileReader')
-const { add, sub } = require('date-fns')
-const { findValidTimeSlot, generateAvailableTime, calculateAvailabelTimes } = require('../utils/timeCalculation')
+const { findValidTimeSlot, calculateAvailabelTimes } = require('../utils/timeCalculation')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const mailer = require('../services/mailer')
@@ -147,10 +146,10 @@ const resolvers = {
       return newEvent
     },
     createVisit: async (root, args, { currentUser }) => {
-      const event = await Event.findById(args.event)
+      const event = await Event.findById(args.event).populate('visits', { startTime: 1, endTime: 1 })
       const visitTime = {
-        start: new Date(args.startTime),
-        end: new Date(args.endTime)
+        startTime: new Date(args.startTime),
+        endTime: new Date(args.endTime)
       }
       const availableTimes = event.availableTimes.map(time => ({
         startTime: new Date(time.startTime),
@@ -160,27 +159,13 @@ const resolvers = {
         start: new Date(event.start),
         end: new Date(event.end)
       }
+      const visitTimes = event.visits.concat(visitTime)
 
-      const availableTime = findValidTimeSlot(availableTimes, visitTime)
-      if (!availableTime) {
+      if (!findValidTimeSlot(availableTimes, visitTime)) {
         throw new UserInputError('Given timeslot is invalid')
       }
 
-      if (
-        visitTime.start >= eventTime.start &&
-        visitTime.start < visitTime.end &&
-        visitTime.end <= eventTime.end
-      ) {
-        const availableEnd = sub(new Date(visitTime.start), { minutes: event.waitingTime })
-        const availableStart = add(new Date(visitTime.end), { minutes: event.waitingTime })
-
-        const before = generateAvailableTime(availableTime.startTime, availableEnd, event.duration)
-        const after = generateAvailableTime(availableStart, availableTime.endTime, event.duration)
-        const newAvailableTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime).map(at => Object({ startTime: at.startTime.toISOString(), endTime: at.endTime.toISOString() }))
-        if (before) newAvailableTimes.push(before)
-        if (after) newAvailableTimes.push(after)
-        event.availableTimes = newAvailableTimes
-      }
+      event.availableTimes = calculateAvailabelTimes(visitTimes, eventTime, event.waitingTime, event.duration)
 
       const visit = new Visit({
         ...args,
