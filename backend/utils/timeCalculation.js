@@ -28,7 +28,7 @@ const findValidTimeSlot = (availableTimes, visitTime) => {
 const calculateAvailabelTimes = (visitTimes, eventTime, waitingTime, duration) => {
   let previous = eventTime.start
   const availableTimes = []
-  visitTimes.forEach(time => {
+  visitTimes.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()).forEach(time => {
     const start = new Date(time.startTime)
     const end = new Date(time.endTime)
     if (start.getTime() - previous.getTime() - waitingTime * 60000 >= duration * 60000) {
