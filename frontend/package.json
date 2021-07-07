@@ -7,6 +7,7 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "antd": "^4.16.6",
     "apollo-link-context": "^1.0.20",
     "axios": "^0.21.1",
     "bcrypt": "^5.0.1",
@@ -51,11 +52,16 @@
     ]
   },
   "devDependencies": {
-    "cypress": "^7.4.0",
+    "cypress": "^7.7.0",
     "cypress-cucumber-preprocessor": "^4.1.0",
     "eslint-plugin-cypress": "^2.11.3"
   },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "/node_modules/(?!antd|@ant-design|rc-.+?|@babel/runtime).+(js|jsx)$"
+    ]
   }
 }

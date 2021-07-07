@@ -5,6 +5,10 @@ import { CREATE_EVENT, TAGS, EXTRAS } from '../graphql/queries'
 import { useHistory } from 'react-router'
 import LumaTagInput from './LumaTagInput/LumaTagInput'
 import format from 'date-fns/format'
+import DatePicker from './Pickers/DatePicker'
+import addDays from 'date-fns/addDays'
+import set from 'date-fns/set'
+import TimePicker from './Pickers/TimePicker'
 
 const validate = (values) => {
   const defErrorMessage = 'Vaaditaan!'
@@ -88,6 +92,8 @@ const EventForm = ({
 
   useEffect(() => { }, [extras.data])
 
+  const defaultDateTime = set(addDays(new Date(), 14), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 })
+
   const formik = useFormik({
     initialValues: {
       grades: [false, false, false, false, false],
@@ -98,9 +104,9 @@ const EventForm = ({
       desc: '',
       remotePlatforms: [true,true,true,false],
       otherRemotePlatformOption: '',
-      date: newEventTimeRange ? format(newEventTimeRange[0], 'yyyy-MM-dd') : null,
-      startTime: newEventTimeRange ? format(newEventTimeRange[0], 'HH:mm') : null,
-      endTime: newEventTimeRange ? format(newEventTimeRange[1], 'HH:mm') : null,
+      date: newEventTimeRange ? newEventTimeRange[0] : defaultDateTime,
+      startTime: newEventTimeRange ? format(newEventTimeRange[0], 'HH:mm') : set(defaultDateTime, { hours: 8 }),
+      endTime: newEventTimeRange ? format(newEventTimeRange[1], 'HH:mm') : set(defaultDateTime, { hours: 16 }),
       tags: [],
       waitingTime: 15,
       extras: [],
@@ -499,20 +505,17 @@ const EventForm = ({
                 Päivämäärä
                 </label>
                 <div className="control">
-                  <input
+                  <DatePicker
                     className={`input ${formik.touched.date
                       ? formik.errors.date
                         ? 'is-danger'
                         : 'is-success'
                       : ''
                     }`}
-                    id="date"
-                    name="date"
-                    type="date"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    format={'d.M.yyyy'}
                     value={formik.values.date}
-                  />
+                    onChange={value => formik.setFieldValue('date', value)}
+                    onBlur={formik.handleBlur}/>
                 </div>
               </div>
               {formik.touched.date && formik.errors.date ? (
@@ -524,20 +527,16 @@ const EventForm = ({
                 Aloituskellonaika
                 </label>
                 <div className="control">
-                  <input
+                  <TimePicker
                     className={`input ${formik.touched.startTime
                       ? formik.errors.startTime
                         ? 'is-danger'
                         : 'is-success'
                       : ''
                     }`}
-                    id="startTime"
-                    name="startTime"
-                    type="time"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
                     value={formik.values.startTime}
-                  />
+                    onChange={value => formik.setFieldValue('startTime', value)}
+                    onBlur={formik.handleBlur}/>
                 </div>
               </div>
               {formik.touched.startTime && formik.errors.startTime ? (
@@ -549,21 +548,17 @@ const EventForm = ({
                 Lopetuskellonaika
                 </label>
                 <div className="control">
-                  <input
+                  <TimePicker
                     className={`input ${formik.touched.endTime
                       ? formik.errors.endTime
                         ? 'is-danger'
                         : 'is-success'
                       : ''
                     }`}
-
-                    id="endTime"
-                    name="endTime"
-                    type="time"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    disabledHours={() => [0,1,2,3,4,5,6,7,18,19,20,21,22,23]}
                     value={formik.values.endTime}
-                  />
+                    onChange={value => formik.setFieldValue('endTime', value)}
+                    onBlur={formik.handleBlur}/>
                 </div>
               </div>
 
