@@ -18,8 +18,8 @@ const VisitModel = require('../models/visit')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
 
-let availableEvent
 let savedAvailableEvent
+let savedSixtyMinutesEvent
 let server
 
 const visitResponse = async (event, start, end) => {
@@ -93,12 +93,28 @@ beforeEach(async () => {
     remoteVisit: true,
     availableTimes: [{ startTime: availableStart, endTime: availableEnd }],
     waitingTime: 10,
+    duration: 30,
+    extras: []
+  }
+
+  const sixtyMinutesEventData = {
+    title: 'Up-And-Atom!',
+    resourceId: 2,
+    grades: [1],
+    start: availableStart.toISOString(),
+    end: availableEnd.toISOString(),
+    inPersonVisit: false,
+    remoteVisit: true,
+    availableTimes: [{ startTime: availableStart, endTime: availableEnd }],
+    waitingTime: 15,
     duration: 60,
     extras: []
   }
 
-  availableEvent = new EventModel(availableEventData)
+  const availableEvent = new EventModel(availableEventData)
+  const sixtyMinutesEvent = new EventModel(sixtyMinutesEventData)
 
+  savedSixtyMinutesEvent = await sixtyMinutesEvent.save()
   savedAvailableEvent = await availableEvent.save()
 })
 
@@ -284,6 +300,68 @@ describe('Cancelling a visit results in correct availableTimes', () => {
     expect(timeListAfterCancellation).toEqual(expect.arrayContaining(availableListAfter))
     expect(eventAfterCancellation.visits.length).toEqual(1)
   })
+
+  it('if a revocable visit is close to two another visits', async () => {
+    const event = savedAvailableEvent.id
+    await visitResponse(event, createDate(11, 30), createDate(11, 45))
+    const { data } = await visitResponse(event, createDate(11, 55), createDate(12, 30))
+    await visitResponse(event, createDate(12, 55), createDate(15, 0))
+
+    const modifiedEvent = await EventModel.findById(event)
+    const timeList = createTimeList([[9, 0]], [[11, 20]])
+    const availableList = createAvailableList(modifiedEvent.availableTimes)
+    expect(timeList).toEqual(expect.arrayContaining(availableList))
+
+    const response = await cancelVisit(data.createVisit.id)
+    expect(response.errors).toBeUndefined()
+    const eventAfterCancellation = await EventModel.findById(event)
+    const timeListAfterCancellation = createTimeList([[9, 0], [11, 55]], [[11, 20], [12, 45]])
+    const availableListAfter = createAvailableList(eventAfterCancellation.availableTimes)
+    expect(timeListAfterCancellation).toEqual(expect.arrayContaining(availableListAfter))
+    expect(eventAfterCancellation.visits.length).toEqual(2)
+  })
+
+  it('if a revocable visit is close to two another visits and removed visit timeslot difference is events\' duration', async () => {
+    const event = savedAvailableEvent.id
+    await visitResponse(event, createDate(13, 10), createDate(13, 40))
+    const { data } = await visitResponse(event, createDate(13, 50), createDate(14, 20))
+    await visitResponse(event, createDate(14, 30), createDate(15, 0))
+
+    const modifiedEvent = await EventModel.findById(event).populate('visits', { startTime: 1, endTime: 1 })
+    const timeList = createTimeList([[9, 0]], [[13, 0]])
+    const availableList = createAvailableList(modifiedEvent.availableTimes)
+    expect(timeList).toEqual(expect.arrayContaining(availableList))
+    expect(modifiedEvent.visits.length).toEqual(3)
+
+    const response = await cancelVisit(data.createVisit.id)
+    expect(response.errors).toBeUndefined()
+    const eventAfterCancellation = await EventModel.findById(event)
+    const timeListAfterCancellation = createTimeList([[9, 0], [13, 50]], [[13, 0], [14, 20]])
+    const availableListAfter = createAvailableList(eventAfterCancellation.availableTimes)
+    expect(timeListAfterCancellation).toEqual(expect.arrayContaining(availableListAfter))
+    expect(eventAfterCancellation.visits.length).toEqual(2)
+  })
+
+  it('if a revocable visit is close to two another visits and removed visit timeslot difference is events\' duration', async () => {
+    const event = savedSixtyMinutesEvent.id
+    await visitResponse(event, createDate(11, 30), createDate(12, 30))
+    const { data } = await visitResponse(event, createDate(12, 45), createDate(13, 45))
+    await visitResponse(event, createDate(14, 0), createDate(15, 0))
+
+    const modifiedEvent = await EventModel.findById(event)
+    const timeList = createTimeList([[9, 0]], [[11, 15]])
+    const availableList = createAvailableList(modifiedEvent.availableTimes)
+    expect(timeList).toEqual(expect.arrayContaining(availableList))
+    expect(modifiedEvent.visits.length).toEqual(3)
+
+    const response = await cancelVisit(data.createVisit.id)
+    expect(response.errors).toBeUndefined()
+    const eventAfterCancellation = await EventModel.findById(event)
+    const timeListAfterCancellation = createTimeList([[9, 0], [12, 45]], [[11, 15], [13, 45]])
+    const availableListAfter = createAvailableList(eventAfterCancellation.availableTimes)
+    expect(timeListAfterCancellation).toEqual(expect.arrayContaining(availableListAfter))
+    expect(eventAfterCancellation.visits.length).toEqual(2)
+  })
 })
 
 afterAll(async () => {
@@ -292,3 +370,24 @@ afterAll(async () => {
   await mongoose.connection.close()
   console.log('test-mongodb connection closed')
 })
+
+/*
+
+All cases
+
+___S******E------------------------------|___
+___|-----------------------------S*******E___
+___|--------------S*******E--------------|___
+___|_S____E-------S*******E--------------|___
+___|--------------S*******E------S_____E_|___
+___|_S____E-------S*******E------S_____E_|___
+___|-----S*******E__S______E-------------|___
+___|-----S_______E__S******E__S__________|___
+___|--------------------S____ES****ES____E___
+___|-------------------------------------|___
+___|-------------------------------------|___
+___|-------------------------------------|___
+___|-------------------------------------|___
+___|-------------------------------------|___
+
+*/

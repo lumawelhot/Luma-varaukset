@@ -2,8 +2,8 @@ const findValidTimeSlot = (availableTimes, visitTime) => {
   let result = false
   availableTimes.forEach(slot => {
     if (
-      visitTime.start >= slot.startTime &&
-      visitTime.end <= slot.endTime
+      visitTime.startTime >= slot.startTime &&
+      visitTime.endTime <= slot.endTime
     ) {
       result = {
         startTime: slot.startTime,
@@ -28,7 +28,7 @@ const findValidTimeSlot = (availableTimes, visitTime) => {
 const calculateAvailabelTimes = (visitTimes, eventTime, waitingTime, duration) => {
   let previous = eventTime.start
   const availableTimes = []
-  visitTimes.forEach(time => {
+  visitTimes.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()).forEach(time => {
     const start = new Date(time.startTime)
     const end = new Date(time.endTime)
     if (start.getTime() - previous.getTime() - waitingTime * 60000 >= duration * 60000) {
@@ -39,7 +39,7 @@ const calculateAvailabelTimes = (visitTimes, eventTime, waitingTime, duration) =
     }
     previous = new Date(end.getTime() + waitingTime * 60000)
   })
-  if (eventTime.end.getTime() - previous.getTime() - waitingTime * 60000 >= duration * 60000) {
+  if (eventTime.end.getTime() - previous.getTime() >= duration * 60000) {
     availableTimes.push({
       startTime: previous,
       endTime: eventTime.end
@@ -48,15 +48,4 @@ const calculateAvailabelTimes = (visitTimes, eventTime, waitingTime, duration) =
   return availableTimes
 }
 
-const generateAvailableTime = (start, end) => {
-  let result = null
-  if (end - start >= 3600000) {
-    result = {
-      startTime: start,
-      endTime: end
-    }
-  }
-  return result
-}
-
-module.exports = { findValidTimeSlot, generateAvailableTime, calculateAvailabelTimes }
+module.exports = { findValidTimeSlot, calculateAvailabelTimes }

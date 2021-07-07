@@ -197,7 +197,7 @@ describe('Visit can be created', () => {
     const modifiedEvent = await EventModel.findById(event)
     expect(modifiedEvent.availableTimes.length).toBe(2)
 
-    const timeList = createTimeList([[9, 0], [13, 0]], [[10, 15], [15, 0]])
+    const timeList = createTimeList([[9, 0], [11, 14]], [[10, 15], [15, 0]])
     const availableList = createAvailableList(modifiedEvent.availableTimes)
 
     expect(timeList).toEqual(expect.arrayContaining(availableList))
@@ -215,7 +215,7 @@ describe('Visit can be created', () => {
     const modifiedEvent = await EventModel.findById(event)
     expect(modifiedEvent.availableTimes.length).toBe(2)
 
-    const timeList = createTimeList([[9, 0], [13, 45]], [[11, 0], [15, 0]])
+    const timeList = createTimeList([[9, 0], [13, 45]], [[12, 46], [15, 0]])
     const availableList = createAvailableList(modifiedEvent.availableTimes)
 
     expect(timeList).toEqual(expect.arrayContaining(availableList))
