@@ -174,8 +174,8 @@ const resolvers = {
         const availableEnd = sub(new Date(visitTime.start), { minutes: event.waitingTime })
         const availableStart = add(new Date(visitTime.end), { minutes: event.waitingTime })
 
-        const before = generateAvailableTime(availableTime.startTime, availableEnd)
-        const after = generateAvailableTime(availableStart, availableTime.endTime)
+        const before = generateAvailableTime(availableTime.startTime, availableEnd, event.duration)
+        const after = generateAvailableTime(availableStart, availableTime.endTime, event.duration)
         const newAvailableTimes = availableTimes.filter(at => at.endTime <= availableTime.startTime || at.startTime >= availableTime.endTime).map(at => Object({ startTime: at.startTime.toISOString(), endTime: at.endTime.toISOString() }))
         if (before) newAvailableTimes.push(before)
         if (after) newAvailableTimes.push(after)

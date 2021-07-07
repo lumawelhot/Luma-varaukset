@@ -48,9 +48,9 @@ const calculateAvailabelTimes = (visitTimes, eventTime, waitingTime, duration) =
   return availableTimes
 }
 
-const generateAvailableTime = (start, end) => {
+const generateAvailableTime = (start, end, duration) => {
   let result = null
-  if (end - start >= 3600000) {
+  if (end - start >= duration * 60000) {
     result = {
       startTime: start,
       endTime: end
