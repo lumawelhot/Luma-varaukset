@@ -17,6 +17,19 @@ const CANCEL_VISIT = gql `
   }
 `
 
+const CREATE_USER = gql`
+  mutation createUser($username: String!, $password: String!, $isAdmin: Boolean!) {
+    createUser(
+      username: $username,
+      password: $password,
+      isAdmin: $isAdmin
+    ) {
+      username,
+      isAdmin
+    }
+  }
+`
+
 const CREATE_VISIT = gql `
   mutation createVisit(
     $event: ID!
@@ -90,6 +103,27 @@ const GET_ALL_VISITS = gql `
   }
 `
 
+const GET_ALL_EVENTS = gql `
+  query {
+    getEvents {
+      id
+      title
+      resourceids
+      grades
+      tags {
+        id
+        name
+      }
+      start
+      end
+      desc
+      extras {
+        name
+      }
+    }
+  }
+  `
+
 const FIND_VISIT = gql `
   query findVisit($id: ID!) {
     findVisit(id: $id) {
@@ -121,18 +155,125 @@ const LOGIN = gql`
   }
 `
 
-const details = {
-  clientName: 'Teacher',
-  clientEmail: 'teacher@school.com',
-  clientPhone: '040-1234567',
-  grade: '1',
-  schoolName: 'school',
-  schoolLocation: 'Helsinki',
-  participants: 13,
-  inPersonVisit: true,
-  remoteVisit: true,
-  dataUseAgreement: true
-}
+const CREATE_EVENT = gql `
+  mutation createEvent(
+    $title: String!,
+    $start: String!,
+    $end: String!,
+    $scienceClass: [Int]!,
+    $grades: [Int]!,
+    $remotePlatforms: [Int],
+    $otherRemotePlatformOption: String,
+    $remoteVisit: Boolean!,
+    $inPersonVisit: Boolean!,
+    $desc: String,
+    $tags: [TagInput],
+    $waitingTime: Int!
+    $extras: [ID]
+    $duration: Int!
+    ) {
+    createEvent (
+      title: $title,
+      start: $start,
+      end: $end,
+      scienceClass: $scienceClass,
+      desc: $desc,
+      grades: $grades,
+      remotePlatforms: $remotePlatforms,
+      otherRemotePlatformOption: $otherRemotePlatformOption,
+      remoteVisit: $remoteVisit,
+      inPersonVisit: $inPersonVisit,
+      tags: $tags
+      waitingTime: $waitingTime
+      extras: $extras
+      duration: $duration
+    ) {
+      id
+      title
+      resourceids
+      grades
+      remotePlatforms
+      otherRemotePlatformOption
+      start
+      end
+      tags {
+        name,
+        id
+      }
+      visits {
+        startTime,
+        endTime
+      }
+      inPersonVisit
+      remoteVisit
+      desc
+      availableTimes {
+        startTime,
+        endTime
+      }
+      extras {
+        name,
+        inPersonLength,
+        remoteLength
+      }
+      duration
+    }
+  }
+`
+
+const ME = gql`
+  query me {
+    me {
+      username,
+      isAdmin,
+      id
+    }
+  }
+`
+
+const GET_ALL_EXTRAS = gql`
+  query {
+    getExtras {
+      id
+      name
+      classes
+      remoteLength
+      inPersonLength
+    }
+  }
+`
+
+const CREATE_EXTRA = gql`
+  mutation createExtra(
+      $name: String!
+      $classes: [Int]!
+      $remoteLength: Int!
+      $inPersonLength: Int!
+    ) {
+    createExtra (
+    name: $name
+    classes: $classes
+    remoteLength: $remoteLength
+    inPersonLength: $inPersonLength
+    ) {
+      id
+      name
+      classes
+      remoteLength
+      inPersonLength
+    }
+  }
+`
+
+const USERS = gql`
+  query getUsers {
+    getUsers {
+      username,
+      isAdmin,
+      id
+    }
+  }
+`
 
 const createTimeList = (startList, endList) => {
   const timeList = []
@@ -155,4 +296,20 @@ const createAvailableList = (timeList) => {
   return newList
 }
 
-module.exports = { LOGIN, GET_ALL_VISITS, FIND_VISIT, CREATE_VISIT, CANCEL_VISIT, details, createTimeList, createAvailableList, createDate }
+module.exports = {
+  LOGIN,
+  GET_ALL_VISITS,
+  GET_ALL_EVENTS,
+  FIND_VISIT,
+  CREATE_VISIT,
+  CANCEL_VISIT,
+  CREATE_EVENT,
+  GET_ALL_EXTRAS,
+  CREATE_EXTRA,
+  CREATE_USER,
+  USERS,
+  ME,
+  createTimeList,
+  createAvailableList,
+  createDate,
+}

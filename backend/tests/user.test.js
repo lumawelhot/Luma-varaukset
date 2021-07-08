@@ -1,11 +1,12 @@
 const mongoose = require('mongoose')
 const { createTestClient } = require('apollo-server-testing')
-const { ApolloServer, gql } = require('apollo-server-express')
+const { ApolloServer } = require('apollo-server-express')
 const bcrypt = require('bcrypt')
 
 const UserModel = require('../models/user')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
+const { USERS, CREATE_USER, ME, LOGIN } = require('./testHelpers')
 
 let basicUserData
 let adminUserData
@@ -63,18 +64,7 @@ describe('Server Test (currentUser = admin)', () => {
 
   it('get all users', async () => {
     const { query } = createTestClient(serverAdmin)
-    const GET_ALL_USERS = gql`
-      query {
-        getUsers {
-          id
-          username
-          isAdmin
-        }
-      }
-    `
-    const { data } = await query({
-      query: GET_ALL_USERS
-    })
+    const { data } = await query({ query: USERS })
     const { getUsers } = data
     getUsers.map(user => {
       expect(user.id).toBeDefined()
@@ -84,35 +74,26 @@ describe('Server Test (currentUser = admin)', () => {
 
   it('login successfully', async () => {
     const { mutate } = createTestClient(serverAdmin)
-    const LOGIN = gql`
-      mutation {
-        login(
-          username: "admin"
-          password: "admin-password"
-        ){
-          value
-        }
+    const response = await mutate({
+      mutation: LOGIN,
+      variables: {
+        username: 'admin',
+        password: 'admin-password'
       }
-    `
-    let response = await mutate({ mutation: LOGIN })
+    })
     expect(response.errors).toBeUndefined()
   })
 
   it('admin can create new user successfully', async () => {
     const { mutate } = createTestClient(serverAdmin)
-    const CREATE_USER = gql`
-      mutation {
-        createUser(
-          username: "new-user"
-          password: "new-password"
-          isAdmin: false
-        ){
-          username,
-          isAdmin
-        }
+    const response = await mutate({
+      mutation: CREATE_USER,
+      variables: {
+        username: 'new-user',
+        password: 'new-password',
+        isAdmin: false
       }
-    `
-    let response = await mutate({ mutation: CREATE_USER })
+    })
     expect(response.errors).toBeUndefined()
   })
 })
@@ -121,36 +102,20 @@ describe('Server Test (currentUser = basic)', () => {
 
   it('basic user cannot create new user', async () => {
     const { mutate } = createTestClient(serverBasic)
-    const CREATE_USER = gql`
-      mutation {
-        createUser(
-          username: "new-user"
-          password: "new-password"
-          isAdmin: false
-        ){
-          username,
-          isAdmin
-        }
+    const response = await mutate({
+      mutation: CREATE_USER,
+      variables: {
+        username: 'new-user',
+        password: 'new-password',
+        isAdmin: false
       }
-    `
-    let response = await mutate({ mutation: CREATE_USER })
+    })
     expect(response.errors).toBeDefined()
   })
 
   it('return current user data correctly', async () => {
     const { query } = createTestClient(serverBasic)
-    const ME = gql`
-      query {
-        me {
-          id
-          username
-          isAdmin
-        }
-      }
-    `
-    const { data } = await query({
-      query: ME
-    })
+    const { data } = await query({ query: ME })
     const { me } = data
     expect(me.username).toBe(basicUserData.username)
     expect(me.isAdmin).toBe(basicUserData.isAdmin)

@@ -5,7 +5,6 @@ const bcrypt = require('bcrypt')
 
 const {
   CREATE_VISIT,
-  details,
   createTimeList,
   createAvailableList,
   createDate,
@@ -17,6 +16,7 @@ const EventModel = require('../models/event')
 const VisitModel = require('../models/visit')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
+const { details } = require('./testData.js')
 
 let savedAvailableEvent
 let savedSixtyMinutesEvent

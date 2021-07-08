@@ -1,12 +1,13 @@
 const mongoose = require('mongoose')
 const { createTestClient } = require('apollo-server-testing')
-const { ApolloServer, gql } = require('apollo-server-express')
+const { ApolloServer } = require('apollo-server-express')
 const bcrypt = require('bcrypt')
 
 const UserModel = require('../models/user')
 const ExtraModel = require('../models/extra')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
+const { GET_ALL_EXTRAS, CREATE_EXTRA } = require('./testHelpers')
 
 let adminUserData
 let extraData
@@ -48,20 +49,7 @@ describe('Server Test (currentUser = admin)', () => {
 
   it('get all extras', async () => {
     const { query } = createTestClient(serverAdmin)
-    const GET_ALL_EXTRAS = gql`
-      query {
-        getExtras {
-          id
-          name
-          classes
-          remoteLength
-          inPersonLength
-        }
-      }
-    `
-    const { data } = await query({
-      query: GET_ALL_EXTRAS
-    })
+    const { data } = await query({ query: GET_ALL_EXTRAS })
     const { getExtras } = data
     getExtras.map(extra => {
       expect(extra.id).toBeDefined()
@@ -71,22 +59,15 @@ describe('Server Test (currentUser = admin)', () => {
 
   it('current user can create new extra successfully', async () => {
     const { mutate } = createTestClient(serverAdmin)
-    const CREATE_EXTRA = gql`
-      mutation {
-        createExtra(
-            name: "Tieteenalan esittely"
-            classes: [2, 3]
-            remoteLength: 5 
-            inPersonLength: 15
-        ){
-          name,
-          classes,
-          remoteLength,
-          inPersonLength
-        }
+    const response = await mutate({
+      mutation: CREATE_EXTRA,
+      variables: {
+        name: 'Tieteenalan esittely',
+        classes: [2, 3],
+        remoteLength: 5,
+        inPersonLength: 15
       }
-    `
-    let response = await mutate({ mutation: CREATE_EXTRA })
+    })
     expect(response.errors).toBeUndefined()
   })
 })
