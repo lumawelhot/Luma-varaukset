@@ -5,6 +5,8 @@ import { CREATE_VISIT, EVENTS } from '../graphql/queries'
 import { useHistory } from 'react-router'
 import format from 'date-fns/format'
 import add from 'date-fns/add'
+import { Tooltip } from 'antd'
+import TimePicker from './Pickers/TimePicker'
 
 let selectedEvent
 let eventPlatforms
@@ -122,16 +124,18 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
   }
 
   const classes = [
-    { value: 1, label: 'SUMMAMUTIKKA' },
-    { value: 2, label: 'FOTONI' },
-    { value: 3, label: 'LINKKI' },
-    { value: 4, label: 'GEOPISTE' },
-    { value: 5, label: 'GADOLIN' }
+    { value: 1, label: 'SUMMAMUTIKKA', description: 'Matematiikka' },
+    { value: 2, label: 'FOTONI', description: 'Fysiikka' },
+    { value: 3, label: 'LINKKI', description: 'Tietojenkäsittelytiede' },
+    { value: 4, label: 'GEOPISTE', description: 'Maantiede' },
+    { value: 5, label: 'GADOLIN', description: 'Kemia' }
   ]
 
   const filterEventClass = (eventClasses) => {
-    const classesArray = eventClasses.map(c => classes[c-1].label)
-    return classesArray.join(', ')
+    return eventClasses.map(c =>
+      <Tooltip key={c} color={'geekblue'} title={classes[c-1].description}>
+        <span className='tag is-small'>{classes[c-1].label}</span>
+      </Tooltip>)
   }
 
   const platformList = [
@@ -171,7 +175,7 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
       clientName: '',
       schoolName: '',
       visitMode: '0',
-      startTime: format(event.start, 'HH:mm'),
+      startTime: new Date(event.start),
       endTime: event.end,
       schoolLocation: '',
       clientEmail: '',
@@ -196,12 +200,6 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
         }
         const remoteVisit = (values.visitMode === '0')? event.remoteVisit : (values.visitMode === '1') ? true : false
         const inPersonVisit = (values.visitMode === '0')? event.inPersonVisit : (values.visitMode === '2') ? true : false
-        const startTimeAsDate = (typeof values.startTime === 'object') ? values.startTime : new Date(selectedEvent.start)
-
-        if (typeof values.startTime === 'string') {
-          startTimeAsDate.setHours(values.startTime.slice(0,2))
-          startTimeAsDate.setMinutes(values.startTime.slice(3,5))
-        }
 
         const remotePlatform = Number(values.remotePlatform) === 0
           ? ''
@@ -217,8 +215,8 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
             remoteVisit: remoteVisit,
             inPersonVisit: inPersonVisit,
             schoolLocation: values.schoolLocation,
-            startTime: startTimeAsDate.toISOString(),
-            endTime: finalEndTime,
+            startTime: values.startTime.toISOString(),
+            endTime: finalEndTime.toISOString(),
             clientEmail: values.clientEmail,
             clientPhone: values.clientPhone,
             grade: values.visitGrade,
@@ -552,24 +550,21 @@ const VisitForm = ({ sendMessage, event, currentUser }) => {
               </label>
               <div className="field is-grouped level">
                 <div className="control">
-                  <input
-                    className="input"
-                    type="time"
-                    id="startTime"
-                    name="startTime"
+                  <TimePicker
+                    className={`input ${formik.touched.startTime
+                      ? formik.errors.startTime
+                        ? 'is-danger'
+                        : 'is-success'
+                      : ''
+                    }`}
                     value={formik.values.startTime}
-                    min={event.start.toTimeString().slice(0,5)}
-                    onChange={(event) => {
-                      const startTimeAsDate = new Date(selectedEvent.start)
-                      startTimeAsDate.setHours(event.target.value.slice(0,2))
-                      startTimeAsDate.setMinutes(event.target.value.slice(3,5))
-                      formik.setFieldValue('startTime', format(startTimeAsDate, 'HH:mm'))
-                      const endTime = calculateVisitEndTime(startTimeAsDate, formik.values, selectedEvent, formik.values.extras)
+                    onChange={value => {
+                      formik.setFieldValue('startTime', value)
+                      const endTime = calculateVisitEndTime(value, formik.values, selectedEvent, formik.values.extras)
                       setFinalEndTime(endTime)
-                      formik.setFieldValue('finalEndTime', endTime.toISOString())
+                      formik.setFieldValue('finalEndTime', endTime)
                     }}
-                    onBlur={formik.handleBlur}
-                  />
+                    onBlur={formik.handleBlur}/>
                 </div>
                 <span>- {format(new Date(finalEndTime), 'HH:mm')}</span>
               </div>

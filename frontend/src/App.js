@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
+import 'antd/dist/antd.css'
 import LoginForm from './components/LoginForm'
 import MyCalendar from './MyCalendar'
 import { Switch, Route, useHistory } from 'react-router-dom'

@@ -1108,3 +1108,8 @@ form.luma hr,
   flex-grow: 1;
   margin-right: 0px;
 }
+
+#waitingTime {
+  font-size: 14px;
+  border-radius: 2px;
+}
