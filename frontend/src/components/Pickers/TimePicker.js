@@ -7,6 +7,7 @@ const disabledHours = () => {
 
 const TimePicker = React.forwardRef((props, ref) => {
   return <DatePicker
+    allowClear={false}
     disabledHours={disabledHours}
     picker="time"
     minuteStep={5}

@@ -4,7 +4,6 @@ import { useMutation, useQuery } from '@apollo/client'
 import { CREATE_EVENT, TAGS, EXTRAS } from '../graphql/queries'
 import { useHistory } from 'react-router'
 import LumaTagInput from './LumaTagInput/LumaTagInput'
-//import format from 'date-fns/format'
 import DatePicker from './Pickers/DatePicker'
 import addDays from 'date-fns/addDays'
 import set from 'date-fns/set'
@@ -13,8 +12,6 @@ import TimePicker from './Pickers/TimePicker'
 const validate = (values) => {
   const defErrorMessage = 'Täytä tämä kenttä.'
   const errors = {}
-  // const startTime = new Date(`${values.date}T${values.startTime}`)
-  // const endTime = new Date(`${values.date}T${values.endTime}`)
 
   if (!values.title) {
     errors.title = defErrorMessage
@@ -106,8 +103,6 @@ const EventForm = ({
     },
     validate,
     onSubmit: (values) => {
-      // const start = new Date(`${values.date}T${values.startTime}`)
-      // const end = new Date(`${values.date}T${values.endTime}`)
       const gradelist = []
       values.grades.forEach((element, index) => {
         if (element) {
@@ -308,9 +303,6 @@ const EventForm = ({
                           />
                         </div>
                       </div>
-
-
-
                       : null}
                     {formik.values.remotePlatforms[3] && formik.touched.otherRemotePlatformOption && formik.errors.otherRemotePlatformOption ? (
                       <p className="help is-danger">{formik.errors.otherRemotePlatformOption}</p>
@@ -506,7 +498,16 @@ const EventForm = ({
                     }`}
                     format={'d.M.yyyy'}
                     value={formik.values.date}
-                    onChange={value => formik.setFieldValue('date', value)}
+                    onChange={value => {
+                      const date = value.getDate()
+                      const month = value.getMonth()
+                      const year = value.getFullYear()
+                      const newStartTime = set(formik.values.startTime, { year, month, date })
+                      const newEndTime = set(formik.values.endTime, { year, month, date })
+                      formik.setFieldValue('startTime', newStartTime)
+                      formik.setFieldValue('endTime', newEndTime)
+                      formik.setFieldValue('date', value)
+                    }}
                     onBlur={formik.handleBlur}/>
                 </div>
                 {formik.touched.date && formik.errors.date ? (
