@@ -4,61 +4,53 @@ import { useMutation, useQuery } from '@apollo/client'
 import { CREATE_EVENT, TAGS, EXTRAS } from '../graphql/queries'
 import { useHistory } from 'react-router'
 import LumaTagInput from './LumaTagInput/LumaTagInput'
-import format from 'date-fns/format'
+//import format from 'date-fns/format'
 import DatePicker from './Pickers/DatePicker'
 import addDays from 'date-fns/addDays'
 import set from 'date-fns/set'
 import TimePicker from './Pickers/TimePicker'
 
 const validate = (values) => {
-  const defErrorMessage = 'Vaaditaan!'
+  const defErrorMessage = 'Täytä tämä kenttä.'
   const errors = {}
-  const startTime = new Date(`${values.date}T${values.startTime}`)
-  const endTime = new Date(`${values.date}T${values.endTime}`)
+  // const startTime = new Date(`${values.date}T${values.startTime}`)
+  // const endTime = new Date(`${values.date}T${values.endTime}`)
 
   if (!values.title) {
     errors.title = defErrorMessage
   }
 
   if (!values.grades.includes(true)) {
-    errors.grades = 'Valitse vähintään yksi luokka-aste'
+    errors.grades = 'Valitse vähintään yksi luokka-aste.'
   }
 
   if (!values.scienceClass.includes(true)) {
-    errors.scienceClass = 'Valitse vähintään yksi tiedeluokka'
+    errors.scienceClass = 'Valitse vähintään yksi tiedeluokka.'
   }
 
   if(!values.remotePlatforms.includes(true) && values.remoteVisit){
-    errors.remotePlatforms = 'Valitse vähintään yksi etäyhteysalusta'
+    errors.remotePlatforms = 'Valitse vähintään yksi etäyhteysalusta.'
   }
   if(!values.otherRemotePlatformOption && values.remotePlatforms[3] && values.remoteVisit){
-    errors.otherRemotePlatformOption = 'Kirjoita muun etäyhteysalustan nimi'
+    errors.otherRemotePlatformOption = 'Kirjoita muun etäyhteysalustan nimi.'
   }
 
   if (!(values.remoteVisit || values.inPersonVisit)) {
-    errors.location = 'Valitse joko etä- tai lähivierailu'
+    errors.location = 'Valitse joko etä- tai lähivierailu.'
   }
 
-  if (String(values.date) === 'Invalid date') {
-    errors.date = defErrorMessage
-  }
-
-  if (String(startTime) === 'Invalid Date') {
-    errors.startTime = 'Päivämäärä ja kellonaika vaaditaan'
-  } else if (!values.startTime) {
+  if (!values.startTime) {
     errors.startTime = defErrorMessage
-  } else if (startTime.getHours() < 8 || startTime.getHours() > 16) {
-    errors.startTime = 'Aloitusajan pitää olla klo 08:00 ja 16:00 välillä'
+  } else if (values.startTime.getHours() < 8 || values.startTime.getHours() > 16) {
+    errors.startTime = 'Aloitusajan pitää olla klo 08:00 ja 16:00 välillä.'
   }
 
-  if (String(endTime) === 'Invalid Date') {
-    errors.endTime = 'Päivämäärä ja kellonaika vaaditaan'
-  } else if (!values.endTime) {
+  if (!values.endTime) {
     errors.endTime = defErrorMessage
-  } else if (startTime > endTime) {
-    errors.endTime = 'Lopetusajan pitää olla aloitusajan jälkeen'
-  } else if (endTime.getHours() > 16 && endTime.getMinutes() !== 0) {
-    errors.endTime = 'Lopetusaika saa olla korkeintaan 17.00'
+  } else if (values.startTime > values.endTime) {
+    errors.endTime = 'Lopetusajan pitää olla aloitusajan jälkeen.'
+  } else if (values.endTime.getHours() > 16 && values.endTime.getMinutes() !== 0) {
+    errors.endTime = 'Lopetusaika saa olla korkeintaan 17.00.'
   }
 
   return errors
@@ -77,7 +69,7 @@ const EventForm = ({
     onCompleted: (data) => {
       data.createEvent.booked = false
       addEvent(data.createEvent)
-      sendMessage('Vierailu luotu', 'success')
+      sendMessage('Vierailu luotu.', 'success')
       history.push('/')
     }
   })
@@ -105,8 +97,8 @@ const EventForm = ({
       remotePlatforms: [true,true,true,false],
       otherRemotePlatformOption: '',
       date: newEventTimeRange ? newEventTimeRange[0] : defaultDateTime,
-      startTime: newEventTimeRange ? format(newEventTimeRange[0], 'HH:mm') : set(defaultDateTime, { hours: 8 }),
-      endTime: newEventTimeRange ? format(newEventTimeRange[1], 'HH:mm') : set(defaultDateTime, { hours: 16 }),
+      startTime: newEventTimeRange ? newEventTimeRange[0] : set(defaultDateTime, { hours: 8 }),
+      endTime: newEventTimeRange ? newEventTimeRange[1] : set(defaultDateTime, { hours: 16 }),
       tags: [],
       waitingTime: 15,
       extras: [],
@@ -114,8 +106,8 @@ const EventForm = ({
     },
     validate,
     onSubmit: (values) => {
-      const start = new Date(`${values.date}T${values.startTime}`)
-      const end = new Date(`${values.date}T${values.endTime}`)
+      // const start = new Date(`${values.date}T${values.startTime}`)
+      // const end = new Date(`${values.date}T${values.endTime}`)
       const gradelist = []
       values.grades.forEach((element, index) => {
         if (element) {
@@ -142,8 +134,8 @@ const EventForm = ({
           remoteVisit: values.remoteVisit,
           inPersonVisit: values.inPersonVisit,
           title: values.title,
-          start,
-          end,
+          start: values.startTime.toISOString(),
+          end: values.endTime.toISOString(),
           remotePlatforms: remotePlatformList,
           otherRemotePlatformOption: values.otherRemotePlatformOption,
           scienceClass: scienceClassList,
@@ -517,10 +509,10 @@ const EventForm = ({
                     onChange={value => formik.setFieldValue('date', value)}
                     onBlur={formik.handleBlur}/>
                 </div>
+                {formik.touched.date && formik.errors.date ? (
+                  <p className="help is-danger">{formik.errors.date}</p>
+                ) : null}
               </div>
-              {formik.touched.date && formik.errors.date ? (
-                <p className="help is-danger">{formik.errors.date}</p>
-              ) : null}
 
               <div className="field">
                 <label className="label" htmlFor="startTime">
@@ -538,10 +530,10 @@ const EventForm = ({
                     onChange={value => formik.setFieldValue('startTime', value)}
                     onBlur={formik.handleBlur}/>
                 </div>
+                {formik.touched.startTime && formik.errors.startTime ? (
+                  <p className="help is-danger">{formik.errors.startTime}</p>
+                ) : null}
               </div>
-              {formik.touched.startTime && formik.errors.startTime ? (
-                <p className="help is-danger">{formik.errors.startTime}</p>
-              ) : null}
 
               <div className="field">
                 <label className="label" htmlFor="endTime">
@@ -560,11 +552,11 @@ const EventForm = ({
                     onChange={value => formik.setFieldValue('endTime', value)}
                     onBlur={formik.handleBlur}/>
                 </div>
+                {formik.touched.endTime && formik.errors.endTime ? (
+                  <p className="help is-danger">{formik.errors.endTime}</p>
+                ) : null}
               </div>
 
-              {formik.touched.endTime && formik.errors.endTime ? (
-                <p className="help is-danger">{formik.errors.endTime}</p>
-              ) : null}
               <div className="field">
                 <label className="label" htmlFor="endTime">
                 Minimiaika varausten välillä
@@ -585,11 +577,11 @@ const EventForm = ({
                     value={formik.values.waitingTime}
                   />
                 </div>
+                {formik.touched.waitingTime && formik.errors.waitingTime ? (
+                  <p className="help is-danger">{formik.errors.waitingTime}</p>
+                ) : null}
               </div>
 
-              {formik.touched.endTime && formik.errors.endTime ? (
-                <p className="help is-danger">{formik.errors.endTime}</p>
-              ) : null}
             </div>
             <div className="field">
               <label className="label" htmlFor="desc">
