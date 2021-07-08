@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const { createTestClient } = require('apollo-server-testing')
-const { ApolloServer, gql } = require('apollo-server-express')
+const { ApolloServer } = require('apollo-server-express')
 const bcrypt = require('bcrypt')
 
 const EventModel = require('../models/event')
@@ -9,7 +9,8 @@ const ExtraModel = require('../models/extra')
 const TagModel = require('../models/tag')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
-const { subDays, set } = require('date-fns')
+const { GET_ALL_EVENTS, CREATE_EVENT } = require('./testHelpers')
+const { eventDetails1, eventDetails2, eventDetails3, eventDetails5, eventDetails4, invalidEventFieldDetails } = require('./testData')
 
 let server = null
 let newTags = []
@@ -57,49 +58,20 @@ beforeAll(async () => {
 beforeEach(async () => {
 
   const testData1 = {
-    title: 'All About Algebra',
-    resourceids: [1],
-    grades: [1, 2],
-    desc: 'Algebra is one of the broad areas of mathematics, together with number theory, geometry and analysis.',
     tags: newTags,
     extras: newExtras,
-    start: set(new Date(), { hours: 9, minutes: 30, seconds: 0, milliseconds: 0 }).toISOString(),
-    end: set(new Date(), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }).toISOString(),
-    booked: false,
-    inPersonVisit: true,
-    remoteVisit: false,
-    waitingTime: 15,
-    duration: 60
+    ...eventDetails1
   }
   const testData2 = {
-    title: 'Up-And-Atom!',
-    resourceids: [2],
-    grades: [4],
-    desc: 'Atom is a programming text editor developed by GitHub.',
     tags: newTags,
-    start: set(new Date(), { hours: 9, minutes: 30, seconds: 0, milliseconds: 0 }).toISOString(),
-    end: set(new Date(), { hours: 11, minutes: 0, seconds: 0, milliseconds: 0 }).toISOString(),
-    booked: false,
-    inPersonVisit: false,
-    remoteVisit: true,
-    waitingTime: 15,
-    duration: 75,
-    extras: newExtras
+    extras: newExtras,
+    ...eventDetails2
   }
+
   const testData3 = {
-    title: 'Old event!',
-    resourceids: [1],
-    grades: [2],
-    desc: '3',
     tags: newTags,
-    start: subDays(new Date(), 100).toISOString(),
-    end: subDays(new Date(), 100).toISOString(),
-    booked: false,
-    inPersonVisit: false,
-    remoteVisit: true,
-    waitingTime: 15,
-    duration: 75,
-    extras: newExtras
+    extras: newExtras,
+    ...eventDetails3
   }
 
   const testEvent1 = new EventModel(testData1)
@@ -115,29 +87,8 @@ describe('Event Server Test', () => {
 
   it('get all events', async () => {
     const { query } = createTestClient(server)
-    const GET_ALL_EVENTS = gql`
-    query {
-      getEvents {
-        id
-        title
-        resourceids
-        grades
-        tags {
-          id
-          name
-        }
-        start
-        end
-        desc
-        extras {
-          name
-        }
-      }
-    }
-    `
-    const { data } = await query({
-      query: GET_ALL_EVENTS
-    })
+
+    const { data } = await query({ query: GET_ALL_EVENTS })
     const { getEvents } = data
     getEvents.map(event => {
       expect(event.id).toBeDefined()
@@ -154,41 +105,17 @@ describe('Event Server Test', () => {
     expect(getEvents.length).toBe(2)
   })
 })
+
 it('employee can create new event successfully', async () => {
   const { mutate } = createTestClient(server)
-  const CREATE_EVENT = gql`
-      mutation {
-        createEvent(
-          title: "Learn JavaScript!"
-          scienceClass: [1,4]
-          start: "2021-06-01T10:00:00+0300"
-          end: "2021-06-01T12:00:00+0300"
-          desc: "JavaScript is the programming language of the Web."
-          remoteVisit: true
-          inPersonVisit: false
-          grades: [1, 3, 4]
-          tags: [{ name: "Matematiikka" }, { name: "Fysiikka" }, { name: "Ohjelmointi" }, { name: "Maantiede" }, { name: "Kemia" } ]
-          waitingTime: 15
-          duration: 60,
-          extras: []
-        ){
-          title,
-          resourceids,
-          start,
-          end,
-          grades,
-          desc
-          tags {
-            name
-          }
-        }
-      }
-    `
-  let response = await mutate({ mutation: CREATE_EVENT })
+  const response = await mutate({
+    mutation: CREATE_EVENT,
+    variables: eventDetails5
+  })
 
   expect(response.data.createEvent.title).toBe('Learn JavaScript!')
   expect(response.data.createEvent.grades).toEqual([1, 3, 4])
-  expect(response.data.createEvent.tags).toEqual([{ name: 'Matematiikka' }, { name: 'Fysiikka' }, { name: 'Ohjelmointi' }, { name: 'Maantiede' }, { name: 'Kemia' } ])
+  expect(response.data.createEvent.tags.map(tag => ({ name: tag.name }))).toEqual([{ name: 'Matematiikka' }, { name: 'Fysiikka' }, { name: 'Ohjelmointi' }, { name: 'Maantiede' }, { name: 'Kemia' } ])
   expect(response.errors).toBeUndefined()
 })
 
@@ -197,18 +124,9 @@ describe('Event Model Test', () => {
   it('create & save new event successfully', async () => {
     const tags = await TagModel.find({ name: { $in: ['Matematiikka', 'Fysiikka'] } })
     const eventData = {
-      title: 'New-event',
-      resourceids: [2],
-      grades: [3, 4],
       tags: tags,
-      start: '2021-06-01T10:00:00+0300',
-      end: '2021-06-01T12:00:00+0300',
-      inPersonVisit: true,
-      remoteVisit: false,
-      desc: 'Test event desc.',
-      waitingTime: 15,
-      duration: 75,
-      extras: newExtras
+      extras: newExtras,
+      ...eventDetails4
     }
 
     const validEvent = new EventModel(eventData)
@@ -226,20 +144,7 @@ describe('Event Model Test', () => {
   })
 
   it('insert event successfully, but the field not defined in schema should be "undefined"', async () => {
-    const eventWithInvalidField = new EventModel({
-      title: 'New-event',
-      resourceids: [2],
-      grades: [1],
-      start: '2021-06-01T09:00:00+0300',
-      end: '2021-06-02T15:00:00+0300',
-      inPersonVisit: true,
-      remoteVisit: false,
-      fieldNotInSchema: 'Tiedeluokka Linkki',
-      desc: 'Test event desc.',
-      waitingTime: 15,
-      duration: 10,
-      extras: []
-    })
+    const eventWithInvalidField = new EventModel(invalidEventFieldDetails)
     const savedEventWithInvalidField = await eventWithInvalidField.save()
     expect(savedEventWithInvalidField._id).toBeDefined()
     expect(savedEventWithInvalidField.fieldNotInSchema).toBeUndefined()
@@ -260,17 +165,7 @@ describe('Event Model Test', () => {
     expect(err.errors.grades).toBeDefined()
   })
 
-/* it('cannot create event with end time before start time', async () => {
-    const eventWithEndBeforeStart = new EventModel({
-        title: 'New-event',
-        resourceids: 2,
-        start: 'Tue Jun 01 2021 09:01:00 GMT+0300 (Eastern European Summer Time)',
-        end: 'Tue Jun 01 2021 09:00:00 GMT+0300 (Eastern European Summer Time)'
-    })
-  }) */
 })
-
-
 
 afterAll(async () => {
   await EventModel.deleteMany({})

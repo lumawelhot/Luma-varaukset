@@ -1,10 +1,6 @@
 const mongoose = require('mongoose')
 const { createTestClient } = require('apollo-server-testing')
 const { ApolloServer, gql } = require('apollo-server-express')
-var setHours = require('date-fns/setHours')
-var setMinutes = require('date-fns/setMinutes')
-var setSeconds = require('date-fns/setSeconds')
-var add = require('date-fns/add')
 const bcrypt = require('bcrypt')
 
 const UserModel = require('../models/user')
@@ -13,10 +9,9 @@ const VisitModel = require('../models/visit')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
 const { GET_ALL_VISITS, CREATE_VISIT, FIND_VISIT, LOGIN } = require('./testHelpers.js')
-const setMilliseconds = require('date-fns/setMilliseconds')
+const { availableEventData, availableForLoggedInEventData, unvailableForLoggedInUserEventData } = require('./testData')
 
 let availableEvent
-//let unavailableForAllEvent
 let availableForLoggedInEvent
 let unvailableForLoggedInUserEvent
 let savedAvailableEvent
@@ -69,77 +64,10 @@ beforeEach(async () => {
   await EventModel.deleteMany({})
   await VisitModel.deleteMany({})
 
-  const availableDate = setMilliseconds(setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 9), 0), 0), 0)
-  const fiveHoursAdded = setMilliseconds(setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 14), 0), 0), 0)
-
-  //const unavailableForAllDate = new Date()
-
-  const availableForLoggedInDate = setMilliseconds(setSeconds(setMinutes(setHours(add(new Date(), { days: 1 }), 9), 0), 0), 0)
-  const twoHoursAddedForLoggedIn = setMilliseconds(setSeconds(setMinutes(setHours(add(new Date(), { days: 1 }), 11), 0), 0), 0)
-
-  const unavailableForLoggedInDate = new Date()
-  unavailableForLoggedInDate.setDate(new Date().getDate() - 2)
-
-  /* const unavailableEventForAllData = {
-    title: 'All About Algebra',
-    resourceids: [1],
-    grades: [1],
-    start: unavailableForAllDate,
-    end: unavailableForAllDate,
-    inPersonVisit: true,
-    remoteVisit: false,
-    waitingTime: 15,
-    availableTimes: []
-  } */
-
-  const availableEventData = {
-    title: 'Up-And-Atom!',
-    resourceids: [2],
-    grades: [1],
-    start: availableDate,
-    end: fiveHoursAdded,
-    inPersonVisit: false,
-    remoteVisit: true,
-    availableTimes: [{ startTime: availableDate, endTime: fiveHoursAdded }],
-    waitingTime: 15,
-    duration: 60,
-    extras: []
-  }
-
-  const availableForLoggedInEventData = {
-    title: 'Last minute event!',
-    resourceId: 1,
-    grades: [1],
-    start: availableForLoggedInDate,
-    end: twoHoursAddedForLoggedIn,
-    inPersonVisit: true,
-    remoteVisit: false,
-    availableTimes: [{ startTime: availableForLoggedInDate, endTime: twoHoursAddedForLoggedIn }],
-    waitingTime: 15,
-    duration: 60,
-    extras: []
-  }
-
-  const unvailableForLoggedInUserEventData = {
-    title: 'Past event',
-    resourceId: 1,
-    grades: [1],
-    start: unavailableForLoggedInDate,
-    end: unavailableForLoggedInDate,
-    inPersonVisit: true,
-    remoteVisit: false,
-    availableTimes: [],
-    waitingTime: 15,
-    duration: 60,
-    extras: []
-  }
-
-  //unavailableForAllEvent = new EventModel(unavailableEventForAllData)
   availableEvent = new EventModel(availableEventData)
   availableForLoggedInEvent = new EventModel(availableForLoggedInEventData)
   unvailableForLoggedInUserEvent = new EventModel(unvailableForLoggedInUserEventData)
 
-  //savedUnavailableEventForAll = await unavailableForAllEvent.save()
   savedAvailableEvent = await availableEvent.save()
   savedAvailableForLoggedInEvent = await availableForLoggedInEvent.save()
   savedUnvailableForLoggedInUserEvent = await unvailableForLoggedInUserEvent.save()

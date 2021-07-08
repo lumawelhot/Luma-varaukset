@@ -2,12 +2,13 @@ const mongoose = require('mongoose')
 const { createTestClient } = require('apollo-server-testing')
 const { ApolloServer } = require('apollo-server-express')
 
-const { CREATE_VISIT, details, createTimeList, createAvailableList, createDate } = require('./testHelpers.js')
+const { CREATE_VISIT, createTimeList, createAvailableList, createDate } = require('./testHelpers.js')
 
 const EventModel = require('../models/event')
 const VisitModel = require('../models/visit')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
+const { details } = require('./testData.js')
 
 
 let availableEvent
