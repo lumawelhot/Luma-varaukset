@@ -6,7 +6,6 @@ import { bookedEventColor, resourceColorsLUMA } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
 import LumaToolbar from './components/Custom/LumaToolbar'
 import CalendarFilter from './components/Filter/CalendarFilter'
-
 import format from 'date-fns/format'
 import parse from 'date-fns/parse'
 import startOfWeek from 'date-fns/startOfWeek'
@@ -14,6 +13,7 @@ import getDay from 'date-fns/getDay'
 import set from 'date-fns/set'
 import { fi } from 'date-fns/locale'
 import { differenceInDays, differenceInMinutes }  from 'date-fns'
+import { Tooltip } from 'antd'
 
 const localizer = dateFnsLocalizer({
   format,
@@ -24,11 +24,11 @@ const localizer = dateFnsLocalizer({
 })
 
 const resourceMap = [
-  { resourceids: 1, resourceTitle: 'Summamutikka' },
-  { resourceids: 2, resourceTitle: 'Fotoni' },
-  { resourceids: 3, resourceTitle: 'Linkki' },
-  { resourceids: 4, resourceTitle: 'Geopiste' },
-  { resourceids: 5, resourceTitle: 'Gadolin' },
+  { resourceids: 1, resourceTitle: 'Summamutikka', description: 'Matematiikka' },
+  { resourceids: 2, resourceTitle: 'Fotoni', description: 'Fysiikka' },
+  { resourceids: 3, resourceTitle: 'Linkki', description: 'Tietojenkäsittelytiede' },
+  { resourceids: 4, resourceTitle: 'Geopiste', description: 'Maantiede' },
+  { resourceids: 5, resourceTitle: 'Gadolin', description: 'Kemia' },
 ]
 
 const Wrapper = (props) => {
@@ -86,13 +86,15 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
   }
 
   const AgendaEvent = ({ event }) => {
-    const resourceNames = event.resourceids.map(id => { return { name: resourceMap[id-1]?.resourceTitle || null, color: resourceColorsLUMA[id - 1] }})
+    const resourceNames = event.resourceids.map(id => { return { name: resourceMap[id-1]?.resourceTitle || null, color: resourceColorsLUMA[id - 1], description: resourceMap[id-1]?.description }})
     if (event.booked) {
       return (
         <div className="media luma-agenda" onClick={() => handleEventClick(event)}>
           {!!resourceNames.length && <div className="media-left" style={{ width: 100 }}><div className="tags">
             {resourceNames.map(r =>
-              <span key={r.name} className='tag is-small is-link' style={{ backgroundColor: bookedEventColor }}>{r.name}</span>)}
+              <Tooltip key={r.name} color={'geekblue'} title={r.description} placement={'right'}>
+                <span className='tag is-small is-link' style={{ backgroundColor: bookedEventColor }}>{r.name}</span>
+              </Tooltip>)}
           </div></div>}
           <div className="media-content">
             <strong>{event.title}</strong>
@@ -105,7 +107,9 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
       <div className="media luma-agenda" onClick={() => handleEventClick(event)}>
         {!!resourceNames.length && <div className="media-left" style={{ width: 100 }}><div className="tags">
           {resourceNames.map(r =>
-            <span key={r.name} className='tag is-small is-link' style={{ backgroundColor: r.color }}>{r.name}</span>)}
+            <Tooltip key={r.name} color={'geekblue'} title={r.description} placement={'right'}>
+              <span className='tag is-small is-link' style={{ backgroundColor: r.color }}>{r.name}</span>
+            </Tooltip>)}
         </div></div>}
         <div className="media-content">
           <strong>{event.title}</strong>
