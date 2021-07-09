@@ -4,13 +4,15 @@ import format from 'date-fns/format'
 import { Tooltip } from 'antd'
 import TimePicker from '../Pickers/TimePicker'
 import { add } from 'date-fns'
-import { TextField } from './FormFields'
+import { CheckBox, RadioButton, TextField } from './FormFields'
 import InfoBox from './InfoBox'
+import { useHistory } from 'react-router-dom'
 
 let selectedEvent
 let eventPlatforms
 
 const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
+  const history = useHistory()
   selectedEvent = event
 
   const grades = [
@@ -86,9 +88,10 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
         finalEndTime: new Date(add(event.start, { minutes: event.duration }))
       }}
       validate={(values) => validate(values, selectedEvent, eventPlatforms)}
-      onSubmit={(values) => onSubmit(values)}
+      onSubmit={(values) => onSubmit(values, eventPlatforms)}
     >
-      {({ handleSubmit, handleChange, handleBlur, setFieldValue, touched, errors, values }) => {
+      {({ handleSubmit, handleBlur, setFieldValue, touched, errors, values }) => {
+
         return (
           <>
             <div className="container">
@@ -101,26 +104,17 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
 
                     {event.inPersonVisit && event.remoteVisit ? (
                       <div className="field">
-                        <label className="label" id="radio-group">Valitse etä- tai lähiopetus</label>
-                        <div className="control">
-                          <label>
-                            <input
-                              type="radio" name="visitMode" value="1"
-                              onChange={() => {
-                                touched.visitMode = true
-                                setFieldValue('visitMode', '1')
-                              }} /> Etävierailu
-                          </label>
-                        </div>
-                        <div className="control">
-                          <label>
-                            <input type="radio" name="visitMode" value="2"
-                              onChange={() => {
-                                touched.visitMode = true
-                                setFieldValue('visitMode', '2')
-                              }} /> Lähivierailu
-                          </label>
-                        </div>
+                        <label className="label">Valitse etä- tai lähiopetus</label>
+                        <RadioButton
+                          id='visitMode'
+                          name='Etävierailu'
+                          onChange={() => setFieldValue('visitMode', '1')}
+                        />
+                        <RadioButton
+                          id='visitMode'
+                          name='Lähivierailu'
+                          onChange={() => setFieldValue('visitMode', '2')}
+                        />
                       </div>
                     ) : null}
                     {touched.clientName && errors.location ? (
@@ -134,147 +128,50 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                         {eventPlatforms.map((platform, index) => {
                           return (
                             <div key={index} className="control">
-                              <label>
-                                <input
-                                  type="radio" name="remotePlatform" value={index}
-                                  onChange={() => {
-                                    touched.remotePlatform = true
-                                    setFieldValue('remotePlatform', index.toString())
-                                  }} /> {platform}
-                              </label>
+                              <RadioButton
+                                id='remotePlatform'
+                                name={platform}
+                                onChange={() => setFieldValue('remotePlatform', index.toString())}
+                              />
                             </div>
                           )
                         })}
 
                         <div className="control">
-                          <label>
-                            <input type="radio" name="remotePlatform" value={parseInt(eventPlatforms.length+1)}
-                              onChange={() => {
-                                touched.remotePlatform = true
-                                setFieldValue('remotePlatform', parseInt(eventPlatforms.length+1))
-                              }} /> Muu, mikä?
-                            {values.remotePlatform === parseInt(eventPlatforms.length+1)
-                              ?
-
-                              <div className="field">
-
-                                <div className="control">
-                                  <input
-                                    className="input"
-                                    id="otherRemotePlatformOption"
-                                    name="otherRemotePlatformOption"
-                                    type="input"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.otherRemotePlatformOption}
-                                  />
-                                </div>
-
-                                {touched.otherRemotePlatformOption && errors.otherRemotePlatformOption ? (
-                                  <p className="help is-danger">{errors.otherRemotePlatformOption}</p>
-                                ) : null}
-
-                              </div>
-                              : null}
-
-                          </label>
+                          <RadioButton
+                            id='remotePlatform'
+                            name='Muu, mikä?'
+                            onChange={() => setFieldValue('remotePlatform', parseInt(eventPlatforms.length+1))}
+                          />
+                          {values.remotePlatform === parseInt(eventPlatforms.length + 1) ?
+                            <Field
+                              component={TextField}
+                              fieldName='otherRemotePlatformOption'
+                            /> : null
+                          }
                         </div>
                       </div>
                       :null
                     }
 
-                    <Field
-                      handleChange={handleChange}
-                      handleBlur={handleBlur}
-                      values={values}
-                      touched={touched}
-                      errors={errors}
-                      component={TextField}
-                      label='Varaajan nimi '
-                      fieldName='clientName'
-                    />
+                    <Field component={TextField} label='Varaajan nimi' fieldName='clientName' />
 
-                    <Field
-                      handleChange={handleChange}
-                      handleBlur={handleBlur}
-                      values={values}
-                      touched={touched}
-                      errors={errors}
-                      component={TextField}
-                      label='Oppimisyhteisön nimi '
-                      fieldName='schoolName'
-                    />
+                    <Field component={TextField} label='Oppimisyhteisön nimi' fieldName='schoolName' />
 
-                    <Field
-                      handleChange={handleChange}
-                      handleBlur={handleBlur}
-                      values={values}
-                      touched={touched}
-                      errors={errors}
-                      component={TextField}
-                      label='Oppimisyhteisön paikkakunta '
-                      fieldName='schoolLocation'
-                    />
+                    <Field component={TextField} label='Oppimisyhteisön paikkakunta' fieldName='schoolLocation' />
 
-                    <Field
-                      handleChange={handleChange}
-                      handleBlur={handleBlur}
-                      values={values}
-                      touched={touched}
-                      errors={errors}
-                      component={TextField}
-                      label='Varaajan sähköpostiosoite '
-                      fieldName='clientEmail'
-                    />
+                    <Field component={TextField} label='Varaajan sähköpostiosoite' fieldName='clientEmail' />
 
-                    <Field
-                      handleChange={handleChange}
-                      handleBlur={handleBlur}
-                      values={values}
-                      touched={touched}
-                      errors={errors}
-                      component={TextField}
-                      label='Sähköpostiosoite uudestaan '
-                      fieldName='verifyEmail'
-                    />
+                    <Field component={TextField} label='Sähköpostiosoite uudestaan' fieldName='verifyEmail' />
 
-                    <Field
-                      handleChange={handleChange}
-                      handleBlur={handleBlur}
-                      values={values}
-                      touched={touched}
-                      errors={errors}
-                      component={TextField}
-                      label='Varaajan puhelinnumero '
-                      fieldName='clientPhone'
-                    />
+                    <Field component={TextField} label='Varaajan puhelinnumero' fieldName='clientPhone' />
 
                     <hr></hr>
                     <div className="field is-grouped" style={{ justifyContent: 'space-between' }}>
 
-                      <Field
-                        handleChange={handleChange}
-                        handleBlur={handleBlur}
-                        values={values}
-                        touched={touched}
-                        errors={errors}
-                        component={TextField}
-                        style={{ width: 360 }}
-                        label='Luokka-aste/kurssi '
-                        fieldName='visitGrade'
-                      />
+                      <Field component={TextField} style={{ width: 360 }} label='Luokka-aste/kurssi' fieldName='visitGrade' />
 
-                      <Field
-                        handleChange={handleChange}
-                        handleBlur={handleBlur}
-                        values={values}
-                        touched={touched}
-                        errors={errors}
-                        component={TextField}
-                        type='number'
-                        label='Osallistujamäärä '
-                        fieldName='participants'
-                      />
+                      <Field component={TextField} type='number' label='Osallistujamäärä ' fieldName='participants' />
 
                     </div>
 
@@ -283,36 +180,28 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                         <label className="label" htmlFor="extras">Valitse haluamasi lisäpalvelut </label>
 
                         {event.extras.map(extra =>
-                          <div className="control" key={extra.id}>
-                            <label className="privacyPolicy" >
-                              <input
-                                type="checkbox"
-                                checked={values.extras.includes(extra.id)}
-                                onChange={() => {
-                                  let newValueForExtras = values.extras
-                                  if (values.extras.includes(extra.id)) {
-                                    newValueForExtras = values.extras.filter(e => e !== extra.id)
-                                    setFieldValue('extras', newValueForExtras)
-
-                                  } else {
-                                    newValueForExtras = values.extras.concat(extra.id)
-                                    setFieldValue('extras', newValueForExtras)
-                                  }
-                                  const startTimeAsDate = (typeof values.startTime === 'object') ? values.startTime : new Date(selectedEvent.start)
-                                  if (typeof values.startTime === 'string') {
-                                    startTimeAsDate.setHours(values.startTime.slice(0,2))
-                                    startTimeAsDate.setMinutes(values.startTime.slice(3,5))
-                                  }
-                                  const endTime = calculateVisitEndTime(startTimeAsDate, values, selectedEvent, newValueForExtras)
-                                  setFieldValue('finalEndTime', endTime)
-                                }}
-                              />
-                              {` ${extra.name}`}, pituus lähi: {extra.inPersonLength} min / etä: {extra.remoteLength} min
-                            </label>
-                          </div>
+                          <Field
+                            key={extra.id}
+                            component={CheckBox}
+                            onChange={() => {
+                              let newValueForExtras = values.extras
+                              if (values.extras.includes(extra.id)) newValueForExtras = values.extras.filter(e => e !== extra.id)
+                              else newValueForExtras = values.extras.concat(extra.id)
+                              setFieldValue('extras', newValueForExtras)
+                              const startTimeAsDate = (typeof values.startTime === 'object') ? values.startTime : new Date(selectedEvent.start)
+                              if (typeof values.startTime === 'string') {
+                                startTimeAsDate.setHours(values.startTime.slice(0,2))
+                                startTimeAsDate.setMinutes(values.startTime.slice(3,5))
+                              }
+                              const endTime = calculateVisitEndTime(startTimeAsDate, values, selectedEvent, newValueForExtras)
+                              setFieldValue('finalEndTime', endTime)
+                            }}
+                            label={` ${extra.name}, pituus lähi: ${extra.inPersonLength} min / etä: ${extra.remoteLength} min`}
+                          />
                         )}
                       </div>
                     )}
+
                     {touched.extras && errors.startTime ? (
                       <p className="help is-danger">Tarkista että varaus lisäpalveluineen mahtuu annettuihin aikarajoihin!</p>
                     ) : null}
@@ -344,53 +233,31 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
 
                     <hr></hr>
 
-                    <div className="field">
-                      <div id="checkbox-group"></div>
-                      <div className="control">
-                        <label className="privacyPolicy">
-                          <input
-                            type="checkbox" name="privacyPolicy" checked = {values.privacyPolicy}
-                            onChange={() => {
-                              touched.privacyPolicy = !values.privacyPolicy
-                              setFieldValue('privacyPolicy', !values.privacyPolicy)
-                            }} /> Hyväksyn, että tietoni tallennetaan ja käsitellään <a href="https://www2.helsinki.fi/fi/tiedekasvatus/tietosuojailmoitus-opintokaynnit" target="_blank" rel="noopener noreferrer">tietosuojailmoituksen</a> mukaisesti.
+                    <Field
+                      label={
+                        <label>
+                           Hyväksyn, että tietoni tallennetaan ja käsitellään <a href="https://www2.helsinki.fi/fi/tiedekasvatus/tietosuojailmoitus-opintokaynnit" target="_blank" rel="noopener noreferrer">tietosuojailmoituksen</a> mukaisesti.
                         </label>
-                      </div>
-                    </div>
-                    {touched.privacyPolicy && errors.privacyPolicy ? (
-                      <p className="help is-danger">{errors.privacyPolicy}</p>
-                    ) : null}
+                      }
+                      fieldName='privacyPolicy'
+                      component={CheckBox}
+                    />
 
-                    <div className="field">
-                      <div id="checkbox-group"></div>
-                      <div className="control">
-                        <label className="dataUseAgreement">
-                          <input
-                            type="checkbox" name="dataUseAgreement" checked = {values.dataUseAgreement}
-                            onChange={() => {
-                              touched.dataUseAgreement = !values.dataUseAgreement
-                              setFieldValue('dataUseAgreement', !values.dataUseAgreement)
-                            }} /> Hyväksyn, että antamiani tietoja voidaan hyödyntää tutkimuskäytössä.
-                        </label>
-                      </div>
-                    </div>
+                    <Field
+                      label='Hyväksyn, että antamiani tietoja voidaan hyödyntää tutkimuskäytössä.'
+                      fieldName='dataUseAgreement'
+                      component={CheckBox}
+                    />
 
-                    <div className="field">
-                      <div id="checkbox-group"></div>
-                      <div className="control">
-                        <label className="remoteVisitGuidelines">
-                          <input
-                            type="checkbox" name="remoteVisitGuidelines" checked = {values.remoteVisitGuidelines}
-                            onChange={() => {
-                              touched.remoteVisitGuidelines = !values.remoteVisitGuidelines
-                              setFieldValue('remoteVisitGuidelines', !values.remoteVisitGuidelines)
-                            }} /> Olen lukenut <a href="https://www2.helsinki.fi/fi/tiedekasvatus/opettajille-ja-oppimisyhteisoille/varaa-opintokaynti">opintokäyntien ohjeistuksen</a> ja hyväksyn käytänteet.
+                    <Field
+                      label={
+                        <label>
+                          Olen lukenut <a href="https://www2.helsinki.fi/fi/tiedekasvatus/opettajille-ja-oppimisyhteisoille/varaa-opintokaynti">opintokäyntien ohjeistuksen</a> ja hyväksyn käytänteet.
                         </label>
-                      </div>
-                    </div>
-                    {touched.remoteVisitGuidelines && errors.remoteVisitGuidelines ? (
-                      <p className="help is-danger">{errors.remoteVisitGuidelines}</p>
-                    ) : null}
+                      }
+                      fieldName='remoteVisitGuidelines'
+                      component={CheckBox}
+                    />
 
                     <button id="create" className="button luma primary" type='submit'>Tallenna</button>
                     <button className="button luma" onClick={cancel}>Poistu</button>

@@ -177,7 +177,8 @@ export const CREATE_EVENT = gql`
       extras {
         name,
         inPersonLength,
-        remoteLength
+        remoteLength,
+        id
       }
       duration
     }
