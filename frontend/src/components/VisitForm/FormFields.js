@@ -40,13 +40,13 @@ export const RadioButton = ({ onChange, name, id }) => {
 }
 
 export const CheckBox = (field) => {
-  const { form, label, fieldName, onChange } = field
+  const { form, label, fieldName, onChange, className } = field
   const { handleChange, values, touched, errors } = form
   return (
     <>
       <div className="field">
         <div className="control">
-          <label className="privacyPolicy">
+          <label className={className}>
             <input
               type="checkbox"
               name={fieldName}

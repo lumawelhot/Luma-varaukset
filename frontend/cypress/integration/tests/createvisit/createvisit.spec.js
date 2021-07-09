@@ -140,8 +140,8 @@ And('unavailable event page contains correct info text', () => {
 })
 
 And('valid information is entered and visit mode selected', () => {
-  cy.get(':nth-child(1) > :nth-child(2) > label').click()
-  cy.get(':nth-child(2) > :nth-child(2) > label > input').click()
+  cy.get('.box.luma > :nth-child(1) > :nth-child(2) > input').click()
+  cy.get(':nth-child(2) > :nth-child(2) > .control > input').click()
   cy.get('#clientName').type('Teacher')
   cy.get('#schoolName').type('School')
   cy.get('#schoolLocation').type('Location')

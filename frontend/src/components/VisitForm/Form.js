@@ -239,6 +239,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                            Hyväksyn, että tietoni tallennetaan ja käsitellään <a href="https://www2.helsinki.fi/fi/tiedekasvatus/tietosuojailmoitus-opintokaynnit" target="_blank" rel="noopener noreferrer">tietosuojailmoituksen</a> mukaisesti.
                         </label>
                       }
+                      className='privacyPolicy'
                       fieldName='privacyPolicy'
                       component={CheckBox}
                     />
@@ -255,6 +256,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                           Olen lukenut <a href="https://www2.helsinki.fi/fi/tiedekasvatus/opettajille-ja-oppimisyhteisoille/varaa-opintokaynti">opintokäyntien ohjeistuksen</a> ja hyväksyn käytänteet.
                         </label>
                       }
+                      className='remoteVisitGuidelines'
                       fieldName='remoteVisitGuidelines'
                       component={CheckBox}
                     />
