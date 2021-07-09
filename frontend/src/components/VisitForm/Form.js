@@ -1,9 +1,11 @@
 import React from 'react'
-import { Formik } from 'formik'
+import { Formik, Field } from 'formik'
 import format from 'date-fns/format'
 import { Tooltip } from 'antd'
 import TimePicker from '../Pickers/TimePicker'
 import { add } from 'date-fns'
+import { TextField } from './FormFields'
+import InfoBox from './InfoBox'
 
 let selectedEvent
 let eventPlatforms
@@ -92,25 +94,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
             <div className="container">
               <div className="columns is-centered">
                 <div className="section">
-                  <div className="title">Varaa vierailu </div>
-                  <div className="box">
-                    <p className="subtitle"><strong>Vierailun tiedot</strong></p>
-                    <p><strong>Nimi:</strong> {event.title}</p>
-                    <p><strong>Kuvaus:</strong> {event.desc || 'Ei kuvausta'}</p>
-                    <p><strong>Tiedeluokka:</strong> {eventClass}</p>
-                    <div><strong>Tarjolla seuraaville luokka-asteille:</strong> {eventGrades}
-                    </div>
-                    <div><strong>Vierailu tarjolla: </strong>
-                      {event.inPersonVisit ? 'Lähiopetuksena' : <></>}
-                      {event.inPersonVisit && event.remoteVisit && ' ja etäopetuksena'}
-                      {event.remoteVisit && !event.inPersonVisit? 'Etäopetuksena' : <></>}
-                    </div>
-                    <p><strong>Vierailun kesto:</strong> {event.duration} min</p>
-                    <p><strong>Vierailun aikaisin alkamisaika:</strong> {format(event.start, 'd.M.yyyy, HH:mm')}</p>
-                    <p><strong>Vierailun myöhäisin päättymisaika:</strong> {format(event.end, 'd.M.yyyy, HH:mm')}</p>
-                  </div>
-
-                  <br />
+                  <InfoBox event={event} eventClass={eventClass} eventGrades={eventGrades} />
                   <h1 className="title">Syötä varauksen tiedot</h1>
 
                   <form onSubmit={handleSubmit} className="box luma">
@@ -196,155 +180,104 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                           </label>
                         </div>
                       </div>
-                      :null }
+                      :null
+                    }
 
-                    <div className="field">
-                      <label className="label" htmlFor="clientName">Varaajan nimi </label>
-                      <div className="control">
+                    <Field
+                      handleChange={handleChange}
+                      handleBlur={handleBlur}
+                      values={values}
+                      touched={touched}
+                      errors={errors}
+                      component={TextField}
+                      label='Varaajan nimi '
+                      fieldName='clientName'
+                    />
 
-                        <input
-                          id="clientName"
-                          name="clientName"
-                          type="input"
-                          className="input"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.clientName}
-                        />
-                      </div>
-                    </div>
-                    {touched.clientName && errors.clientName ? (
-                      <p className="help is-danger">{errors.clientName}</p>
-                    ) : null}
+                    <Field
+                      handleChange={handleChange}
+                      handleBlur={handleBlur}
+                      values={values}
+                      touched={touched}
+                      errors={errors}
+                      component={TextField}
+                      label='Oppimisyhteisön nimi '
+                      fieldName='schoolName'
+                    />
 
-                    <div className="field">
-                      <label className="label" htmlFor="schoolName">Oppimisyhteisön nimi </label>
-                      <div className="control">
-                        <input
-                          id="schoolName"
-                          name="schoolName"
-                          type="input"
-                          className="input"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.schoolName}
-                        />
-                      </div>
-                    </div>
-                    {touched.schoolName && errors.schoolName ? (
-                      <p className="help is-danger">{errors.schoolName}</p>
-                    ) : null}
+                    <Field
+                      handleChange={handleChange}
+                      handleBlur={handleBlur}
+                      values={values}
+                      touched={touched}
+                      errors={errors}
+                      component={TextField}
+                      label='Oppimisyhteisön paikkakunta '
+                      fieldName='schoolLocation'
+                    />
 
-                    <div className="field">
-                      <label htmlFor="schoolLocation" className="label">Oppimisyhteisön paikkakunta </label>
-                      <div className="control">
-                        <input
-                          id="schoolLocation"
-                          name="schoolLocation"
-                          type="input"
-                          className="input"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.schoolLocation}
-                        />
-                      </div>
-                    </div>
-                    {touched.schoolLocation && errors.schoolLocation ? (
-                      <p className="help is-danger">{errors.schoolLocation}</p>
-                    ) : null}
+                    <Field
+                      handleChange={handleChange}
+                      handleBlur={handleBlur}
+                      values={values}
+                      touched={touched}
+                      errors={errors}
+                      component={TextField}
+                      label='Varaajan sähköpostiosoite '
+                      fieldName='clientEmail'
+                    />
 
-                    <div className="field">
-                      <label htmlFor="clientEmail" className="label">Varaajan sähköpostiosoite </label>
-                      <div className="control">
-                        <input
-                          id="clientEmail"
-                          name="clientEmail"
-                          type="email"
-                          className="input"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.clientEmail}
-                        />
-                      </div>
-                      {touched.clientEmail && errors.clientEmail ? (
-                        <p className="help is-danger">{errors.clientEmail}</p>
-                      ) : null}
-                    </div>
+                    <Field
+                      handleChange={handleChange}
+                      handleBlur={handleBlur}
+                      values={values}
+                      touched={touched}
+                      errors={errors}
+                      component={TextField}
+                      label='Sähköpostiosoite uudestaan '
+                      fieldName='verifyEmail'
+                    />
 
-                    <div className="field">
-                      <label htmlFor="verifyEmail" className="label">Sähköpostiosoite uudestaan </label>
-                      <div className="control">
-                        <input
-                          id="verifyEmail"
-                          name="verifyEmail"
-                          type="email"
-                          className="input"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.verifyEmail}
-                        />
-                      </div>
-                      {touched.verifyEmail && errors.verifyEmail ? (
-                        <p className="help is-danger">{errors.verifyEmail}</p>
-                      ) : null}
-                    </div>
+                    <Field
+                      handleChange={handleChange}
+                      handleBlur={handleBlur}
+                      values={values}
+                      touched={touched}
+                      errors={errors}
+                      component={TextField}
+                      label='Varaajan puhelinnumero '
+                      fieldName='clientPhone'
+                    />
 
-                    <div className="field">
-                      <label htmlFor="clientPhone" className="label">Varaajan puhelinnumero </label>
-                      <div className="control">
-
-                        <input
-                          id="clientPhone"
-                          name="clientPhone"
-                          type="input"
-                          className="input"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.clientPhone}
-                        />
-                      </div>
-                    </div>
-                    {touched.clientPhone && errors.clientPhone ? (
-                      <p className="help is-danger">{errors.clientPhone}</p>
-                    ) : null}
                     <hr></hr>
                     <div className="field is-grouped" style={{ justifyContent: 'space-between' }}>
-                      <div className="field" style={{ width: 360 }}>
-                        <label htmlFor="visitGrade" className="label">Luokka-aste/kurssi </label>
-                        <div className="control">
-                          <input
-                            id="visitGrade"
-                            name="visitGrade"
-                            type="input"
-                            className="input"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.visitGrade}
-                          />
-                        </div>
-                      </div>
-                      {touched.visitGrade && errors.visitGrade ? (
-                        <p className="help is-danger">{errors.visitGrade}</p>
-                      ) : null}
 
-                      <div className="field">
-                        <label htmlFor="participants" className="label">Osallistujamäärä </label>
-                        <div className="control">
-                          <input
-                            id="participants"
-                            name="participants"
-                            type="number"
-                            className="input"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.participants}
-                          />
-                        </div>
-                      </div>
-                      {touched.participants && errors.participants ? (
-                        <p className="help is-danger">{errors.participants}</p>
-                      ) : null}
+                      <Field
+                        handleChange={handleChange}
+                        handleBlur={handleBlur}
+                        values={values}
+                        touched={touched}
+                        errors={errors}
+                        component={TextField}
+                        style={{ width: 360 }}
+                        label='Luokka-aste/kurssi '
+                        fieldName='visitGrade'
+                      />
+
+                      <Field
+                        handleChange={handleChange}
+                        handleBlur={handleBlur}
+                        values={values}
+                        touched={touched}
+                        errors={errors}
+                        component={TextField}
+                        type='number'
+                        label='Osallistujamäärä '
+                        fieldName='participants'
+                      />
+
                     </div>
+
                     {!!event.extras.length && (
                       <div className="field">
                         <label className="label" htmlFor="extras">Valitse haluamasi lisäpalvelut </label>
