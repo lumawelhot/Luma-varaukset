@@ -241,21 +241,22 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                       }
                       className='privacyPolicy'
                       fieldName='privacyPolicy'
+                      style={{ marginBottom: 7 }}
                       component={CheckBox}
                     />
-
                     <Field
                       label='Hyväksyn, että antamiani tietoja voidaan hyödyntää tutkimuskäytössä.'
                       fieldName='dataUseAgreement'
+                      style={{ marginBottom: 7 }}
                       component={CheckBox}
                     />
-
                     <Field
                       label={
                         <label>
                           Olen lukenut <a href="https://www2.helsinki.fi/fi/tiedekasvatus/opettajille-ja-oppimisyhteisoille/varaa-opintokaynti">opintokäyntien ohjeistuksen</a> ja hyväksyn käytänteet.
                         </label>
                       }
+                      style={{ marginBottom: 7 }}
                       className='remoteVisitGuidelines'
                       fieldName='remoteVisitGuidelines'
                       component={CheckBox}

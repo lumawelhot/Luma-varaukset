@@ -1,23 +1,14 @@
 import React from 'react'
 
-export const TextField = (field) => {
-  const { form, label, fieldName, style, type='input' } = field
-  const { handleChange, handleBlur, values, touched, errors } = form
+const FieldProvider = ({ field, component }) => {
+  const { form, label, fieldName, style } = field
+  const { touched, errors } = form
   return (
     <>
       <div className="field" style={style}>
         <label className="label" htmlFor={fieldName}>{label}</label>
         <div className="control">
-
-          <input
-            id={fieldName}
-            name={fieldName}
-            type={type}
-            className="input"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values[fieldName]}
-          />
+          {component}
         </div>
       </div>
       {touched[fieldName] && errors[fieldName] ? (
@@ -27,6 +18,48 @@ export const TextField = (field) => {
   )
 }
 
+export const TextField = (field) => {
+  const { form, fieldName, type='input', className } = field
+  const { handleChange, handleBlur, values } = form
+  return (
+    <FieldProvider
+      field={field}
+      component={
+        <input
+          id={fieldName}
+          name={fieldName}
+          type={type}
+          className={`input ${className}`}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          value={values[fieldName]}
+        />
+      }
+    />
+  )
+}
+
+export const TextArea = (field) => {
+  const { form, fieldName, type='input', className, placeholder } = field
+  const { handleChange, handleBlur, values } = form
+  return (
+    <FieldProvider
+      field={field}
+      component={
+        <textarea
+          id={fieldName}
+          name={fieldName}
+          type={type}
+          className={`input ${className}`}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          value={values[fieldName]}
+          placeholder={placeholder}
+        />
+      }
+    />
+  )
+}
 
 export const RadioButton = ({ onChange, name, id }) => {
   return (
@@ -40,21 +73,19 @@ export const RadioButton = ({ onChange, name, id }) => {
 }
 
 export const CheckBox = (field) => {
-  const { form, label, fieldName, onChange, className } = field
+  const { form, label, fieldName, onChange, className, style, index } = field
   const { handleChange, values, touched, errors } = form
   return (
     <>
-      <div className="field">
-        <div className="control">
-          <label className={className}>
-            <input
-              type="checkbox"
-              name={fieldName}
-              checked = {values[fieldName]}
-              onChange={onChange ? onChange : handleChange}
-            /> {label}
-          </label>
-        </div>
+      <div className="control" style={style}>
+        <label className={className}>
+          <input
+            type="checkbox"
+            name={fieldName}
+            checked = {index !== undefined ? values[fieldName][index] : values[fieldName]}
+            onChange={onChange ? onChange : handleChange}
+          /> {label}
+        </label>
       </div>
       {touched[fieldName] && errors[fieldName] ? (
         <p className="help is-danger">{errors[fieldName]}</p>
