@@ -103,46 +103,49 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                   <form onSubmit={handleSubmit} className="box luma">
 
                     {event.inPersonVisit && event.remoteVisit ? (
-                      <div className="field">
+                      <>
                         <label className="label">Valitse etä- tai lähiopetus</label>
-                        <RadioButton
+                        <Field
+                          label='Etävierailu'
                           id='visitMode'
-                          name='Etävierailu'
                           onChange={() => setFieldValue('visitMode', '1')}
+                          component={RadioButton}
                         />
-                        <RadioButton
+                        <Field
+                          label='Lähivierailu'
                           id='visitMode'
-                          name='Lähivierailu'
                           onChange={() => setFieldValue('visitMode', '2')}
+                          component={RadioButton}
                         />
-                      </div>
+                      </>
                     ) : null}
                     {touched.clientName && errors.location ? (
                       <p className="help is-danger">{errors.location}</p>
                     ) : null}
 
-                    {values.visitMode === '1' || (values.visitMode === '0' && event.remoteVisit && !event.inPersonVisit)
-                      ?
-                      <div className="field">
+                    {values.visitMode === '1' || (values.visitMode === '0' && event.remoteVisit && !event.inPersonVisit) ?
+                      <>
                         <label className="label" id="radio-group">Valitse haluamasi etäyhteysalusta</label>
                         {eventPlatforms.map((platform, index) => {
                           return (
-                            <div key={index} className="control">
-                              <RadioButton
-                                id='remotePlatform'
-                                name={platform}
-                                onChange={() => setFieldValue('remotePlatform', index.toString())}
-                              />
-                            </div>
+                            <Field
+                              key={index}
+                              id='remotePlatform'
+                              label={platform}
+                              onChange={() => setFieldValue('remotePlatform', index.toString())}
+                              component={RadioButton}
+                            />
                           )
                         })}
 
                         <div className="control">
-                          <RadioButton
+                          <Field
                             id='remotePlatform'
-                            name='Muu, mikä?'
+                            label='Muu, mikä?'
                             onChange={() => setFieldValue('remotePlatform', parseInt(eventPlatforms.length+1))}
+                            component={RadioButton}
                           />
+
                           {values.remotePlatform === parseInt(eventPlatforms.length + 1) ?
                             <Field
                               component={TextField}
@@ -150,7 +153,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                             /> : null
                           }
                         </div>
-                      </div>
+                      </>
                       :null
                     }
 

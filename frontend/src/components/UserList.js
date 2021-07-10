@@ -36,7 +36,6 @@ const UserList = ({ sendMessage, currentUser }) => {
       }
     })
   }
-  console.log(currentUser)
 
   return (
     <div className="section">

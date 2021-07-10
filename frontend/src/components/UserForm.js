@@ -1,14 +1,12 @@
 import { useMutation } from '@apollo/client'
-import React, { useEffect, useState } from 'react'
+import { Field, Formik } from 'formik'
+import React, { useEffect } from 'react'
 import { useHistory } from 'react-router'
 import { CREATE_USER, USERS } from '../graphql/queries'
-import { useField } from '../hooks'
+import { RadioButton, TextField } from './VisitForm/FormFields'
 
 const UserForm = ({ sendMessage }) => {
   const history = useHistory()
-  const username = useField('')
-  const password = useField('password')
-  const [isAdmin, setPermissions] = useState(null)
 
   const [createUser, result] = useMutation(CREATE_USER, {
     refetchQueries: [{ query: USERS }],
@@ -22,17 +20,16 @@ const UserForm = ({ sendMessage }) => {
     }
   }, [result])
 
-  const submit = (event) => {
-    event.preventDefault()
+  const onSubmit = (values) => {
     createUser({
       variables: {
-        username: username.field.value,
-        password: password.field.value,
-        isAdmin
+        username: values.username,
+        password: values.password,
+        isAdmin: values.isAdmin
       }
     }).catch(() => sendMessage('Virheellinen syöte!', 'danger'))
-    username.clear()
-    password.clear()
+    values.username = ''
+    values.password = ''
   }
 
   const cancel = (event) => {
@@ -41,51 +38,72 @@ const UserForm = ({ sendMessage }) => {
     history.push('/')
   }
 
-  const handlePermissionChange = event => {
-    const { value } = event.target
-    if (value === 'admin') setPermissions(true)
-    else if (value === 'employee') setPermissions(false)
-  }
-
-  const style = { width: 500 }
   return (
-    <div className="container">
-      <div className="columns is-centered">
-        <div className="section">
-          <div className="title">Luo uusi käyttäjä</div>
-          <form onSubmit={submit} >
-            <div className="field">
-              <label className="label">Käyttäjänimi</label>
-              <div className="control">
-                <input id="username" className="input" {...username.field} style={style} />
+    <Formik
+      initialValues={{
+        username: '',
+        password: '',
+        isAdmin: null,
+      }}
+      onSubmit={onSubmit}
+    >
+      {({ handleSubmit, setFieldValue }) => {
+        return (
+          <div className="container">
+            <div className="columns is-centered">
+              <div className="section">
+                <div className="title">Luo uusi käyttäjä</div>
+                <form onSubmit={handleSubmit} >
+                  <Field
+                    style={{ width: 500 }}
+                    label='Käyttäjänimi'
+                    fieldName='username'
+                    component={TextField}
+                  />
+                  <Field
+                    label='Salasana'
+                    fieldName='password'
+                    type='password'
+                    component={TextField}
+                  />
+                  <label className="label">Käyttäjärooli</label>
+                  <Field
+                    label='Ylläpitäjä'
+                    id='permission'
+                    onChange={() => setFieldValue('isAdmin', true)}
+                    component={RadioButton}
+                  />
+                  <Field
+                    style={{ marginBottom: 10 }}
+                    label='Työntekijä'
+                    id='permission'
+                    onChange={() => setFieldValue('isAdmin', false)}
+                    component={RadioButton}
+                  />
+                  <div className="field is-grouped">
+                    <div className="control">
+                      <button
+                        id="create"
+                        className="button luma primary"
+                        type='submit'
+                      > Tallenna käyttäjä
+                      </button>
+                    </div>
+                    <div className="control">
+                      <button
+                        className="button luma"
+                        onClick={cancel}
+                      > Poistu
+                      </button>
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
-            <div className="field">
-              <label className="label">Salasana</label>
-              <div className="control">
-                <input id="password" className="input" {...password.field} style={style} />
-              </div>
-            </div>
-            <div className="field">
-              <label className="label">Käyttäjärooli</label>
-              <div className="control">
-                <input id="admin" type="radio" value="admin" name="permission" onChange={handlePermissionChange} /> Ylläpitäjä
-                <p></p>
-                <input type="radio" value="employee" name="permission" onChange={handlePermissionChange} /> Työntekijä
-              </div>
-            </div>
-            <div className="field is-grouped">
-              <div className="control">
-                <button id="create" className="button luma primary" type='submit'>Tallenna käyttäjä</button>
-              </div>
-              <div className="control">
-                <button className="button luma" onClick={cancel}>Poistu</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+          </div>
+        )
+      }}
+    </Formik>
   )
 }
 
