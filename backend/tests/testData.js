@@ -1,4 +1,4 @@
-const { set, subDays, setMilliseconds, setSeconds, setMinutes, setHours, add } = require('date-fns')
+const { set, subDays, setMilliseconds, setSeconds, setMinutes, setHours, add, sub } = require('date-fns')
 
 const details = {
   clientName: 'Teacher',
@@ -149,6 +149,36 @@ const unvailableForLoggedInUserEventData = {
   extras: []
 }
 
+const mailSenderTestDetails = {
+  title: 'MailSender!',
+  resourceids: [1],
+  grades: [2],
+  desc: '3',
+  booked: false,
+  inPersonVisit: false,
+  remoteVisit: true,
+  waitingTime: 15,
+  duration: 75,
+}
+
+const eventDayAfter = {
+  start: setHours(add(new Date(), { days: 1 }), 9).toISOString(),
+  end: setHours(add(new Date(), { days: 1 }), 15).toISOString(),
+  ...mailSenderTestDetails
+}
+
+const eventDayBefore = {
+  start: setHours(sub(new Date(), { days: 1 }), 9).toISOString(),
+  end: setHours(sub(new Date(), { days: 1 }), 15).toISOString(),
+  ...mailSenderTestDetails
+}
+
+const eventNow = {
+  start: setHours(new Date(), 9).toISOString(),
+  end: setHours(new Date(), 15).toISOString(),
+  ...mailSenderTestDetails
+}
+
 module.exports = {
   details,
   eventDetails1,
@@ -159,5 +189,8 @@ module.exports = {
   invalidEventFieldDetails,
   availableEventData,
   availableForLoggedInEventData,
-  unvailableForLoggedInUserEventData
+  unvailableForLoggedInUserEventData,
+  eventDayAfter,
+  eventDayBefore,
+  eventNow
 }
