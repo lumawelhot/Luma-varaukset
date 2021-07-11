@@ -1,13 +1,12 @@
 import { useMutation } from '@apollo/client'
+import { Field, Formik } from 'formik'
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router'
 import { LOGIN } from '../graphql/queries'
-import { useField } from '../hooks'
+import { TextField } from './VisitForm/FormFields'
 
 const LoginForm = ({ getUser, sendMessage }) => {
   const history = useHistory()
-  const username = useField('')
-  const password = useField('password')
   const [login, result] = useMutation(LOGIN, {
     onError: (error) => sendMessage(error.graphQLErrors[0].message, 'danger'),
   })
@@ -21,16 +20,15 @@ const LoginForm = ({ getUser, sendMessage }) => {
     }
   }, [result.data])
 
-  const submit = (event) => {
-    event.preventDefault()
+  const submit = (values) => {
     login({
       variables: {
-        username: username.field.value,
-        password: password.field.value,
+        username: values.username,
+        password: values.password,
       },
     })
-    username.clear()
-    password.clear()
+    values.username = ''
+    values.password = ''
   }
 
   const cancel = (event) => {
@@ -38,53 +36,52 @@ const LoginForm = ({ getUser, sendMessage }) => {
     history.push('/')
   }
 
-  const style = { width: 500 }
   return (
-    <div className="container">
-      <div className="columns is-centered">
-        <div className="section">
-          <div className="title">Kirjautuminen (Luma-Varaukset)</div>
-          <form onSubmit={submit}>
-            <div className="field">
-              <label className="label">Käyttäjänimi</label>
-              <div className="control">
-                <input
-                  id="username"
-                  type="text"
-                  className="input"
-                  {...username.field}
-                  style={style}
-                />
+    <Formik
+      initialValues={{
+        username: '',
+        password: ''
+      }}
+      onSubmit={submit}
+    >
+      {({ handleSubmit }) => {
+        return (
+          <div className="container">
+            <div className="columns is-centered">
+              <div className="section">
+                <div className="title">Kirjautuminen (Luma-Varaukset)</div>
+                <form onSubmit={handleSubmit}>
+                  <Field
+                    label='Käyttäjänimi'
+                    component={TextField}
+                    fieldName='username'
+                  />
+                  <Field
+                    style={{ width: 500 }}
+                    label='Salasana'
+                    type='password'
+                    component={TextField}
+                    fieldName='password'
+                  />
+                  <div className="field is-grouped">
+                    <div className="control">
+                      <button id="login" className="button luma primary" type="submit">
+                        Kirjaudu sisään
+                      </button>
+                    </div>
+                    <div className="control">
+                      <button className="button luma" onClick={cancel}>
+                        Poistu
+                      </button>
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
-            <div className="field">
-              <label className="label">Salasana</label>
-              <div className="control">
-                <input
-                  id="password"
-                  type="password"
-                  className="input"
-                  {...password.field}
-                  style={style}
-                />
-              </div>
-            </div>
-            <div className="field is-grouped">
-              <div className="control">
-                <button id="login" className="button luma primary" type="submit">
-                  Kirjaudu sisään
-                </button>
-              </div>
-              <div className="control">
-                <button className="button luma" onClick={cancel}>
-                  Poistu
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+          </div>
+        )
+      }}
+    </Formik>
   )
 }
 

@@ -12,7 +12,7 @@ Given('I am on the create user page', () => {
 When('valid information are entered', () => {
   cy.get('#username').type('Tester')
   cy.get('#password').type('secret')
-  cy.get('#admin').click()
+  cy.get(':nth-child(4) > label > input').click()
   cy.get('#create').click()
   cy.wait(2000)
 })
@@ -26,7 +26,7 @@ Then('a user is succesfully created', () => {
 When('too short username is entered', () => {
   cy.get('#username').type('Test')
   cy.get('#password').type('secret')
-  cy.get('#admin').click()
+  cy.get(':nth-child(4) > label > input').click()
   cy.get('#create').click()
 })
 
@@ -74,5 +74,5 @@ When('I press create user button', () => {
 })
 
 Then('the user creation page is shown', () => {
-  cy.get(':nth-child(3) > .label').should('have.text', 'Käyttäjärooli')
+  cy.get('form > :nth-child(3)').should('have.text', 'Käyttäjärooli')
 })
