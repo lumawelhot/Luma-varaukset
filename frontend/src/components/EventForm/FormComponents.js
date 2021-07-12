@@ -1,5 +1,8 @@
+import { set } from 'date-fns'
 import { Field } from 'formik'
 import React from 'react'
+import DatePicker from '../Pickers/DatePicker'
+import TimePicker from '../Pickers/TimePicker'
 import { CheckBox, TextField } from '../VisitForm/FormFields'
 
 const platformList = [
@@ -168,5 +171,69 @@ export const AdditionalServices = ({ extras, values, setFieldValue }) => {
         </>
       }
     </>
+  )
+}
+
+export const TimePick = ({ form, fieldName, label, disabledHours }) => {
+  const { touched, setFieldValue, values, errors, handleBlur } = form
+  return (
+    <div className="field">
+      <label className="label" htmlFor="fieldName">
+        {label}
+      </label>
+      <div className="control">
+        <TimePicker
+          className={`input ${touched[fieldName]
+            ? errors[fieldName]
+              ? 'is-danger'
+              : 'is-success'
+            : ''
+          }`}
+          disabledHours={disabledHours}
+          value={values[fieldName]}
+          onChange={value => setFieldValue(fieldName, value)}
+          onBlur={handleBlur}/>
+      </div>
+      {touched[fieldName] && errors[fieldName] ? (
+        <p className="help is-danger">{errors[fieldName]}</p>
+      ) : null}
+    </div>
+  )
+}
+
+export const DatePick = ({ form }) => {
+  const { touched, errors, setFieldValue, values, handleBlur } = form
+  return (
+    <div className="field">
+      <label className="label" htmlFor="date">
+        Päivämäärä
+      </label>
+      <div className="control">
+        <DatePicker
+          className={`input ${touched.date
+            ? errors.date
+              ? 'is-danger'
+              : 'is-success'
+            : ''
+          }`}
+          format={'d.M.yyyy'}
+          value={values.date}
+          onChange={value => {
+            const date = value.getDate()
+            const month = value.getMonth()
+            const year = value.getFullYear()
+            const newStartTime = set(values.startTime, { year, month, date })
+            const newEndTime = set(values.endTime, { year, month, date })
+            setFieldValue('startTime', newStartTime)
+            setFieldValue('endTime', newEndTime)
+            setFieldValue('date', value)
+          }}
+          onBlur={handleBlur}
+        />
+      </div>
+      {touched.date && errors.date ? (
+        <p className="help is-danger">{errors.date}</p>
+      ) : null}
+    </div>
   )
 }
