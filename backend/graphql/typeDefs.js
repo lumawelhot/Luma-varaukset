@@ -102,6 +102,23 @@ const typeDefs = gql`
       extras: [ID]
       duration: Int!
     ): Event
+    modifyEvent(
+      event: ID!
+      title: String
+      resourceids: [Int]
+      grades: [Int]
+      remotePlatforms: [Int]
+      otherRemotePlatformOption: String
+      desc: String
+      inPersonVisit: Boolean
+      remoteVisit: Boolean
+      extras: [ID]
+      #start: String
+      #end: String
+      #tags: [TagInput]
+      #waitingTime: Int!
+      #duration: Int!
+    ): Event
     createVisit(
       event: ID!
       clientName: String!

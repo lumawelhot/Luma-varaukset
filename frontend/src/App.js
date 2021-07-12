@@ -151,7 +151,12 @@ const App = () => {
       <Switch>
 
         <Route path='/event-page'>
-          <EventPage currentUser={currentUser} handleBookingButtonClick={handleBookingButtonClick} event={clickedEvent} sendMessage={notify} />
+          <EventPage
+            currentUser={currentUser}
+            handleBookingButtonClick={handleBookingButtonClick}
+            event={clickedEvent}
+            setEvent={setClickedEvent}
+            sendMessage={notify} />
         </Route>
         <Route path='/book'>
           <VisitForm currentUser={currentUser} event={clickedEvent} sendMessage={notify} />
