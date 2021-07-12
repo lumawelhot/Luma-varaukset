@@ -2,67 +2,7 @@ import React, { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { useHistory } from 'react-router'
 import { EXTRAS, CREATE_EXTRA, DELETE_EXTRA } from '../../graphql/queries'
-
-const AddExtraForm = ({ handleAdd }) => {
-  const [name, setName] = useState('')
-  const [classes, setClasses] = useState(new Set([1,2,3,4,5]))
-  const [inPersonLength, setInPersonLength] = useState(10)
-  const [remoteLength, setRemoteLength] = useState(10)
-
-  const updateClasses = (value) => {
-    if (classes.has(value)) {
-      const newClasses = classes
-      newClasses.delete(value)
-      setClasses(new Set([...newClasses]))
-    } else {
-      const newClasses = classes
-      newClasses.add(value)
-      setClasses(new Set([...newClasses]))
-    }
-  }
-
-  const submit = (e) => {
-    e.preventDefault()
-    handleAdd({
-      name,
-      classes: [...classes],
-      remoteLength: Number(remoteLength),
-      inPersonLength: Number(inPersonLength)
-    })
-  }
-
-  return (
-    <form onSubmit={submit}>
-      <label className="label">Nimi
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)}/>
-      </label>
-      <label className="label">SUM
-        <input type="checkbox" checked={classes.has(1)} onChange={() => updateClasses(1)}/>
-      </label>
-      <label className="label">FOT
-        <input type="checkbox" checked={classes.has(2)} onChange={() => updateClasses(2)}/>
-      </label>
-      <label className="label">LIN
-        <input type="checkbox" checked={classes.has(3)} onChange={() => updateClasses(3)}/>
-      </label>
-      <label className="label">GEO
-        <input type="checkbox" checked={classes.has(4)} onChange={() => updateClasses(4)}/>
-      </label>
-      <label className="label">GAD
-        <input type="checkbox" checked={classes.has(5)} onChange={() => updateClasses(5)}/>
-      </label>
-      <label className="label">
-        Kesto lähi
-        <input type="number" value={inPersonLength} onChange={(e) => setInPersonLength(e.target.value)}/>
-      </label>
-      <label className="label">
-        Kesto etä
-        <input type="number" value={remoteLength} onChange={(e) => setRemoteLength(e.target.value)}/>
-      </label>
-      <input type="submit" className="button luma primary"/>
-    </form>
-  )
-}
+import AddExtraForm from './AddExtraForm'
 
 const ExtrasAdmin = ({ sendMessage }) => {
   const extras = useQuery(EXTRAS)

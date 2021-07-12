@@ -6,25 +6,19 @@ import { TextArea, TextField } from '../VisitForm/FormFields'
 const Form = ({ event, close, save }) => {
   const createPlatformList = () => {
     const platforms = [false, false, false, false]
-    event.remotePlatforms.forEach(platform => {
-      platforms[platform - 1] = true
-    })
+    event.remotePlatforms.forEach(platform => platforms[platform - 1] = true)
     return platforms
   }
 
   const createGradeList = () => {
     const grades = [false, false, false, false, false]
-    event.grades.forEach(grade => {
-      grades[grade - 1] = true
-    })
+    event.grades.forEach(grade => grades[grade - 1] = true)
     return grades
   }
 
   const createResourceList = () => {
     const resources = [false, false, false, false , false]
-    event.resourceids.forEach(resource => {
-      resources[resource - 1] = true
-    })
+    event.resourceids.forEach(resource => resources[resource - 1] = true)
     return resources
   }
 
