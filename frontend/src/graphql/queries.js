@@ -343,3 +343,47 @@ export const DELETE_USER = gql`
     )
   }
 `
+
+export const UPDATE_EVENT = gql`
+  mutation modifyEvent(
+    $event: ID!
+    $title: String
+    $scienceClass: [Int]
+    $grades: [Int]
+    $remotePlatforms: [Int]
+    $otherRemotePlatformOption: String
+    $desc: String
+    $inPersonVisit: Boolean
+    $remoteVisit: Boolean
+    $extras: [ID]
+  ) {
+    modifyEvent(
+      event: $event
+      title: $title
+      resourceids: $scienceClass
+      grades: $grades
+      remotePlatforms: $remotePlatforms
+      otherRemotePlatformOption: $otherRemotePlatformOption
+      desc: $desc
+      inPersonVisit: $inPersonVisit
+      remoteVisit: $remoteVisit
+      extras: $extras
+    ) {
+      id
+      title
+      resourceids
+      grades
+      remotePlatforms
+      otherRemotePlatformOption
+      inPersonVisit
+      remoteVisit
+      desc
+      extras {
+        name,
+        inPersonLength,
+        remoteLength,
+        id
+      }
+    }
+  }
+`

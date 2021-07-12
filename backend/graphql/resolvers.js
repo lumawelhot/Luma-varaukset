@@ -92,23 +92,11 @@ const resolvers = {
       return { value: jwt.sign(userForToken, config.SECRET) }
     },
     createEvent: async (root, args, { currentUser }) => {
-      if (!currentUser) {
-        throw new AuthenticationError('not authenticated')
-      }
-      let resourceids = args.scienceClass
-      let grades = args.grades
-      if (grades.length < 1) {
-        throw new UserInputError('At least one grade must be selected!')
-      }
+      if (!currentUser) throw new AuthenticationError('not authenticated')
+      if (args.grades.length < 1) throw new UserInputError('At least one grade must be selected!')
+      if (args.title.length < 5)  throw new UserInputError('title too short')
 
-
-
-      if (args.title.length < 5) {
-        throw new UserInputError('title too short')
-      }
-
-      let eventTags = JSON.parse(JSON.stringify(args.tags))
-
+      const eventTags = JSON.parse(JSON.stringify(args.tags))
       const eventTagsNames = eventTags.map(e => e.name)
       let mongoTags = await Tag.find({ name: { $in: eventTagsNames } })
       const foundTagNames = mongoTags.map(t => t.name)
@@ -127,8 +115,8 @@ const resolvers = {
         start: args.start,
         end: args.end,
         desc: args.desc,
-        resourceids,
-        grades,
+        resourceids: args.scienceClass,
+        grades: args.grades,
         remotePlatforms: args.remotePlatforms,
         otherRemotePlatformOption: args.otherRemotePlatformOption,
         remoteVisit: args.remoteVisit,
@@ -140,10 +128,30 @@ const resolvers = {
         }],
         duration: args.duration
       })
+
       newEvent.extras = extras
       newEvent.tags = mongoTags
       await newEvent.save()
       return newEvent
+    },
+    modifyEvent: async (root, args, { currentUser }) => {
+      const extras = await Extra.find({ _id: { $in: args.extras } })
+      const { title, desc, resourceids, grades, remotePlatforms, otherRemotePlatformOption, remoteVisit, inPersonVisit } = args
+      const event = await Event.findById(args.event)
+      if (!currentUser) throw new AuthenticationError('not authenticated')
+
+      title !== undefined ? event.title = title : null
+      desc !== undefined ? event.desc = desc : null
+      resourceids !== undefined ? event.resourceids = resourceids : null
+      grades !== undefined ? event.grades = grades : null
+      remotePlatforms !== undefined ? event.remotePlatforms = remotePlatforms : null
+      otherRemotePlatformOption !== undefined ? event.otherRemotePlatformOption = otherRemotePlatformOption : null
+      remoteVisit !== undefined ? event.remoteVisit = remoteVisit : null
+      inPersonVisit !== undefined ? event.inPersonVisit = inPersonVisit : null
+      event.extras = extras
+
+      await event.save()
+      return event
     },
     createVisit: async (root, args, { currentUser }) => {
       const event = await Event.findById(args.event).populate('visits', { startTime: 1, endTime: 1 })

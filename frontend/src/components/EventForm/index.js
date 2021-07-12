@@ -68,6 +68,7 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
   })
 
   const onSubmit = (values, tags) => {
+    console.log(values.extras)
     const gradelist = []
     values.grades.forEach((element, index) => {
       if (element) {
