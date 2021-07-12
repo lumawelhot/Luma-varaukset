@@ -17,7 +17,7 @@ export const ModifyEvent = ({ event, close, setEvent }) => {
     onError: error => console.log(error)
   })
 
-  const saveDetails = ({ title, scienceClass, grades, remotePlatforms, otherRemotePlatformOption, desc, inPersonVisit, remoteVisit, extras }) => {
+  const saveDetails = ({ title, scienceClass, grades, remotePlatforms, otherRemotePlatformOption, desc, inPersonVisit, remoteVisit, extras, tags }, { data }) => {
     const gradeList = []
     grades.forEach((element, index) => element ? gradeList.push(index + 1) : null)
 
@@ -39,6 +39,12 @@ export const ModifyEvent = ({ event, close, setEvent }) => {
         inPersonVisit,
         remoteVisit,
         extras,
+        tags: tags.map((tag) =>
+          Object({
+            id: data.getTags.find((t) => t.name === tag)?.id || null,
+            name: tag,
+          })
+        ),
       }
     })
   }

@@ -142,25 +142,30 @@ export const ScienceClasses = ({ values, touched, errors, setFieldValue, label }
 export const AdditionalServices = ({ extras, values, setFieldValue }) => {
   return (
     <>
-      <label className="label">
-        Valitse vierailulle sopivat lisäpalvelut
-      </label>
-      {extras.data && extras.data.getExtras.map(extra => (
-        <Field
-          key={extra.id}
-          label={`${extra.name}, pituus lähi: ${extra.inPersonLength} min / etä: ${extra.remoteLength} min`}
-          fieldName='extras'
-          index={values.extras.includes(extra.id) ? extra.id : null}
-          onChange={() => {
-            if (values.extras.includes(extra.id)) {
-              setFieldValue('extras', values.extras.filter(e => e !== extra.id))
-            } else {
-              setFieldValue('extras', values.extras.concat(extra.id))
-            }
-          }}
-          component={CheckBox}
-        />
-      ))
+      {extras.data &&
+        <>
+          { extras.data.getExtras.length !== 0 &&
+            <label className="label">
+              Valitse vierailulle sopivat lisäpalvelut
+            </label>
+          }
+          {extras.data.getExtras.map(extra => (
+            <Field
+              key={extra.id}
+              label={`${extra.name}, pituus lähi: ${extra.inPersonLength} min / etä: ${extra.remoteLength} min`}
+              fieldName='extras'
+              index={values.extras.includes(extra.id) ? true : false}
+              onChange={() => {
+                if (values.extras.includes(extra.id)) {
+                  setFieldValue('extras', values.extras.filter(e => e !== extra.id))
+                } else {
+                  setFieldValue('extras', values.extras.concat(extra.id))
+                }
+              }}
+              component={CheckBox}
+            />
+          ))}
+        </>
       }
     </>
   )

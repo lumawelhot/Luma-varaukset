@@ -16,9 +16,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
   const extras = useQuery(EXTRAS)
 
   useEffect(() => {
-    if (tags.data) {
-      setSuggestedTags(tags.data.getTags.map((tag) => tag.name))
-    }
+    if (tags.data) setSuggestedTags(tags.data.getTags.map(tag => tag.name))
   }, [tags.data])
 
   const defaultDateTime = set(addDays(new Date(), 14), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 })
@@ -68,9 +66,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
                   <LumaTagInput
                     label="Tagit"
                     tags={values.tags}
-                    setTags={(tags) => {
-                      setFieldValue('tags', tags)
-                    }}
+                    setTags={tags => setFieldValue('tags', tags)}
                     suggestedTags={suggestedTags}
                   />
 

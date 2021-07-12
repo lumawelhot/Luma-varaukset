@@ -1,12 +1,20 @@
 import { useQuery } from '@apollo/client'
 import { Field, Formik } from 'formik'
-import React from 'react'
-import { EXTRAS } from '../../graphql/queries'
+import React, { useEffect, useState } from 'react'
+import { EXTRAS, TAGS } from '../../graphql/queries'
 import { AdditionalServices, EventType, Grades, Platforms, ScienceClasses } from '../EventForm/FormComponents'
+import LumaTagInput from '../LumaTagInput/LumaTagInput'
 import { TextArea, TextField } from '../VisitForm/FormFields'
 
 const Form = ({ event, close, save }) => {
+  const [suggestedTags, setSuggestedTags] = useState([])
+  const tags = useQuery(TAGS)
   const extras = useQuery(EXTRAS)
+
+  useEffect(() => {
+    if (tags.data) setSuggestedTags(tags.data.getTags.map(tag => tag.name))
+  }, [tags.data])
+
   const createPlatformList = () => {
     const platforms = [false, false, false, false]
     event.remotePlatforms.forEach(platform => platforms[platform - 1] = true)
@@ -36,9 +44,10 @@ const Form = ({ event, close, save }) => {
         desc: event.desc,
         inPersonVisit: event.inPersonVisit,
         remoteVisit: event.remoteVisit,
-        extras: event.extras.map(extra => extra.id)
+        extras: event.extras.map(extra => extra.id),
+        tags: event.tags.map(tag => tag.name)
       }}
-      onSubmit={save}
+      onSubmit={(values) => save(values, tags)}
     >
       {({ handleSubmit, values, setFieldValue, touched, errors }) => {
         return (
@@ -57,6 +66,12 @@ const Form = ({ event, close, save }) => {
                 label='Kuvaus'
                 fieldName='desc'
                 component={TextArea}
+              />
+              <LumaTagInput
+                label="Tagit"
+                tags={values.tags}
+                setTags={tags => setFieldValue('tags', tags)}
+                suggestedTags={suggestedTags}
               />
               <EventType />
               {values.remoteVisit ?
