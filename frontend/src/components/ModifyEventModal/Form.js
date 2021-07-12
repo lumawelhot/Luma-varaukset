@@ -1,9 +1,12 @@
+import { useQuery } from '@apollo/client'
 import { Field, Formik } from 'formik'
 import React from 'react'
-import { EventType, Grades, Platforms, ScienceClasses } from '../EventForm/FormComponents'
+import { EXTRAS } from '../../graphql/queries'
+import { AdditionalServices, EventType, Grades, Platforms, ScienceClasses } from '../EventForm/FormComponents'
 import { TextArea, TextField } from '../VisitForm/FormFields'
 
 const Form = ({ event, close, save }) => {
+  const extras = useQuery(EXTRAS)
   const createPlatformList = () => {
     const platforms = [false, false, false, false]
     event.remotePlatforms.forEach(platform => platforms[platform - 1] = true)
@@ -33,6 +36,7 @@ const Form = ({ event, close, save }) => {
         desc: event.desc,
         inPersonVisit: event.inPersonVisit,
         remoteVisit: event.remoteVisit,
+        extras: event.extras.map(extra => extra.id)
       }}
       onSubmit={save}
     >
@@ -74,6 +78,11 @@ const Form = ({ event, close, save }) => {
                 setFieldValue={setFieldValue}
                 touched={touched}
                 errors={errors}
+              />
+              <AdditionalServices
+                extras={extras}
+                values={values}
+                setFieldValue={setFieldValue}
               />
             </section>
             <footer className="modal-card-foot">

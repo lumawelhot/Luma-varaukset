@@ -35,6 +35,7 @@ const AddExtraForm = ({ handleAdd }) => {
               component={TextField}
             />
             <ScienceClasses
+              label='Valitse lisäpalvelun tiedeluokat'
               values={values}
               setFieldValue={setFieldValue}
               touched={touched}

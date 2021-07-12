@@ -110,11 +110,11 @@ export const Grades = ({ values, touched, errors, setFieldValue }) => {
   )
 }
 
-export const ScienceClasses = ({ values, touched, errors, setFieldValue }) => {
+export const ScienceClasses = ({ values, touched, errors, setFieldValue, label }) => {
   return (
     <>
       <label className="label" id="checkbox-group">
-        Valitse vierailulle sopivat tiedeluokat
+        {label ? label : 'Valitse vierailulle sopivat tiedeluokat'}
       </label>
 
       {resourceList.map(resource => (
@@ -139,28 +139,28 @@ export const ScienceClasses = ({ values, touched, errors, setFieldValue }) => {
   )
 }
 
-export const AdditionalServices = ({ extras, values }) => {
+export const AdditionalServices = ({ extras, values, setFieldValue }) => {
   return (
     <>
       <label className="label">
         Valitse vierailulle sopivat lisäpalvelut
       </label>
-      {extras.data && extras.data.getExtras
-        .map(extra => (
-          <Field
-            key={extra.id}
-            label={`${extra.name}, pituus lähi: ${extra.inPersonLength} min / etä: ${extra.remoteLength} min`}
-            onChange={() => {
-              if (values.extras.includes(extra.id)) {
-                const index = values.extras.indexOf(extra.id)
-                values.extras.splice(index, 1)
-              } else {
-                values.extras.push(extra.id)
-              }
-            }}
-            component={CheckBox}
-          />
-        ))
+      {extras.data && extras.data.getExtras.map(extra => (
+        <Field
+          key={extra.id}
+          label={`${extra.name}, pituus lähi: ${extra.inPersonLength} min / etä: ${extra.remoteLength} min`}
+          fieldName='extras'
+          index={values.extras.includes(extra.id) ? extra.id : null}
+          onChange={() => {
+            if (values.extras.includes(extra.id)) {
+              setFieldValue('extras', values.extras.filter(e => e !== extra.id))
+            } else {
+              setFieldValue('extras', values.extras.concat(extra.id))
+            }
+          }}
+          component={CheckBox}
+        />
+      ))
       }
     </>
   )
