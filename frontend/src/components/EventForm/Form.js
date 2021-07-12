@@ -106,6 +106,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
                   <AdditionalServices
                     extras={extras}
                     values={values}
+                    setFieldValue={setFieldValue}
                   />
 
                   <div className="field is-grouped luma">

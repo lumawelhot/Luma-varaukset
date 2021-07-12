@@ -87,9 +87,9 @@ export const CheckBox = (field) => {
           <input
             type="checkbox"
             name={fieldName}
-            checked = {typeof index === 'number' ?
+            checked = {typeof index !== 'string' ?
               index !== undefined ? values[fieldName][index] : values[fieldName]
-              : index !== null ? true : false }
+              : index === null || index === undefined ? false : true }
             onChange={onChange ? onChange : handleChange}
           /> {label}
         </label>
