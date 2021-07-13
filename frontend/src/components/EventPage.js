@@ -103,6 +103,9 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
               <div className="box">
                 <div className="content">
                   <div className="title">{event.title}</div>
+                  <div className="tags eventpage">
+                    {event.tags.map(t => <span key={t.id} className="tag is-small luma">{t.name}</span>)}
+                  </div>
                   <div>
                     {description
                       ? <p><strong>Kuvaus:</strong> {description} </p>
@@ -135,24 +138,23 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
                     <p><strong>Toiminnan kesto:</strong> {event.duration} minuuttia</p>
                     {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days) ?
                       <p className="subtitle unfortunately"><b>Valitettavasti tämä vierailu ei ole varattavissa.</b></p> : null}
-                    <div className="field is-grouped">
+                    <div className="field is-grouped is-grouped-multiline">
                       {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days)
                         ? null
-                        : <button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>Varaa vierailu</button>}
-                      {!!currentUser && (
-                        <div className="control">
-                          <button className="button luma" onClick={() => handleRemoveEventClick()}>Poista vierailu</button>
-                        </div>)
-                      }
+                        : <div className="control"><button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>Varaa vierailu</button></div>}
                       <div className="control">
                         <button className="button luma" onClick={cancel}>Poistu</button>
                       </div>
+                      {!!currentUser && <>
+                        <div className="control">
+                          <button className="button luma" onClick={openModal}>Muokkaa tietoja</button>
+                        </div>
+                        <div className="control">
+                          <button className="button luma" onClick={() => handleRemoveEventClick()}>Poista vierailu</button>
+                        </div>
+                      </>
+                      }
                     </div>
-                    {!!currentUser && (
-                      <div className="control">
-                        <button className="button luma" onClick={openModal}>Muokkaa tietoja</button>
-                      </div>)
-                    }
                   </div>
                 </div>
               </div>

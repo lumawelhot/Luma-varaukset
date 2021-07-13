@@ -11,6 +11,7 @@ const Event = require('../models/event')
 const Visit = require('../models/visit')
 const Extra = require('../models/extra')
 const Tag = require('../models/tag')
+const { addNewTags } = require('../utils/helpers')
 
 const resolvers = {
   Query: {
@@ -96,17 +97,7 @@ const resolvers = {
       if (args.grades.length < 1) throw new UserInputError('At least one grade must be selected!')
       if (args.title.length < 5)  throw new UserInputError('title too short')
 
-      const eventTags = JSON.parse(JSON.stringify(args.tags))
-      const eventTagsNames = eventTags.map(e => e.name)
-      let mongoTags = await Tag.find({ name: { $in: eventTagsNames } })
-      const foundTagNames = mongoTags.map(t => t.name)
-      eventTags.forEach(tag => {
-        if (!foundTagNames.includes(tag.name)) {
-          const newTag = new Tag({ name: tag.name })
-          mongoTags = mongoTags.concat(newTag)
-          tag = newTag.save()
-        }
-      })
+      const mongoTags = await addNewTags(args.tags)
 
       const extras = await Extra.find({ _id: { $in: args.extras } })
 
@@ -149,6 +140,7 @@ const resolvers = {
       remoteVisit !== undefined ? event.remoteVisit = remoteVisit : null
       inPersonVisit !== undefined ? event.inPersonVisit = inPersonVisit : null
       event.extras = extras
+      event.tags = await addNewTags(args.tags)
 
       await event.save()
       return event

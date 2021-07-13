@@ -3,12 +3,10 @@ import { Field, Formik } from 'formik'
 import { useQuery } from '@apollo/client'
 import { TAGS, EXTRAS } from '../../graphql/queries'
 import LumaTagInput from '../LumaTagInput/LumaTagInput'
-import DatePicker from '../Pickers/DatePicker'
 import addDays from 'date-fns/addDays'
 import set from 'date-fns/set'
-import TimePicker from '../Pickers/TimePicker'
 import { TextArea, TextField } from '../VisitForm/FormFields'
-import { AdditionalServices, EventType, Grades, Platforms, ScienceClasses } from './FormComponents'
+import { AdditionalServices, DatePick, EventType, Grades, Platforms, ScienceClasses, TimePick } from './FormComponents'
 
 const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmit }) => {
   const [suggestedTags, setSuggestedTags] = useState([])
@@ -16,9 +14,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
   const extras = useQuery(EXTRAS)
 
   useEffect(() => {
-    if (tags.data) {
-      setSuggestedTags(tags.data.getTags.map((tag) => tag.name))
-    }
+    if (tags.data) setSuggestedTags(tags.data.getTags.map(tag => tag.name))
   }, [tags.data])
 
   const defaultDateTime = set(addDays(new Date(), 14), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 })
@@ -45,7 +41,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
       validate={validate}
       onSubmit={(values) => onSubmit(values, tags)}
     >
-      {({ handleSubmit, handleBlur, setFieldValue, touched, errors, values }) => {
+      {({ handleSubmit, setFieldValue, touched, errors, values }) => {
         return (
           <div className="columns is-centered">
             <div className="box luma-eventform">
@@ -68,9 +64,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
                   <LumaTagInput
                     label="Tagit"
                     tags={values.tags}
-                    setTags={(tags) => {
-                      setFieldValue('tags', tags)
-                    }}
+                    setTags={tags => setFieldValue('tags', tags)}
                     suggestedTags={suggestedTags}
                   />
 
@@ -106,83 +100,25 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
                   <AdditionalServices
                     extras={extras}
                     values={values}
+                    setFieldValue={setFieldValue}
                   />
 
                   <div className="field is-grouped luma">
-                    <div className="field">
-                      <label className="label" htmlFor="date">
-                        Päivämäärä
-                      </label>
-                      <div className="control">
-                        <DatePicker
-                          className={`input ${touched.date
-                            ? errors.date
-                              ? 'is-danger'
-                              : 'is-success'
-                            : ''
-                          }`}
-                          format={'d.M.yyyy'}
-                          value={values.date}
-                          onChange={value => {
-                            const date = value.getDate()
-                            const month = value.getMonth()
-                            const year = value.getFullYear()
-                            const newStartTime = set(values.startTime, { year, month, date })
-                            const newEndTime = set(values.endTime, { year, month, date })
-                            setFieldValue('startTime', newStartTime)
-                            setFieldValue('endTime', newEndTime)
-                            setFieldValue('date', value)
-                          }}
-                          onBlur={handleBlur}
-                        />
-                      </div>
-                      {touched.date && errors.date ? (
-                        <p className="help is-danger">{errors.date}</p>
-                      ) : null}
-                    </div>
 
-                    <div className="field">
-                      <label className="label" htmlFor="startTime">
-                        Aloituskellonaika
-                      </label>
-                      <div className="control">
-                        <TimePicker
-                          className={`input ${touched.startTime
-                            ? errors.startTime
-                              ? 'is-danger'
-                              : 'is-success'
-                            : ''
-                          }`}
-                          value={values.startTime}
-                          onChange={value => setFieldValue('startTime', value)}
-                          onBlur={handleBlur}/>
-                      </div>
-                      {touched.startTime && errors.startTime ? (
-                        <p className="help is-danger">{errors.startTime}</p>
-                      ) : null}
-                    </div>
+                    <Field component={DatePick} />
 
-                    <div className="field">
-                      <label className="label" htmlFor="endTime">
-                        Lopetuskellonaika
-                      </label>
-                      <div className="control">
-                        <TimePicker
-                          className={`input ${touched.endTime
-                            ? errors.endTime
-                              ? 'is-danger'
-                              : 'is-success'
-                            : ''
-                          }`}
-                          disabledHours={() => [0,1,2,3,4,5,6,7,18,19,20,21,22,23]}
-                          value={values.endTime}
-                          onChange={value => setFieldValue('endTime', value)}
-                          onBlur={handleBlur}/>
-                      </div>
-                      {touched.endTime && errors.endTime ? (
-                        <p className="help is-danger">{errors.endTime}</p>
-                      ) : null}
-                    </div>
+                    <Field
+                      label='Aloituskellonaika'
+                      fieldName='startTime'
+                      component={TimePick}
+                    />
+
+                    <Field
+                      label='Lopetuskellonaika'
+                      fieldName='endTime'
+                      component={TimePick}
+                      disabledHours={() => [0,1,2,3,4,5,6,7,18,19,20,21,22,23]}
+                    />
 
                     <Field
                       label='Minimiaika varausten välillä'

@@ -115,7 +115,7 @@ const typeDefs = gql`
       extras: [ID]
       #start: String
       #end: String
-      #tags: [TagInput]
+      tags: [TagInput]
       #waitingTime: Int!
       #duration: Int!
     ): Event

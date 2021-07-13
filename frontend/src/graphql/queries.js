@@ -356,6 +356,7 @@ export const UPDATE_EVENT = gql`
     $inPersonVisit: Boolean
     $remoteVisit: Boolean
     $extras: [ID]
+    $tags:[TagInput]
   ) {
     modifyEvent(
       event: $event
@@ -368,6 +369,7 @@ export const UPDATE_EVENT = gql`
       inPersonVisit: $inPersonVisit
       remoteVisit: $remoteVisit
       extras: $extras
+      tags: $tags
     ) {
       id
       title
@@ -382,6 +384,10 @@ export const UPDATE_EVENT = gql`
         name,
         inPersonLength,
         remoteLength,
+        id
+      }
+      tags {
+        name,
         id
       }
     }

@@ -1113,3 +1113,12 @@ form.luma hr,
   font-size: 14px;
   border-radius: 2px;
 }
+
+.tag.luma {
+  background-color: #0479a5;
+  color: #fff;
+}
+
+.tags.eventpage {
+  max-width: fit-content;
+}

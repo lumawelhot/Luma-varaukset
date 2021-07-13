@@ -1,5 +1,8 @@
+import { set } from 'date-fns'
 import { Field } from 'formik'
 import React from 'react'
+import DatePicker from '../Pickers/DatePicker'
+import TimePicker from '../Pickers/TimePicker'
 import { CheckBox, TextField } from '../VisitForm/FormFields'
 
 const platformList = [
@@ -110,11 +113,11 @@ export const Grades = ({ values, touched, errors, setFieldValue }) => {
   )
 }
 
-export const ScienceClasses = ({ values, touched, errors, setFieldValue }) => {
+export const ScienceClasses = ({ values, touched, errors, setFieldValue, label }) => {
   return (
     <>
       <label className="label" id="checkbox-group">
-        Valitse vierailulle sopivat tiedeluokat
+        {label ? label : 'Valitse vierailulle sopivat tiedeluokat'}
       </label>
 
       {resourceList.map(resource => (
@@ -139,29 +142,98 @@ export const ScienceClasses = ({ values, touched, errors, setFieldValue }) => {
   )
 }
 
-export const AdditionalServices = ({ extras, values }) => {
+export const AdditionalServices = ({ extras, values, setFieldValue }) => {
   return (
     <>
-      <label className="label">
-        Valitse vierailulle sopivat lisäpalvelut
-      </label>
-      {extras.data && extras.data.getExtras
-        .map(extra => (
-          <Field
-            key={extra.id}
-            label={`${extra.name}, pituus lähi: ${extra.inPersonLength} min / etä: ${extra.remoteLength} min`}
-            onChange={() => {
-              if (values.extras.includes(extra.id)) {
-                const index = values.extras.indexOf(extra.id)
-                values.extras.splice(index, 1)
-              } else {
-                values.extras.push(extra.id)
-              }
-            }}
-            component={CheckBox}
-          />
-        ))
+      {extras.data &&
+        <>
+          { extras.data.getExtras.length !== 0 &&
+            <label className="label">
+              Valitse vierailulle sopivat lisäpalvelut
+            </label>
+          }
+          {extras.data.getExtras.map(extra => (
+            <Field
+              key={extra.id}
+              label={`${extra.name}, pituus lähi: ${extra.inPersonLength} min / etä: ${extra.remoteLength} min`}
+              fieldName='extras'
+              index={values.extras.includes(extra.id) ? true : false}
+              onChange={() => {
+                if (values.extras.includes(extra.id)) {
+                  setFieldValue('extras', values.extras.filter(e => e !== extra.id))
+                } else {
+                  setFieldValue('extras', values.extras.concat(extra.id))
+                }
+              }}
+              component={CheckBox}
+            />
+          ))}
+        </>
       }
     </>
+  )
+}
+
+export const TimePick = ({ form, fieldName, label, disabledHours }) => {
+  const { touched, setFieldValue, values, errors, handleBlur } = form
+  return (
+    <div className="field">
+      <label className="label" htmlFor="fieldName">
+        {label}
+      </label>
+      <div className="control">
+        <TimePicker
+          className={`input ${touched[fieldName]
+            ? errors[fieldName]
+              ? 'is-danger'
+              : 'is-success'
+            : ''
+          }`}
+          disabledHours={disabledHours}
+          value={values[fieldName]}
+          onChange={value => setFieldValue(fieldName, value)}
+          onBlur={handleBlur}/>
+      </div>
+      {touched[fieldName] && errors[fieldName] ? (
+        <p className="help is-danger">{errors[fieldName]}</p>
+      ) : null}
+    </div>
+  )
+}
+
+export const DatePick = ({ form }) => {
+  const { touched, errors, setFieldValue, values, handleBlur } = form
+  return (
+    <div className="field">
+      <label className="label" htmlFor="date">
+        Päivämäärä
+      </label>
+      <div className="control">
+        <DatePicker
+          className={`input ${touched.date
+            ? errors.date
+              ? 'is-danger'
+              : 'is-success'
+            : ''
+          }`}
+          format={'d.M.yyyy'}
+          value={values.date}
+          onChange={value => {
+            const date = value.getDate()
+            const month = value.getMonth()
+            const year = value.getFullYear()
+            const newStartTime = set(values.startTime, { year, month, date })
+            const newEndTime = set(values.endTime, { year, month, date })
+            setFieldValue('startTime', newStartTime)
+            setFieldValue('endTime', newEndTime)
+            setFieldValue('date', value)
+          }}
+          onBlur={handleBlur}
+        />
+      </div>
+      {touched.date && errors.date ? (
+        <p className="help is-danger">{errors.date}</p>
+      ) : null}
+    </div>
   )
 }
