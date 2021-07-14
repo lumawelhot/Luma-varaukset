@@ -27,8 +27,8 @@ beforeAll(async () => {
       console.log('connection error: ', error.message)
     })
   await UserModel.deleteMany({})
-  await EventModel.deleteMany()
-  await ExtraModel.deleteMany()
+  await EventModel.deleteMany({})
+  await ExtraModel.deleteMany({})
 
   newTags = await TagModel.insertMany({ name: 'Matematiikka' }, { name: 'Fysiikka' })
 
