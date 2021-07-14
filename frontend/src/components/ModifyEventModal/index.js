@@ -46,11 +46,13 @@ export const ModifyEvent = ({ event, close, setEvent, sendMessage }) => {
       errors.endTime = 'Lopetusaika saa olla korkeintaan 17.00.'
     }
 
-    if (values.startTime.getTime() > event.invalidTimeSlot.start.getTime()) {
-      errors.startTime = `Aloitusajan tulee olla ennen klo ${format(event.invalidTimeSlot.start, 'HH.mm')}`
-    }
-    if (values.endTime.getTime() < event.invalidTimeSlot.end.getTime()) {
-      errors.endTime = `Lopetusaika tulee olla klo ${format(event.invalidTimeSlot.end, 'HH.mm')} jälkeen`
+    if (event.invalidTimeSlot) {
+      if (values.startTime.getTime() > event.invalidTimeSlot.start.getTime()) {
+        errors.startTime = `Aloitusajan tulee olla ennen klo ${format(event.invalidTimeSlot.start, 'HH.mm')}`
+      }
+      if (values.endTime.getTime() < event.invalidTimeSlot.end.getTime()) {
+        errors.endTime = `Lopetusaika tulee olla klo ${format(event.invalidTimeSlot.end, 'HH.mm')} jälkeen`
+      }
     }
 
     return errors
