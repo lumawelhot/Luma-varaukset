@@ -95,7 +95,12 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
       <>
         <div className={`modal ${showModal ? 'is-active':''}`}>
           <div className="modal-background"></div>
-          {showModal && <ModifyEvent event={event} setEvent={setEvent} close={() => closeModal()}/>}
+          {showModal && <ModifyEvent
+            event={event}
+            setEvent={setEvent}
+            close={() => closeModal()}
+            sendMessage={sendMessage}
+          />}
         </div>
         <div className="container">
           <div className="columns is-centered">

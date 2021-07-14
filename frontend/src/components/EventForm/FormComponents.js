@@ -175,7 +175,7 @@ export const AdditionalServices = ({ extras, values, setFieldValue }) => {
 }
 
 export const TimePick = ({ form, fieldName, label, disabledHours }) => {
-  const { touched, setFieldValue, values, errors, handleBlur } = form
+  const { touched, setFieldValue, values, errors } = form
   return (
     <div className="field">
       <label className="label" htmlFor="fieldName">
@@ -192,7 +192,7 @@ export const TimePick = ({ form, fieldName, label, disabledHours }) => {
           disabledHours={disabledHours}
           value={values[fieldName]}
           onChange={value => setFieldValue(fieldName, value)}
-          onBlur={handleBlur}/>
+        />
       </div>
       {touched[fieldName] && errors[fieldName] ? (
         <p className="help is-danger">{errors[fieldName]}</p>
@@ -202,7 +202,7 @@ export const TimePick = ({ form, fieldName, label, disabledHours }) => {
 }
 
 export const DatePick = ({ form }) => {
-  const { touched, errors, setFieldValue, values, handleBlur } = form
+  const { touched, errors, setFieldValue, values } = form
   return (
     <div className="field">
       <label className="label" htmlFor="date">
@@ -228,7 +228,6 @@ export const DatePick = ({ form }) => {
             setFieldValue('endTime', newEndTime)
             setFieldValue('date', value)
           }}
-          onBlur={handleBlur}
         />
       </div>
       {touched.date && errors.date ? (
