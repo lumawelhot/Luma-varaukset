@@ -1,6 +1,6 @@
 const { UserInputError, AuthenticationError } = require('apollo-server-errors')
 const { readMessage } = require('../services/fileReader')
-const { findValidTimeSlot, calculateAvailabelTimes } = require('../utils/timeCalculation')
+const { findValidTimeSlot, calculateAvailabelTimes, calculateNewTimeSlot, formatAvailableTimes } = require('../utils/timeCalculation')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const mailer = require('../services/mailer')
@@ -128,7 +128,7 @@ const resolvers = {
     modifyEvent: async (root, args, { currentUser }) => {
       const extras = await Extra.find({ _id: { $in: args.extras } })
       const { title, desc, resourceids, grades, remotePlatforms, otherRemotePlatformOption, remoteVisit, inPersonVisit } = args
-      const event = await Event.findById(args.event)
+      const event = await Event.findById(args.event).populate('visits')
       if (!currentUser) throw new AuthenticationError('not authenticated')
 
       title !== undefined ? event.title = title : null
@@ -141,7 +141,32 @@ const resolvers = {
       inPersonVisit !== undefined ? event.inPersonVisit = inPersonVisit : null
       event.extras = extras
       event.tags = await addNewTags(args.tags)
-
+      if (event.visits.length) {
+        const newTimeSlot = calculateNewTimeSlot(
+          event.visits,
+          args.start ? new Date(args.start) : new Date(event.start),
+          args.end ? new Date(args.end) : new Date(event.end)
+        )
+        if (newTimeSlot) {
+          const eventTimes = {
+            start: new Date(newTimeSlot.start),
+            end: new Date(newTimeSlot.end)
+          }
+          const newAvailableTimes = calculateAvailabelTimes(event.visits, eventTimes, event.waitingTime, event.duration)
+          event.start = newTimeSlot.start.toISOString()
+          event.end = newTimeSlot.end.toISOString()
+          event.availableTimes = formatAvailableTimes(newAvailableTimes)
+        } else {
+          throw new UserInputError('invalid start or end')
+        }
+      } else {
+        args.start ? event.start = args.start : null
+        args.end ? event.end = args.end : null
+        event.availableTimes = [{
+          startTime: args.start ? args.start : event.start,
+          endTime: args.end ? args.end : event.end
+        }]
+      }
       await event.save()
       return event
     },
@@ -177,13 +202,7 @@ const resolvers = {
       visit.extras = extras
 
       let savedVisit
-      event.availableTimes = event.availableTimes.map(time => {
-        if (typeof time.startTime === 'string') return time
-        return {
-          startTime: time.startTime.toISOString(),
-          endTime: time.endTime.toISOString()
-        }
-      })
+      event.availableTimes = formatAvailableTimes(event.availableTimes)
       try {
         const now = new Date()
         const start = new Date(event.start)

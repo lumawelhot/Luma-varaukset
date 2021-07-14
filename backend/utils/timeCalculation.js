@@ -14,16 +14,17 @@ const findValidTimeSlot = (availableTimes, visitTime) => {
   return result
 }
 
-/*
----|________S-----E______S-------E|---
----|________S-----S______E-------E|---
----|________S--------------------E|---
-9:30-10:00 jäävä varaus
-9:00-15:00 eventTime
-12:00-13:00 visitTime
-[[10, 10],[11, 50]]       ,     [[13, 10],[15, 0]] availableTimes
-[[10, 10],[15, 0]]
-*/
+const calculateNewTimeSlot = (visitTimes, startTime, endTime) => {
+  const sortedVisitTimes = visitTimes.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+  const start = new Date(sortedVisitTimes[0].startTime)
+  const end = new Date(sortedVisitTimes[sortedVisitTimes.length - 1].endTime)
+  if (startTime <= start && end <= endTime) {
+    return {
+      start: startTime,
+      end: endTime
+    }
+  } else return null
+}
 
 const calculateAvailabelTimes = (visitTimes, eventTime, waitingTime, duration) => {
   let previous = eventTime.start
@@ -48,4 +49,14 @@ const calculateAvailabelTimes = (visitTimes, eventTime, waitingTime, duration) =
   return availableTimes
 }
 
-module.exports = { findValidTimeSlot, calculateAvailabelTimes }
+const formatAvailableTimes = (availableTimes) => {
+  return availableTimes.map(time => {
+    if (typeof time.startTime === 'string') return time
+    return {
+      startTime: time.startTime.toISOString(),
+      endTime: time.endTime.toISOString()
+    }
+  })
+}
+
+module.exports = { findValidTimeSlot, calculateAvailabelTimes, calculateNewTimeSlot, formatAvailableTimes }

@@ -113,8 +113,8 @@ const typeDefs = gql`
       inPersonVisit: Boolean
       remoteVisit: Boolean
       extras: [ID]
-      #start: String
-      #end: String
+      start: String
+      end: String
       tags: [TagInput]
       #waitingTime: Int!
       #duration: Int!

@@ -7,17 +7,34 @@ export const ModifyEvent = ({ event, close, setEvent }) => {
 
   const [create] = useMutation(UPDATE_EVENT, {
     refetchQueries: [{ query: EVENTS }],
-    onCompleted: result => {
+    onCompleted: ({ modifyEvent }) => {
+      const start = new Date(modifyEvent.start)
+      const end = new Date(modifyEvent.end)
       setEvent({
         ...event,
-        ...result.modifyEvent
+        ...modifyEvent,
+        start,
+        end
       })
       close()
     },
     onError: error => console.log(error)
   })
 
-  const saveDetails = ({ title, scienceClass, grades, remotePlatforms, otherRemotePlatformOption, desc, inPersonVisit, remoteVisit, extras, tags }, { data }) => {
+  const saveDetails = ({
+    title,
+    scienceClass,
+    grades,
+    remotePlatforms,
+    otherRemotePlatformOption,
+    desc,
+    inPersonVisit,
+    remoteVisit,
+    extras,
+    tags,
+    startTime,
+    endTime
+  }, { data }) => {
     const gradeList = []
     grades.forEach((element, index) => element ? gradeList.push(index + 1) : null)
 
@@ -45,6 +62,8 @@ export const ModifyEvent = ({ event, close, setEvent }) => {
             name: tag,
           })
         ),
+        start: startTime.toISOString(),
+        end: endTime.toISOString()
       }
     })
   }

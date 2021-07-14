@@ -67,6 +67,10 @@ const CREATE_VISIT = gql `
       event {
         id
         title
+        availableTimes {
+          startTime
+          endTime
+        }
       }
       clientName
       schoolName
@@ -296,6 +300,66 @@ const createAvailableList = (timeList) => {
   return newList
 }
 
+const UPDATE_EVENT = gql`
+  mutation modifyEvent(
+    $event: ID!
+    $title: String
+    $scienceClass: [Int]
+    $grades: [Int]
+    $remotePlatforms: [Int]
+    $otherRemotePlatformOption: String
+    $desc: String
+    $inPersonVisit: Boolean
+    $remoteVisit: Boolean
+    $extras: [ID]
+    $tags:[TagInput]
+    $start:String
+    $end:String
+  ) {
+    modifyEvent(
+      event: $event
+      title: $title
+      resourceids: $scienceClass
+      grades: $grades
+      remotePlatforms: $remotePlatforms
+      otherRemotePlatformOption: $otherRemotePlatformOption
+      desc: $desc
+      inPersonVisit: $inPersonVisit
+      remoteVisit: $remoteVisit
+      extras: $extras
+      tags: $tags
+      start: $start
+      end: $end
+    ) {
+      id
+      title
+      resourceids
+      grades
+      remotePlatforms
+      otherRemotePlatformOption
+      inPersonVisit
+      remoteVisit
+      desc
+      start
+      end
+      availableTimes {
+        startTime,
+        endTime
+      }
+      extras {
+        name,
+        inPersonLength,
+        remoteLength,
+        id
+      }
+      tags {
+        name,
+        id
+      }
+    }
+  }
+`
+
 module.exports = {
   LOGIN,
   GET_ALL_VISITS,
@@ -309,6 +373,7 @@ module.exports = {
   CREATE_USER,
   USERS,
   ME,
+  UPDATE_EVENT,
   createTimeList,
   createAvailableList,
   createDate,

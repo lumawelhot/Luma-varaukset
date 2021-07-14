@@ -49,7 +49,9 @@ const App = () => {
       duration: event.duration,
       desc: event.desc,
       remotePlatforms: event.remotePlatforms,
-      otherRemotePlatformOption: event.otherRemotePlatformOption
+      otherRemotePlatformOption: event.otherRemotePlatformOption,
+      eventStart: new Date(event.start),
+      eventEnd: new Date(event.end)
     }
     delete details.availableTimes
     delete details.visits
