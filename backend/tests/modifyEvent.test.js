@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 const Event = require('../models/event')
 const User = require('../models/user')
 const Extra = require('../models/extra')
+const Tag = require('../models/tag')
 
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
@@ -60,6 +61,7 @@ beforeAll(async () => {
     })
   await User.deleteMany({})
   await Event.deleteMany({})
+  await Tag.deleteMany({})
 
   const userPassword = await bcrypt.hash('password', 10)
   const userData = { username: 'employee', passwordHash: userPassword, isAdmin: false }
@@ -295,6 +297,7 @@ afterAll(async () => {
   await Event.deleteMany({})
   await User.deleteMany({})
   await Extra.deleteMany({})
+  await Tag.deleteMany({})
   await mongoose.connection.close()
   console.log('test-mongodb connection closed')
 })
