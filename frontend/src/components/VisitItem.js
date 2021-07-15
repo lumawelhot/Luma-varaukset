@@ -1,7 +1,9 @@
 import React from 'react'
 import { format, parseISO }  from 'date-fns'
+import { useTranslation } from 'react-i18next'
 
 const VisitItem = ({ item, close }) => {
+  const { t } = useTranslation('visit')
   return (
     <div className="modal-card">
       <header className="modal-card-head">
@@ -9,17 +11,17 @@ const VisitItem = ({ item, close }) => {
         <button className="delete" aria-label="close" onClick={close}></button>
       </header>
       <section className="modal-card-body">
-        <p>Varaus alkaa: {`${format(parseISO(item.startTime), 'd.M.yyyy HH:mm')}`}</p>
-        <p>Varaus päättyy: {`${format(parseISO(item.endTime), 'd.M.yyyy HH:mm')}`}</p>
-        <p>Luokka-aste: {item.grade}</p>
-        <p>Lisäpalvelut: {item.extras.map(extra => extra.name).join(', ')}</p>
-        <p>Varaajan nimi: {item.clientName}</p>
-        <p>Varaajan sähköposti: {item.clientEmail}</p>
-        <p>Varaajan puhelinnumero: {item.clientPhone}</p>
-        <p>Koulu: {item.schoolName}, {item.schoolLocation}</p>
+        <p>{`${t('start')}: ${format(parseISO(item.startTime), 'd.M.yyyy HH:mm')}`}</p>
+        <p>{`${t('end')}: ${format(parseISO(item.endTime), 'd.M.yyyy HH:mm')}`}</p>
+        <p>{`${t('grade')}: ${item.grade}`}</p>
+        <p>{`${t('extras')}: ${item.extras.map(extra => extra.name).join(', ')}`}</p>
+        <p>{`${t('client-name')}: ${item.clientName}`}</p>
+        <p>{`${t('client-email')}: ${item.clientEmail}`}</p>
+        <p>{`${t('client-phone')}: ${item.clientPhone}`}</p>
+        <p>{`${t('school')}: ${item.schoolName}, ${item.schoolLocation}`}</p>
       </section>
       <footer className="modal-card-foot">
-        <button className="button"  onClick={close}>Sulje</button>
+        <button className="button" onClick={close}>{t('close')}</button>
       </footer>
     </div>
   )

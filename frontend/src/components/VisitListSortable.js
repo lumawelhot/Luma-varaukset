@@ -3,6 +3,7 @@ import { classes } from '../helpers/classes'
 import { resourceColorsLUMA } from '../helpers/styles'
 import VisitItem from './VisitItem'
 import { format, parseISO }  from 'date-fns'
+import { useTranslation } from 'react-i18next'
 
 const useSortableData = (items, config = null) => {
   const [sortConfig, setSortConfig] = useState(config)
@@ -39,6 +40,7 @@ const useSortableData = (items, config = null) => {
 }
 
 const VisitListSortable = ({ visits, copyURL }) => {
+  const { t } = useTranslation('visit')
   const [showModal, setShowModal] = useState(false)
   const [selectedItem, setSelectedItem] = useState(null)
   const { items, requestSort, sortConfig } = useSortableData(visits)
@@ -71,22 +73,22 @@ const VisitListSortable = ({ visits, copyURL }) => {
           <tr>
             <th>
               <p onClick={() => requestSort('title')} className={getClassNamesFor('title')}>
-            Otsikko
+                {t('title')}
               </p>
             </th>
             <th>
               <p onClick={() => requestSort('resourceids')} className={getClassNamesFor('resourceids')}>
-            Resurssi
+                {t('resource')}
               </p>
             </th>
             <th>
               <p onClick={() => requestSort('startTime')} className={getClassNamesFor('startTime')}>
-                Päivämäärä
+                {t('date')}
               </p>
             </th>
             <th>
               <p onClick={() => requestSort('status')} className={getClassNamesFor('status')}>
-              Tila
+                {t('state')}
               </p>
             </th>
             <th></th>
@@ -108,14 +110,14 @@ const VisitListSortable = ({ visits, copyURL }) => {
                 <td>{`${format(parseISO(visit.startTime), 'd.M.yyyy')}`}</td>
                 <td>{visit.status ? 'VOIMASSA' : 'PERUTTU'}</td>
                 <td>
-                  <button className="button luma" onClick={() => copyURL(visit)}>Kopioi URL</button>
+                  <button className="button luma" onClick={() => copyURL(visit)}>{t('url-copy')}</button>
                   <input readOnly className="hidden" type="text" id={'value-' + visit.id} value={copiedURL} />
                 </td>
               </tr>
             )
           }
           )}
-          {(visits.length === 0) && <tr><td colSpan="8"><span className="subtitle luma">Varauksia ei löytynyt.</span></td></tr>}
+          {(visits.length === 0) && <tr><td colSpan="8"><span className="subtitle luma">{t('not-found-any')}</span></td></tr>}
         </tbody>
       </table>
     </>

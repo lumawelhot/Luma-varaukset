@@ -1,0 +1,21 @@
+{
+  "url-copied": "URL kopioitu leikepöydälle!",
+  "url-copy": "Kopio URL",
+  "visits": "Varaukset",
+  "back": "Poistu",
+  "start": "Varaus alkaa",
+  "end": "Varaus päättyy",
+  "grade": "Luokka-aste",
+  "extras": "Lisäpalvelut",
+  "client-name": "Varaajan nimi",
+  "client-email": "Varaajan sähköposti",
+  "client-phone": "Varaajan puhelinnumero",
+  "school": "Koulu",
+  "close": "Sulje",
+  "title": "Otsikko",
+  "resource": "Resurssi",
+  "date": "Päivämäärä",
+  "state": "Tila",
+  "not-found-any": "Varauksia ei löytynyt.",
+  "not-found": "Varausta ei löytynyt."
+}

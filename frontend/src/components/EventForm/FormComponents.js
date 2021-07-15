@@ -1,6 +1,7 @@
 import { set } from 'date-fns'
 import { Field } from 'formik'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import DatePicker from '../Pickers/DatePicker'
 import TimePicker from '../Pickers/TimePicker'
 import { CheckBox, TextField } from '../VisitForm/FormFields'
@@ -202,11 +203,12 @@ export const TimePick = ({ form, fieldName, label, disabledHours }) => {
 }
 
 export const DatePick = ({ form }) => {
+  const { t } = useTranslation('event')
   const { touched, errors, setFieldValue, values } = form
   return (
     <div className="field">
       <label className="label" htmlFor="date">
-        Päivämäärä
+        {t('date')}
       </label>
       <div className="control">
         <DatePicker

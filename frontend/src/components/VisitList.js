@@ -4,8 +4,10 @@ import { useHistory } from 'react-router'
 import { VISITS } from '../graphql/queries'
 import Filterform from './Filter/Filterform'
 import VisitListSortable from './VisitListSortable'
+import { useTranslation } from 'react-i18next'
 
 const VisitList = ({ notify }) => {
+  const { t } = useTranslation('visit')
 
   const result = useQuery(VISITS)
   const [filters, setFilters] = useState([])
@@ -24,7 +26,7 @@ const VisitList = ({ notify }) => {
     element.select()
     element.setSelectionRange(0, 99999)
     document.execCommand('copy')
-    notify('URL kopioitu leikepöydälle!', 'success')
+    notify(t('url-copied'), 'success')
   }
 
   const renderedVisits = result.data.getVisits.filter(visit => {
@@ -33,11 +35,11 @@ const VisitList = ({ notify }) => {
 
   return (
     <div className="section">
-      <h1 className="title luma">Varaukset</h1>
+      <h1 className="title luma">{t('visits')}</h1>
       <Filterform values={filters} setValues={setFilters} />
       <VisitListSortable visits={renderedVisits} copyURL={copyURL}/>
       <div className="section">
-        <button className="button luma primary" onClick={(e) => cancel(e)}>Poistu</button>
+        <button className="button luma primary" onClick={(e) => cancel(e)}>{t('back')}</button>
       </div>
     </div>
   )

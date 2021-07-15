@@ -1,0 +1,14 @@
+{
+  "create-visit": "Luo uusi vierailu",
+  "reservations": "Varaukset",
+  "extras": "Lisäpalvelut",
+  "user-list": "Käyttäjälista",
+  "users": "Käyttäjät",
+  "username": "Käyttäjätunnus",
+  "priviledges": "Oikeudet",
+  "create-user": "Luo uusi käyttäjä",
+  "back": "Poistu",
+  "admin": "admin",
+  "basic": "tavallinen",
+  "user-removed": "Käyttäjä poistettu"
+}
