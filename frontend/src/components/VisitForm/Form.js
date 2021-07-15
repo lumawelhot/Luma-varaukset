@@ -7,20 +7,22 @@ import { add } from 'date-fns'
 import { CheckBox, RadioButton, TextField } from './FormFields'
 import InfoBox from './InfoBox'
 import { useHistory } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 let selectedEvent
 let eventPlatforms
 
 const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
+  const { t } = useTranslation(['visit', 'common'])
   const history = useHistory()
   selectedEvent = event
 
   const grades = [
-    { value: 1, label: 'Varhaiskasvatus' },
-    { value: 2, label: '1.-2. luokka' },
-    { value: 3, label: '3.-6. luokka' },
-    { value: 4, label: '7.-9 luokka' },
-    { value: 5, label: 'toinen aste' }
+    { value: 1, label: t('common:early-education') },
+    { value: 2, label: t('common:1-2') },
+    { value: 3, label: t('common:3-6') },
+    { value: 4, label: t('common:7-9') },
+    { value: 5, label: t('common:second-degree') }
   ]
 
   const filterEventGrades = (eventGrades) => {
@@ -29,18 +31,19 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
   }
 
   const classes = [
-    { value: 1, label: 'SUMMAMUTIKKA', description: 'Matematiikka' },
-    { value: 2, label: 'FOTONI', description: 'Fysiikka' },
-    { value: 3, label: 'LINKKI', description: 'Tietojenkäsittelytiede' },
-    { value: 4, label: 'GEOPISTE', description: 'Maantiede' },
-    { value: 5, label: 'GADOLIN', description: 'Kemia' }
+    { value: 1, label: 'SUMMAMUTIKKA', description: t('common:mathematic') },
+    { value: 2, label: 'FOTONI', description: t('common:physics') },
+    { value: 3, label: 'LINKKI', description: t('common:computer-science') },
+    { value: 4, label: 'GEOPISTE', description: t('common:geography') },
+    { value: 5, label: 'GADOLIN', description: t('common:chemistry') }
   ]
 
   const filterEventClass = (eventClasses) => {
     return eventClasses.map(c =>
       <Tooltip key={c} color={'geekblue'} title={classes[c-1].description}>
         <span className='tag is-small'>{classes[c-1].label}</span>
-      </Tooltip>)
+      </Tooltip>
+    )
   }
 
   const platformList = [
@@ -98,21 +101,21 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
               <div className="columns is-centered">
                 <div className="section">
                   <InfoBox event={event} eventClass={eventClass} eventGrades={eventGrades} />
-                  <h1 className="title">Syötä varauksen tiedot</h1>
+                  <h1 className="title">{t('give-info')}</h1>
 
                   <form onSubmit={handleSubmit} className="box luma">
 
                     {event.inPersonVisit && event.remoteVisit ? (
                       <>
-                        <label className="label">Valitse etä- tai lähiopetus</label>
+                        <label className="label">{t('choose-type')}</label>
                         <Field
-                          label='Etävierailu'
+                          label={t('remote')}
                           id='visitMode'
                           onChange={() => setFieldValue('visitMode', '1')}
                           component={RadioButton}
                         />
                         <Field
-                          label='Lähivierailu'
+                          label={t('inperson')}
                           id='visitMode'
                           onChange={() => setFieldValue('visitMode', '2')}
                           component={RadioButton}
@@ -125,7 +128,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
 
                     {values.visitMode === '1' || (values.visitMode === '0' && event.remoteVisit && !event.inPersonVisit) ?
                       <>
-                        <label className="label" id="radio-group">Valitse haluamasi etäyhteysalusta</label>
+                        <label className="label" id="radio-group">{t('choose-remote-platform')}</label>
                         {eventPlatforms.map((platform, index) => {
                           return (
                             <Field
@@ -141,7 +144,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                         <div className="control">
                           <Field
                             id='remotePlatform'
-                            label='Muu, mikä?'
+                            label={t('other-what')}
                             onChange={() => setFieldValue('remotePlatform', parseInt(eventPlatforms.length+1))}
                             component={RadioButton}
                           />
@@ -157,30 +160,30 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                       :null
                     }
 
-                    <Field component={TextField} label='Varaajan nimi' fieldName='clientName' />
+                    <Field component={TextField} label={t('client-name')} fieldName='clientName' />
 
-                    <Field component={TextField} label='Oppimisyhteisön nimi' fieldName='schoolName' />
+                    <Field component={TextField} label={t('community-name')} fieldName='schoolName' />
 
-                    <Field component={TextField} label='Oppimisyhteisön paikkakunta' fieldName='schoolLocation' />
+                    <Field component={TextField} label={t('community-location')} fieldName='schoolLocation' />
 
-                    <Field component={TextField} label='Varaajan sähköpostiosoite' fieldName='clientEmail' />
+                    <Field component={TextField} label={t('client-email')} fieldName='clientEmail' />
 
-                    <Field component={TextField} label='Sähköpostiosoite uudestaan' fieldName='verifyEmail' />
+                    <Field component={TextField} label={t('email-confirm')} fieldName='verifyEmail' />
 
-                    <Field component={TextField} label='Varaajan puhelinnumero' fieldName='clientPhone' />
+                    <Field component={TextField} label={t('client-phone')} fieldName='clientPhone' />
 
                     <hr></hr>
                     <div className="field is-grouped" style={{ justifyContent: 'space-between' }}>
 
-                      <Field component={TextField} style={{ width: 360 }} label='Luokka-aste/kurssi' fieldName='visitGrade' />
+                      <Field component={TextField} style={{ width: 360 }} label={t('grade')} fieldName='visitGrade' />
 
-                      <Field component={TextField} type='number' label='Osallistujamäärä ' fieldName='participants' />
+                      <Field component={TextField} type='number' label={t('participants')} fieldName='participants' />
 
                     </div>
 
                     {!!event.extras.length && (
                       <div className="field">
-                        <label className="label" htmlFor="extras">Valitse haluamasi lisäpalvelut </label>
+                        <label className="label" htmlFor="extras">{t('choose-extras')}</label>
 
                         {event.extras.map(extra =>
                           <Field
@@ -199,17 +202,17 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                               const endTime = calculateVisitEndTime(startTimeAsDate, values, selectedEvent, newValueForExtras)
                               setFieldValue('finalEndTime', endTime)
                             }}
-                            label={` ${extra.name}, pituus lähi: ${extra.inPersonLength} min / etä: ${extra.remoteLength} min`}
+                            label={` ${extra.name}, ${t('length-inperson')} ${extra.inPersonLength} ${t('minutes-remote')} ${extra.remoteLength} ${t('minutes')}`}
                           />
                         )}
                       </div>
                     )}
 
                     {touched.extras && errors.startTime ? (
-                      <p className="help is-danger">Tarkista että varaus lisäpalveluineen mahtuu annettuihin aikarajoihin!</p>
+                      <p className="help is-danger">{t('check-timeslot')}</p>
                     ) : null}
                     <label htmlFor="startTime" className="label">
-                  Syötä varauksen alkamisaika (aikaikkuna: {format(event.start, 'HH:mm')} - {format(event.end, 'HH:mm')})
+                      {t('start-and-timeslot')} {format(event.start, 'HH:mm')} - {format(event.end, 'HH:mm')})
                     </label>
                     <div className="field is-grouped level">
                       <div className="control">
@@ -239,7 +242,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                     <Field
                       label={
                         <label>
-                           Hyväksyn, että tietoni tallennetaan ja käsitellään <a href="https://www2.helsinki.fi/fi/tiedekasvatus/tietosuojailmoitus-opintokaynnit" target="_blank" rel="noopener noreferrer">tietosuojailmoituksen</a> mukaisesti.
+                          {t('accept-privacy-policy1')} <a href="https://www2.helsinki.fi/fi/tiedekasvatus/tietosuojailmoitus-opintokaynnit" target="_blank" rel="noopener noreferrer">{t('privacy-policy')}</a> {t('accept-privacy-policy2')}.
                         </label>
                       }
                       className='privacyPolicy'
@@ -248,7 +251,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                       component={CheckBox}
                     />
                     <Field
-                      label='Hyväksyn, että antamiani tietoja voidaan hyödyntää tutkimuskäytössä.'
+                      label={t('accept-data-use')}
                       fieldName='dataUseAgreement'
                       style={{ marginBottom: 7 }}
                       component={CheckBox}
@@ -256,7 +259,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                     <Field
                       label={
                         <label>
-                          Olen lukenut <a href="https://www2.helsinki.fi/fi/tiedekasvatus/opettajille-ja-oppimisyhteisoille/varaa-opintokaynti">opintokäyntien ohjeistuksen</a> ja hyväksyn käytänteet.
+                          {t('accept-instructions1')} <a href="https://www2.helsinki.fi/fi/tiedekasvatus/opettajille-ja-oppimisyhteisoille/varaa-opintokaynti">{t('instructions')}</a> {t('accept-instructions2')}.
                         </label>
                       }
                       style={{ marginBottom: 7 }}
@@ -265,8 +268,8 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                       component={CheckBox}
                     />
 
-                    <button id="create" className="button luma primary" type='submit'>Tallenna</button>
-                    <button className="button luma" onClick={cancel}>Poistu</button>
+                    <button id="create" className="button luma primary" type='submit'>{t('book-event')}</button>
+                    <button className="button luma" onClick={cancel}>{t('to-calendar')}</button>
 
                   </form>
                 </div>

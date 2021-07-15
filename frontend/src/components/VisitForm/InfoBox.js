@@ -1,25 +1,27 @@
 import { format } from 'date-fns'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 const InfoBox = ({ event, eventGrades, eventClass }) => {
+  const { t } = useTranslation('event')
   return (
     <>
-      <div className="title">Varaa vierailu </div>
+      <div className="title">{t('book-visit')}</div>
       <div className="box">
-        <p className="subtitle"><strong>Vierailun tiedot</strong></p>
-        <p><strong>Nimi:</strong> {event.title}</p>
-        <p><strong>Kuvaus:</strong> {event.desc || 'Ei kuvausta'}</p>
-        <p><strong>Tiedeluokka:</strong> {eventClass}</p>
-        <div><strong>Tarjolla seuraaville luokka-asteille:</strong> {eventGrades}
+        <p className="subtitle"><strong> {t('visit-info')}</strong></p>
+        <p><strong>{t('name')}:</strong> {event.title}</p>
+        <p><strong>{t('description')}:</strong> {event.desc || t('no-description')}</p>
+        <p><strong>{t('science-class')}:</strong> {eventClass}</p>
+        <div><strong>{t('available-to-grades')}:</strong> {eventGrades}
         </div>
-        <div><strong>Vierailu tarjolla: </strong>
-          {event.inPersonVisit ? 'Lähiopetuksena' : <></>}
-          {event.inPersonVisit && event.remoteVisit && ' ja etäopetuksena'}
-          {event.remoteVisit && !event.inPersonVisit? 'Etäopetuksena' : <></>}
+        <div><strong>{t('event-on-offer')}: </strong>
+          {event.inPersonVisit ? t('in-inperson') : <></>}
+          {event.inPersonVisit && event.remoteVisit && t('and-remote')}
+          {event.remoteVisit && !event.inPersonVisit? t('in-remote') : <></>}
         </div>
-        <p><strong>Vierailun kesto:</strong> {event.duration} min</p>
-        <p><strong>Vierailun aikaisin alkamisaika:</strong> {format(event.start, 'd.M.yyyy, HH:mm')}</p>
-        <p><strong>Vierailun myöhäisin päättymisaika:</strong> {format(event.end, 'd.M.yyyy, HH:mm')}</p>
+        <p><strong>{t('event-length')}:</strong> {event.duration} {t('minutes')}</p>
+        <p><strong>{t('earliest-start')}:</strong> {format(event.start, 'd.M.yyyy, HH:mm')}</p>
+        <p><strong>{t('latest-end')}:</strong> {format(event.end, 'd.M.yyyy, HH:mm')}</p>
       </div>
       <br />
     </>

@@ -1,11 +1,13 @@
 import { useMutation } from '@apollo/client'
 import { Field, Formik } from 'formik'
 import React, { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router'
 import { CREATE_USER, USERS } from '../graphql/queries'
 import { RadioButton, TextField } from './VisitForm/FormFields'
 
 const UserForm = ({ sendMessage }) => {
+  const { t } = useTranslation('user')
   const history = useHistory()
 
   const [createUser, result] = useMutation(CREATE_USER, {
@@ -15,7 +17,7 @@ const UserForm = ({ sendMessage }) => {
 
   useEffect(() => {
     if (result.data) {
-      sendMessage(`Käyttäjätunnus '${result.data.createUser.username}' luotu.`, 'success')
+      sendMessage(`${t('username')} ${result.data.createUser.username} ${t('created')}.`, 'success')
       history.push('/')
     }
   }, [result])
@@ -27,7 +29,7 @@ const UserForm = ({ sendMessage }) => {
         password: values.password,
         isAdmin: values.isAdmin
       }
-    }).catch(() => sendMessage('Virheellinen syöte!', 'danger'))
+    }).catch(() => sendMessage(t('invalid-input'), 'danger'))
     values.username = ''
     values.password = ''
   }
@@ -52,30 +54,30 @@ const UserForm = ({ sendMessage }) => {
           <div className="container">
             <div className="columns is-centered">
               <div className="section">
-                <div className="title">Luo uusi käyttäjä</div>
+                <div className="title">{t('create-user')}</div>
                 <form onSubmit={handleSubmit} >
                   <Field
                     style={{ width: 500 }}
-                    label='Käyttäjänimi'
+                    label={t('username')}
                     fieldName='username'
                     component={TextField}
                   />
                   <Field
-                    label='Salasana'
+                    label={t('password')}
                     fieldName='password'
                     type='password'
                     component={TextField}
                   />
-                  <label className="label">Käyttäjärooli</label>
+                  <label className="label">{t('user-role')}</label>
                   <Field
-                    label='Ylläpitäjä'
+                    label={t('administrator')}
                     id='permission'
                     onChange={() => setFieldValue('isAdmin', true)}
                     component={RadioButton}
                   />
                   <Field
                     style={{ marginBottom: 10 }}
-                    label='Työntekijä'
+                    label={t('employee')}
                     id='permission'
                     onChange={() => setFieldValue('isAdmin', false)}
                     component={RadioButton}
@@ -86,14 +88,14 @@ const UserForm = ({ sendMessage }) => {
                         id="create"
                         className="button luma primary"
                         type='submit'
-                      > Tallenna käyttäjä
+                      > {t('save-user')}
                       </button>
                     </div>
                     <div className="control">
                       <button
                         className="button luma"
                         onClick={cancel}
-                      > Poistu
+                      > {t('back')}
                       </button>
                     </div>
                   </div>

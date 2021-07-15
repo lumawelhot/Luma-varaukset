@@ -1,1 +1,12 @@
-{ }
+{
+  "mathematic": "Matematiikka",
+  "physics": "Fysiikka",
+  "computer-science": "Tietojenkäsittelytiede",
+  "geography": "Maantiede",
+  "chemistry": "Kemia",
+  "early-education": "Varhaiskasvatus",
+  "1-2": "1.-2. luokka",
+  "3-6": "3.-6. luokka",
+  "7-9": "7.-9. luokka",
+  "second-degree": "Toinen aste"
+}
