@@ -10,13 +10,6 @@ When('I navigate to the create event page', () => {
   cy.visit('http://localhost:3000/event')
 })
 
-Then('event form has a description field', () => {
-  cy.get('textarea#desc')
-    .should('exist')
-    .and('be.visible')
-    .and('have.attr', 'placeholder', 'Kirjoita tähän lyhyt kuvaus vierailusta.')
-})
-
 When('valid information is entered', () => {
   cy.get('#title').type('Test event')
   cy.wait(500)

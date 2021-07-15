@@ -37,7 +37,6 @@ const App = () => {
   const [currentUser, setUser] = useState(null)
 
   const parseEvent = (event) => {
-    console.log(event.visits)
     const sortedVisitTimes = event.visits.slice().sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
     let invalidTimeSlot
     if (sortedVisitTimes.length) {
@@ -169,7 +168,8 @@ const App = () => {
             handleBookingButtonClick={handleBookingButtonClick}
             event={clickedEvent}
             setEvent={setClickedEvent}
-            sendMessage={notify} />
+            sendMessage={notify}
+          />
         </Route>
         <Route path='/book'>
           <VisitForm currentUser={currentUser} event={clickedEvent} sendMessage={notify} />
@@ -230,15 +230,14 @@ const App = () => {
           {showEventForm &&
             <div className="modal is-active">
               <div className="modal-background"></div>
-              <div className="modal-content">
-                <EventForm
-                  sendMessage={notify}
-                  addEvent={addEvent}
-                  newEventTimeRange={newEventTimeRange}
-                  closeEventForm={closeEventForm}
-                />
-              </div>
-            </div>}
+              <EventForm
+                sendMessage={notify}
+                addEvent={addEvent}
+                newEventTimeRange={newEventTimeRange}
+                closeEventForm={closeEventForm}
+              />
+            </div>
+          }
           <MyCalendar
             events={events}
             currentUser={currentUser}
@@ -249,7 +248,7 @@ const App = () => {
             currentView={currentView}
             setCurrentView={setCurrentView}
           />
-          <UserPage currentUser={currentUser} />
+          <UserPage currentUser={currentUser} setShowEventForm={setShowEventForm} />
           {!currentUser &&
             <span className='icon is-pulled-right'><FcKey onClick={login} className='admin-button' /></span>
           }

@@ -43,124 +43,120 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
     >
       {({ handleSubmit, setFieldValue, touched, errors, values }) => {
         return (
-          <div className="columns is-centered">
-            <div className="box luma-eventform">
-              <div className="box">
-                <div className="title">Luo uusi vierailu</div>
-                <form onSubmit={handleSubmit}>
-                  <Field
-                    label='Vierailun nimi'
-                    fieldName='title'
-                    component={TextField}
-                  />
+          <div className="modal-card" style={{ width: 'fit-content' }}>
+            <header className="modal-card-head">
+              <p className="modal-card-title">Luo uusi vierailu</p>
+              <button className="delete" aria-label="close" onClick={closeEventForm}></button>
+            </header>
+            <section className="modal-card-body">
+              <Field
+                label='Vierailun nimi'
+                fieldName='title'
+                component={TextField}
+              />
 
-                  <Field
-                    label='Vierailun kesto minuutteina'
-                    fieldName='duration'
-                    type='number'
-                    component={TextField}
-                  />
+              <Field
+                label='Vierailun kesto minuutteina'
+                fieldName='duration'
+                type='number'
+                component={TextField}
+              />
 
-                  <LumaTagInput
-                    label="Tagit"
-                    tags={values.tags}
-                    setTags={tags => setFieldValue('tags', tags)}
-                    suggestedTags={suggestedTags}
-                  />
+              <LumaTagInput
+                label="Tagit"
+                tags={values.tags}
+                setTags={tags => setFieldValue('tags', tags)}
+                suggestedTags={suggestedTags}
+              />
 
-                  <EventType />
+              <EventType />
 
-                  {touched.inPersonVisit && touched.remoteVisit && errors.location ?
-                    <p className="help is-danger">{errors.location}</p> : null
-                  }
+              {touched.inPersonVisit && touched.remoteVisit && errors.location ?
+                <p className="help is-danger">{errors.location}</p> : null
+              }
 
-                  {values.remoteVisit ?
-                    <Platforms
-                      values={values}
-                      setFieldValue={setFieldValue}
-                      touched={touched}
-                      errors={errors}
-                    /> : null
-                  }
+              {values.remoteVisit ?
+                <Platforms
+                  values={values}
+                  setFieldValue={setFieldValue}
+                  touched={touched}
+                  errors={errors}
+                /> : null
+              }
 
-                  <Grades
-                    values={values}
-                    setFieldValue={setFieldValue}
-                    touched={touched}
-                    errors={errors}
-                  />
+              <Grades
+                values={values}
+                setFieldValue={setFieldValue}
+                touched={touched}
+                errors={errors}
+              />
 
-                  <ScienceClasses
-                    values={values}
-                    setFieldValue={setFieldValue}
-                    touched={touched}
-                    errors={errors}
-                  />
+              <ScienceClasses
+                values={values}
+                setFieldValue={setFieldValue}
+                touched={touched}
+                errors={errors}
+              />
 
-                  <AdditionalServices
-                    extras={extras}
-                    values={values}
-                    setFieldValue={setFieldValue}
-                  />
+              <AdditionalServices
+                extras={extras}
+                values={values}
+                setFieldValue={setFieldValue}
+              />
 
-                  <div className="field is-grouped luma">
+              <div className="field is-grouped luma">
 
-                    <Field component={DatePick} />
+                <Field component={DatePick} />
 
-                    <Field
-                      label='Aloituskellonaika'
-                      fieldName='startTime'
-                      component={TimePick}
-                    />
+                <Field
+                  label='Aloituskellonaika'
+                  fieldName='startTime'
+                  component={TimePick}
+                />
 
-                    <Field
-                      label='Lopetuskellonaika'
-                      fieldName='endTime'
-                      component={TimePick}
-                      disabledHours={() => [0,1,2,3,4,5,6,7,18,19,20,21,22,23]}
-                    />
+                <Field
+                  label='Lopetuskellonaika'
+                  fieldName='endTime'
+                  component={TimePick}
+                  disabledHours={() => [0,1,2,3,4,5,6,7,18,19,20,21,22,23]}
+                />
 
-                    <Field
-                      label='Minimiaika varausten välillä'
-                      fieldName='waitingTime'
-                      type='number'
-                      className={`input ${touched.waitingTime
-                        ? errors.waitingTime
-                          ? 'is-danger'
-                          : 'is-success'
-                        : ''
-                      }`}
-                      component={TextField}
-                    />
+                <Field
+                  label='Minimiaika varausten välillä'
+                  fieldName='waitingTime'
+                  type='number'
+                  className={`input ${touched.waitingTime
+                    ? errors.waitingTime
+                      ? 'is-danger'
+                      : 'is-success'
+                    : ''
+                  }`}
+                  component={TextField}
+                />
 
-                  </div>
-
-                  <Field
-                    label='Kuvaus'
-                    fieldName='desc'
-                    className={`textarea ${touched.desc
-                      ? errors.desc
-                        ? 'is-danger'
-                        : 'is-success'
-                      : ''
-                    }`}
-                    placeholder='Kirjoita tähän lyhyt kuvaus vierailusta.'
-                    component={TextArea}
-                  />
-
-                  {touched.desc && errors.desc ? (
-                    <p className="help is-danger">{errors.desc}</p>
-                  ) : null}
-
-                  <button id="create" className="button luma primary" type="submit">
-                    Tallenna
-                  </button>
-                  <button className="button luma" onClick={closeEventForm} >
-                    Poistu
-                  </button>
-                </form>
               </div>
-            </div>
+
+              <Field
+                label='Kuvaus'
+                fieldName='desc'
+                className={`textarea ${touched.desc
+                  ? errors.desc
+                    ? 'is-danger'
+                    : 'is-success'
+                  : ''
+                }`}
+                placeholder='Kirjoita tähän lyhyt kuvaus vierailusta.'
+                component={TextArea}
+              />
+
+              {touched.desc && errors.desc ? (
+                <p className="help is-danger">{errors.desc}</p>
+              ) : null}
+            </section>
+            <footer className="modal-card-foot">
+              <button className="button luma" type='submit' onClick={handleSubmit}>Luo vierailu</button>
+              <button className="button" onClick={closeEventForm}>Sulje</button>
+            </footer>
           </div>
         )
 
