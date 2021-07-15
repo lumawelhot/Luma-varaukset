@@ -2,11 +2,11 @@ import { useQuery } from '@apollo/client'
 import { Field, Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import { EXTRAS, TAGS } from '../../graphql/queries'
-import { AdditionalServices, EventType, Grades, Platforms, ScienceClasses } from '../EventForm/FormComponents'
+import { AdditionalServices, EventType, Grades, Platforms, ScienceClasses, TimePick } from '../EventForm/FormComponents'
 import LumaTagInput from '../LumaTagInput/LumaTagInput'
 import { TextArea, TextField } from '../VisitForm/FormFields'
 
-const Form = ({ event, close, save }) => {
+const Form = ({ event, close, save, validate }) => {
   const [suggestedTags, setSuggestedTags] = useState([])
   const tags = useQuery(TAGS)
   const extras = useQuery(EXTRAS)
@@ -41,12 +41,15 @@ const Form = ({ event, close, save }) => {
         grades: createGradeList(),
         remotePlatforms: createPlatformList(),
         otherRemotePlatformOption: event.otherRemotePlatformOption,
-        desc: event.desc,
+        desc: event.desc ? event.desc : '',
         inPersonVisit: event.inPersonVisit,
         remoteVisit: event.remoteVisit,
         extras: event.extras.map(extra => extra.id),
-        tags: event.tags.map(tag => tag.name)
+        tags: event.tags.map(tag => tag.name),
+        startTime: new Date(event.eventStart),
+        endTime: new Date(event.eventEnd)
       }}
+      validate={validate}
       onSubmit={(values) => save(values, tags)}
     >
       {({ handleSubmit, values, setFieldValue, touched, errors }) => {
@@ -74,6 +77,9 @@ const Form = ({ event, close, save }) => {
                 suggestedTags={suggestedTags}
               />
               <EventType />
+              {touched.inPersonVisit && touched.remoteVisit && errors.location ?
+                <p className="help is-danger">{errors.location}</p> : null
+              }
               {values.remoteVisit ?
                 <Platforms
                   values={values}
@@ -98,6 +104,19 @@ const Form = ({ event, close, save }) => {
                 extras={extras}
                 values={values}
                 setFieldValue={setFieldValue}
+              />
+              <Field
+                label='Aloituskellonaika'
+                fieldName='startTime'
+                component={TimePick}
+                disabledHours={() => [0,1,2,3,4,5,6,7,17,18,19,20,21,22,23]}
+              />
+
+              <Field
+                label='Lopetuskellonaika'
+                fieldName='endTime'
+                component={TimePick}
+                disabledHours={() => [0,1,2,3,4,5,6,7,8,18,19,20,21,22,23]}
               />
             </section>
             <footer className="modal-card-foot">

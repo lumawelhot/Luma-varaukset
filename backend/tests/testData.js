@@ -1,4 +1,4 @@
-const { set, subDays, setMilliseconds, setSeconds, setMinutes, setHours, add, sub } = require('date-fns')
+const { set, subDays, setMilliseconds, setSeconds, setMinutes, setHours, add, sub, addDays } = require('date-fns')
 
 const details = {
   clientName: 'Teacher',
@@ -18,13 +18,13 @@ const eventDetails1 = {
   resourceids: [1],
   grades: [1, 2],
   desc: 'Algebra is one of the broad areas of mathematics, together with number theory, geometry and analysis.',
-  start: set(new Date(), { hours: 9, minutes: 30, seconds: 0, milliseconds: 0 }).toISOString(),
-  end: set(new Date(), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }).toISOString(),
+  start: addDays(set(new Date(), { hours: 9, minutes: 0, seconds: 0, milliseconds: 0 }), 16).toISOString(),
+  end: addDays(set(new Date(), { hours: 15, minutes: 0, seconds: 0, milliseconds: 0 }), 16).toISOString(),
   booked: false,
   inPersonVisit: true,
   remoteVisit: false,
-  waitingTime: 15,
-  duration: 60
+  waitingTime: 10,
+  duration: 20,
 }
 
 const eventDetails2 = {

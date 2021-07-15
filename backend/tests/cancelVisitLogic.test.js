@@ -58,7 +58,7 @@ beforeAll(async () => {
       console.log('connection error: ', error.message)
     })
 
-  await UserModel.deleteMany()
+  await UserModel.deleteMany({})
 
   const userPassword = await bcrypt.hash('password', 10)
   const userData = { username: 'employee', passwordHash: userPassword, isAdmin: false }

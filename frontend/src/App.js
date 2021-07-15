@@ -37,6 +37,16 @@ const App = () => {
   const [currentUser, setUser] = useState(null)
 
   const parseEvent = (event) => {
+    console.log(event.visits)
+    const sortedVisitTimes = event.visits.slice().sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+    let invalidTimeSlot
+    if (sortedVisitTimes.length) {
+      invalidTimeSlot = {
+        start: new Date(sortedVisitTimes[0].startTime),
+        end: new Date(sortedVisitTimes[sortedVisitTimes.length - 1].endTime)
+      }
+    }
+
     const details = {
       id: event.id,
       title: event.title,
@@ -49,7 +59,10 @@ const App = () => {
       duration: event.duration,
       desc: event.desc,
       remotePlatforms: event.remotePlatforms,
-      otherRemotePlatformOption: event.otherRemotePlatformOption
+      otherRemotePlatformOption: event.otherRemotePlatformOption,
+      eventStart: new Date(event.start),
+      eventEnd: new Date(event.end),
+      invalidTimeSlot
     }
     delete details.availableTimes
     delete details.visits
