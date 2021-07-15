@@ -30,8 +30,8 @@ test('Form renders correctly', async () => {
       <ModifyEvent event={testEvent} />
     </MockedProvider>
   )
-  const { innerHTML } = container
   await waitFor(() => new Promise((res) => setTimeout(res, 0)))
+  const { innerHTML } = container
   expect(innerHTML).toContain('Scratch-ohjelmointikieli')
   expect(innerHTML).toContain('Hauska kuvaus')
   expect(innerHTML).toContain('Maantiede')
