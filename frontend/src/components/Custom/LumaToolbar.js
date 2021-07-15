@@ -2,9 +2,11 @@ import React, { useState } from 'react'
 import clsx from 'clsx'
 import { Navigate } from 'react-big-calendar'
 import { FaFilter } from 'react-icons/fa'
+import { useTranslation } from 'react-i18next'
 
 
 const LumaToolbar = (props) => {
+  const { t } = useTranslation('common')
   const [showFilterOptions, setShowFilterOptions] = useState(false)
 
   const {
@@ -69,7 +71,7 @@ const LumaToolbar = (props) => {
 
       <button type="button" className="button luma" style={{ marginLeft: 10, paddingTop: 3 }} onClick={() => setShowFilterOptions(!showFilterOptions)}>
         <span className="icon is-small" style={{ position: 'relative', top: 2 }}><FaFilter/></span>
-        <span>Suodata</span>
+        <span>{t('filter')}</span>
       </button>
       <div className="filterbox" style={{ display: showFilterOptions ? 'block' : 'none' }}>
         <div className="box">

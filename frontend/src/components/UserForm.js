@@ -17,7 +17,7 @@ const UserForm = ({ sendMessage }) => {
 
   useEffect(() => {
     if (result.data) {
-      sendMessage(`${t('username')} ${result.data.createUser.username} ${t('created')}.`, 'success')
+      sendMessage(`${t('username')} '${result.data.createUser.username}' ${t('created')}.`, 'success')
       history.push('/')
     }
   }, [result])

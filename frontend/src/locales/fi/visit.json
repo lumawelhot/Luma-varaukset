@@ -42,5 +42,7 @@
   "accept-instructions1": "Olen lukenut",
   "accept-instructions2": "ja hyväksyn käytänteet",
   "book-event": "Varaa vierailu",
-  "to-calendar": "Takaisin kalenteriin"
+  "to-calendar": "Takaisin kalenteriin",
+  "choose-remote-or-inperson": "Valitse etä- ja/tai lähivierailu",
+  "choose-event-extras": "Valitse vierailulle sopivat lisäpalvelut"
 }

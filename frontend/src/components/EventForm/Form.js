@@ -47,27 +47,28 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
         return (
           <div className="modal-card" style={{ width: 'fit-content' }}>
             <header className="modal-card-head">
-              <p className="modal-card-title">Luo uusi vierailu</p>
+              <p className="modal-card-title">{t('create-new-event')}</p>
               <button className="delete" aria-label="close" onClick={closeEventForm}></button>
             </header>
             <section className="modal-card-body">
               <Field
-                label='Vierailun nimi'
+                label={t('visit-name')}
                 fieldName='title'
                 component={TextField}
               />
 
               <Field
-                label='Vierailun kesto minuutteina'
+                label={t('event-length-minutes')}
                 fieldName='duration'
                 type='number'
                 component={TextField}
               />
 
               <LumaTagInput
-                label="Tagit"
+                label={t('tags')}
                 tags={values.tags}
                 setTags={tags => setFieldValue('tags', tags)}
+                prompt={t('tag')}
                 suggestedTags={suggestedTags}
               />
 

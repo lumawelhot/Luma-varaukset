@@ -1,6 +1,8 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 const FilterByGrades = ({ grades, setGrades }) => {
+  const { t } = useTranslation('common')
 
   const muuta = (item) => {
     const newValues = grades.includes(item) ? grades.filter(v => v !== item) : grades.concat(item)
@@ -16,7 +18,7 @@ const FilterByGrades = ({ grades, setGrades }) => {
             className={`button luma ${grades.includes(1) ? 'active' : ''}`}
             onClick={() => muuta(1)}
           >
-          Varhaiskasvatus
+            {t('early-education')}
           </button>
         </div>
         <div className="field">
@@ -24,7 +26,7 @@ const FilterByGrades = ({ grades, setGrades }) => {
             className={`button luma ${grades.includes(2) ? 'active' : ''}`}
             onClick={() => muuta(2)}
           >
-          1.-2. luokka
+            {t('1-2')}
           </button>
         </div>
         <div className="field">
@@ -33,7 +35,7 @@ const FilterByGrades = ({ grades, setGrades }) => {
             className={`button luma ${grades.includes(3) ? 'active' : ''}`}
             onClick={() => muuta(3)}
           >
-          3.-6. luokka
+            {t('3-6')}
           </button>
         </div>
         <div className="field">
@@ -42,7 +44,7 @@ const FilterByGrades = ({ grades, setGrades }) => {
             className={`button luma ${grades.includes(4) ? 'active' : ''}`}
             onClick={() => muuta(4)}
           >
-          7.-9. luokka
+            {t('7-9')}
           </button>
         </div>
         <div className="field">
@@ -51,7 +53,7 @@ const FilterByGrades = ({ grades, setGrades }) => {
             className={`button luma ${grades.includes(5) ? 'active' : ''}`}
             onClick={() => muuta(5)}
           >
-          Toinen aste
+            {t('second-degree')}
           </button>
         </div>
       </div>

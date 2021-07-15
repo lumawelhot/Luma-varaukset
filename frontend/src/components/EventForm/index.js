@@ -1,68 +1,68 @@
 import { useMutation } from '@apollo/client'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { CREATE_EVENT } from '../../graphql/queries'
 import Form from './Form'
 
-const validate = (values) => {
-  const defErrorMessage = 'Täytä tämä kenttä.'
-  const errors = {}
-
-  if (!values.title) {
-    errors.title = defErrorMessage
-  }
-
-  if (!values.grades.includes(true)) {
-    errors.gradesError = 'Valitse vähintään yksi luokka-aste.'
-  }
-
-  if (!values.scienceClass.includes(true)) {
-    errors.scienceClassError = 'Valitse vähintään yksi tiedeluokka.'
-  }
-
-  if(!values.remotePlatforms.includes(true) && values.remoteVisit){
-    errors.remoteError = 'Valitse vähintään yksi etäyhteysalusta.'
-  }
-  if(!values.otherRemotePlatformOption && values.remotePlatforms[3] && values.remoteVisit){
-    errors.otherRemotePlatformOption = 'Kirjoita muun etäyhteysalustan nimi.'
-  }
-
-  if (!(values.remoteVisit || values.inPersonVisit)) {
-    errors.location = 'Valitse joko etä- tai lähivierailu.'
-  }
-
-  if (!values.startTime) {
-    errors.startTime = defErrorMessage
-  } else if (values.startTime.getHours() < 8 || values.startTime.getHours() > 16) {
-    errors.startTime = 'Aloitusajan pitää olla klo 08:00 ja 16:00 välillä.'
-  }
-
-  if (!values.endTime) {
-    errors.endTime = defErrorMessage
-  } else if (values.startTime > values.endTime) {
-    errors.endTime = 'Lopetusajan pitää olla aloitusajan jälkeen.'
-  } else if (values.endTime.getHours() > 16 && values.endTime.getMinutes() !== 0) {
-    errors.endTime = 'Lopetusaika saa olla korkeintaan 17.00.'
-  }
-
-  if (values.waitingTime.length === 0 || values.waitingTime < 0) {
-    errors.waitingTime = ' '
-  }
-
-  return errors
-}
-
-
-
 export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeRange }) => {
+  const { t } = useTranslation('event')
   const history = useHistory()
 
+  const validate = (values) => {
+    const defErrorMessage = t('fill-field')
+    const errors = {}
+
+    if (!values.title) {
+      errors.title = defErrorMessage
+    }
+
+    if (!values.grades.includes(true)) {
+      errors.gradesError = t('choose-one-grade')
+    }
+
+    if (!values.scienceClass.includes(true)) {
+      errors.scienceClassError = t('choose-one-resource')
+    }
+
+    if(!values.remotePlatforms.includes(true) && values.remoteVisit){
+      errors.remoteError = t('choose-one-platform')
+    }
+    if(!values.otherRemotePlatformOption && values.remotePlatforms[3] && values.remoteVisit){
+      errors.otherRemotePlatformOption = t('write-other-platform')
+    }
+
+    if (!(values.remoteVisit || values.inPersonVisit)) {
+      errors.location = t('remote-or-inperson-error')
+    }
+
+    if (!values.startTime) {
+      errors.startTime = defErrorMessage
+    } else if (values.startTime.getHours() < 8 || values.startTime.getHours() > 16) {
+      errors.startTime = t('start-between')
+    }
+
+    if (!values.endTime) {
+      errors.endTime = defErrorMessage
+    } else if (values.startTime > values.endTime) {
+      errors.endTime = t('end-after-start')
+    } else if (values.endTime.getHours() > 16 && values.endTime.getMinutes() !== 0) {
+      errors.endTime = t('end-before')
+    }
+
+    if (values.waitingTime.length === 0 || values.waitingTime < 0) {
+      errors.waitingTime = ' '
+    }
+
+    return errors
+  }
+
   const [create] = useMutation(CREATE_EVENT, {
-    onError: () => { sendMessage('Vierailun luonti epäonnistui! Tarkista tiedot!', 'danger')},
+    onError: () => { sendMessage(t('event-creation-failed'), 'danger')},
     onCompleted: (data) => {
       data.createEvent.booked = false
       addEvent(data.createEvent)
-      sendMessage('Vierailu luotu.', 'success')
+      sendMessage(t('event-created'), 'success')
       history.push('/')
     }
   })

@@ -2,6 +2,7 @@ import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
 import { render, fireEvent } from '@testing-library/react'
 import Tags from './Tags'
+import '../../i18n'
 
 const tags = ['Matematiikka', 'Fysiikka', 'Ohjelmointi', 'Maantiede', 'Kemia']
 

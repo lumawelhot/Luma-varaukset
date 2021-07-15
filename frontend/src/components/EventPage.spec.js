@@ -7,6 +7,7 @@ import { createMemoryHistory } from 'history'
 import { EVENTS } from '../graphql/queries'
 import EventPage from './EventPage'
 import { set, addDays } from 'date-fns'
+import '../i18n'
 
 const emptyList = [
   {

@@ -1,7 +1,9 @@
 import React from 'react'
 import { Tooltip } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 const Filterform = ({ values, setValues }) => {
+  const { t } = useTranslation('common')
 
   const muuta = (item) => {
     const newValues = values.includes(item) ? values.filter(v => v !== item) : values.concat(item)
@@ -12,44 +14,44 @@ const Filterform = ({ values, setValues }) => {
     <div>
       <p className="label">Suodata tiedeluokan mukaan: </p>
       <div className="field is-grouped">
-        <Tooltip title="Matematiikka" color={'geekblue'}>
+        <Tooltip title={t('mathematic')} color={'geekblue'}>
           <button
             className={`button luma ${values.includes(1) ? 'active' : ''}`}
             onClick={() => muuta(1)}
           >
-        SUMMAMUTIKKA
+            SUMMAMUTIKKA
           </button>
         </Tooltip>
-        <Tooltip title="Fysiikka" color={'geekblue'}>
+        <Tooltip title={t('physics')} color={'geekblue'}>
           <button
             className={`button luma ${values.includes(2) ? 'active' : ''}`}
             onClick={() => muuta(2)}
           >
-        FOTONI
+            FOTONI
           </button>
         </Tooltip>
-        <Tooltip title="Tietojenkäsittelytiede" color={'geekblue'}>
+        <Tooltip title={t('computer-science')} color={'geekblue'}>
           <button
             className={`button luma ${values.includes(3) ? 'active' : ''}`}
             onClick={() => muuta(3)}
           >
-        LINKKI
+            LINKKI
           </button>
         </Tooltip>
-        <Tooltip title="Maantiede" color={'geekblue'}>
+        <Tooltip title={t('geography')} color={'geekblue'}>
           <button
             className={`button luma ${values.includes(4) ? 'active' : ''}`}
             onClick={() => muuta(4)}
           >
-        GEOPISTE
+            GEOPISTE
           </button>
         </Tooltip>
-        <Tooltip title="Kemia" color={'geekblue'}>
+        <Tooltip title={t('chemistry')} color={'geekblue'}>
           <button
             className={`button luma ${values.includes(5) ? 'active' : ''}`}
             onClick={() => muuta(5)}
           >
-        GADOLIN
+            GADOLIN
           </button>
         </Tooltip>
       </div>
