@@ -1,12 +1,12 @@
 import React from 'react'
 import { useHistory } from 'react-router'
 
-const UserPage = ({ currentUser }) => {
+const UserPage = ({ currentUser, setShowEventForm }) => {
   const history = useHistory()
 
   const createEvent = (event) => {
     event.preventDefault()
-    history.push('/event')
+    setShowEventForm(true)
   }
 
   const listUsers = (event) => {

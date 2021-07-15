@@ -1,10 +1,5 @@
 Feature: As an employee I want to create a new event
 
-Scenario: A description field is visible
-    Given Employee is logged in
-    When I navigate to the create event page
-    Then event form has a description field
-
 Scenario: A new event is succesfully created by an employee with valid information
     Given Employee is logged in
     And I navigate to the create event page
