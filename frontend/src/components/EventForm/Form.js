@@ -7,8 +7,10 @@ import addDays from 'date-fns/addDays'
 import set from 'date-fns/set'
 import { TextArea, TextField } from '../VisitForm/FormFields'
 import { AdditionalServices, DatePick, EventType, Grades, Platforms, ScienceClasses, TimePick } from './FormComponents'
+import { useTranslation } from 'react-i18next'
 
 const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmit }) => {
+  const { t } = useTranslation('event')
   const [suggestedTags, setSuggestedTags] = useState([])
   const tags = useQuery(TAGS)
   const extras = useQuery(EXTRAS)
@@ -45,27 +47,28 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
         return (
           <div className="modal-card" style={{ width: 'fit-content' }}>
             <header className="modal-card-head">
-              <p className="modal-card-title">Luo uusi vierailu</p>
+              <p className="modal-card-title">{t('create-new-event')}</p>
               <button className="delete" aria-label="close" onClick={closeEventForm}></button>
             </header>
             <section className="modal-card-body">
               <Field
-                label='Vierailun nimi'
+                label={t('visit-name')}
                 fieldName='title'
                 component={TextField}
               />
 
               <Field
-                label='Vierailun kesto minuutteina'
+                label={t('event-length-minutes')}
                 fieldName='duration'
                 type='number'
                 component={TextField}
               />
 
               <LumaTagInput
-                label="Tagit"
+                label={t('tags')}
                 tags={values.tags}
                 setTags={tags => setFieldValue('tags', tags)}
+                prompt={t('tag')}
                 suggestedTags={suggestedTags}
               />
 
@@ -109,20 +112,20 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
                 <Field component={DatePick} />
 
                 <Field
-                  label='Aloituskellonaika'
+                  label={t('start-time')}
                   fieldName='startTime'
                   component={TimePick}
                 />
 
                 <Field
-                  label='Lopetuskellonaika'
+                  label={t('end-time')}
                   fieldName='endTime'
                   component={TimePick}
                   disabledHours={() => [0,1,2,3,4,5,6,7,18,19,20,21,22,23]}
                 />
 
                 <Field
-                  label='Minimiaika varausten välillä'
+                  label={t('waiting-time')}
                   fieldName='waitingTime'
                   type='number'
                   className={`input ${touched.waitingTime
@@ -137,7 +140,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
               </div>
 
               <Field
-                label='Kuvaus'
+                label={t('description')}
                 fieldName='desc'
                 className={`textarea ${touched.desc
                   ? errors.desc
@@ -145,7 +148,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
                     : 'is-success'
                   : ''
                 }`}
-                placeholder='Kirjoita tähän lyhyt kuvaus vierailusta.'
+                placeholder={t('description-placeholder')}
                 component={TextArea}
               />
 
@@ -154,8 +157,8 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
               ) : null}
             </section>
             <footer className="modal-card-foot">
-              <button className="button luma" type='submit' onClick={handleSubmit}>Luo vierailu</button>
-              <button className="button" onClick={closeEventForm}>Sulje</button>
+              <button className="button luma" type='submit' onClick={handleSubmit}>{t('create')}</button>
+              <button className="button" onClick={closeEventForm}>{t('close')}</button>
             </footer>
           </div>
         )

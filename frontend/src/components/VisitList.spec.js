@@ -6,6 +6,7 @@ import { Router } from 'react-router-dom'
 import { MockedProvider } from '@apollo/client/testing'
 import { VISITS } from '../graphql/queries'
 import VisitList from './VisitList'
+import '../i18n'
 
 const emptyList = [
   {

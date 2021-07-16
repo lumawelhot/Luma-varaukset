@@ -2,6 +2,7 @@ import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
 import { render, fireEvent, waitFor } from '@testing-library/react'
 import FilterByGrades from './FilterByGrades'
+import '../../i18n'
 
 test('Checkboxes working', async () => {
   const grades = []

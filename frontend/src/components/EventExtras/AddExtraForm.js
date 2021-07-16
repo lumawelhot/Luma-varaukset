@@ -1,9 +1,11 @@
 import { Field, Formik } from 'formik'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { ScienceClasses } from '../EventForm/FormComponents'
 import { TextField } from '../VisitForm/FormFields'
 
 const AddExtraForm = ({ handleAdd }) => {
+  const { t } = useTranslation('common')
   const submit = ({ name, scienceClass, remoteLength, inPersonLength }) => {
     const classes = []
     scienceClass.forEach((item, index) => item ? classes.push(index + 1) : null)
@@ -29,20 +31,20 @@ const AddExtraForm = ({ handleAdd }) => {
         return (
           <>
             <Field
-              label='Lisäpalvelun nimi'
+              label={t('extra-name')}
               fieldName='name'
               style={{ width: 300 }}
               component={TextField}
             />
             <ScienceClasses
-              label='Valitse lisäpalvelun tiedeluokat'
+              label={t('extra-resource')}
               values={values}
               setFieldValue={setFieldValue}
               touched={touched}
               errors={errors}
             />
             <div className="control" style={{ marginTop: 7 }}>
-              <button className="button luma primary" type='submit' onClick={handleSubmit}>Submit</button>
+              <button className="button luma primary" type='submit' onClick={handleSubmit}>{t('submit')}</button>
             </div>
           </>
         )

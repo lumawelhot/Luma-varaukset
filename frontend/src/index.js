@@ -12,6 +12,7 @@ import {
 
 import './index.css'
 import App from './App'
+import './i18n'
 
 const BASE_URL = process.env.PUBLIC_URL || 'http://localhost:3001'
 

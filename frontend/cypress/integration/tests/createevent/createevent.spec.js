@@ -44,7 +44,7 @@ When('valid information is entered', () => {
 Then('an event is succesfully created and success toast is shown', () => {
   const toast = cy.get('.toast')
   toast.should('have.class', 'is-success')
-  toast.should('have.text', 'Vierailu luotu.')
+  toast.should('have.text', 'Vierailu luotu')
 })
 
 When('too short a title is entered', () => {

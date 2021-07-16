@@ -6,17 +6,19 @@ import { useHistory } from 'react-router'
 import { useMutation } from '@apollo/client'
 import { DELETE_EVENT, EVENTS } from '../graphql/queries'
 import { ModifyEvent } from './ModifyEventModal'
+import { useTranslation } from 'react-i18next'
 
 const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, setEvent }) => {
+  const { t } = useTranslation('event')
   const history = useHistory()
 
   const [deleteEvent] = useMutation(DELETE_EVENT, {
     refetchQueries: [{ query: EVENTS }],
     onError: () => {
-      sendMessage('Vierailua ei voi poistaa! (Onko vierailulla varauksia?)', 'danger')
+      sendMessage(t('cannot-remove'), 'danger')
     },
     onCompleted: () => {
-      sendMessage('Vierailu poistettu.', 'success')
+      sendMessage(t('remove-success'), 'success')
       history.push('/')
     }
   })
@@ -41,7 +43,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
   }
 
   const handleRemoveEventClick = () => {
-    if (confirm('Haluatko varmasti poistaa vierailun?')) {
+    if (confirm(t('remove-confirm'))) {
       deleteEvent({
         variables: {
           id: event.id
@@ -113,12 +115,12 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
                   </div>
                   <div>
                     {description
-                      ? <p><strong>Kuvaus:</strong> {description} </p>
+                      ? <p><strong>{t('description')}:</strong> {description} </p>
                       : null}
-                    <p><strong>Tiedeluokka:</strong> {eventClass}</p>
+                    <p><strong>{t('science-class')}:</strong> {eventClass}</p>
                     {event.extras.length
                       ? <div>
-                        <strong>Valittavissa olevat lisäpalvelut:</strong>
+                        <strong>{t('available-extras')}:</strong>
                         <ul>
                           {event.extras.map(extra => <li key={extra.name}>{extra.name}</li>) }
                         </ul>
@@ -126,36 +128,36 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
                       </div>
                       : null}
                     <div>
-                      <strong>Tarjolla seuraaville luokka-asteille:</strong>
+                      <strong>{t('available-to-grades')}:</strong>
                       <ul>
                         {eventGrades.map(g => <li key={g.value}>{g.label}</li>)}
                       </ul>
                     </div>
                     <br/>
-                    <p><strong>Vierailu tarjolla: </strong>
-                      {event.inPersonVisit ? 'Lähiopetuksena' : <></>}
-                      {event.inPersonVisit && event.remoteVisit && ' ja etäopetuksena'}
-                      {event.remoteVisit && !event.inPersonVisit? 'Etäopetuksena' : <></>}
+                    <p><strong>{t('event-on-offer')}: </strong>
+                      {event.inPersonVisit ? t('in-inperson') : <></>}
+                      {event.inPersonVisit && event.remoteVisit && t('and-remote')}
+                      {event.remoteVisit && !event.inPersonVisit? t('in-remote') : <></>}
                     </p>
-                    <p><strong>Vierailun päivämäärä:</strong> {format(event.start, 'd.M.yyyy')}</p>
-                    <p><strong>Vierailu alkaa:</strong> {format(event.start, 'HH:mm')}</p>
-                    <p><strong>Vierailu päättyy:</strong> {format(event.end, 'HH:mm')}</p>
-                    <p><strong>Toiminnan kesto:</strong> {event.duration} minuuttia</p>
+                    <p><strong>{t('event-date')}:</strong> {format(event.start, 'd.M.yyyy')}</p>
+                    <p><strong>{t('event-start')}:</strong> {format(event.start, 'HH:mm')}</p>
+                    <p><strong>{t('event-end')}:</strong> {format(event.end, 'HH:mm')}</p>
+                    <p><strong>{t('length')}:</strong> {event.duration} {t('minutes')} </p>
                     {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days) ?
-                      <p className="subtitle unfortunately"><b>Valitettavasti tämä vierailu ei ole varattavissa.</b></p> : null}
+                      <p className="subtitle unfortunately"><b>{t('cannot-be-booked')}</b></p> : null}
                     <div className="field is-grouped is-grouped-multiline">
                       {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days)
                         ? null
                         : <div className="control"><button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>Varaa vierailu</button></div>}
                       <div className="control">
-                        <button className="button luma" onClick={cancel}>Poistu</button>
+                        <button className="button luma" onClick={cancel}>{t('to-calendar')}</button>
                       </div>
                       {!!currentUser && <>
                         <div className="control">
-                          <button className="button luma" onClick={openModal}>Muokkaa tietoja</button>
+                          <button className="button luma" onClick={openModal}>{t('change-info')}</button>
                         </div>
                         <div className="control">
-                          <button className="button luma" onClick={() => handleRemoveEventClick()}>Poista vierailu</button>
+                          <button className="button luma" onClick={() => handleRemoveEventClick()}>{t('remove-event')}</button>
                         </div>
                       </>
                       }

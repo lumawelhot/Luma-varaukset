@@ -1,12 +1,14 @@
 import { useQuery } from '@apollo/client'
 import { Field, Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { EXTRAS, TAGS } from '../../graphql/queries'
 import { AdditionalServices, EventType, Grades, Platforms, ScienceClasses, TimePick } from '../EventForm/FormComponents'
 import LumaTagInput from '../LumaTagInput/LumaTagInput'
 import { TextArea, TextField } from '../VisitForm/FormFields'
 
 const Form = ({ event, close, save, validate }) => {
+  const { t } = useTranslation('event')
   const [suggestedTags, setSuggestedTags] = useState([])
   const tags = useQuery(TAGS)
   const extras = useQuery(EXTRAS)
@@ -61,17 +63,17 @@ const Form = ({ event, close, save, validate }) => {
             </header>
             <section className="modal-card-body">
               <Field
-                label='Vierailun nimi'
+                label={t('visit-name')}
                 fieldName='title'
                 component={TextField}
               />
               <Field
-                label='Kuvaus'
+                label={t('description')}
                 fieldName='desc'
                 component={TextArea}
               />
               <LumaTagInput
-                label="Tagit"
+                label={t('tags')}
                 tags={values.tags}
                 setTags={tags => setFieldValue('tags', tags)}
                 suggestedTags={suggestedTags}
@@ -106,22 +108,22 @@ const Form = ({ event, close, save, validate }) => {
                 setFieldValue={setFieldValue}
               />
               <Field
-                label='Aloituskellonaika'
+                label={t('start-time')}
                 fieldName='startTime'
                 component={TimePick}
                 disabledHours={() => [0,1,2,3,4,5,6,7,17,18,19,20,21,22,23]}
               />
 
               <Field
-                label='Lopetuskellonaika'
+                label={t('end-time')}
                 fieldName='endTime'
                 component={TimePick}
                 disabledHours={() => [0,1,2,3,4,5,6,7,8,18,19,20,21,22,23]}
               />
             </section>
             <footer className="modal-card-foot">
-              <button className="button luma" type='submit' onClick={handleSubmit}>Tallenna</button>
-              <button className="button" onClick={close}>Sulje</button>
+              <button className="button luma" type='submit' onClick={handleSubmit}>{t('save')}</button>
+              <button className="button" onClick={close}>{t('close')}</button>
             </footer>
           </div>
         )

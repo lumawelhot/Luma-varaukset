@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import Filterform from './Filterform'
 import FilterByVisitType from './FilterByVisitType'
 import FilterByGrades from './FilterByGrades'
+import { useTranslation } from 'react-i18next'
 
 const CalendarFilter = (props) => {
+  const { t } = useTranslation('common')
   const [resources, setResources] = useState([1,2,3,4,5])
   const [remote, setRemote] = useState(true)
   const [inPerson, setInPerson] = useState(true)
@@ -79,11 +81,12 @@ const CalendarFilter = (props) => {
     <>
       <div className="field">
         {allSelected ?
-          <button className="button luma" onClick={() => setAll(false)}>Poista kaikki</button>
+          <button className="button luma" onClick={() => setAll(false)}>{t('remove-all')}</button>
           :
-          <button className="button luma" onClick={() => setAll(true)}>Näytä kaikki</button>}
+          <button className="button luma" onClick={() => setAll(true)}>{t('show-all')}</button>}
       </div>
       <Filterform values={resources} setValues={handleChange} />
+      <p></p>
       <FilterByVisitType remote={remote} setRemote={handleChangeRemote} inPerson={inPerson} setInPerson={handleChangeInPerson} />
       <FilterByGrades grades={grades} setGrades={handleChangeGrades} />
     </>

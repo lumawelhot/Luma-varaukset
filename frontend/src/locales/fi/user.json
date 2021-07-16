@@ -1,0 +1,23 @@
+{
+  "create-visit": "Luo uusi vierailu",
+  "reservations": "Varaukset",
+  "extras": "Lisäpalvelut",
+  "user-list": "Käyttäjälista",
+  "users": "Käyttäjät",
+  "username": "Käyttäjätunnus",
+  "created": "luotu",
+  "priviledges": "Oikeudet",
+  "create-user": "Luo uusi käyttäjä",
+  "back": "Poistu",
+  "admin": "admin",
+  "basic": "tavallinen",
+  "user-removed": "Käyttäjä poistettu",
+  "invalid-input": "Virheellinen syöte!",
+  "user-role": "Käyttäjärooli",
+  "password": "Salasana",
+  "administrator": "Ylläpitäjä",
+  "employee": "Työntekijä",
+  "save-user": "Tallenna käyttäjä",
+  "login-luma": "Kirjautuminen (Luma-Varaukset)",
+  "login": "Kirjaudu sisään"
+}

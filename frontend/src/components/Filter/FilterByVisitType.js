@@ -1,16 +1,19 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 const FilterByVisitType = (props) => {
+  const { t } = useTranslation('common')
+
   return (
     <>
-      <p className="label">Suodata vierailutyypin mukaan</p>
+      <p className="label">{t('filter-by-visit-type')}</p>
       <div className="field is-grouped">
         <div className="field">
           <button
             className={`button luma ${props.inPerson ? 'active' : ''}`}
             onClick={() => props.setInPerson(!props.inPerson)}
           >
-          Lähiopetus
+            {t('inperson')}
           </button>
         </div>
         <div className="field">
@@ -18,7 +21,7 @@ const FilterByVisitType = (props) => {
             className={`button luma ${props.remote ? 'active' : ''}`}
             onClick={() => props.setRemote(!props.remote)}
           >
-          Etäopetus
+            {t('remote')}
           </button>
         </div>
       </div>

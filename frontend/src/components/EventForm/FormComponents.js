@@ -1,6 +1,7 @@
 import { set } from 'date-fns'
 import { Field } from 'formik'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import DatePicker from '../Pickers/DatePicker'
 import TimePicker from '../Pickers/TimePicker'
 import { CheckBox, TextField } from '../VisitForm/FormFields'
@@ -29,18 +30,19 @@ const resourceList = [
 ]
 
 export const EventType = () => {
+  const { t } = useTranslation('visit')
   return (
     <>
       <label className="label" id="checkbox-group">
-        Valitse etä- ja/tai lähivierailu
+        {t('choose-remote-or-inperson')}
       </label>
       <Field
-        label='Etävierailu'
+        label={t('remote')}
         fieldName='remoteVisit'
         component={CheckBox}
       />
       <Field
-        label='Lähivierailu'
+        label={t('inperson')}
         fieldName='inPersonVisit'
         component={CheckBox}
       />
@@ -49,10 +51,11 @@ export const EventType = () => {
 }
 
 export const Platforms = ({ values, touched, errors, setFieldValue }) => {
+  const { t } = useTranslation('event')
   return (
     <>
       <div className="label" id="checkbox-group">
-        Valitse etäyhteysalusta(t)
+        {t('choose-remote-platforms')}
       </div>
       {platformList.map(platform => (
         <Field
@@ -84,10 +87,11 @@ export const Platforms = ({ values, touched, errors, setFieldValue }) => {
 }
 
 export const Grades = ({ values, touched, errors, setFieldValue }) => {
+  const { t } = useTranslation('event')
   return (
     <>
       <label className="label" id="checkbox-group">
-        Valitse vierailulle sopivat luokka-asteet
+        {t('choose-grades')}
       </label>
 
       {gradesList.map(grade => (
@@ -114,10 +118,11 @@ export const Grades = ({ values, touched, errors, setFieldValue }) => {
 }
 
 export const ScienceClasses = ({ values, touched, errors, setFieldValue, label }) => {
+  const { t } = useTranslation('event')
   return (
     <>
       <label className="label" id="checkbox-group">
-        {label ? label : 'Valitse vierailulle sopivat tiedeluokat'}
+        {label ? label : t('choose-resources')}
       </label>
 
       {resourceList.map(resource => (
@@ -143,19 +148,20 @@ export const ScienceClasses = ({ values, touched, errors, setFieldValue, label }
 }
 
 export const AdditionalServices = ({ extras, values, setFieldValue }) => {
+  const { t } = useTranslation('visit')
   return (
     <>
       {extras.data &&
         <>
           { extras.data.getExtras.length !== 0 &&
             <label className="label">
-              Valitse vierailulle sopivat lisäpalvelut
+              {t('choose-event-extras')}
             </label>
           }
           {extras.data.getExtras.map(extra => (
             <Field
               key={extra.id}
-              label={`${extra.name}, pituus lähi: ${extra.inPersonLength} min / etä: ${extra.remoteLength} min`}
+              label={`${extra.name}, ${t('length-inperson')}: ${extra.inPersonLength} ${t('minutes-remote')}: ${extra.remoteLength} min`}
               fieldName='extras'
               index={values.extras.includes(extra.id) ? true : false}
               onChange={() => {
@@ -202,11 +208,12 @@ export const TimePick = ({ form, fieldName, label, disabledHours }) => {
 }
 
 export const DatePick = ({ form }) => {
+  const { t } = useTranslation('event')
   const { touched, errors, setFieldValue, values } = form
   return (
     <div className="field">
       <label className="label" htmlFor="date">
-        Päivämäärä
+        {t('date')}
       </label>
       <div className="control">
         <DatePicker
