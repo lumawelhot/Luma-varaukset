@@ -63,6 +63,16 @@ const typeDefs = gql`
   type Token {
     value: String!
   }
+  type Form {
+    id: ID!
+    name: String!
+    fields: String!
+  }
+  type FormSubmissions {
+    id: ID
+    form: Form
+    values: String
+  }
   type Query {
     getUsers: [User]!
     me: User!
@@ -71,6 +81,10 @@ const typeDefs = gql`
     getVisits: [Visit]
     getTags: [Tag]!
     getExtras: [Extra]!
+    getForm(id: ID): Form
+    getForms: [Form]
+    getFormSubmissions(formID: ID): FormSubmissions
+    getFormSubmission(id: ID): FormSubmissions
   }
   input TagInput {
     id: String
@@ -152,6 +166,22 @@ const typeDefs = gql`
     ): String
     deleteUser(
       id: String!
+    ): String
+    createForm(
+      name: String!
+      fields: String
+    ): Form
+    createFormSubmission(
+      formID: ID
+      values: String
+    ): FormSubmissions
+    updateForm(
+      id: ID!
+      name: String!
+      fields: String
+    ): Form
+    deleteForm(
+      id: ID!
     ): String
   }
 `

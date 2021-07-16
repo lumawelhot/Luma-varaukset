@@ -11,6 +11,8 @@ const Event = require('../models/event')
 const Visit = require('../models/visit')
 const Extra = require('../models/extra')
 const Tag = require('../models/tag')
+const Form = require('../models/forms')
+const FormSubmissions = require('../models/formSubmissions')
 const { addNewTags } = require('../utils/helpers')
 
 const resolvers = {
@@ -55,6 +57,40 @@ const resolvers = {
     getExtras: async () => {
       const extras = await Extra.find({})
       return extras
+    },
+    getForm: async (root, args) => {
+      try {
+        const form = await Form.findById(args.id)
+        return form
+      } catch (e) {
+        throw new UserInputError('Form not found!')
+      }
+    },
+    getForms: async () => {
+      const forms = await Form.find({})
+      return forms
+    },
+    getFormSubmissions: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
+      try {
+        const formSubmissions = await Form.findById(args.id).populate('submissions')
+        return formSubmissions
+      } catch (error) {
+        throw new UserInputError('Form submissions not found!')
+      }
+    },
+    getFormSubmission: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
+      try {
+        const formValues = await FormSubmissions.findById(args.id)
+        return formValues
+      } catch (e) {
+        throw new UserInputError('Form submission not found!')
+      }
     }
   },
   Visit: {
@@ -62,6 +98,12 @@ const resolvers = {
       const event = await Event.findById(root.event).populate('tags', { name: 1, id: 1 }).populate('extras')
       return event
     },
+  },
+  Form: {
+    fields: (form) => JSON.stringify(form.fields)
+  },
+  FormSubmissions: {
+    values: (submission) => JSON.stringify(submission.values)
   },
   Mutation: {
     createUser: async (root, args, { currentUser }) => {
@@ -349,6 +391,60 @@ const resolvers = {
         return 'Deleted user with ID ' + args.id
       } catch (error) {
         throw new UserInputError('User deletion failed')
+      }
+    },
+    createForm: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+      try {
+        const newForm = new Form({
+          name: args.name,
+          fields: JSON.parse(args.fields)
+        })
+        const savedForm = await newForm.save()
+        return savedForm
+      } catch (error) {
+        throw new UserInputError(error.message, { invalidArgs: args })
+      }
+    },
+    updateForm: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+      try {
+        const form = await Form.findById(args.id)
+        form.name = args.name
+        form.fields = JSON.parse(args.fields)
+        form.markModified('fields')
+        await form.save()
+        return form
+      } catch (error) {
+        throw new UserInputError(error.message, { invalidArgs: args })
+      }
+    },
+    deleteForm: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+      try {
+        await Form.deleteOne({ _id: args.id })
+        return 'Deleted form with ID ' + args.id
+      } catch (error) {
+        throw new UserInputError('Form deletion failed')
+      }
+    },
+    createFormSubmission: async (root, args) => {
+      try {
+        const form = await Form.findById(args.formID)
+        const newFormSubmissions = new FormSubmissions({
+          form,
+          values: JSON.parse(args.values)
+        })
+        const savedFormSubmissions = await newFormSubmissions.save()
+        return savedFormSubmissions
+      } catch (error) {
+        throw new UserInputError(error.message, { invalidArgs: args })
       }
     }
   }

@@ -360,6 +360,87 @@ const UPDATE_EVENT = gql`
   }
 `
 
+const GET_ALL_FORMS = gql`
+  query {
+    getForms {
+      id
+      name
+      fields
+    }
+  }
+`
+
+const GET_FORM = gql`
+  query getForm($id: ID!) {
+    getForm(id: $id) {
+      id
+      name
+      fields
+    }
+  }
+`
+
+const CREATE_FORM = gql`
+  mutation createForm($name: String!, $fields: String) {
+    createForm(
+      name: $name
+      fields: $fields
+    ) {
+      id
+      name
+      fields
+    }
+  }
+`
+
+const UPDATE_FORM = gql`
+  mutation updateForm($id: ID!, $name: String!, $fields: String) {
+    updateForm(
+      id: $id
+      name: $name
+      fields: $fields
+    ) {
+      id
+      name
+      fields
+    }
+  }
+`
+
+const DELETE_FORM = gql`
+  mutation deleteForm($id: ID!) {
+    deleteForm(
+      id: $id
+    )
+  }
+`
+
+const CREATE_FORM_SUBMISSION = gql`
+  mutation createFormSubmission($formID: ID!, $values: String) {
+    createFormSubmission(
+      formID: $formID
+      values: $values
+    ) {
+      id
+      form {
+        id
+      }
+      values
+    }
+  }
+`
+
+const GET_FORM_SUBMISSIONS = gql`
+  query getFormSubmissions($formID: ID!) {
+    getFormSubmissions(
+      formID: $formID
+    ) {
+      id
+      values
+    }
+  }
+`
+
 module.exports = {
   LOGIN,
   GET_ALL_VISITS,
@@ -373,7 +454,14 @@ module.exports = {
   CREATE_USER,
   USERS,
   ME,
+  GET_ALL_FORMS,
+  GET_FORM,
   UPDATE_EVENT,
+  CREATE_FORM,
+  UPDATE_FORM,
+  DELETE_FORM,
+  CREATE_FORM_SUBMISSION,
+  GET_FORM_SUBMISSIONS,
   createTimeList,
   createAvailableList,
   createDate,
