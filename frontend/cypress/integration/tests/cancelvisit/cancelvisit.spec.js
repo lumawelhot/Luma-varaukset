@@ -26,7 +26,7 @@ When('I have made a booking for that event', () => {
   cy.findEvent(eventName).click()
 
   // Open visit form
-  cy.contains('Varaa vierailu').click()
+  cy.get('#booking-button').click()
 
   // Fill in the form
   cy.get('#clientName').type('Teacher')
