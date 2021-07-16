@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders without error with admin user 1`] = `
+<div>
+  <div
+    class="field is-grouped"
+  >
+    <p
+      class="control"
+    >
+      <button
+        class="button luma"
+      >
+        Luo uusi vierailu
+      </button>
+    </p>
+    <p
+      class="control"
+    >
+      <button
+        class="button luma"
+      >
+        Varaukset
+      </button>
+    </p>
+    <p
+      class="control"
+    >
+      <button
+        class="button luma"
+      >
+        Lisäpalvelut
+      </button>
+    </p>
+    <p
+      class="control"
+    >
+      <button
+        class="button luma"
+      >
+        Käyttäjälista
+      </button>
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Renders without error with empty user 1`] = `
+<div>
+  <div />
+</div>
+`;
+
+exports[`Renders without error with user 1`] = `
+<div>
+  <div
+    class="field is-grouped"
+  >
+    <p
+      class="control"
+    >
+      <button
+        class="button luma"
+      >
+        Luo uusi vierailu
+      </button>
+    </p>
+    <p
+      class="control"
+    >
+      <button
+        class="button luma"
+      >
+        Varaukset
+      </button>
+    </p>
+    <p
+      class="control"
+    >
+      <button
+        class="button luma"
+      >
+        Lisäpalvelut
+      </button>
+    </p>
+  </div>
+</div>
+`;

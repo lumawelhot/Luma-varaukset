@@ -3,6 +3,8 @@ import { FaExclamationTriangle, FaExclamationCircle, FaCheckCircle } from 'react
 
 const Toast = ({ toast }) => {
 
+  if (!toast) return null
+
   return (
     <div
       role="alert"

@@ -2,14 +2,15 @@ import { MockedProvider } from '@apollo/client/testing'
 import { render, waitFor } from '@testing-library/react'
 import { ModifyEvent } from '.'
 import React from 'react'
+import { set } from 'date-fns'
+import '../../i18n'
 
 const testEvent = {
   booked: undefined,
   desc: 'Hauska kuvaus',
   duration: 30,
-  end: 'Thu Jul 15 2021 14:00:00 GMT+0300 (Eastern European Summer Time)',
-  eventEnd: 'Thu Jul 15 2021 14:00:00 GMT+0300 (Eastern European Summer Time)',
-  eventStart: 'Thu Jul 15 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
+  eventStart: set(new Date(), { hours: 9, minutes: 0, seconds: 0, milliseconds: 0 }),
+  eventEnd: set(new Date(), { hours: 14, minutes: 0, seconds: 0, milliseconds: 0 }),
   extras: [],
   grades: [1, 2],
   id: '60eef65c2c93e42db00ff6fc',
@@ -19,8 +20,9 @@ const testEvent = {
   remotePlatforms: [],
   remoteVisit: false,
   resourceids: [3],
-  start: 'Thu Jul 15 2021 09:00:00 GMT+0300 (Eastern European Summer Time)',
-  tags: [{ __typename: 'Tag', id: '60eef65c2c93e42db00ff6f6', name: 'Maantiede' }],
+  start: set(new Date(), { hours: 9, minutes: 0, seconds: 0, milliseconds: 0 }),
+  end: set(new Date(), { hours: 14, minutes: 0, seconds: 0, milliseconds: 0 }),
+  tags: [{ id: '60eef65c2c93e42db00ff6f6', name: 'Maantiede' }],
   title: 'Scratch-ohjelmointikieli'
 }
 
