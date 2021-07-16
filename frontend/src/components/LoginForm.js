@@ -10,7 +10,7 @@ const LoginForm = ({ getUser, sendMessage }) => {
   const { t } = useTranslation('user')
   const history = useHistory()
   const [login, result] = useMutation(LOGIN, {
-    onError: (error) => sendMessage(error.graphQLErrors[0].message, 'danger'),
+    onError: (error) => sendMessage(error.graphQLErrors[0].message, 'danger')
   })
 
   useEffect(() => {

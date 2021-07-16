@@ -3,6 +3,9 @@ import { format, parseISO }  from 'date-fns'
 import { useTranslation } from 'react-i18next'
 
 const VisitItem = ({ item, close }) => {
+
+  if (!item) return <div></div>
+
   const { t } = useTranslation('visit')
   return (
     <div className="modal-card">
