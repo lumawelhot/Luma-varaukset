@@ -58,7 +58,7 @@ const resolvers = {
       const extras = await Extra.find({})
       return extras
     },
-    getForm: async (root, args, { currentUser }) => {
+    getForm: async (root, args) => {
       try {
         const form = await Form.findById(args.id)
         return form
@@ -66,11 +66,14 @@ const resolvers = {
         throw new UserInputError('Form not found!')
       }
     },
-    getForms: async (root, args, { currentUser }) => {
+    getForms: async () => {
       const forms = await Form.find({})
       return forms
     },
     getFormSubmissions: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
       try {
         const formSubmissions = await Form.findById(args.id).populate('submissions')
         return formSubmissions
@@ -79,6 +82,9 @@ const resolvers = {
       }
     },
     getFormSubmission: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
       try {
         const formValues = await FormSubmissions.findById(args.id)
         return formValues
