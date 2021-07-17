@@ -1,17 +1,39 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useHistory } from 'react-router-dom'
 import { useMutation } from '@apollo/client'
-import { CREATE_FORM } from '../../graphql/queries'
+import { CREATE_FORM, GET_ALL_FORMS, UPDATE_FORM } from '../../graphql/queries'
 
 import FieldItem from './FieldItem'
 import AddField from './AddField'
 
-const FormEditor = ({ save, back }) => {
+const FormEditor = ({ form, back, sendMessage }) => {
+  const editingExistingForm = !!form
   const { t } = useTranslation('user')
-  const [name, setName] = useState('New Form')
-  const [fields, setFields]  = useState([])
+  const [name, setName] = useState(form.name || t('new-form'))
+  const [fields, setFields]  = useState(JSON.parse(form.fields) || [])
+  const [createForm, result] = useMutation(CREATE_FORM, {
+    refetchQueries: [{ query: GET_ALL_FORMS }],
+    onError: (error) => sendMessage(error.graphQLErrors[0].message, 'danger')
+  })
+
+  const [updateForm, resultFromUpdate] = useMutation(UPDATE_FORM, {
+    refetchQueries: [{ query: GET_ALL_FORMS }],
+    onError: (error) => sendMessage(error.graphQLErrors[0].message, 'danger')
+  })
+
+  useEffect(() => {
+    if (result.data) {
+      sendMessage(`${t('form')} '${result.data.createForm.name}' ${t('created')}.`, 'success')
+      back()
+    }
+  }, [result])
+
+  useEffect(() => {
+    if (resultFromUpdate.data) {
+      sendMessage(`${t('form')} '${resultFromUpdate.data.updateForm.name}' ${t('updated')}.`, 'success')
+      back()
+    }
+  }, [resultFromUpdate])
 
   const handleAdd = (data) => {
     setFields(fields.concat(data))
@@ -38,11 +60,34 @@ const FormEditor = ({ save, back }) => {
     setFields([...fields])
   }
 
+  const handleSave = () => {
+    if (editingExistingForm) {
+      updateForm({
+        variables: {
+          id: form.id,
+          name,
+          fields: JSON.stringify(fields)
+        }
+      })
+    } else {
+      createForm({
+        variables: {
+          name,
+          fields: JSON.stringify(fields)
+        }
+      }).catch(() => sendMessage(t('invalid-input'), 'danger'))
+    }
+  }
+
   return (
     <div className="section">
       <div className="field">
         <label className="label">{t('form-name')}</label>
+        <div className="control">
+          <input className="input" type="text" value={name} onChange={(e) => setName(e.target.value)}/>
+        </div>
       </div>
+      <label className="label">{t('form-fields')}</label>
       {fields.map((f,index) =>
         <FieldItem
           key={index}
@@ -51,7 +96,7 @@ const FormEditor = ({ save, back }) => {
           up={index === 0 ? null : () => moveUp(index)}
           remove={() => handleRemove(index)}/>)}
       <AddField add={handleAdd}/>
-      <button className="button luma primary" onClick={() => save()}>{t('save')}</button>
+      <button className="button luma primary" onClick={() => handleSave()}>{t('save')}</button>
       <button className="button luma primary" onClick={back}>{t('back')}</button>
     </div>
   )

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import InputField from './Fields/InputField'
+import TextField from './Fields/TextField'
 import RadioField from './Fields/RadioField'
 import CheckboxField from './Fields/CheckboxField'
 
@@ -11,7 +11,7 @@ const AddField = ({ add }) => {
 
   const renderComponent = () => {
     if (!showOptions) return null
-    if (component === 'input') return <InputField add={handleAdd}/>
+    if (component === 'text') return <TextField add={handleAdd}/>
     if (component === 'radio') return <RadioField add={handleAdd}/>
     if (component === 'checkbox') return <CheckboxField add={handleAdd}/>
     return null
@@ -38,7 +38,7 @@ const AddField = ({ add }) => {
           <div className="navbar-menu">
             <div className="navbar-start">
               <div className="navbar-item">
-                <button className="button luma" onClick={() => setComponent('input')}>{t('form-field-input')}</button>
+                <button className="button luma" onClick={() => setComponent('text')}>{t('form-field-input')}</button>
               </div>
               <div className="navbar-item">
                 <button className="button luma" onClick={() => setComponent('radio')}>{t('form-field-radio')}</button>

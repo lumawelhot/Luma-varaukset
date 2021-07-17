@@ -9,8 +9,10 @@ const InputField = ({ add }) => {
   const handleAdd = () => {
     add({
       name,
-      required,
-      type: 'input'
+      type: 'text',
+      validation: {
+        required
+      }
     })
   }
 

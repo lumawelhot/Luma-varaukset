@@ -405,7 +405,7 @@ export const UPDATE_EVENT = gql`
 `
 
 export const GET_ALL_FORMS = gql`
-  query {
+  query getForms{
     getForms {
       id
       name

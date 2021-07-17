@@ -34,7 +34,7 @@ const FormList = ({ sendMessage }) => {
   }
 
   const handleEdit = (id) => {
-    setForm(forms.find(f => f.id === id))
+    setForm(forms.data.getForms.find(f => f.id === id))
     setShowEditor(true)
   }
 
@@ -47,7 +47,7 @@ const FormList = ({ sendMessage }) => {
   }
 
   if (showEditor) return (
-    <FormEditor form={form} back={() => setShowEditor(false)}/>
+    <FormEditor form={form} sendMessage={sendMessage} back={() => setShowEditor(false)}/>
   )
 
   return (

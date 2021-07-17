@@ -10,9 +10,11 @@ const CheckboxField = ({ add }) => {
   const handleAdd = () => {
     add({
       name,
-      required,
       options,
-      type: 'radio'
+      type: 'radio',
+      validation: {
+        required
+      }
     })
   }
 
