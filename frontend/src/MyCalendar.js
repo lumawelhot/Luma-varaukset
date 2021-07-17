@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
-import { messages } from './helpers/calendar-messages'
 import { bookedEventColor, resourceColorsLUMA } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
 import LumaToolbar from './components/Custom/LumaToolbar'
@@ -47,6 +46,25 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
     { resourceids: 4, resourceTitle: 'Geopiste', description: t('geography') },
     { resourceids: 5, resourceTitle: 'Gadolin', description: t('chemistry') },
   ]
+
+  const messages = {
+    allDay: 'Koko päivä',
+    previous: '<',
+    next: '>',
+    today: t('today'),
+    month: t('month'),
+    week: t('week'),
+    day: t('day'),
+    agenda: 'Agenda',
+    date: t('date'),
+    time: t('time'),
+    event: t('event'),
+    noEventsInRange: t('no-events-in-range'),
+    showMore: (total) => `+ Näytä lisää (${total})`,
+    work_week: t('week'),
+    yesterday: t('yesterday'),
+    tomorrow: t('tomorrow'),
+  }
 
   useEffect(() => {
     setEvents(events)

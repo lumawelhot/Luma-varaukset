@@ -1,5 +1,3 @@
-// Toteutetaanko i18n tähän?
-
 export const messages = {
   allDay: 'Koko päivä',
   previous: '<',
