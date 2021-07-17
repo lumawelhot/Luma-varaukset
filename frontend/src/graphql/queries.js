@@ -403,3 +403,84 @@ export const UPDATE_EVENT = gql`
     }
   }
 `
+
+export const GET_ALL_FORMS = gql`
+  query {
+    getForms {
+      id
+      name
+      fields
+    }
+  }
+`
+
+export const GET_FORM = gql`
+  query getForm($id: ID!) {
+    getForm(id: $id) {
+      id
+      name
+      fields
+    }
+  }
+`
+
+export const CREATE_FORM = gql`
+  mutation createForm($name: String!, $fields: String) {
+    createForm(
+      name: $name
+      fields: $fields
+    ) {
+      id
+      name
+      fields
+    }
+  }
+`
+
+export const UPDATE_FORM = gql`
+  mutation updateForm($id: ID!, $name: String!, $fields: String) {
+    updateForm(
+      id: $id
+      name: $name
+      fields: $fields
+    ) {
+      id
+      name
+      fields
+    }
+  }
+`
+
+export const DELETE_FORM = gql`
+  mutation deleteForm($id: ID!) {
+    deleteForm(
+      id: $id
+    )
+  }
+`
+
+export const CREATE_FORM_SUBMISSION = gql`
+  mutation createFormSubmission($formID: ID!, $values: String) {
+    createFormSubmission(
+      formID: $formID
+      values: $values
+    ) {
+      id
+      form {
+        id
+      }
+      values
+    }
+  }
+`
+
+export const GET_FORM_SUBMISSIONS = gql`
+  query getFormSubmissions($formID: ID!) {
+    getFormSubmissions(
+      formID: $formID
+    ) {
+      id
+      values
+    }
+  }
+`

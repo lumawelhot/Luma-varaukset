@@ -19,5 +19,13 @@
   "employee": "Työntekijä",
   "save-user": "Tallenna käyttäjä",
   "login-luma": "Kirjautuminen (Luma-Varaukset)",
-  "login": "Kirjaudu sisään"
+  "login": "Kirjaudu sisään",
+  "form-name": "Lomakkeen nimi",
+  "form-field-add": "Lisää kenttä",
+  "form-field-remove": "Poista kenttä",
+  "form-field-move-up": "Ylös",
+  "form-field-move-down": "Alas",
+  "form-field-input": "Tekstikenttä",
+  "form-field-radio": "Valinta",
+  "form-field-checkbox": "Monivalinta"
 }

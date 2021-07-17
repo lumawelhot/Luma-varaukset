@@ -19,5 +19,6 @@
   "employee": "Arbetare",
   "save-user": "Spara",
   "login-luma": "Inloggning (Luma-Reserveringar)",
-  "login": "Logga inn"
+  "login": "Logga inn",
+  "form-name": "Formulärens namn"
 }

@@ -20,6 +20,7 @@ import { v4 as uuidv4 } from 'uuid'
 import VisitPage from './components/VisitPage'
 import VisitList from './components/VisitList'
 import ExtrasAdmin from './components/EventExtras/ExtrasAdmin'
+import FormList from './components/FormEditor/FormList'
 import { useTranslation } from 'react-i18next'
 
 const App = () => {
@@ -195,6 +196,12 @@ const App = () => {
         <Route path='/extras'>
           {currentUser &&
             <ExtrasAdmin sendMessage={notify} />
+          }
+          {!currentUser && <p>{t('not-logged-in')}</p>}
+        </Route>
+        <Route path='/forms'>
+          {currentUser &&
+            <FormList sendMessage={notify} />
           }
           {!currentUser && <p>{t('not-logged-in')}</p>}
         </Route>
