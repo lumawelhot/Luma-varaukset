@@ -1,0 +1,23 @@
+{
+  "create-visit": "Skapa ett nytt evenemang",
+  "reservations": "Reserveringar",
+  "extras": "Tillägstjänster",
+  "user-list": "Användare",
+  "users": "Användare",
+  "username": "Användarnamn",
+  "created": "skapats",
+  "priviledges": "Rättigheter",
+  "create-user": "Skapa en ny användare",
+  "back": "Tillbaka",
+  "admin": "Administrator",
+  "basic": "Normal",
+  "user-removed": "Användaren har avlagts",
+  "invalid-input": "Felaktig input!",
+  "user-role": "Användarroll",
+  "password": "Lösenord",
+  "administrator": "Administrator",
+  "employee": "Arbetare",
+  "save-user": "Spara",
+  "login-luma": "Inloggning (Luma-Reserveringar)",
+  "login": "Logga inn"
+}
