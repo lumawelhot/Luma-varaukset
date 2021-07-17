@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
-import { messages } from './helpers/calendar-messages-fi'
 import { bookedEventColor, resourceColorsLUMA } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
 import LumaToolbar from './components/Custom/LumaToolbar'
@@ -14,6 +13,7 @@ import set from 'date-fns/set'
 import { fi } from 'date-fns/locale'
 import { differenceInDays, differenceInMinutes }  from 'date-fns'
 import { Tooltip } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 const localizer = dateFnsLocalizer({
   format,
@@ -22,14 +22,6 @@ const localizer = dateFnsLocalizer({
   getDay,
   locales: { fi },
 })
-
-const resourceMap = [
-  { resourceids: 1, resourceTitle: 'Summamutikka', description: 'Matematiikka' },
-  { resourceids: 2, resourceTitle: 'Fotoni', description: 'Fysiikka' },
-  { resourceids: 3, resourceTitle: 'Linkki', description: 'Tietojenkäsittelytiede' },
-  { resourceids: 4, resourceTitle: 'Geopiste', description: 'Maantiede' },
-  { resourceids: 5, resourceTitle: 'Gadolin', description: 'Kemia' },
-]
 
 const Wrapper = (props) => {
   const domNode = document.getElementById(props.elementId)
@@ -44,9 +36,35 @@ const Wrapper = (props) => {
 }
 
 const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, currentDate, setCurrentDate, currentView, setCurrentView }) => {
-
+  const { t } = useTranslation('common')
   const [localEvents, setEvents] = useState([])
   const [filterFunction, setFilterFunction] = useState(() => () => { return true })
+  const resourceMap = [
+    { resourceids: 1, resourceTitle: 'Summamutikka', description: t('mathematics') },
+    { resourceids: 2, resourceTitle: 'Fotoni', description: t('physics') },
+    { resourceids: 3, resourceTitle: 'Linkki', description: t('computer-science') },
+    { resourceids: 4, resourceTitle: 'Geopiste', description: t('geography') },
+    { resourceids: 5, resourceTitle: 'Gadolin', description: t('chemistry') },
+  ]
+
+  const messages = {
+    allDay: 'Koko päivä',
+    previous: '<',
+    next: '>',
+    today: t('today'),
+    month: t('month'),
+    week: t('week'),
+    day: t('day'),
+    agenda: 'Agenda',
+    date: t('date'),
+    time: t('time'),
+    event: t('event'),
+    noEventsInRange: t('no-events-in-range'),
+    showMore: (total) => `+ Näytä lisää (${total})`,
+    work_week: t('week'),
+    yesterday: t('yesterday'),
+    tomorrow: t('tomorrow'),
+  }
 
   useEffect(() => {
     setEvents(events)

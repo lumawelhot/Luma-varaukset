@@ -1,0 +1,23 @@
+{
+  "create-visit": "Book visit",
+  "reservations": "Visits",
+  "extras": "Extra services",
+  "user-list": "List of users",
+  "users": "Users",
+  "username": "Username",
+  "created": "Created",
+  "priviledges": "Privileges",
+  "create-user": "Create user",
+  "back": "Go back",
+  "admin": "Administrator",
+  "basic": "Regular",
+  "user-removed": "User removed",
+  "invalid-input": "Invalid input!",
+  "user-role": "Role",
+  "password": "Password",
+  "administrator": "Administrator",
+  "employee": "Employee",
+  "save-user": "Save user",
+  "login-luma": "Log in (Luma-Booking)",
+  "login": "Log in"
+}

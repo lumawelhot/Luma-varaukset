@@ -44,7 +44,7 @@ When('the employee enters to correct URL', () => {
 })
 
 Then('an error is shown', () => {
-  cy.get('.App > div').should('have.text', 'Access denied')
+  cy.get('.App > div').should('have.text', 'Pääsy estetty. Kirjaudu sisään.')
 })
 
 Given('a user is created', () => {
