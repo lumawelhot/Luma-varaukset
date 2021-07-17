@@ -9,8 +9,8 @@ import AddField from './AddField'
 const FormEditor = ({ form, back, sendMessage }) => {
   const editingExistingForm = !!form
   const { t } = useTranslation('user')
-  const [name, setName] = useState(form.name || t('new-form'))
-  const [fields, setFields]  = useState(JSON.parse(form.fields) || [])
+  const [name, setName] = useState(form?.name || t('new-form'))
+  const [fields, setFields]  = useState(form ? JSON.parse(form.fields) : [])
   const [createForm, result] = useMutation(CREATE_FORM, {
     refetchQueries: [{ query: GET_ALL_FORMS }],
     onError: (error) => sendMessage(error.graphQLErrors[0].message, 'danger')
@@ -68,7 +68,7 @@ const FormEditor = ({ form, back, sendMessage }) => {
           name,
           fields: JSON.stringify(fields)
         }
-      })
+      }).catch(() => sendMessage(t('invalid-input'), 'danger'))
     } else {
       createForm({
         variables: {
