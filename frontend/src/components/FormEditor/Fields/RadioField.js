@@ -1,14 +1,26 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-const RadioField = ({ add }) => {
+const RadioField = ({ add, item, cancel, save }) => {
   const { t } = useTranslation('user')
-  const [name, setName] = useState(t('form-field-input-name'))
-  const [required, setRequired] = useState(false)
-  const [options, setOptions] = useState([{ value: 1, text: t('form-field-radio-value') + '-1' }, { value: 2, text: t('form-field-radio-value') + '-2' }])
+  const [name, setName] = useState(item ? item.name : t('form-field-input-name'))
+  const [required, setRequired] = useState(item ? item.validation.required : false)
+  const initialOptions = item ? item.options : [{ value: 1, text: t('form-field-radio-value') + '-1' }, { value: 2, text: t('form-field-radio-value') + '-2' }]
+  const [options, setOptions] = useState(initialOptions)
 
   const handleAdd = () => {
     add({
+      name,
+      options,
+      type: 'radio',
+      validation: {
+        required
+      }
+    })
+  }
+
+  const handleSave = () => {
+    save({
       name,
       options,
       type: 'radio',
@@ -64,7 +76,14 @@ const RadioField = ({ add }) => {
           {t('form-field-input-required')}
         </label>
       </div>
-      <button onClick={() => handleAdd()}>{t('form-field-add')}</button>
+      {item ?
+        <>
+          <button onClick={() => handleSave()}>{t('save')}</button>
+          <button onClick={() => cancel()}>{t('back')}</button>
+        </>
+        :
+        <button onClick={() => handleAdd()}>{t('form-field-add')}</button>
+      }
     </div>
   )
 }

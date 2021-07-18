@@ -24,31 +24,17 @@ const AddField = ({ add }) => {
 
   return (
     <div>
-      <nav className="navbar" role="navigation" aria-label="add formfield">
-        <div className="navbar-brand">
-          <div className="navbar-item">
-            {showOptions ?
-              <button className="button luma" onClick={() => setShowOptions(!showOptions)}>{'<'}</button>
-              :
-              <button className="button luma" onClick={() => setShowOptions(!showOptions)}>{t('form-field-add')}</button>
-            }
-          </div>
-        </div>
-        {showOptions && (
-          <div className="navbar-menu">
-            <div className="navbar-start">
-              <div className="navbar-item">
-                <button className="button luma" onClick={() => setComponent('text')}>{t('form-field-input')}</button>
-              </div>
-              <div className="navbar-item">
-                <button className="button luma" onClick={() => setComponent('radio')}>{t('form-field-radio')}</button>
-              </div>
-              <div className="navbar-item">
-                <button className="button luma" onClick={() => setComponent('checkbox')}>{t('form-field-checkbox')}</button>
-              </div>
-            </div>
-          </div>
-        )}
+      <nav className="level-left" role="navigation" aria-label="add formfield">
+        {showOptions ?
+          <button className="button luma" onClick={() => setShowOptions(!showOptions)}>{'<'}</button>
+          :
+          <button className="button luma" onClick={() => setShowOptions(!showOptions)}>{t('form-field-add')}</button>
+        }
+        {showOptions && (<>
+          <button className="button luma" onClick={() => setComponent('text')}>{t('form-field-input')}</button>
+          <button className="button luma" onClick={() => setComponent('radio')}>{t('form-field-radio')}</button>
+          <button className="button luma" onClick={() => setComponent('checkbox')}>{t('form-field-checkbox')}</button>
+        </>)}
       </nav>
       {renderComponent()}
     </div>

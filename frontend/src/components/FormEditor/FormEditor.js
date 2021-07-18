@@ -39,6 +39,11 @@ const FormEditor = ({ form, back, sendMessage }) => {
     setFields(fields.concat(data))
   }
 
+  const handleUpdateField = (index, data) => {
+    fields[index] = data
+    setFields([...fields])
+  }
+
   const handleRemove = (index) => {
     fields.splice(index,1)
     setFields([...fields])
@@ -87,17 +92,24 @@ const FormEditor = ({ form, back, sendMessage }) => {
           <input className="input" type="text" value={name} onChange={(e) => setName(e.target.value)}/>
         </div>
       </div>
-      <label className="label">{t('form-fields')}</label>
-      {fields.map((f,index) =>
-        <FieldItem
-          key={index}
-          item={f}
-          down={index === fields.length-1 ? null : () => moveDown(index)}
-          up={index === 0 ? null : () => moveUp(index)}
-          remove={() => handleRemove(index)}/>)}
-      <AddField add={handleAdd}/>
-      <button className="button luma primary" onClick={() => handleSave()}>{t('save')}</button>
-      <button className="button luma primary" onClick={back}>{t('back')}</button>
+      <div className="content">
+        <label className="label">{t('form-fields')}</label>
+        {fields.map((f,index) =>
+          <FieldItem
+            key={index}
+            item={f}
+            down={index === fields.length-1 ? null : () => moveDown(index)}
+            up={index === 0 ? null : () => moveUp(index)}
+            remove={() => handleRemove(index)}
+            update={(data) => handleUpdateField(index,data)}/>)}
+      </div>
+      <p className="control">
+        <AddField add={handleAdd}/>
+      </p>
+      <p className="control">
+        <button className="button luma primary" onClick={() => handleSave()}>{t('save')}</button>
+        <button className="button luma primary" onClick={back}>{t('back')}</button>
+      </p>
     </div>
   )
 }

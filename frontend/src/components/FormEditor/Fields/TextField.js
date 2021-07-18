@@ -1,13 +1,23 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-const InputField = ({ add }) => {
+const InputField = ({ add, item, cancel, save }) => {
   const { t } = useTranslation('user')
-  const [name, setName] = useState(t('form-field-input-name'))
-  const [required, setRequired] = useState(false)
+  const [name, setName] = useState(item ? item.name : t('form-field-input-name'))
+  const [required, setRequired] = useState(item ? item.validation.required : false)
 
   const handleAdd = () => {
     add({
+      name,
+      type: 'text',
+      validation: {
+        required
+      }
+    })
+  }
+
+  const handleSave = () => {
+    save({
       name,
       type: 'text',
       validation: {
@@ -30,7 +40,14 @@ const InputField = ({ add }) => {
           {t('form-field-input-required')}
         </label>
       </div>
-      <button onClick={() => handleAdd()}>{t('form-field-add')}</button>
+      {item ?
+        <>
+          <button onClick={() => handleSave()}>{t('save')}</button>
+          <button onClick={() => cancel()}>{t('back')}</button>
+        </>
+        :
+        <button onClick={() => handleAdd()}>{t('form-field-add')}</button>
+      }
     </div>
   )
 }
