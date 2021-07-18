@@ -14,6 +14,10 @@ import set from 'date-fns/set'
 import { fi } from 'date-fns/locale'
 import { differenceInDays, differenceInMinutes }  from 'date-fns'
 import { Tooltip } from 'antd'
+import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
+import { ModifyEvent } from './components/ModifyEventModal'
+
+const DragAndDropCalendar = withDragAndDrop(Calendar)
 
 const localizer = dateFnsLocalizer({
   format,
@@ -43,14 +47,19 @@ const Wrapper = (props) => {
   }
 }
 
-const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, currentDate, setCurrentDate, currentView, setCurrentView }) => {
-
+const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, currentDate, setCurrentDate, currentView, setCurrentView, sendMessage }) => {
+  const [showModal, setShowModal] = useState(false)
+  const [event, setEvent] = useState(null)
   const [localEvents, setEvents] = useState([])
   const [filterFunction, setFilterFunction] = useState(() => () => { return true })
 
   useEffect(() => {
     setEvents(events)
   }, [events])
+
+  const handleClose = () => {
+    setShowModal(false)
+  }
 
   const handleNavigate = (date) => {
     if (date) setCurrentDate(date)
@@ -62,6 +71,16 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
 
   const handleSelect = ({ start, end }) => {
     showNewEventForm(start, end)
+  }
+
+  const handleDrop = (item) => {
+    const event = {
+      ...item.event,
+      eventStart: item.start,
+      eventEnd: item.end
+    }
+    setEvent(event)
+    setShowModal(true)
   }
 
   const customDayPropGetter = date => {
@@ -86,6 +105,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
   }
 
   const AgendaEvent = ({ event }) => {
+
     const resourceNames = event.resourceids.map(id => { return { name: resourceMap[id-1]?.resourceTitle || null, color: resourceColorsLUMA[id - 1], description: resourceMap[id-1]?.description }})
     if (event.booked) {
       return (
@@ -130,11 +150,20 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
 
 
   return (
-    <div>
+    <>
+      <div className={`modal ${showModal ? 'is-active':''}`}>
+        <div className="modal-background"></div>
+        {showModal && <ModifyEvent
+          event={event}
+          setEvent={setEvent}
+          close={handleClose}
+          sendMessage={sendMessage}
+        />}
+      </div>
       <Wrapper elementId='filterdiv'>
         <CalendarFilter filterFunction={filterFunction} setFilterFunction={setFilterFunction} />
       </Wrapper>
-      <Calendar
+      <DragAndDropCalendar
         culture='fi'
         localizer={localizer}
         formats={formats}
@@ -166,8 +195,43 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
         onView={handleView}
         date={currentDate}
         view={currentView}
+        draggableAccessor={() => currentUser ? true : false}
+        onEventDrop={handleDrop}
       />
-    </div>)
+      {/* <Calendar
+        culture='fi'
+        localizer={localizer}
+        formats={formats}
+        messages={messages}
+        views={{
+          month: true,
+          work_week: LumaWorkWeek,
+          day: true,
+          agenda: true
+        }}
+        showMultiDayTimes
+        events={localEvents.filter(event => filterFunction(event))}
+        startAccessor='start'
+        endAccessor='end'
+        min={set(new Date(), { hours: 8, minutes: 0, seconds:0, milliseconds: 0 })}
+        max={set(new Date(), { hours: 17, minutes: 0, seconds:0, milliseconds: 0 })}
+        selectable={!!currentUser}
+        onSelectEvent={(event) => handleEventClick(event)}
+        onSelectSlot={handleSelect}
+        components={{
+          toolbar: LumaToolbar,
+          agenda: {
+            event: AgendaEvent
+          }
+        }}
+        dayPropGetter={customDayPropGetter}
+        eventPropGetter={customEventPropGetter}
+        onNavigate={handleNavigate}
+        onView={handleView}
+        date={currentDate}
+        view={currentView}
+      /> */}
+    </>)
 }
 
 export default MyCalendar
