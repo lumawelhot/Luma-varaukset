@@ -40,7 +40,18 @@ const Wrapper = (props) => {
   }
 }
 
-const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, currentDate, setCurrentDate, currentView, setCurrentView, sendMessage, addEvent }) => {
+const MyCalendar = ({
+  events,
+  currentUser,
+  showNewEventForm,
+  handleEventClick,
+  currentDate,
+  setCurrentDate,
+  currentView,
+  setCurrentView,
+  sendMessage,
+  addEvent
+}) => {
   const [showModifyModal, setShowModifyModal] = useState(false)
   const [showCopyModal, setShowCopyModal] = useState(false)
   const [actionSelection, setActionSelection] = useState(false)
@@ -183,7 +194,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
       localizer.format(date, 'cccccc d.M.', culture)
   }
 
-  const ActionSelection = ({ close, event }) => {
+  const ActionSelection = () => {
     if (!event) return <></>
     return (
       <div className="modal-card">
@@ -192,8 +203,10 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
         </header>
         <footer className="modal-card-foot">
           <button className="button luma" type='submit' onClick={handleCopy}>{t('copy')}</button>
-          <button className="button luma" type='submit' onClick={handleMove}>{t('move')}</button>
-          <button className="button" onClick={close}>{t('close')}</button>
+          {!event.hasVisits &&
+            <button className="button luma" type='submit' onClick={handleMove}>{t('move')}</button>
+          }
+          <button className="button" onClick={handleClose}>{t('close')}</button>
         </footer>
       </div>
     )
@@ -203,7 +216,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
     <>
       <div className={`modal ${actionSelection ? 'is-active':''}`}>
         <div className="modal-background"></div>
-        <ActionSelection event={event} close={handleClose} />
+        <ActionSelection />
       </div>
       <div className={`modal ${showModifyModal ? 'is-active':''}`}>
         <div className="modal-background"></div>

@@ -6,43 +6,8 @@ import { CREATE_EVENT } from '../../graphql/queries'
 import Form from './Form'
 
 export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeRange, event }) => {
-  console.log(event)
   const { t } = useTranslation('event')
   const history = useHistory()
-
-  const createPlatformList = () => {
-    const platforms = [false, false, false, false]
-    event.remotePlatforms.forEach(platform => platforms[platform - 1] = true)
-    return platforms
-  }
-  const createGradeList = () => {
-    const grades = [false, false, false, false, false]
-    event.grades.forEach(grade => grades[grade - 1] = true)
-    return grades
-  }
-  const createResourceList = () => {
-    const resources = [false, false, false, false , false]
-    event.resourceids.forEach(resource => resources[resource - 1] = true)
-    return resources
-  }
-
-  const initialValues = event ? {
-    title: event.title,
-    scienceClass: createResourceList(),
-    grades: createGradeList(),
-    remotePlatforms: createPlatformList(),
-    otherRemotePlatformOption: event.otherRemotePlatformOption,
-    desc: event.desc ? event.desc : '',
-    inPersonVisit: event.inPersonVisit,
-    remoteVisit: event.remoteVisit,
-    extras: event.extras.map(extra => extra.id),
-    tags: event.tags.map(tag => tag.name),
-    startTime: new Date(event.eventStart),
-    endTime: new Date(event.eventEnd),
-    duration: event.duration,
-    waitingTime: event.waitingTime,
-    date: new Date(event.eventStart)
-  } : undefined
 
   const validate = (values) => {
     const defErrorMessage = t('fill-field')
@@ -155,7 +120,7 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
       onSubmit={onSubmit}
       closeEventForm={closeEventForm}
       newEventTimeRange={newEventTimeRange}
-      initialValues={initialValues}
+      event={event}
     />
   )
 }

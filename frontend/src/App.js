@@ -65,7 +65,8 @@ const App = () => {
       eventStart: new Date(event.start),
       eventEnd: new Date(event.end),
       invalidTimeSlot,
-      waitingTime: event.waitingTime
+      waitingTime: event.waitingTime,
+      hasVisits: event.visits.length ? true : false
     }
     delete details.availableTimes
     delete details.visits
