@@ -160,13 +160,32 @@ const resolvers = {
           endTime: args.end
         }],
         duration: args.duration,
-        customForm: args.customForm
+        customForm: args.customForm,
+        disabled: false
       })
 
       newEvent.extras = extras
       newEvent.tags = mongoTags
       await newEvent.save()
       return newEvent
+    },
+    disableEvent: async (root, args, { currentUser }) => {
+      if (!currentUser) throw new AuthenticationError('not authenticated')
+
+      const event = await Event.findById(args.event)
+
+      event.disabled = true
+      event.save()
+      return event
+    },
+    enableEvent: async (root, args, { currentUser }) => {
+      if (!currentUser) throw new AuthenticationError('not authenticated')
+
+      const event = await Event.findById(args.event)
+
+      event.disabled = false
+      event.save()
+      return event
     },
     modifyEvent: async (root, args, { currentUser }) => {
       const extras = await Extra.find({ _id: { $in: args.extras } })
@@ -218,6 +237,8 @@ const resolvers = {
     },
     createVisit: async (root, args, { currentUser }) => {
       const event = await Event.findById(args.event).populate('visits', { startTime: 1, endTime: 1 })
+      if (event.disabled) throw new UserInputError('This event is disabled')
+
       const visitTime = {
         startTime: new Date(args.startTime),
         endTime: new Date(args.endTime)

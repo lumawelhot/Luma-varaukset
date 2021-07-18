@@ -4,7 +4,7 @@ import differenceInMinutes from 'date-fns/differenceInMinutes'
 import format from 'date-fns/format'
 import { useHistory } from 'react-router'
 import { useMutation } from '@apollo/client'
-import { DELETE_EVENT, EVENTS } from '../graphql/queries'
+import { DELETE_EVENT, DISABLE_EVENT, ENABLE_EVENT, EVENTS } from '../graphql/queries'
 import { ModifyEvent } from './ModifyEventModal'
 import { useTranslation } from 'react-i18next'
 
@@ -20,6 +20,32 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
     onCompleted: () => {
       sendMessage(t('remove-success'), 'success')
       history.push('/')
+    }
+  })
+  const [disableEvent] = useMutation(DISABLE_EVENT, {
+    refetchQueries: [{ query: EVENTS }],
+    onError: () => {
+      sendMessage(t('failed-to-disable'), 'danger')
+    },
+    onCompleted: ({ disableEvent }) => {
+      setEvent({
+        ...event,
+        disabled: disableEvent.disabled
+      })
+      sendMessage(t('event-disabled'), 'success')
+    }
+  })
+  const [enableEvent] = useMutation(ENABLE_EVENT, {
+    refetchQueries: [{ query: EVENTS }],
+    onError: () => {
+      sendMessage(t('failed-to-enable'), 'danger')
+    },
+    onCompleted: ({ enableEvent }) => {
+      setEvent({
+        ...event,
+        disabled: enableEvent.disabled
+      })
+      sendMessage(t('event-enabled'), 'success')
     }
   })
 
@@ -85,6 +111,22 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
     setShowModal(false)
   }
 
+  const handleDisable = () => {
+    disableEvent({
+      variables: {
+        event: event.id
+      }
+    })
+  }
+
+  const handleEnable = () => {
+    enableEvent({
+      variables: {
+        event: event.id
+      }
+    })
+  }
+
   if (event) {
     const eventClass = filterEventClass(event.resourceids)
     const eventGrades = filterEventGrades(event.grades)
@@ -109,7 +151,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
             <div className="section">
               <div className="box">
                 <div className="content">
-                  <div className="title">{event.title}</div>
+                  <div className="title" style={event.disabled ? { color: 'red' } : null}>{event.title}{event.disabled ? ` - ${t('disabled')}` : null}</div>
                   <div className="tags eventpage">
                     {event.tags.map(t => <span key={t.id} className="tag is-small luma">{t.name}</span>)}
                   </div>
@@ -147,11 +189,19 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
                       <p className="subtitle unfortunately"><b>{t('cannot-be-booked')}</b></p> : null}
                     <div className="field is-grouped is-grouped-multiline">
                       {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days)
-                        ? null
-                        : <div className="control"><button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>Varaa vierailu</button></div>}
+                        ? null :
+                        !event.disabled &&
+                        <div className="control">
+                          <button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>
+                              Varaa vierailu
+                          </button>
+                        </div>
+                      }
                       <div className="control">
                         <button className="button luma" onClick={cancel}>{t('to-calendar')}</button>
                       </div>
+                    </div>
+                    <div className="field is-grouped is-grouped-multiline">
                       {!!currentUser && <>
                         <div className="control">
                           <button className="button luma" onClick={openModal}>{t('change-info')}</button>
@@ -159,6 +209,16 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
                         <div className="control">
                           <button className="button luma" onClick={() => handleRemoveEventClick()}>{t('remove-event')}</button>
                         </div>
+                        {!event.booked && event.disabled &&
+                          <div className="control">
+                            <button className="button luma" onClick={handleEnable}>{t('enable-event')}</button>
+                          </div>
+                        }
+                        {!event.booked && !event.disabled &&
+                          <div className="control">
+                            <button className="button luma" onClick={handleDisable}>{t('disable-event')}</button>
+                          </div>
+                        }
                       </>
                       }
                     </div>

@@ -15,7 +15,8 @@
     ],
     "waitingTime": 15,
     "duration": 30,
-    "desc": "I feel the earth move under my feet, I feel the sky tumbling down, tumbling down!"
+    "desc": "I feel the earth move under my feet, I feel the sky tumbling down, tumbling down!",
+    "disabled": false
   },
   {
     "title": "Lämpösäteily ja ilmastonmuutos",
@@ -33,7 +34,8 @@
     "remoteVisit": false,
     "waitingTime": 15,
     "extras": [],
-    "duration": 30
+    "duration": 30,
+    "disabled": false
   },
   {
     "title": "Kemian kokeelliset työt",
@@ -51,7 +53,8 @@
     "remoteVisit": false,
     "waitingTime": 15,
     "extras": [],
-    "duration": 30
+    "duration": 30,
+    "disabled": false
   },
   {
     "title": "Python-ohjelmointikieli",
@@ -70,7 +73,8 @@
     "remoteVisit": false,
     "waitingTime": 15,
     "extras": [],
-    "duration": 30
+    "duration": 30,
+    "disabled": false
   },
   {
     "title": "Matematiikan työpaja",
@@ -89,7 +93,8 @@
     "remoteVisit": false,
     "waitingTime": 15,
     "extras": [],
-    "duration": 30
+    "duration": 30,
+    "disabled": false
   },
   {
     "title": "Scratch-ohjelmointikieli",
@@ -108,7 +113,8 @@
     "remoteVisit": false,
     "waitingTime": 15,
     "extras": [],
-    "duration": 30
+    "duration": 30,
+    "disabled": false
   },
   {
     "title": "Lämpösäteily ja ilmastonmuutos",
@@ -127,6 +133,7 @@
     "remoteVisit": false,
     "waitingTime": 15,
     "extras": [],
-    "duration": 30
+    "duration": 30,
+    "disabled": false
   }
 ]

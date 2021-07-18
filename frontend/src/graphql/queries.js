@@ -69,6 +69,7 @@ export const EVENTS = gql`
       }
       duration
       customForm
+      disabled
     }
   }
 `
@@ -186,6 +187,7 @@ export const CREATE_EVENT = gql`
       }
       duration
       customForm
+      disabled
     }
   }
 `
@@ -408,6 +410,35 @@ export const UPDATE_EVENT = gql`
         id
       }
       customForm
+      disabled
+    }
+  }
+`
+
+export const DISABLE_EVENT = gql `
+  mutation disableEvent(
+    $event: ID!
+  ) {
+    disableEvent(
+      event: $event
+    ) {
+      id
+      title
+      disabled
+    }
+  }
+`
+
+export const ENABLE_EVENT = gql `
+  mutation enableEvent(
+    $event: ID!
+  ) {
+    enableEvent(
+      event: $event
+    ) {
+      id
+      title
+      disabled
     }
   }
 `

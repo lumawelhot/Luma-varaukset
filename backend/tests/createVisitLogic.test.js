@@ -65,7 +65,8 @@ beforeEach(async () => {
     availableTimes: [{ startTime: availableStart, endTime: availableEnd }],
     waitingTime: 20,
     duration: 60,
-    extras: []
+    extras: [],
+    disabled: false
   }
 
   const start1 = createDate(9, 0)
@@ -84,7 +85,8 @@ beforeEach(async () => {
     availableTimes: [{ startTime: start1, endTime: end1 }, { startTime: start2, endTime: end2 }],
     waitingTime: 15,
     duration: 60,
-    extras: []
+    extras: [],
+    disabled: false
   }
 
   availableEvent = new EventModel(availableEventData)

@@ -41,6 +41,7 @@ const typeDefs = gql`
     extras: [Extra]
     duration: Int!
     customForm: ID
+    disabled: Boolean!
   }
   type Visit {
     id: ID!
@@ -154,6 +155,12 @@ const typeDefs = gql`
       dataUseAgreement: Boolean!
       remotePlatform: String
     ): Visit
+    disableEvent(
+      event: ID!
+    ): Event
+    enableEvent(
+      event: ID!
+    ): Event
     cancelVisit(id: ID!): Visit
     createExtra(
       name: String!

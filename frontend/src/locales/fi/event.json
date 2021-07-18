@@ -86,5 +86,11 @@
   "event-creation-failed": "Vierailun luonti epäonnistui! Tarkista tiedot!",
   "event-created": "Vierailu luotu",
   "custom-form": "Lisää kentät lomakkeesta",
-  "no-custom-form": "Ei mitään"
+  "no-custom-form": "Ei mitään",
+  "disable-event": "Poista käytöstä",
+  "enable-event": "Laita käyttöön",
+  "failed-to-disable": "Käytöstä poistaminen epäonnistui",
+  "failed-to-enable": "Käyttöönotto epäonnistui",
+  "event-disabled": "Käytöstä poistaminen onnistui",
+  "event-enabled": "Käyttöönotto onnistui"
 }

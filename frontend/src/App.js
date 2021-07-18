@@ -68,7 +68,7 @@ const App = () => {
       invalidTimeSlot,
       customForm: event.customForm,
       waitingTime: event.waitingTime,
-      hasVisits: event.visits.length ? true : false
+      hasVisits: event.visits.length ? true : false,
     }
     delete details.availableTimes
     delete details.visits
@@ -77,12 +77,14 @@ const App = () => {
       start: new Date(timeSlot.startTime),
       end: new Date(timeSlot.endTime),
       booked: event.booked,
+      disabled: event.disabled
     }))
     events = events.concat(event.visits.map(visit => Object({
       ...details,
       start: new Date(visit.startTime),
       end: new Date(visit.endTime),
       booked: true,
+      disabled: false
     })))
 
     return events
