@@ -43,6 +43,7 @@ export const EVENTS = gql`
       grades
       remotePlatforms
       otherRemotePlatformOption
+      waitingTime
       tags {
         id
         name

@@ -3,13 +3,12 @@ import { Field, Formik } from 'formik'
 import { useQuery } from '@apollo/client'
 import { TAGS, EXTRAS } from '../../graphql/queries'
 import LumaTagInput from '../LumaTagInput/LumaTagInput'
-import addDays from 'date-fns/addDays'
-import set from 'date-fns/set'
 import { TextArea, TextField } from '../VisitForm/FormFields'
 import { AdditionalServices, DatePick, EventType, Grades, Platforms, ScienceClasses, TimePick } from './FormComponents'
 import { useTranslation } from 'react-i18next'
+import { eventInitialValues, createGradeList, createPlatformList, createResourceList } from '../../helpers/form'
 
-const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmit }) => {
+const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmit, event }) => {
   const { t } = useTranslation('event')
   const [suggestedTags, setSuggestedTags] = useState([])
   const tags = useQuery(TAGS)
@@ -19,27 +18,25 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
     if (tags.data) setSuggestedTags(tags.data.getTags.map(tag => tag.name))
   }, [tags.data])
 
-  const defaultDateTime = set(addDays(new Date(), 14), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 })
-
   return (
     <Formik
-      initialValues= {{
-        grades: [false, false, false, false, false],
-        remoteVisit: true,
-        inPersonVisit: true,
-        title: '',
-        scienceClass: [false, false, false, false, false],
-        desc: '',
-        remotePlatforms: [true, true, true, false],
-        otherRemotePlatformOption: '',
-        date: newEventTimeRange ? newEventTimeRange[0] : defaultDateTime,
-        startTime: newEventTimeRange ? newEventTimeRange[0] : set(defaultDateTime, { hours: 8 }),
-        endTime: newEventTimeRange ? newEventTimeRange[1] : set(defaultDateTime, { hours: 16 }),
-        tags: [],
-        waitingTime: 15,
-        extras: [],
-        duration: 60
-      }}
+      initialValues= {event ? {
+        title: event.title,
+        scienceClass: createResourceList(event),
+        grades: createGradeList(event),
+        remotePlatforms: createPlatformList(event),
+        otherRemotePlatformOption: event.otherRemotePlatformOption,
+        desc: event.desc ? event.desc : '',
+        inPersonVisit: event.inPersonVisit,
+        remoteVisit: event.remoteVisit,
+        extras: event.extras.map(extra => extra.id),
+        tags: event.tags.map(tag => tag.name),
+        startTime: new Date(event.eventStart),
+        endTime: new Date(event.eventEnd),
+        duration: event.duration,
+        waitingTime: event.waitingTime,
+        date: new Date(event.eventStart)
+      } : eventInitialValues(newEventTimeRange)}
       validate={validate}
       onSubmit={(values) => onSubmit(values, tags)}
     >

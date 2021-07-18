@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { CREATE_EVENT } from '../../graphql/queries'
 import Form from './Form'
 
-export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeRange }) => {
+export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeRange, event }) => {
   const { t } = useTranslation('event')
   const history = useHistory()
 
@@ -68,7 +68,6 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
   })
 
   const onSubmit = (values, tags) => {
-    console.log(values.extras)
     const gradelist = []
     values.grades.forEach((element, index) => {
       if (element) {
@@ -113,7 +112,6 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
       },
     })
   }
-
   return (
     <Form
       sendMessage={sendMessage}
@@ -121,6 +119,7 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
       onSubmit={onSubmit}
       closeEventForm={closeEventForm}
       newEventTimeRange={newEventTimeRange}
+      event={event}
     />
   )
 }

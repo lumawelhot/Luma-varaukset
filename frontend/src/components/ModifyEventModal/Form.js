@@ -3,6 +3,7 @@ import { Field, Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EXTRAS, TAGS } from '../../graphql/queries'
+import { createGradeList, createPlatformList, createResourceList } from '../../helpers/form'
 import { AdditionalServices, EventType, Grades, Platforms, ScienceClasses, TimePick } from '../EventForm/FormComponents'
 import LumaTagInput from '../LumaTagInput/LumaTagInput'
 import { TextArea, TextField } from '../VisitForm/FormFields'
@@ -17,31 +18,13 @@ const Form = ({ event, close, save, validate }) => {
     if (tags.data) setSuggestedTags(tags.data.getTags.map(tag => tag.name))
   }, [tags.data])
 
-  const createPlatformList = () => {
-    const platforms = [false, false, false, false]
-    event.remotePlatforms.forEach(platform => platforms[platform - 1] = true)
-    return platforms
-  }
-
-  const createGradeList = () => {
-    const grades = [false, false, false, false, false]
-    event.grades.forEach(grade => grades[grade - 1] = true)
-    return grades
-  }
-
-  const createResourceList = () => {
-    const resources = [false, false, false, false , false]
-    event.resourceids.forEach(resource => resources[resource - 1] = true)
-    return resources
-  }
-
   return (
     <Formik
       initialValues={{
         title: event.title,
-        scienceClass: createResourceList(),
-        grades: createGradeList(),
-        remotePlatforms: createPlatformList(),
+        scienceClass: createResourceList(event),
+        grades: createGradeList(event),
+        remotePlatforms: createPlatformList(event),
         otherRemotePlatformOption: event.otherRemotePlatformOption,
         desc: event.desc ? event.desc : '',
         inPersonVisit: event.inPersonVisit,
