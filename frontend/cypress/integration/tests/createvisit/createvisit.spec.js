@@ -191,7 +191,7 @@ And('valid information is entered and visit mode predetermined', () => {
 
 Then('booked event turns grey in calendar view', () => {
   cy.wait(500)
-  cy.findEvent(availableEvent1).parent().should('have.class', 'booked')
+  cy.findEvent(availableEvent1).parent().parent().should('have.class', 'booked')
 })
 
 When('I click on available event 2', () => {
@@ -226,5 +226,5 @@ Then('unavailable event page contains booking button', () => {
 
 Then('unavailable event turns grey in calendar view', () => {
   cy.wait(500)
-  cy.findEvent(unavailableEventName).parent().parent().should('have.class', 'booked')
+  cy.findEvent(unavailableEventName).parent().parent().parent().should('have.class', 'booked')
 })
