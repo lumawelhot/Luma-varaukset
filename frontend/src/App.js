@@ -32,7 +32,7 @@ const App = () => {
   const client = useApolloClient()
   const result = useQuery(EVENTS)
   const [showEventForm, setShowEventForm] = useState(false)
-  const [newEventTimeRange, setNewEventTimeRange] = useState([])
+  const [newEventTimeRange, setNewEventTimeRange] = useState(undefined)
   const [getUser, { loading, data }] = useLazyQuery(CURRENT_USER, {
     fetchPolicy: 'cache-and-network'
   })
@@ -126,6 +126,7 @@ const App = () => {
 
   const closeEventForm = (event) => {
     event.preventDefault()
+    setNewEventTimeRange(undefined)
     setShowEventForm(false)
     history.push('/')
   }
