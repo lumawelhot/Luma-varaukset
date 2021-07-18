@@ -40,6 +40,7 @@ const typeDefs = gql`
     waitingTime: Int!
     extras: [Extra]
     duration: Int!
+    customForm: ID
   }
   type Visit {
     id: ID!
@@ -115,6 +116,7 @@ const typeDefs = gql`
       waitingTime: Int!
       extras: [ID]
       duration: Int!
+      customForm: ID
     ): Event
     modifyEvent(
       event: ID!
@@ -132,6 +134,7 @@ const typeDefs = gql`
       tags: [TagInput]
       #waitingTime: Int!
       #duration: Int!
+      customForm: ID
     ): Event
     createVisit(
       event: ID!

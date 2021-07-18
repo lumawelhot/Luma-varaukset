@@ -65,7 +65,8 @@ const App = () => {
       otherRemotePlatformOption: event.otherRemotePlatformOption,
       eventStart: new Date(event.start),
       eventEnd: new Date(event.end),
-      invalidTimeSlot
+      invalidTimeSlot,
+      customForm: event.customForm
     }
     delete details.availableTimes
     delete details.visits

@@ -68,7 +68,6 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
   })
 
   const onSubmit = (values, tags) => {
-    console.log(values.extras)
     const gradelist = []
     values.grades.forEach((element, index) => {
       if (element) {
@@ -109,7 +108,8 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
         ),
         waitingTime: values.waitingTime,
         extras: values.extras,
-        duration: values.duration
+        duration: values.duration,
+        customForm: values.customForm
       },
     })
   }

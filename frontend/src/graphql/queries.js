@@ -67,6 +67,7 @@ export const EVENTS = gql`
         remoteLength
       }
       duration
+      customForm
     }
   }
 `
@@ -133,7 +134,8 @@ export const CREATE_EVENT = gql`
     $tags: [TagInput],
     $waitingTime: Int!
     $extras: [ID]
-    $duration: Int!
+    $duration: Int!,
+    $customForm: ID
     ) {
     createEvent (
       title: $title,
@@ -150,6 +152,7 @@ export const CREATE_EVENT = gql`
       waitingTime: $waitingTime
       extras: $extras
       duration: $duration
+      customForm: $customForm
     ) {
       id
       title
@@ -181,6 +184,7 @@ export const CREATE_EVENT = gql`
         id
       }
       duration
+      customForm
     }
   }
 `
@@ -359,6 +363,7 @@ export const UPDATE_EVENT = gql`
     $tags:[TagInput]
     $start:String
     $end:String
+    $customForm: ID
   ) {
     modifyEvent(
       event: $event
@@ -374,6 +379,7 @@ export const UPDATE_EVENT = gql`
       tags: $tags
       start: $start
       end: $end
+      customForm: $customForm
     ) {
       id
       title
@@ -400,6 +406,7 @@ export const UPDATE_EVENT = gql`
         name,
         id
       }
+      customForm
     }
   }
 `

@@ -159,7 +159,8 @@ const resolvers = {
           startTime: args.start,
           endTime: args.end
         }],
-        duration: args.duration
+        duration: args.duration,
+        customForm: args.customForm
       })
 
       newEvent.extras = extras
@@ -169,7 +170,7 @@ const resolvers = {
     },
     modifyEvent: async (root, args, { currentUser }) => {
       const extras = await Extra.find({ _id: { $in: args.extras } })
-      const { title, desc, resourceids, grades, remotePlatforms, otherRemotePlatformOption, remoteVisit, inPersonVisit } = args
+      const { title, desc, resourceids, grades, remotePlatforms, otherRemotePlatformOption, remoteVisit, inPersonVisit, customForm } = args
       const event = await Event.findById(args.event).populate('visits')
       if (!currentUser) throw new AuthenticationError('not authenticated')
 
@@ -181,6 +182,7 @@ const resolvers = {
       otherRemotePlatformOption !== undefined ? event.otherRemotePlatformOption = otherRemotePlatformOption : null
       remoteVisit !== undefined ? event.remoteVisit = remoteVisit : null
       inPersonVisit !== undefined ? event.inPersonVisit = inPersonVisit : null
+      customForm !== undefined ? event.customForm = customForm : null
       event.extras = extras
       event.tags = await addNewTags(args.tags)
       if (event.visits.length) {

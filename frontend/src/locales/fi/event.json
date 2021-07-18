@@ -84,5 +84,7 @@
   "choose-grades": "Valitse vierailulle sopivat luokka-asteet",
   "choose-resources": "Valitse vierailulle sopivat tiedeluokat",
   "event-creation-failed": "Vierailun luonti epäonnistui! Tarkista tiedot!",
-  "event-created": "Vierailu luotu"
+  "event-created": "Vierailu luotu",
+  "custom-form": "Lisää kentät lomakkeesta",
+  "no-custom-form": "Ei mitään"
 }

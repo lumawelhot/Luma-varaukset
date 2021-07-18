@@ -57,6 +57,7 @@ const LoginForm = ({ getUser, sendMessage }) => {
                     label={t('username')}
                     component={TextField}
                     fieldName='username'
+                    autocomplete='username'
                   />
                   <Field
                     style={{ width: 500 }}
@@ -64,6 +65,7 @@ const LoginForm = ({ getUser, sendMessage }) => {
                     type='password'
                     component={TextField}
                     fieldName='password'
+                    autocomplete='current-password'
                   />
                   <div className="field is-grouped">
                     <div className="control">

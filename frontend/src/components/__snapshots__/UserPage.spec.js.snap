@@ -38,7 +38,7 @@ exports[`Renders without error with admin user 1`] = `
       <button
         class="button luma"
       >
-        forms
+        Lomakkeet
       </button>
     </p>
     <p
@@ -98,7 +98,7 @@ exports[`Renders without error with user 1`] = `
       <button
         class="button luma"
       >
-        forms
+        Lomakkeet
       </button>
     </p>
   </div>
