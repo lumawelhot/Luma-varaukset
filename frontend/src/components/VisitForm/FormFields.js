@@ -19,7 +19,7 @@ const FieldProvider = ({ field, component }) => {
 }
 
 export const TextField = (field) => {
-  const { form, fieldName, type='input', className } = field
+  const { form, fieldName, type='input', className, autocomplete } = field
   const { handleChange, handleBlur, values } = form
   return (
     <FieldProvider
@@ -33,6 +33,7 @@ export const TextField = (field) => {
           onChange={handleChange}
           onBlur={handleBlur}
           value={values[fieldName]}
+          autoComplete={autocomplete}
         />
       }
     />

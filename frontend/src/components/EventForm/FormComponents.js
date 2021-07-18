@@ -243,3 +243,25 @@ export const DatePick = ({ form }) => {
     </div>
   )
 }
+
+export const SelectField = ({ form, fieldName, label, options }) => {
+  const { t } = useTranslation('event')
+  const { setFieldValue, values } = form
+  return (
+    <div className="field">
+      <label className="label" htmlFor="fieldName">
+        {label}
+      </label>
+      <div className="control">
+        <div className="select">
+          <select
+            value={values[fieldName]}
+            onChange={event => setFieldValue(fieldName, event.target.value)}>
+            <option value="">{t('no-custom-form')}</option>
+            {options.map(o => <option key={o.id}value={o.id}>{o.name}</option>)}
+          </select>
+        </div>
+      </div>
+    </div>
+  )
+}

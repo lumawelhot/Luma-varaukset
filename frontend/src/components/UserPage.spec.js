@@ -71,7 +71,7 @@ test('History should be set to /extras', async () => {
   expect(history.location.pathname).toBe('/extras')
 })
 
-test('History should be set to /users', async () => {
+test('History should be set to /forms', async () => {
   const history = createMemoryHistory()
 
   const { container } = render(
@@ -82,5 +82,19 @@ test('History should be set to /users', async () => {
   await waitFor(() => new Promise((res) => setTimeout(res, 0))) // Allow component time to render
   const buttons = container.querySelectorAll('.button.luma')
   fireEvent.click(buttons[3])
+  expect(history.location.pathname).toBe('/forms')
+})
+
+test('History should be set to /users', async () => {
+  const history = createMemoryHistory()
+
+  const { container } = render(
+    <Router history={history}>
+      <UserPage currentUser={{ name: 'Tester', isAdmin: true }}/>
+    </Router>
+  )
+  await waitFor(() => new Promise((res) => setTimeout(res, 0))) // Allow component time to render
+  const buttons = container.querySelectorAll('.button.luma')
+  fireEvent.click(buttons[4])
   expect(history.location.pathname).toBe('/users')
 })

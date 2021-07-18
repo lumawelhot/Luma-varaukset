@@ -19,5 +19,6 @@
   "employee": "Employee",
   "save-user": "Save user",
   "login-luma": "Log in (Luma-Booking)",
-  "login": "Log in"
+  "login": "Log in",
+  "form-name": "Form name"
 }

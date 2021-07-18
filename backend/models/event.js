@@ -73,6 +73,11 @@ const eventSchema = mongoose.Schema({
   duration: {
     type: Number,
     required: true
+  },
+  customForm: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Form',
+    required: false
   }
 })
 

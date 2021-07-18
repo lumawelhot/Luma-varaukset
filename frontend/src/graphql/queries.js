@@ -68,6 +68,7 @@ export const EVENTS = gql`
         remoteLength
       }
       duration
+      customForm
     }
   }
 `
@@ -134,7 +135,8 @@ export const CREATE_EVENT = gql`
     $tags: [TagInput],
     $waitingTime: Int!
     $extras: [ID]
-    $duration: Int!
+    $duration: Int!,
+    $customForm: ID
     ) {
     createEvent (
       title: $title,
@@ -151,6 +153,7 @@ export const CREATE_EVENT = gql`
       waitingTime: $waitingTime
       extras: $extras
       duration: $duration
+      customForm: $customForm
     ) {
       id
       title
@@ -182,6 +185,7 @@ export const CREATE_EVENT = gql`
         id
       }
       duration
+      customForm
     }
   }
 `
@@ -360,6 +364,7 @@ export const UPDATE_EVENT = gql`
     $tags:[TagInput]
     $start:String
     $end:String
+    $customForm: ID
   ) {
     modifyEvent(
       event: $event
@@ -375,6 +380,7 @@ export const UPDATE_EVENT = gql`
       tags: $tags
       start: $start
       end: $end
+      customForm: $customForm
     ) {
       id
       title
@@ -401,6 +407,88 @@ export const UPDATE_EVENT = gql`
         name,
         id
       }
+      customForm
+    }
+  }
+`
+
+export const GET_ALL_FORMS = gql`
+  query getForms{
+    getForms {
+      id
+      name
+      fields
+    }
+  }
+`
+
+export const GET_FORM = gql`
+  query getForm($id: ID!) {
+    getForm(id: $id) {
+      id
+      name
+      fields
+    }
+  }
+`
+
+export const CREATE_FORM = gql`
+  mutation createForm($name: String!, $fields: String) {
+    createForm(
+      name: $name
+      fields: $fields
+    ) {
+      id
+      name
+      fields
+    }
+  }
+`
+
+export const UPDATE_FORM = gql`
+  mutation updateForm($id: ID!, $name: String!, $fields: String) {
+    updateForm(
+      id: $id
+      name: $name
+      fields: $fields
+    ) {
+      id
+      name
+      fields
+    }
+  }
+`
+
+export const DELETE_FORM = gql`
+  mutation deleteForm($id: ID!) {
+    deleteForm(
+      id: $id
+    )
+  }
+`
+
+export const CREATE_FORM_SUBMISSION = gql`
+  mutation createFormSubmission($formID: ID!, $values: String) {
+    createFormSubmission(
+      formID: $formID
+      values: $values
+    ) {
+      id
+      form {
+        id
+      }
+      values
+    }
+  }
+`
+
+export const GET_FORM_SUBMISSIONS = gql`
+  query getFormSubmissions($formID: ID!) {
+    getFormSubmissions(
+      formID: $formID
+    ) {
+      id
+      values
     }
   }
 `

@@ -38,6 +38,15 @@ exports[`Renders without error with admin user 1`] = `
       <button
         class="button luma"
       >
+        Lomakkeet
+      </button>
+    </p>
+    <p
+      class="control"
+    >
+      <button
+        class="button luma"
+      >
         Käyttäjälista
       </button>
     </p>
@@ -81,6 +90,15 @@ exports[`Renders without error with user 1`] = `
         class="button luma"
       >
         Lisäpalvelut
+      </button>
+    </p>
+    <p
+      class="control"
+    >
+      <button
+        class="button luma"
+      >
+        Lomakkeet
       </button>
     </p>
   </div>

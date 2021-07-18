@@ -8,6 +8,7 @@ import { CheckBox, RadioButton, TextField } from './FormFields'
 import InfoBox from './InfoBox'
 import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import CustomForm from './CustomForm'
 
 let selectedEvent
 let eventPlatforms
@@ -236,7 +237,8 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                     {touched.startTime && errors.startTime ? (
                       <p className="help is-danger">{errors.startTime}</p>
                     ) : null}
-
+                    <hr></hr>
+                    <CustomForm formid={event.customForm}/>
                     <hr></hr>
 
                     <Field

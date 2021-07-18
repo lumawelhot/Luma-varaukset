@@ -4,6 +4,7 @@ import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
 import { bookedEventColor, resourceColorsLUMA } from './helpers/styles'
 import LumaWorkWeek from './components/Custom/LumaWorkWeek'
 import LumaToolbar from './components/Custom/LumaToolbar'
+import LumaEvent from './components/Custom/LumaEvent'
 import CalendarFilter from './components/Filter/CalendarFilter'
 import format from 'date-fns/format'
 import parse from 'date-fns/parse'
@@ -264,6 +265,7 @@ const MyCalendar = ({
         onSelectEvent={(event) => handleEventClick(event)}
         onSelectSlot={handleSelect}
         components={{
+          event: LumaEvent,
           toolbar: LumaToolbar,
           agenda: {
             event: AgendaEvent
@@ -275,6 +277,7 @@ const MyCalendar = ({
         onView={handleView}
         date={currentDate}
         view={currentView}
+        tooltipAccessor={null}
         draggableAccessor={() => currentUser ? true : false}
         onEventDrop={handleDrop}
       />

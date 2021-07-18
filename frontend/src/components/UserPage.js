@@ -26,6 +26,11 @@ const UserPage = ({ currentUser, setShowEventForm }) => {
     history.push('/extras')
   }
 
+  const forms = (event) => {
+    event.preventDefault()
+    history.push('/forms')
+  }
+
   if (!currentUser) return <div></div>
 
   return (
@@ -38,6 +43,9 @@ const UserPage = ({ currentUser, setShowEventForm }) => {
       </p>
       <p className="control">
         <button className="button luma" onClick={extras}>{t('extras')}</button>
+      </p>
+      <p className="control">
+        <button className="button luma" onClick={forms}>{t('forms')}</button>
       </p>
       {currentUser.isAdmin &&
         <p className="control">

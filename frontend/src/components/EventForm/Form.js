@@ -1,22 +1,28 @@
 import React, { useEffect, useState } from 'react'
 import { Field, Formik } from 'formik'
 import { useQuery } from '@apollo/client'
-import { TAGS, EXTRAS } from '../../graphql/queries'
+import { TAGS, EXTRAS, GET_ALL_FORMS } from '../../graphql/queries'
 import LumaTagInput from '../LumaTagInput/LumaTagInput'
 import { TextArea, TextField } from '../VisitForm/FormFields'
-import { AdditionalServices, DatePick, EventType, Grades, Platforms, ScienceClasses, TimePick } from './FormComponents'
+import { AdditionalServices, DatePick, EventType, Grades, Platforms, ScienceClasses, TimePick, SelectField } from './FormComponents'
 import { useTranslation } from 'react-i18next'
 import { eventInitialValues, createGradeList, createPlatformList, createResourceList } from '../../helpers/form'
 
 const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmit, event }) => {
   const { t } = useTranslation('event')
   const [suggestedTags, setSuggestedTags] = useState([])
+  const [suggestedForms, setSuggestedForms] = useState([])
   const tags = useQuery(TAGS)
   const extras = useQuery(EXTRAS)
+  const forms = useQuery(GET_ALL_FORMS)
 
   useEffect(() => {
     if (tags.data) setSuggestedTags(tags.data.getTags.map(tag => tag.name))
   }, [tags.data])
+
+  useEffect(() => {
+    if (forms.data) setSuggestedForms(forms.data.getForms.map(form => Object({ id: form.id, name: form.name })))
+  }, [forms.data])
 
   return (
     <Formik
@@ -152,6 +158,13 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
               {touched.desc && errors.desc ? (
                 <p className="help is-danger">{errors.desc}</p>
               ) : null}
+
+              <Field
+                label={t('custom-form')}
+                fieldName='customForm'
+                options={suggestedForms}
+                component={SelectField}
+              />
             </section>
             <footer className="modal-card-foot">
               <button className="button luma" type='submit' onClick={handleSubmit}>{t('create')}</button>

@@ -29,6 +29,7 @@ exports[`Renders without error 1`] = `
             class="control"
           >
             <input
+              autocomplete="username"
               class="input undefined"
               id="username"
               name="username"
@@ -51,6 +52,7 @@ exports[`Renders without error 1`] = `
             class="control"
           >
             <input
+              autocomplete="current-password"
               class="input undefined"
               id="password"
               name="password"

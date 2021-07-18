@@ -20,6 +20,7 @@ import { v4 as uuidv4 } from 'uuid'
 import VisitPage from './components/VisitPage'
 import VisitList from './components/VisitList'
 import ExtrasAdmin from './components/EventExtras/ExtrasAdmin'
+import FormList from './components/FormEditor/FormList'
 import { useTranslation } from 'react-i18next'
 
 const App = () => {
@@ -31,7 +32,7 @@ const App = () => {
   const client = useApolloClient()
   const result = useQuery(EVENTS)
   const [showEventForm, setShowEventForm] = useState(false)
-  const [newEventTimeRange, setNewEventTimeRange] = useState([])
+  const [newEventTimeRange, setNewEventTimeRange] = useState(undefined)
   const [getUser, { loading, data }] = useLazyQuery(CURRENT_USER, {
     fetchPolicy: 'cache-and-network'
   })
@@ -65,6 +66,7 @@ const App = () => {
       eventStart: new Date(event.start),
       eventEnd: new Date(event.end),
       invalidTimeSlot,
+      customForm: event.customForm,
       waitingTime: event.waitingTime,
       hasVisits: event.visits.length ? true : false
     }
@@ -126,6 +128,7 @@ const App = () => {
 
   const closeEventForm = (event) => {
     event.preventDefault()
+    setNewEventTimeRange(undefined)
     setShowEventForm(false)
     history.push('/')
   }
@@ -197,6 +200,12 @@ const App = () => {
         <Route path='/extras'>
           {currentUser &&
             <ExtrasAdmin sendMessage={notify} />
+          }
+          {!currentUser && <p>{t('not-logged-in')}</p>}
+        </Route>
+        <Route path='/forms'>
+          {currentUser &&
+            <FormList sendMessage={notify} />
           }
           {!currentUser && <p>{t('not-logged-in')}</p>}
         </Route>
