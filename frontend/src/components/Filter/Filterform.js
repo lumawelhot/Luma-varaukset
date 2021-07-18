@@ -12,7 +12,7 @@ const Filterform = ({ values, setValues }) => {
 
   return (
     <div>
-      <p className="label">Suodata tiedeluokan mukaan: </p>
+      <p className="label">{t('filter-by-resource')} </p>
       <div className="field is-grouped">
         <Tooltip title={t('mathematic')} color={'geekblue'}>
           <button

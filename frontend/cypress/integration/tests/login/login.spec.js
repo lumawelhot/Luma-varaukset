@@ -47,7 +47,7 @@ When('I am on the login page', () => {
 })
 
 Then('an error is shown', () => {
-  cy.get('.App > div').should('have.text', 'You are already logged in')
+  cy.get('.App > div').should('have.text', 'Olet jo kirjautunut sisään.')
 })
 
 When('I am on the main page', () => {

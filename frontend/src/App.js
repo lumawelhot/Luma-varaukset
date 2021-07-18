@@ -12,6 +12,7 @@ import UserList from './components/UserList'
 import { EventForm } from './components/EventForm'
 import { VisitForm } from './components/VisitForm'
 import { FcKey } from 'react-icons/fc'
+import Banner from './components/Banner'
 import UserPage from './components/UserPage'
 import EventPage from './components/EventPage'
 import Toasts from './components/Toasts'
@@ -19,8 +20,10 @@ import { v4 as uuidv4 } from 'uuid'
 import VisitPage from './components/VisitPage'
 import VisitList from './components/VisitList'
 import ExtrasAdmin from './components/EventExtras/ExtrasAdmin'
+import { useTranslation } from 'react-i18next'
 
 const App = () => {
+  const { t } = useTranslation('common')
   const history = useHistory()
   const [currentDate, setCurrentDate] = useState(null)
   const [currentView, setCurrentView] = useState('work_week')
@@ -159,6 +162,7 @@ const App = () => {
 
   return (
     <div className="App container">
+      <Banner/>
       <Toasts toasts={toasts} />
       <Switch>
 
@@ -179,41 +183,41 @@ const App = () => {
             <LoginForm getUser={getUser} sendMessage={notify} />
           }
           {currentUser &&
-            <div>You are already logged in</div>
+            <div>{t('already-logged-in')}</div>
           }
         </Route>
         <Route path='/event'>
           {currentUser &&
             <EventForm sendMessage={notify} addEvent={addEvent} closeEventForm={closeEventForm} />
           }
-          {!(currentUser && currentUser.isAdmin) && <p>Et ole kirjautunut sisään.</p>}
+          {!(currentUser && currentUser.isAdmin) && <p>{t('not-logged-in')}</p>}
         </Route>
         <Route path='/extras'>
           {currentUser &&
             <ExtrasAdmin sendMessage={notify} />
           }
-          {!currentUser && <p>Et ole kirjautunut sisään.</p>}
+          {!currentUser && <p>{t('not-logged-in')}</p>}
         </Route>
         <Route path='/users/create'>
           {currentUser && currentUser.isAdmin &&
             <UserForm sendMessage={notify} />
           }
           {!(currentUser && currentUser.isAdmin) &&
-            <div>Access denied</div>
+            <div>{t('access-denied')}</div>
           }
-          {!(currentUser && currentUser.isAdmin) && <p>Sinulla ei ole tarvittavia oikeuksia.</p>}
+          {!(currentUser && currentUser.isAdmin) && <p>{t('not-admin')}</p>}
         </Route>
         <Route path='/users'>
           {currentUser && currentUser.isAdmin &&
             <UserList sendMessage={notify} currentUser={currentUser} />
           }
-          {!(currentUser && currentUser.isAdmin) && <p>Sinulla ei ole tarvittavia oikeuksia.</p>}
+          {!(currentUser && currentUser.isAdmin) && <p>{t('not-admin')}</p>}
         </Route>
         <Route path='/visits'>
           {currentUser &&
             <VisitList notify={notify} />
           }
-          {!currentUser && <p>Et ole kirjautunut sisään.</p>}
+          {!currentUser && <p>{t('not-logged-in')}</p>}
         </Route>
         <Route path='/:id'>
           <VisitPage sendMessage={notify} />
@@ -221,9 +225,9 @@ const App = () => {
         <Route path='/'>
           {currentUser &&
             <div className="level">
-              <button className="button luma" onClick={logout}>Kirjaudu ulos</button>
+              <button className="button luma" onClick={logout}>{t('logout')}</button>
               <div className="is-pulled-right">
-                Olet kirjautunut käyttäjänä: {currentUser.username}
+                {t('logged-in-as')} {currentUser.username}
               </div>
             </div>
           }

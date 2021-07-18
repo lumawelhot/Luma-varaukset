@@ -11,7 +11,7 @@ const FilterByGrades = ({ grades, setGrades }) => {
 
   return (
     <>
-      <p className="label">Suodata luokka-asteen mukaan</p>
+      <p className="label">{t('filter-by-grade')}</p>
       <div className="field is-grouped">
         <div className="field">
           <button
