@@ -25,6 +25,7 @@ const eventDetails1 = {
   remoteVisit: false,
   waitingTime: 10,
   duration: 20,
+  disabled: false
 }
 
 const eventDetails2 = {
@@ -39,6 +40,7 @@ const eventDetails2 = {
   remoteVisit: true,
   waitingTime: 15,
   duration: 75,
+  disabled: false
 }
 
 const eventDetails3 = {
@@ -53,6 +55,7 @@ const eventDetails3 = {
   remoteVisit: true,
   waitingTime: 15,
   duration: 75,
+  disabled: false
 }
 
 const eventDetails4 = {
@@ -66,6 +69,7 @@ const eventDetails4 = {
   desc: 'Test event desc.',
   waitingTime: 15,
   duration: 75,
+  disabled: false
 }
 
 const eventDetails5 = {
@@ -80,7 +84,8 @@ const eventDetails5 = {
   tags: [{ name: 'Matematiikka' }, { name: 'Fysiikka' }, { name: 'Ohjelmointi' }, { name: 'Maantiede' }, { name: 'Kemia' } ],
   waitingTime: 15,
   duration: 60,
-  extras: []
+  extras: [],
+  disabled: false
 }
 
 const invalidEventFieldDetails = {
@@ -95,7 +100,8 @@ const invalidEventFieldDetails = {
   desc: 'Test event desc.',
   waitingTime: 15,
   duration: 10,
-  extras: []
+  extras: [],
+  disabled: false
 }
 
 const availableDate = setMilliseconds(setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 9), 0), 0), 0)
@@ -118,7 +124,8 @@ const availableEventData = {
   availableTimes: [{ startTime: availableDate, endTime: fiveHoursAdded }],
   waitingTime: 15,
   duration: 60,
-  extras: []
+  extras: [],
+  disabled: false
 }
 
 const availableForLoggedInEventData = {
@@ -132,7 +139,8 @@ const availableForLoggedInEventData = {
   availableTimes: [{ startTime: availableForLoggedInDate, endTime: twoHoursAddedForLoggedIn }],
   waitingTime: 15,
   duration: 60,
-  extras: []
+  extras: [],
+  disabled: false
 }
 
 const unvailableForLoggedInUserEventData = {
@@ -146,7 +154,8 @@ const unvailableForLoggedInUserEventData = {
   availableTimes: [],
   waitingTime: 15,
   duration: 60,
-  extras: []
+  extras: [],
+  disabled: false
 }
 
 const mailSenderTestDetails = {
@@ -159,6 +168,7 @@ const mailSenderTestDetails = {
   remoteVisit: true,
   waitingTime: 15,
   duration: 75,
+  disabled: false
 }
 
 const eventDayAfter = {

@@ -166,7 +166,6 @@ const resolvers = {
 
       newEvent.extras = extras
       newEvent.tags = mongoTags
-      console.log(newEvent)
       await newEvent.save()
       return newEvent
     },

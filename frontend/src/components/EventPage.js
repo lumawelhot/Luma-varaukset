@@ -9,7 +9,6 @@ import { ModifyEvent } from './ModifyEventModal'
 import { useTranslation } from 'react-i18next'
 
 const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, setEvent }) => {
-  console.log(event)
   const { t } = useTranslation('event')
   const history = useHistory()
 
@@ -38,8 +37,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
   })
   const [enableEvent] = useMutation(ENABLE_EVENT, {
     refetchQueries: [{ query: EVENTS }],
-    onError: (error) => {
-      console.log(error)
+    onError: () => {
       sendMessage(t('failed-to-enable'), 'danger')
     },
     onCompleted: ({ enableEvent }) => {
