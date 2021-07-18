@@ -88,8 +88,9 @@ const MyCalendar = ({
   }
 
   useEffect(() => {
-    setEvents(events)
-  }, [events])
+    if (!currentUser) setEvents(events.filter(event => event.disabled === false))
+    else setEvents(events)
+  }, [events, currentUser])
 
   const handleClose = () => {
     setShowModifyModal(false)
@@ -145,8 +146,12 @@ const MyCalendar = ({
     const startsAfter14Days = differenceInDays(event.start, new Date()) >= 14
     const startsAfter1Hour = differenceInMinutes(event.start, new Date()) >= 60
     const booked = (!currentUser && !startsAfter14Days) || (currentUser && !startsAfter1Hour) || event.booked
+    const disabled = event.disabled
     if (booked) {
       return { className: 'booked' , }
+    }
+    if (disabled) {
+      return { className: 'disabled' }
     }
     return { className: event.resourceids.length > 1 ? 'multiple' : resourceMap[event.resourceids[0]-1]?.resourceTitle.toLowerCase() || '' }
   }
@@ -154,28 +159,27 @@ const MyCalendar = ({
   const AgendaEvent = ({ event }) => {
 
     const resourceNames = event.resourceids.map(id => { return { name: resourceMap[id-1]?.resourceTitle || null, color: resourceColorsLUMA[id - 1], description: resourceMap[id-1]?.description }})
-    if (event.booked) {
+    if(event.disabled) {
       return (
-        <div className="media luma-agenda" onClick={() => handleEventClick(event)}>
-          {!!resourceNames.length && <div className="media-left" style={{ width: 100 }}><div className="tags">
-            {resourceNames.map(r =>
-              <Tooltip key={r.name} color={'geekblue'} title={r.description} placement={'right'}>
-                <span className='tag is-small is-link' style={{ backgroundColor: bookedEventColor }}>{r.name}</span>
-              </Tooltip>)}
-          </div></div>}
-          <div className="media-content">
-            <strong>{event.title}</strong>
-            <p>{event.desc}</p>
+        <>
+          <div className="media luma-agenda" style={{ paddingLeft: 117 }} onClick={() => handleEventClick(event)}>
+            <div className="media-content">
+              <strong style={{ color: 'red' }}>{event.title} - {t('disabled')}!</strong>
+            </div>
           </div>
-        </div>
+        </>
       )
     }
+
+
     return (
       <div className="media luma-agenda" onClick={() => handleEventClick(event)}>
         {!!resourceNames.length && <div className="media-left" style={{ width: 100 }}><div className="tags">
           {resourceNames.map(r =>
             <Tooltip key={r.name} color={'geekblue'} title={r.description} placement={'right'}>
-              <span className='tag is-small is-link' style={{ backgroundColor: r.color }}>{r.name}</span>
+              <span className='tag is-small is-link' style={{
+                backgroundColor: event.booked ? bookedEventColor : r.color }}
+              >{r.name}</span>
             </Tooltip>)}
         </div></div>}
         <div className="media-content">

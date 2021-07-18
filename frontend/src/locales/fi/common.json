@@ -53,5 +53,6 @@
   "tomorrow": "Huomenna",
   "move": "Siirrä",
   "copy": "Kopioi",
-  "close": "Sulje"
+  "close": "Sulje",
+  "disabled": "Poissa käytöstä"
 }

@@ -78,6 +78,10 @@ const eventSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Form',
     required: false
+  },
+  disabled: {
+    type: Boolean,
+    required: true
   }
 })
 

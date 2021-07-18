@@ -31,7 +31,7 @@ export const resourceColorsLUMALight = [
 ]
 
 export const bookedEventColor = [
-  '#DCDCDC', // HARMAA
+  '#8a8a8a', // HARMAA
 ]
 
 export default { resourceColors, resourceColorsLight, resourceColorsLUMA, resourceColorsLUMALight, bookedEventColor }

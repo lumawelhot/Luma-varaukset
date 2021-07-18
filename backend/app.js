@@ -34,7 +34,7 @@ const server = new ApolloServer({
           auth.substring(7), config.SECRET
         )
         const currentUser = await User.findById(decodedToken.id)
-        return { currentUser }
+        return { currentUser: currentUser ? currentUser : 'user' }
       } catch (error) {
         return null
       }
