@@ -103,9 +103,9 @@ const FormEditor = ({ form, back, sendMessage }) => {
             remove={() => handleRemove(index)}
             update={(data) => handleUpdateField(index,data)}/>)}
       </div>
-      <p className="control">
+      <div className="control">
         <AddField add={handleAdd}/>
-      </p>
+      </div>
       <p className="control">
         <button className="button luma primary" onClick={() => handleSave()}>{t('save')}</button>
         <button className="button luma primary" onClick={back}>{t('back')}</button>
