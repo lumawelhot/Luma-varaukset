@@ -226,5 +226,5 @@ Then('unavailable event page contains booking button', () => {
 
 Then('unavailable event turns grey in calendar view', () => {
   cy.wait(500)
-  cy.findEvent(unavailableEventName).parent().should('have.class', 'booked')
+  cy.findEvent(unavailableEventName).parent().parent().should('have.class', 'booked')
 })

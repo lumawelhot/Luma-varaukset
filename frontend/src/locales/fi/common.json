@@ -50,5 +50,8 @@
   "event": "Vierailu",
   "no-events-in-range": "Ei tapahtumia.",
   "yesterday": "Eilen",
-  "tomorrow": "Huomenna"
+  "tomorrow": "Huomenna",
+  "move": "Siirrä",
+  "copy": "Kopioi",
+  "close": "Sulje"
 }

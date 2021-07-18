@@ -14,7 +14,12 @@ import set from 'date-fns/set'
 import { fi } from 'date-fns/locale'
 import { differenceInDays, differenceInMinutes }  from 'date-fns'
 import { Tooltip } from 'antd'
+import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
+import { ModifyEvent } from './components/ModifyEventModal'
 import { useTranslation } from 'react-i18next'
+import { EventForm } from './components/EventForm'
+
+const DragAndDropCalendar = withDragAndDrop(Calendar)
 
 const localizer = dateFnsLocalizer({
   format,
@@ -36,7 +41,22 @@ const Wrapper = (props) => {
   }
 }
 
-const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, currentDate, setCurrentDate, currentView, setCurrentView }) => {
+const MyCalendar = ({
+  events,
+  currentUser,
+  showNewEventForm,
+  handleEventClick,
+  currentDate,
+  setCurrentDate,
+  currentView,
+  setCurrentView,
+  sendMessage,
+  addEvent
+}) => {
+  const [showModifyModal, setShowModifyModal] = useState(false)
+  const [showCopyModal, setShowCopyModal] = useState(false)
+  const [actionSelection, setActionSelection] = useState(false)
+  const [event, setEvent] = useState(null)
   const { t } = useTranslation('common')
   const [localEvents, setEvents] = useState([])
   const [filterFunction, setFilterFunction] = useState(() => () => { return true })
@@ -71,6 +91,13 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
     setEvents(events)
   }, [events])
 
+  const handleClose = () => {
+    setShowModifyModal(false)
+    setShowCopyModal(false)
+    setActionSelection(false)
+    setEvent(null)
+  }
+
   const handleNavigate = (date) => {
     if (date) setCurrentDate(date)
   }
@@ -81,6 +108,26 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
 
   const handleSelect = ({ start, end }) => {
     showNewEventForm(start, end)
+  }
+
+  const handleDrop = (item) => {
+    const event = {
+      ...item.event,
+      eventStart: item.start,
+      eventEnd: item.end
+    }
+    setEvent(event)
+    setActionSelection(true)
+  }
+
+  const handleCopy = () => {
+    setActionSelection(false)
+    setShowCopyModal(true)
+  }
+
+  const handleMove = () => {
+    setActionSelection(false)
+    setShowModifyModal(true)
   }
 
   const customDayPropGetter = date => {
@@ -105,6 +152,7 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
   }
 
   const AgendaEvent = ({ event }) => {
+
     const resourceNames = event.resourceids.map(id => { return { name: resourceMap[id-1]?.resourceTitle || null, color: resourceColorsLUMA[id - 1], description: resourceMap[id-1]?.description }})
     if (event.booked) {
       return (
@@ -147,13 +195,56 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
       localizer.format(date, 'cccccc d.M.', culture)
   }
 
+  const ActionSelection = () => {
+    if (!event) return <></>
+    return (
+      <div className="modal-card">
+        <header className="modal-card-head">
+          <p className="modal-card-title">{event.title}</p>
+        </header>
+        <footer className="modal-card-foot">
+          <button className="button luma" type='submit' onClick={handleCopy}>{t('copy')}</button>
+          {!event.hasVisits &&
+            <button className="button luma" type='submit' onClick={handleMove}>{t('move')}</button>
+          }
+          <button className="button" onClick={handleClose}>{t('close')}</button>
+        </footer>
+      </div>
+    )
+  }
 
   return (
-    <div>
+    <>
+      <div className={`modal ${actionSelection ? 'is-active':''}`}>
+        <div className="modal-background"></div>
+        <ActionSelection />
+      </div>
+      <div className={`modal ${showModifyModal ? 'is-active':''}`}>
+        <div className="modal-background"></div>
+        {event && <ModifyEvent
+          event={event}
+          setEvent={setEvent}
+          close={handleClose}
+          sendMessage={sendMessage}
+        />}
+      </div>
+      <div className={`modal ${showCopyModal ? 'is-active':''}`}>
+        <div className="modal-background"></div>
+        {event && <EventForm
+          event={event}
+          sendMessage={sendMessage}
+          addEvent={event => {
+            addEvent(event)
+            setShowCopyModal(false)
+            setEvent(null)
+          }}
+          closeEventForm={handleClose}
+        />}
+      </div>
       <Wrapper elementId='filterdiv'>
         <CalendarFilter filterFunction={filterFunction} setFilterFunction={setFilterFunction} />
       </Wrapper>
-      <Calendar
+      <DragAndDropCalendar
         culture='fi'
         localizer={localizer}
         formats={formats}
@@ -187,8 +278,10 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
         date={currentDate}
         view={currentView}
         tooltipAccessor={null}
+        draggableAccessor={() => currentUser ? true : false}
+        onEventDrop={handleDrop}
       />
-    </div>)
+    </>)
 }
 
 export default MyCalendar

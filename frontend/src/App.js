@@ -66,7 +66,9 @@ const App = () => {
       eventStart: new Date(event.start),
       eventEnd: new Date(event.end),
       invalidTimeSlot,
-      customForm: event.customForm
+      customForm: event.customForm,
+      waitingTime: event.waitingTime,
+      hasVisits: event.visits.length ? true : false
     }
     delete details.availableTimes
     delete details.visits
@@ -252,6 +254,7 @@ const App = () => {
             </div>
           }
           <MyCalendar
+            sendMessage={notify}
             events={events}
             currentUser={currentUser}
             showNewEventForm={showEventFormHandler}
@@ -260,6 +263,7 @@ const App = () => {
             setCurrentDate={setCurrentDate}
             currentView={currentView}
             setCurrentView={setCurrentView}
+            addEvent={addEvent}
           />
           <UserPage currentUser={currentUser} setShowEventForm={setShowEventForm} />
           {!currentUser &&
