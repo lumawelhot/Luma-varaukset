@@ -9,7 +9,7 @@ import { TextArea, TextField } from '../VisitForm/FormFields'
 import { AdditionalServices, DatePick, EventType, Grades, Platforms, ScienceClasses, TimePick } from './FormComponents'
 import { useTranslation } from 'react-i18next'
 
-const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmit }) => {
+const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmit, initialValues }) => {
   const { t } = useTranslation('event')
   const [suggestedTags, setSuggestedTags] = useState([])
   const tags = useQuery(TAGS)
@@ -23,7 +23,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
 
   return (
     <Formik
-      initialValues= {{
+      initialValues= {initialValues ? initialValues : {
         grades: [false, false, false, false, false],
         remoteVisit: true,
         inPersonVisit: true,

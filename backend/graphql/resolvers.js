@@ -172,6 +172,8 @@ const resolvers = {
       const { title, desc, resourceids, grades, remotePlatforms, otherRemotePlatformOption, remoteVisit, inPersonVisit } = args
       const event = await Event.findById(args.event).populate('visits')
       if (!currentUser) throw new AuthenticationError('not authenticated')
+      if (new Date(args.start).getHours() < 8) throw new UserInputError('invalid start time')
+      if (new Date(args.end).getHours() > 17) throw new UserInputError('invalid end time')
 
       title !== undefined ? event.title = title : null
       desc !== undefined ? event.desc = desc : null

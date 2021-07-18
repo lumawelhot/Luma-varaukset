@@ -16,6 +16,7 @@ import { Tooltip } from 'antd'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import { ModifyEvent } from './components/ModifyEventModal'
 import { useTranslation } from 'react-i18next'
+import { EventForm } from './components/EventForm'
 
 const DragAndDropCalendar = withDragAndDrop(Calendar)
 
@@ -39,8 +40,10 @@ const Wrapper = (props) => {
   }
 }
 
-const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, currentDate, setCurrentDate, currentView, setCurrentView, sendMessage }) => {
-  const [showModal, setShowModal] = useState(false)
+const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, currentDate, setCurrentDate, currentView, setCurrentView, sendMessage, addEvent }) => {
+  const [showModifyModal, setShowModifyModal] = useState(false)
+  const [showCopyModal, setShowCopyModal] = useState(false)
+  const [actionSelection, setActionSelection] = useState(false)
   const [event, setEvent] = useState(null)
   const { t } = useTranslation('common')
   const [localEvents, setEvents] = useState([])
@@ -77,7 +80,10 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
   }, [events])
 
   const handleClose = () => {
-    setShowModal(false)
+    setShowModifyModal(false)
+    setShowCopyModal(false)
+    setActionSelection(false)
+    setEvent(null)
   }
 
   const handleNavigate = (date) => {
@@ -99,7 +105,17 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
       eventEnd: item.end
     }
     setEvent(event)
-    setShowModal(true)
+    setActionSelection(true)
+  }
+
+  const handleCopy = () => {
+    setActionSelection(false)
+    setShowCopyModal(true)
+  }
+
+  const handleMove = () => {
+    setActionSelection(false)
+    setShowModifyModal(true)
   }
 
   const customDayPropGetter = date => {
@@ -167,16 +183,48 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
       localizer.format(date, 'cccccc d.M.', culture)
   }
 
+  const ActionSelection = ({ close, event }) => {
+    if (!event) return <></>
+    return (
+      <div className="modal-card">
+        <header className="modal-card-head">
+          <p className="modal-card-title">{event.title}</p>
+        </header>
+        <footer className="modal-card-foot">
+          <button className="button luma" type='submit' onClick={handleCopy}>{t('copy')}</button>
+          <button className="button luma" type='submit' onClick={handleMove}>{t('move')}</button>
+          <button className="button" onClick={close}>{t('close')}</button>
+        </footer>
+      </div>
+    )
+  }
 
   return (
     <>
-      <div className={`modal ${showModal ? 'is-active':''}`}>
+      <div className={`modal ${actionSelection ? 'is-active':''}`}>
         <div className="modal-background"></div>
-        {showModal && <ModifyEvent
+        <ActionSelection event={event} close={handleClose} />
+      </div>
+      <div className={`modal ${showModifyModal ? 'is-active':''}`}>
+        <div className="modal-background"></div>
+        {event && <ModifyEvent
           event={event}
           setEvent={setEvent}
           close={handleClose}
           sendMessage={sendMessage}
+        />}
+      </div>
+      <div className={`modal ${showCopyModal ? 'is-active':''}`}>
+        <div className="modal-background"></div>
+        {event && <EventForm
+          event={event}
+          sendMessage={sendMessage}
+          addEvent={event => {
+            addEvent(event)
+            setShowCopyModal(false)
+            setEvent(null)
+          }}
+          closeEventForm={handleClose}
         />}
       </div>
       <Wrapper elementId='filterdiv'>
@@ -217,39 +265,6 @@ const MyCalendar = ({ events, currentUser, showNewEventForm, handleEventClick, c
         draggableAccessor={() => currentUser ? true : false}
         onEventDrop={handleDrop}
       />
-      {/* <Calendar
-        culture='fi'
-        localizer={localizer}
-        formats={formats}
-        messages={messages}
-        views={{
-          month: true,
-          work_week: LumaWorkWeek,
-          day: true,
-          agenda: true
-        }}
-        showMultiDayTimes
-        events={localEvents.filter(event => filterFunction(event))}
-        startAccessor='start'
-        endAccessor='end'
-        min={set(new Date(), { hours: 8, minutes: 0, seconds:0, milliseconds: 0 })}
-        max={set(new Date(), { hours: 17, minutes: 0, seconds:0, milliseconds: 0 })}
-        selectable={!!currentUser}
-        onSelectEvent={(event) => handleEventClick(event)}
-        onSelectSlot={handleSelect}
-        components={{
-          toolbar: LumaToolbar,
-          agenda: {
-            event: AgendaEvent
-          }
-        }}
-        dayPropGetter={customDayPropGetter}
-        eventPropGetter={customEventPropGetter}
-        onNavigate={handleNavigate}
-        onView={handleView}
-        date={currentDate}
-        view={currentView}
-      /> */}
     </>)
 }
 
