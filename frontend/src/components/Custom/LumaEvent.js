@@ -17,13 +17,13 @@ const LumaEvent = ({ event }) => {
 
   const popoverContent = () => {
     return (
-      <p>
-        {t('description')}: {event.desc}
-        <br></br>
-        {resourceNames.map(r => (
-          r.name +' (' + r.description + ')'
-        ))}
-      </p>
+      <>
+        <div className="tags">
+          {event.tags.map(t => <span key={t.id} className="tag" style={{ color: 'geekblue' }}>{t.name}</span> )}
+        </div>
+        {resourceNames.map(r => <p key={r.name}>{r.name +' (' + r.description + ')'}</p>)}
+        <i>{event.desc}</i>
+      </>
     )
   }
   return (
