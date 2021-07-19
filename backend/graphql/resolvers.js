@@ -14,6 +14,7 @@ const Tag = require('../models/tag')
 const Form = require('../models/forms')
 const FormSubmissions = require('../models/formSubmissions')
 const { addNewTags } = require('../utils/helpers')
+const { set } = require('date-fns')
 
 const resolvers = {
   Query: {
@@ -138,6 +139,8 @@ const resolvers = {
       if (!currentUser) throw new AuthenticationError('not authenticated')
       if (args.grades.length < 1) throw new UserInputError('At least one grade must be selected!')
       if (args.title.length < 5)  throw new UserInputError('title too short')
+      if (new Date(args.start).getTime() < set(new Date(args.start), { hours: 8, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid start time')
+      if (new Date(args.end).getTime() > set(new Date(args.end), { hours: 17, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid end time')
 
       const mongoTags = await addNewTags(args.tags)
 
@@ -192,8 +195,8 @@ const resolvers = {
       const { title, desc, resourceids, grades, remotePlatforms, otherRemotePlatformOption, remoteVisit, inPersonVisit, customForm } = args
       const event = await Event.findById(args.event).populate('visits')
       if (!currentUser) throw new AuthenticationError('not authenticated')
-      if (new Date(args.start).getHours() < 8) throw new UserInputError('invalid start time')
-      if (new Date(args.end).getHours() > 17) throw new UserInputError('invalid end time')
+      if (new Date(args.start).getTime() < set(new Date(args.start), { hours: 8, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid start time')
+      if (new Date(args.end).getTime() > set(new Date(args.end), { hours: 17, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid end time')
 
       title !== undefined ? event.title = title : null
       desc !== undefined ? event.desc = desc : null

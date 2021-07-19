@@ -96,6 +96,7 @@ const VisitListSortable = ({ visits, copyURL }) => {
         </thead>
         <tbody>
           {items.map(visit => {
+            if (!visit.event) return null
             const copiedURL = process.env.PUBLIC_URL || 'http://localhost:3000' + '/' + visit.id
             const resourceNames = visit.event.resourceids.map(id => { return { name: classes[id-1]?.label || null, color: resourceColorsLUMA[id - 1] }})
             return (

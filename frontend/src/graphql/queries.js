@@ -188,6 +188,7 @@ export const CREATE_EVENT = gql`
       duration
       customForm
       disabled
+      waitingTime
     }
   }
 `
