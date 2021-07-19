@@ -11,8 +11,8 @@ Given('an event with title yyyyy is created', () => {
   date.setMinutes(0)
   const start = new Date(date)
   const end = new Date(date)
-  start.setHours(7)
-  end.setHours(23)
+  start.setHours(8)
+  end.setHours(16)
   cy.createEvent({
     title: 'yyyyy',
     scienceClass: [1,2],
