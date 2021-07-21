@@ -17,11 +17,18 @@ const Tag = require('./models/tag')
 const config = require('./utils/config')
 
 const { ApolloServer } = require('apollo-server-express')
+const { createServer } = require('http')
+const { execute, subscribe } = require('graphql')
+const { SubscriptionServer } = require('subscriptions-transport-ws')
+const { makeExecutableSchema } = require('@graphql-tools/schema')
+const httpServer = createServer(app)
+
 const resolvers = require('./graphql/resolvers')
 const typeDefs = require('./graphql/typeDefs')
+const schema = makeExecutableSchema({ typeDefs, resolvers })
+
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema,
   introspection: true,
   playground: {
     endpoint: process.env.NODE_ENV==='production' ? '/luma-varaukset/graphql' : '/graphql'
@@ -42,6 +49,15 @@ const server = new ApolloServer({
   }
 })
 server.applyMiddleware({ app })
+
+SubscriptionServer.create({
+  schema,
+  execute,
+  subscribe,
+}, {
+  server: httpServer,
+  path: server.graphqlPath,
+})
 
 const mongoose = require('mongoose')
 
@@ -190,4 +206,4 @@ app.use((err, req, res) => {
   res.render('error')
 })
 
-module.exports = app
+module.exports = httpServer
