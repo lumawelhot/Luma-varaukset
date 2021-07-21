@@ -93,6 +93,10 @@ const typeDefs = gql`
     name: String!
   }
   type Mutation {
+    resetPassword(
+      user: ID!
+      password: String!
+    ): User
     createUser(
       username: String!
       password: String!

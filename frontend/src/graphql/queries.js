@@ -524,3 +524,14 @@ export const GET_FORM_SUBMISSIONS = gql`
     }
   }
 `
+
+export const RESET_PASSWORD = gql`
+  mutation resetPassword($user: ID!, $password: String!) {
+    resetPassword(
+      user: $user
+      password: $password
+    ) {
+      id
+    }
+  } 
+`

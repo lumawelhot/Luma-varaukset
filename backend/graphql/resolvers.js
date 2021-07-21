@@ -107,6 +107,17 @@ const resolvers = {
     values: (submission) => JSON.stringify(submission.values)
   },
   Mutation: {
+    resetPassword: async (root, args, { currentUser }) => {
+      if (!currentUser || !currentUser.isAdmin) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
+      const salt = 10
+      const passwordHash = await bcrypt.hash(args.password, salt)
+      const user = await User.findById(args.user)
+      user.passwordHash = passwordHash
+      user.save()
+      return user
+    },
     createUser: async (root, args, { currentUser }) => {
       if (!currentUser || currentUser.isAdmin !== true) {
         throw new AuthenticationError('not authenticated or no credentials')
@@ -475,7 +486,7 @@ const resolvers = {
         throw new UserInputError(error.message, { invalidArgs: args })
       }
     }
-  }
+  },
 }
 
 module.exports = resolvers

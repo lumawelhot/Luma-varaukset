@@ -43,5 +43,9 @@
   "form-field-radio-value": "Vaihtoehto",
   "form-field-checkbox-value": "Vaihtoehto",
   "form-options": "Vastausvaihtoehdot",
-  "updated": "päivitetty"
+  "updated": "päivitetty",
+  "confirm-password": "Salasana uudelleen",
+  "close": "Sulje",
+  "change-password": "Vaihda salasana",
+  "password-changed": "Salasana muutettu"
 }
