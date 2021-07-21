@@ -3,12 +3,13 @@ import { Field, Formik } from 'formik'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router'
-import { DELETE_USER, RESET_PASSWORD, USERS } from '../graphql/queries'
-import { TextField } from './VisitForm/FormFields'
+import { CHANGE_USERNAME, DELETE_USER, RESET_PASSWORD, USERS } from '../graphql/queries'
+import { RadioButton, TextField } from './VisitForm/FormFields'
 
 const UserList = ({ sendMessage, currentUser }) => {
   const { t } = useTranslation('user')
   const users = useQuery(USERS)
+  const [modalState, setModalState] = useState(null)
   const history = useHistory()
   const [deleteUser,] = useMutation(DELETE_USER, {
     refetchQueries: [{ query: USERS }],
@@ -23,6 +24,16 @@ const UserList = ({ sendMessage, currentUser }) => {
     refetchQueries: [{ query: USERS }],
     onCompleted: () => {
       sendMessage(t('password-changed'), 'success')
+    },
+    onError: (error) => {
+      console.log(error)
+      sendMessage(error.message, 'danger')
+    }
+  })
+  const [changeUsername] = useMutation(CHANGE_USERNAME, {
+    refetchQueries: [{ query: USERS }],
+    onCompleted: () => {
+      sendMessage(t('username-changed'), 'success')
     },
     onError: (error) => {
       console.log(error)
@@ -46,11 +57,13 @@ const UserList = ({ sendMessage, currentUser }) => {
   }
 
   const handleRemove = (id) => {
-    deleteUser({
-      variables: {
-        id
-      }
-    })
+    if (confirm(t('remove-confirm'))) {
+      deleteUser({
+        variables: {
+          id
+        }
+      })
+    }
   }
 
   const handlePasswordChange = (password) => {
@@ -60,12 +73,25 @@ const UserList = ({ sendMessage, currentUser }) => {
         password
       }
     })
+    setModalState(null)
+    setUser(null)
+  }
+
+  const handleUsernameChange = (username, isAdmin) => {
+    changeUsername({
+      variables: {
+        user: user.id,
+        username,
+        isAdmin
+      }
+    })
+    setModalState(null)
     setUser(null)
   }
 
   return (
     <>
-      {user &&
+      {user && modalState === 'password' &&
         <div className={`modal ${user ? 'is-active':''}`}>
           <div className="modal-background"></div>
           <Formik
@@ -97,7 +123,61 @@ const UserList = ({ sendMessage, currentUser }) => {
                     />
                   </section>
                   <footer className="modal-card-foot">
-                    <button className="button luma" onClick={handleSubmit}>{t('change-password')}</button>
+                    <button className="button luma" onClick={handleSubmit} type='submit'>{t('change-password')}</button>
+                    <button className="button" onClick={() => setUser(null)}>{t('close')}</button>
+                  </footer>
+                </div>
+              )}}
+          </Formik>
+        </div>
+      }
+      {user && modalState === 'username' &&
+        <div className={`modal ${user ? 'is-active':''}`}>
+          <div className="modal-background"></div>
+          <Formik
+            initialValues={{
+              user,
+              username: user.username,
+              isAdmin: user.isAdmin
+            }}
+            onSubmit={(values) => handleUsernameChange(values.username, values.isAdmin)}
+          >
+            {({ handleSubmit, values, setFieldValue }) => {
+              console.log(!values.isAdmin, values.isAdmin)
+              return (
+                <div className="modal-card">
+                  <header className="modal-card-head">
+                    <p className="modal-card-title">{values.username} - {values.isAdmin ? t('administrator') : t('employee')}</p>
+                  </header>
+                  <section className="modal-card-body">
+                    <Field
+                      label={t('username')}
+                      fieldName='username'
+                      component={TextField}
+                    />
+                    {currentUser.username !== user.username &&
+                    <>
+                      <label className="label">{t('user-role')}</label>
+                      <Field
+                        checked={values.isAdmin}
+                        label={t('administrator')}
+                        id='permission'
+                        onChange={() => setFieldValue('isAdmin', true)}
+                        component={RadioButton}
+                      />
+                      <Field
+                        checked={!values.isAdmin}
+                        style={{ marginBottom: 10 }}
+                        label={t('employee')}
+                        id='permission'
+                        onChange={() => setFieldValue('isAdmin', false)}
+                        component={RadioButton}
+                      />
+                    </>
+                    }
+                  </section>
+                  <footer className="modal-card-foot">
+                    <button className="button luma" onClick={handleSubmit} type='submit'>{t('change-username')}</button>
                     <button className="button" onClick={() => setUser(null)}>{t('close')}</button>
                   </footer>
                 </div>
@@ -114,6 +194,7 @@ const UserList = ({ sendMessage, currentUser }) => {
               <th>{t('priviledges')}</th>
               <th></th>
               <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -122,10 +203,19 @@ const UserList = ({ sendMessage, currentUser }) => {
                 <td>{user.username}</td>
                 <td>{user.isAdmin ? t('admin') : t('basic')}</td>
                 <td>{user.id !== currentUser.id &&
-                <button className='button luma' onClick={() => handleRemove(user.id)}>Poista</button>}
+                <button className='button luma' onClick={() => handleRemove(user.id)}>{t('delete')}</button>}
                 </td>
                 <td>
-                  <button className='button luma' onClick={() => setUser(user)}>Vaihda salasana</button>
+                  <button className='button luma' onClick={() => {
+                    setUser(user)
+                    setModalState('password')
+                  }}>{t('change-password')}</button>
+                </td>
+                <td>
+                  <button className='button luma' onClick={() => {
+                    setUser(user)
+                    setModalState('username')
+                  }}>{t('change-username')}</button>
                 </td>
               </tr>
             ))}

@@ -535,3 +535,15 @@ export const RESET_PASSWORD = gql`
     }
   } 
 `
+
+export const CHANGE_USERNAME = gql`
+  mutation changeUsername($user: ID!, $username: String!, $isAdmin: Boolean!) {
+    changeUsername(
+      user: $user
+      username: $username
+      isAdmin: $isAdmin
+    ) {
+      id
+    }
+  }
+`

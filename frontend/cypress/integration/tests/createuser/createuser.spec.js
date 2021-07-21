@@ -58,7 +58,7 @@ And('I am on the list user page', () => {
 Then('the created user xxxxx is listed', () => {
   cy.get('thead > tr > :nth-child(2)').should('have.text', 'Oikeudet')
   cy.get('thead > tr > :nth-child(1)').should('have.text', 'Käyttäjätunnus')
-  cy.get(':nth-child(4) > :nth-child(1)').should('have.text', 'xxxxx')
+  cy.get('tbody > :nth-child(4) > :nth-child(1)').should('have.text', 'xxxxx')
 })
 
 When('I press the user list button', () => {
