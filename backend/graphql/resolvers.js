@@ -110,6 +110,37 @@ const resolvers = {
     values: (submission) => JSON.stringify(submission.values)
   },
   Mutation: {
+    resetPassword: async (root, args, { currentUser }) => {
+      if (!currentUser || !currentUser.isAdmin) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
+      const salt = 10
+      const passwordHash = await bcrypt.hash(args.password, salt)
+      const user = await User.findById(args.user)
+      user.passwordHash = passwordHash
+      await user.save()
+      return user
+    },
+    changeUsername: async (root, args, { currentUser }) => {
+      if (!currentUser || !currentUser.isAdmin) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
+      if (args.username.length < 5) {
+        throw new UserInputError('username too short')
+      }
+      const user = await User.findById(args.user)
+      if (user.username === currentUser.username && !args.isAdmin) {
+        throw new UserInputError('admin user cannot remove its rigts')
+      }
+      try {
+        user.username = args.username
+        user.isAdmin = args.isAdmin
+        await user.save()
+        return user
+      } catch (error) {
+        throw new UserInputError('failed to save username')
+      }
+    },
     createUser: async (root, args, { currentUser }) => {
       if (!currentUser || currentUser.isAdmin !== true) {
         throw new AuthenticationError('not authenticated or no credentials')

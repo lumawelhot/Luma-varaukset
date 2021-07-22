@@ -9,8 +9,8 @@
   "priviledges": "Oikeudet",
   "create-user": "Luo uusi käyttäjä",
   "back": "Poistu",
-  "admin": "admin",
-  "basic": "tavallinen",
+  "admin": "Ylläpitäjä",
+  "basic": "Tavallinen",
   "user-removed": "Käyttäjä poistettu",
   "invalid-input": "Virheellinen syöte!",
   "user-role": "Käyttäjärooli",
@@ -43,5 +43,12 @@
   "form-field-radio-value": "Vaihtoehto",
   "form-field-checkbox-value": "Vaihtoehto",
   "form-options": "Vastausvaihtoehdot",
-  "updated": "päivitetty"
+  "updated": "päivitetty",
+  "confirm-password": "Salasana uudelleen",
+  "close": "Sulje",
+  "change-password": "Vaihda salasana",
+  "password-changed": "Salasana muutettu",
+  "delete": "Poista",
+  "change-username": "Muuta käyttäjänimeä",
+  "username-changed": "Käyttäjätunnus muutettu"
 }
