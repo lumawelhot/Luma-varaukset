@@ -14,6 +14,7 @@ const Tag = require('../models/tag')
 const Form = require('../models/forms')
 const FormSubmissions = require('../models/formSubmissions')
 const { addNewTags } = require('../utils/helpers')
+const { set } = require('date-fns')
 
 const resolvers = {
   Query: {
@@ -106,6 +107,37 @@ const resolvers = {
     values: (submission) => JSON.stringify(submission.values)
   },
   Mutation: {
+    resetPassword: async (root, args, { currentUser }) => {
+      if (!currentUser || !currentUser.isAdmin) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
+      const salt = 10
+      const passwordHash = await bcrypt.hash(args.password, salt)
+      const user = await User.findById(args.user)
+      user.passwordHash = passwordHash
+      await user.save()
+      return user
+    },
+    changeUsername: async (root, args, { currentUser }) => {
+      if (!currentUser || !currentUser.isAdmin) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
+      if (args.username.length < 5) {
+        throw new UserInputError('username too short')
+      }
+      const user = await User.findById(args.user)
+      if (user.username === currentUser.username && !args.isAdmin) {
+        throw new UserInputError('admin user cannot remove its rigts')
+      }
+      try {
+        user.username = args.username
+        user.isAdmin = args.isAdmin
+        await user.save()
+        return user
+      } catch (error) {
+        throw new UserInputError('failed to save username')
+      }
+    },
     createUser: async (root, args, { currentUser }) => {
       if (!currentUser || currentUser.isAdmin !== true) {
         throw new AuthenticationError('not authenticated or no credentials')
@@ -138,6 +170,8 @@ const resolvers = {
       if (!currentUser) throw new AuthenticationError('not authenticated')
       if (args.grades.length < 1) throw new UserInputError('At least one grade must be selected!')
       if (args.title.length < 5)  throw new UserInputError('title too short')
+      if (new Date(args.start).getTime() < set(new Date(args.start), { hours: 8, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid start time')
+      if (new Date(args.end).getTime() > set(new Date(args.end), { hours: 17, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid end time')
 
       const mongoTags = await addNewTags(args.tags)
 
@@ -192,8 +226,8 @@ const resolvers = {
       const { title, desc, resourceids, grades, remotePlatforms, otherRemotePlatformOption, remoteVisit, inPersonVisit, customForm } = args
       const event = await Event.findById(args.event).populate('visits')
       if (!currentUser) throw new AuthenticationError('not authenticated')
-      if (new Date(args.start).getHours() < 8) throw new UserInputError('invalid start time')
-      if (new Date(args.end).getHours() > 17) throw new UserInputError('invalid end time')
+      if (new Date(args.start).getTime() < set(new Date(args.start), { hours: 8, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid start time')
+      if (new Date(args.end).getTime() > set(new Date(args.end), { hours: 17, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid end time')
 
       title !== undefined ? event.title = title : null
       desc !== undefined ? event.desc = desc : null
@@ -472,7 +506,7 @@ const resolvers = {
         throw new UserInputError(error.message, { invalidArgs: args })
       }
     }
-  }
+  },
 }
 
 module.exports = resolvers

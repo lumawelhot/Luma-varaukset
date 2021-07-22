@@ -188,6 +188,7 @@ export const CREATE_EVENT = gql`
       duration
       customForm
       disabled
+      waitingTime
     }
   }
 `
@@ -520,6 +521,29 @@ export const GET_FORM_SUBMISSIONS = gql`
     ) {
       id
       values
+    }
+  }
+`
+
+export const RESET_PASSWORD = gql`
+  mutation resetPassword($user: ID!, $password: String!) {
+    resetPassword(
+      user: $user
+      password: $password
+    ) {
+      id
+    }
+  } 
+`
+
+export const CHANGE_USERNAME = gql`
+  mutation changeUsername($user: ID!, $username: String!, $isAdmin: Boolean!) {
+    changeUsername(
+      user: $user
+      username: $username
+      isAdmin: $isAdmin
+    ) {
+      id
     }
   }
 `
