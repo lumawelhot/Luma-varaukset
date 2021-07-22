@@ -1,4 +1,4 @@
-const app = require('./app')
+const httpServer = require('./app')
 const config = require('./utils/config')
 const PORT = config.PORT || 3001
 
@@ -17,6 +17,6 @@ cron.schedule('0 18 * * *', async () => {
   // Lähetä kiitokset päivän vierailuista
 })
 
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })

@@ -16,6 +16,9 @@ const FormSubmissions = require('../models/formSubmissions')
 const { addNewTags } = require('../utils/helpers')
 const { set } = require('date-fns')
 
+const { PubSub } = require('graphql-subscriptions')
+const pubsub = new PubSub()
+
 const resolvers = {
   Query: {
     getUsers: async () => {
@@ -179,6 +182,7 @@ const resolvers = {
 
       event.disabled = true
       event.save()
+      pubsub.publish('TEST', { test: 'event disabled' })
       return event
     },
     enableEvent: async (root, args, { currentUser }) => {
@@ -188,6 +192,7 @@ const resolvers = {
 
       event.disabled = false
       event.save()
+      pubsub.publish('TEST', { test: 'event enabled' })
       return event
     },
     modifyEvent: async (root, args, { currentUser }) => {
@@ -474,6 +479,11 @@ const resolvers = {
       } catch (error) {
         throw new UserInputError(error.message, { invalidArgs: args })
       }
+    }
+  },
+  Subscription: {
+    test: {
+      subscribe: () => pubsub.asyncIterator(['TEST'])
     }
   }
 }

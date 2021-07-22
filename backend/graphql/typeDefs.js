@@ -194,5 +194,8 @@ const typeDefs = gql`
       id: ID!
     ): String
   }
+  type Subscription {
+    test: String!
+  }
 `
 module.exports = typeDefs

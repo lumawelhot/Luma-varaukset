@@ -109,3 +109,6 @@ data
 
 # Code coverage files
 coverage
+
+# VS Code
+.vscode
