@@ -193,7 +193,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
                         !event.disabled &&
                         <div className="control">
                           <button id="booking-button" className="button luma primary" onClick={() => handleBookingButtonClick()}>
-                              Varaa vierailu
+                            {t('book-event')}
                           </button>
                         </div>
                       }

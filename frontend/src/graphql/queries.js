@@ -547,3 +547,22 @@ export const CHANGE_USERNAME = gql`
     }
   }
 `
+
+export const LOCK_EVENT = gql`
+  mutation lockEvent($event: ID!) {
+    lockEvent(
+      event: $event
+    ) {
+      title
+    }
+  }
+`
+
+export const EVENT_LOCK_STATUS = gql`
+  subscription {
+    eventLocked {
+      id
+      disabled
+    }
+  }
+`

@@ -9,6 +9,7 @@ import InfoBox from './InfoBox'
 import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import CustomForm from './CustomForm'
+import CountDown from '../CountDown'
 
 let selectedEvent
 let eventPlatforms
@@ -101,6 +102,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
             <div className="container">
               <div className="columns is-centered">
                 <div className="section">
+                  <CountDown />
                   <InfoBox event={event} eventClass={eventClass} eventGrades={eventGrades} />
                   <h1 className="title">{t('give-info')}</h1>
 

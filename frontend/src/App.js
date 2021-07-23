@@ -4,8 +4,8 @@ import 'antd/dist/antd.css'
 import LoginForm from './components/LoginForm'
 import MyCalendar from './MyCalendar'
 import { Switch, Route, useHistory } from 'react-router-dom'
-import { EVENTS } from './graphql/queries'
-import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client'
+import { EVENTS, EVENT_LOCK_STATUS, LOCK_EVENT } from './graphql/queries'
+import { useApolloClient, useLazyQuery, useMutation, useQuery, useSubscription } from '@apollo/client'
 import UserForm from './components/UserForm'
 import { CURRENT_USER } from './graphql/queries'
 import UserList from './components/UserList'
@@ -36,6 +36,15 @@ const App = () => {
   const [getUser, { loading, data }] = useLazyQuery(CURRENT_USER, {
     fetchPolicy: 'cache-and-network'
   })
+
+  const [lockEvent] = useMutation(LOCK_EVENT, {
+    refetchQueries: [{ query: EVENTS }],
+    onCompleted: () => history.push('/book'),
+    onError: (error) => console.log(error)
+  })
+
+  useSubscription(EVENT_LOCK_STATUS, { refetchQueries: EVENTS })
+
   const [clickedEvent, setClickedEvent] = useState(null)
 
   const [currentUser, setUser] = useState(null)
@@ -142,7 +151,13 @@ const App = () => {
   }
 
   const handleBookingButtonClick = () => {
-    history.push('/book')
+    console.log('handle')
+    console.log(clickedEvent.id)
+    lockEvent({
+      variables: {
+        event: clickedEvent.id
+      }
+    })
   }
 
   const [toasts, setToasts] = useState([])

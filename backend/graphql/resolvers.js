@@ -226,6 +226,20 @@ const resolvers = {
       pubsub.publish('TEST', { test: 'event enabled' })
       return event
     },
+    lockEvent: async (root, args) => {
+      const event = await Event.findById(args.event)
+
+      event.disabled = true
+      setTimeout(() => {
+        event.disabled = false
+        event.save()
+        pubsub.publish('EVENT_UNLOCKED', { eventLocked: event })
+      }, 10000)//420000)
+
+      await event.save()
+      pubsub.publish('EVENT_LOCKED', { eventLocked: event })
+      return event
+    },
     modifyEvent: async (root, args, { currentUser }) => {
       const extras = await Extra.find({ _id: { $in: args.extras } })
       const { title, desc, resourceids, grades, remotePlatforms, otherRemotePlatformOption, remoteVisit, inPersonVisit, customForm } = args
@@ -515,6 +529,9 @@ const resolvers = {
   Subscription: {
     test: {
       subscribe: () => pubsub.asyncIterator(['TEST'])
+    },
+    eventLocked: {
+      subscribe: () => pubsub.asyncIterator(['EVENT_LOCKED', 'EVENT_UNLOCKED'])
     }
   }
 }

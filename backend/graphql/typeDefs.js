@@ -93,6 +93,9 @@ const typeDefs = gql`
     name: String!
   }
   type Mutation {
+    lockEvent(
+      event: ID!
+    ): Event
     resetPassword(
       user: ID!
       password: String!
@@ -204,6 +207,7 @@ const typeDefs = gql`
     ): String
   }
   type Subscription {
+    eventLocked: Event
     test: String!
   }
 `
