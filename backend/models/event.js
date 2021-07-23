@@ -82,6 +82,9 @@ const eventSchema = mongoose.Schema({
   disabled: {
     type: Boolean,
     required: true
+  },
+  reserved: {
+    type: String
   }
 })
 

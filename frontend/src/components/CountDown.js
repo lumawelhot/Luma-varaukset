@@ -28,7 +28,7 @@ const CountDown = () => {
             : 'danger'
     }`
   }] : [{
-    message: 'Aika loppui! Lomakkeen lähettäminen ei onnistu jos joku muu avaa lomakkeen!',
+    message: t('timeout-message'),
     type: 'danger'
   }]
 

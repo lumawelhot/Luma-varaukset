@@ -36,14 +36,21 @@ const App = () => {
   const [getUser, { loading, data }] = useLazyQuery(CURRENT_USER, {
     fetchPolicy: 'cache-and-network'
   })
+  const [sessionToken, setSessionToken] = useState(null)
 
   const [lockEvent] = useMutation(LOCK_EVENT, {
     refetchQueries: [{ query: EVENTS }],
-    onCompleted: () => history.push('/book'),
+    onCompleted: ({ lockEvent }) => {
+      history.push('/book')
+      setSessionToken(lockEvent.token)
+    },
     onError: (error) => console.log(error)
   })
 
-  useSubscription(EVENT_LOCK_STATUS, { refetchQueries: EVENTS })
+  useSubscription(EVENT_LOCK_STATUS, {
+    refetchQueries: EVENTS,
+    onSubscriptionData: ({ subscriptionData }) => console.log(subscriptionData)
+  })
 
   const [clickedEvent, setClickedEvent] = useState(null)
 
@@ -86,7 +93,7 @@ const App = () => {
       start: new Date(timeSlot.startTime),
       end: new Date(timeSlot.endTime),
       booked: event.booked,
-      disabled: event.disabled
+      disabled: event.locked || event.disabled
     }))
     events = events.concat(event.visits.map(visit => Object({
       ...details,
@@ -151,8 +158,6 @@ const App = () => {
   }
 
   const handleBookingButtonClick = () => {
-    console.log('handle')
-    console.log(clickedEvent.id)
     lockEvent({
       variables: {
         event: clickedEvent.id
@@ -198,7 +203,7 @@ const App = () => {
           />
         </Route>
         <Route path='/book'>
-          <VisitForm currentUser={currentUser} event={clickedEvent} sendMessage={notify} />
+          <VisitForm currentUser={currentUser} event={clickedEvent} sendMessage={notify} token={sessionToken} />
         </Route>
         <Route path='/admin'>
           {!currentUser &&

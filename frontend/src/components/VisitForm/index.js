@@ -30,7 +30,7 @@ const calculateVisitEndTime = (startTimeAsDate, values, selectedEvent, extras) =
   return visitEndTime
 }
 
-export const VisitForm = ({ sendMessage, event }) => {
+export const VisitForm = ({ sendMessage, event, token }) => {
   const { t } = useTranslation('event')
   const history = useHistory()
 
@@ -136,6 +136,7 @@ export const VisitForm = ({ sendMessage, event }) => {
           dataUseAgreement: values.dataUseAgreement,
           extras: values.extras,
           remotePlatform: remotePlatform,
+          token
         }
       })
     } catch (error) {

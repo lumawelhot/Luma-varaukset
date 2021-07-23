@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const mailer = require('../services/mailer')
 const config = require('../utils/config')
+const uuid = require('uuid')
 
 const User = require('../models/user')
 const Event = require('../models/event')
@@ -32,7 +33,8 @@ const resolvers = {
         .populate('tags', { name: 1, id: 1 })
         .populate('visits')
         .populate('extras')
-      return events
+      console.log(events)
+      return events.map(event => Object.assign(event, { locked: event.reserved ? true : false }))
     },
     getTags: async () => {
       const tags = await Tag.find({})
@@ -100,7 +102,7 @@ const resolvers = {
   Visit: {
     event: async (root) => {
       const event = await Event.findById(root.event).populate('tags', { name: 1, id: 1 }).populate('extras')
-      return event
+      return Object.assign(event, { locked: event.reserved ? true : false })
     },
   },
   Form: {
@@ -180,7 +182,7 @@ const resolvers = {
 
       const extras = await Extra.find({ _id: { $in: args.extras } })
 
-      const newEvent = new Event({
+      const event = new Event({
         title: args.title,
         start: args.start,
         end: args.end,
@@ -201,10 +203,10 @@ const resolvers = {
         disabled: false
       })
 
-      newEvent.extras = extras
-      newEvent.tags = mongoTags
-      await newEvent.save()
-      return newEvent
+      event.extras = extras
+      event.tags = mongoTags
+      await event.save()
+      return Object.assign(event, { locked: event.reserved ? true : false })
     },
     disableEvent: async (root, args, { currentUser }) => {
       if (!currentUser) throw new AuthenticationError('not authenticated')
@@ -214,7 +216,7 @@ const resolvers = {
       event.disabled = true
       event.save()
       pubsub.publish('TEST', { test: 'event disabled' })
-      return event
+      return Object.assign(event, { locked: event.reserved ? true : false })
     },
     enableEvent: async (root, args, { currentUser }) => {
       if (!currentUser) throw new AuthenticationError('not authenticated')
@@ -222,23 +224,40 @@ const resolvers = {
       const event = await Event.findById(args.event)
 
       event.disabled = false
+      event.reserved = null
       event.save()
       pubsub.publish('TEST', { test: 'event enabled' })
-      return event
+      return Object.assign(event, { locked: event.reserved ? true : false })
     },
     lockEvent: async (root, args) => {
       const event = await Event.findById(args.event)
+      if (event.reserved) throw new UserInputError('Older session is already active')
+      if (event.disabled) throw new UserInputError('This event is disabled')
 
-      event.disabled = true
+      const token = uuid.v4()
+      event.reserved = token
       setTimeout(() => {
-        event.disabled = false
+        event.reserved = null
         event.save()
         pubsub.publish('EVENT_UNLOCKED', { eventLocked: event })
-      }, 10000)//420000)
+      }, 50000)//420000)
 
       await event.save()
       pubsub.publish('EVENT_LOCKED', { eventLocked: event })
-      return event
+      console.log(event)
+      return {
+        event: event.id,
+        token,
+        locked: event.reserved ? true : false
+      }
+    },
+    unlockEvent: async (root, args) => {
+      const event = await Event.findById(args.event)
+
+      event.reserved = null
+      await event.save()
+      pubsub.publish('EVENT_UNLOCKED', { eventLocked: event })
+      return Object.assign(event, { locked: event.reserved ? true : false })
     },
     modifyEvent: async (root, args, { currentUser }) => {
       const extras = await Extra.find({ _id: { $in: args.extras } })
@@ -286,10 +305,11 @@ const resolvers = {
         }]
       }
       await event.save()
-      return event
+      return Object.assign(event, { locked: event.reserved ? true : false })
     },
     createVisit: async (root, args, { currentUser }) => {
       const event = await Event.findById(args.event).populate('visits', { startTime: 1, endTime: 1 })
+      if (event.reserved && event.reserved !== args.token) throw new UserInputError('Invalid session')
       if (event.disabled) throw new UserInputError('This event is disabled')
 
       const visitTime = {
@@ -345,6 +365,7 @@ const resolvers = {
             html
           })
           event.visits = event.visits.concat(savedVisit._id)
+          event.reserved = null
           await event.save()
           return savedVisit
         }

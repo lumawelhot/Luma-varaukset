@@ -70,6 +70,7 @@ export const EVENTS = gql`
       duration
       customForm
       disabled
+      locked
     }
   }
 `
@@ -189,6 +190,7 @@ export const CREATE_EVENT = gql`
       customForm
       disabled
       waitingTime
+      locked
     }
   }
 `
@@ -211,6 +213,7 @@ export const CREATE_VISIT = gql`
     $dataUseAgreement: Boolean!
     $extras: [ID]
     $remotePlatform: String
+    $token: String!
     ) {
     createVisit(
       event: $event
@@ -229,6 +232,7 @@ export const CREATE_VISIT = gql`
       dataUseAgreement: $dataUseAgreement
       extras: $extras
       remotePlatform: $remotePlatform
+      token: $token
     ) {
       id
       event {
@@ -553,7 +557,7 @@ export const LOCK_EVENT = gql`
     lockEvent(
       event: $event
     ) {
-      title
+      token
     }
   }
 `
@@ -562,7 +566,7 @@ export const EVENT_LOCK_STATUS = gql`
   subscription {
     eventLocked {
       id
-      disabled
+      locked
     }
   }
 `

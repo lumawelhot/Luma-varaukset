@@ -55,5 +55,6 @@
   "copy": "Kopioi",
   "close": "Sulje",
   "disabled": "Poissa käytöstä",
-  "time-left": "Aikaa jäljellä"
+  "time-left": "Aikaa jäljellä",
+  "timeout-message": "Aika loppui! Lomakkeen lähettäminen ei onnistu jos joku muu avaa lomakkeen!"
 }

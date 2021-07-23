@@ -2,6 +2,11 @@ const { gql } = require('apollo-server-express')
 
 //Visit- ja Event-tyyppien kentät gradeId ja online tarkistettava
 const typeDefs = gql`
+  type Lock {
+    event: ID!
+    token: String!
+    locked: Boolean!
+  }
   type Tag {
     id: ID
     name: String!
@@ -42,6 +47,7 @@ const typeDefs = gql`
     duration: Int!
     customForm: ID
     disabled: Boolean!
+    locked: Boolean!
   }
   type Visit {
     id: ID!
@@ -94,6 +100,9 @@ const typeDefs = gql`
   }
   type Mutation {
     lockEvent(
+      event: ID!
+    ): Lock
+    unlockEvent(
       event: ID!
     ): Event
     resetPassword(
@@ -166,6 +175,7 @@ const typeDefs = gql`
       remoteVisit: Boolean!
       dataUseAgreement: Boolean!
       remotePlatform: String
+      token: String!
     ): Visit
     disableEvent(
       event: ID!
