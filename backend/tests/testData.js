@@ -1,4 +1,4 @@
-const { set, subDays, setMilliseconds, setSeconds, setMinutes, setHours, add, sub, addDays } = require('date-fns')
+const { set, subDays, setHours, add, sub, addDays } = require('date-fns')
 
 const details = {
   clientName: 'Teacher',
@@ -104,11 +104,11 @@ const invalidEventFieldDetails = {
   disabled: false
 }
 
-const availableDate = setMilliseconds(setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 9), 0), 0), 0)
-const fiveHoursAdded = setMilliseconds(setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), 14), 0), 0), 0)
+const availableDate = set(add(new Date(), { days: 16 }), { milliseconds: 0, seconds: 0, minutes: 0, hours: 9 })
+const fiveHoursAdded = set(add(new Date(), { days: 16 }), { milliseconds: 0, seconds: 0, minutes: 0, hours: 14 })
 
-const availableForLoggedInDate = setMilliseconds(setSeconds(setMinutes(setHours(add(new Date(), { days: 1 }), 9), 0), 0), 0)
-const twoHoursAddedForLoggedIn = setMilliseconds(setSeconds(setMinutes(setHours(add(new Date(), { days: 1 }), 11), 0), 0), 0)
+const availableForLoggedInDate = set(add(new Date(), { days: 1 }), { milliseconds: 0, seconds: 0, minutes: 0, hours: 9 })
+const twoHoursAddedForLoggedIn = set(add(new Date(), { days: 1 }), { milliseconds: 0, seconds: 0, minutes: 0, hours: 11 })
 
 const unavailableForLoggedInDate = new Date()
 unavailableForLoggedInDate.setDate(new Date().getDate() - 2)

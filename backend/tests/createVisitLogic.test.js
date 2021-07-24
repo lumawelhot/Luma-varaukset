@@ -25,7 +25,8 @@ const visitResponse = async (event, start, end) => {
       event,
       ...details,
       startTime: start.toISOString(),
-      endTime: end.toISOString()
+      endTime: end.toISOString(),
+      token: 'token'
     }
   })
 }
@@ -66,7 +67,8 @@ beforeEach(async () => {
     waitingTime: 20,
     duration: 60,
     extras: [],
-    disabled: false
+    disabled: false,
+    reserved: 'token'
   }
 
   const start1 = createDate(9, 0)
@@ -86,7 +88,8 @@ beforeEach(async () => {
     waitingTime: 15,
     duration: 60,
     extras: [],
-    disabled: false
+    disabled: false,
+    reserved: 'token'
   }
 
   availableEvent = new EventModel(availableEventData)

@@ -34,6 +34,7 @@ const testData = {
   remoteVisit: false,
   waitingTime: 10,
   duration: 20,
+  reserved: 'token'
 }
 
 const visitResponse = async (event, start, end) => {
@@ -45,7 +46,8 @@ const visitResponse = async (event, start, end) => {
       ...details,
       startTime: start.toISOString(),
       endTime: end.toISOString(),
-    },
+      token: 'token'
+    }
   })
 }
 

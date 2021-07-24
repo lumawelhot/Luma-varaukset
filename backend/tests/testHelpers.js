@@ -46,6 +46,7 @@ const CREATE_VISIT = gql `
     $inPersonVisit: Boolean!,
     $remoteVisit: Boolean!,
     $dataUseAgreement: Boolean!
+    $token: String!
     ) {
     createVisit(
       event: $event
@@ -62,6 +63,7 @@ const CREATE_VISIT = gql `
       grade: $grade
       participants: $participants
       username: $username
+      token: $token
     ) {
       id
       event {
@@ -441,6 +443,49 @@ const GET_FORM_SUBMISSIONS = gql`
   }
 `
 
+const RESET_PASSWORD = gql`
+  mutation resetPassword($user: ID!, $password: String!) {
+    resetPassword(
+      user: $user
+      password: $password
+    ) {
+      id
+    }
+  } 
+`
+
+const CHANGE_USERNAME = gql`
+  mutation changeUsername($user: ID!, $username: String!, $isAdmin: Boolean!) {
+    changeUsername(
+      user: $user
+      username: $username
+      isAdmin: $isAdmin
+    ) {
+      id
+    }
+  }
+`
+
+const LOCK_EVENT = gql`
+  mutation lockEvent($event: ID!) {
+    lockEvent(
+      event: $event
+    ) {
+      token
+    }
+  }
+`
+
+const UNLOCK_EVENT = gql`
+  mutation unlockEvent($event: ID!) {
+    unlockEvent(
+      event: $event
+    ) {
+      id
+    }
+  }
+`
+
 module.exports = {
   LOGIN,
   GET_ALL_VISITS,
@@ -462,6 +507,10 @@ module.exports = {
   DELETE_FORM,
   CREATE_FORM_SUBMISSION,
   GET_FORM_SUBMISSIONS,
+  RESET_PASSWORD,
+  CHANGE_USERNAME,
+  LOCK_EVENT,
+  UNLOCK_EVENT,
   createTimeList,
   createAvailableList,
   createDate,

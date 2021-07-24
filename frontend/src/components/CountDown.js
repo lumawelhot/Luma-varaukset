@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import Toasts from './Toasts'
 
 const CountDown = () => {
   const { t } = useTranslation('common')
-  const [minutes, setMinutes] = useState(2)
-  const [seconds, setSeconds] = useState(10)
+  const [minutes, setMinutes] = useState(5)
+  const [seconds, setSeconds] = useState(0)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,8 +33,13 @@ const CountDown = () => {
     type: 'danger'
   }]
 
-  return (
-    <Toasts toasts={toasts} />
+  const domNode = document.getElementById('timer')
+  console.log(domNode)
+  if (!domNode) return <></>
+
+  return createPortal(
+    <Toasts toasts={toasts} />,
+    domNode
   )
 }
 

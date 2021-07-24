@@ -562,11 +562,20 @@ export const LOCK_EVENT = gql`
   }
 `
 
-export const EVENT_LOCK_STATUS = gql`
-  subscription {
-    eventLocked {
+export const UNLOCK_EVENT = gql`
+  mutation unlockEvent($event: ID!) {
+    unlockEvent(
+      event: $event
+    ) {
       id
-      locked
+    }
+  }
+`
+
+export const EVENT_STATUS = gql`
+  subscription {
+    eventModified {
+      id
     }
   }
 `

@@ -4,7 +4,7 @@ import 'antd/dist/antd.css'
 import LoginForm from './components/LoginForm'
 import MyCalendar from './MyCalendar'
 import { Switch, Route, useHistory } from 'react-router-dom'
-import { EVENTS, EVENT_LOCK_STATUS, LOCK_EVENT } from './graphql/queries'
+import { EVENTS, EVENT_STATUS, LOCK_EVENT } from './graphql/queries'
 import { useApolloClient, useLazyQuery, useMutation, useQuery, useSubscription } from '@apollo/client'
 import UserForm from './components/UserForm'
 import { CURRENT_USER } from './graphql/queries'
@@ -39,7 +39,6 @@ const App = () => {
   const [sessionToken, setSessionToken] = useState(null)
 
   const [lockEvent] = useMutation(LOCK_EVENT, {
-    refetchQueries: [{ query: EVENTS }],
     onCompleted: ({ lockEvent }) => {
       history.push('/book')
       setSessionToken(lockEvent.token)
@@ -47,9 +46,10 @@ const App = () => {
     onError: (error) => console.log(error)
   })
 
-  useSubscription(EVENT_LOCK_STATUS, {
+  useSubscription(EVENT_STATUS, {
     refetchQueries: EVENTS,
-    onSubscriptionData: ({ subscriptionData }) => console.log(subscriptionData)
+    onSubscriptionData: () => result.refetch(),
+    onError: (error) => console.log(error)
   })
 
   const [clickedEvent, setClickedEvent] = useState(null)
@@ -105,6 +105,7 @@ const App = () => {
 
     return events
   }
+  console.log(events)
 
   useEffect(() => {
     if (result.data) {
@@ -189,10 +190,10 @@ const App = () => {
 
   return (
     <div className="App container">
+      {!toasts.length && <div id="timer"></div>}
       <Banner/>
       <Toasts toasts={toasts} />
       <Switch>
-
         <Route path='/event-page'>
           <EventPage
             currentUser={currentUser}

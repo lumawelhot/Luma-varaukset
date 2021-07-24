@@ -33,7 +33,6 @@ const resolvers = {
         .populate('tags', { name: 1, id: 1 })
         .populate('visits')
         .populate('extras')
-      console.log(events)
       return events.map(event => Object.assign(event, { locked: event.reserved ? true : false }))
     },
     getTags: async () => {
@@ -206,6 +205,9 @@ const resolvers = {
       event.extras = extras
       event.tags = mongoTags
       await event.save()
+      pubsub.publish('EVENT_CREATED', {
+        eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+      })
       return Object.assign(event, { locked: event.reserved ? true : false })
     },
     disableEvent: async (root, args, { currentUser }) => {
@@ -215,7 +217,9 @@ const resolvers = {
 
       event.disabled = true
       event.save()
-      pubsub.publish('TEST', { test: 'event disabled' })
+      pubsub.publish('EVENT_DISABLED', {
+        eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+      })
       return Object.assign(event, { locked: event.reserved ? true : false })
     },
     enableEvent: async (root, args, { currentUser }) => {
@@ -226,7 +230,9 @@ const resolvers = {
       event.disabled = false
       event.reserved = null
       event.save()
-      pubsub.publish('TEST', { test: 'event enabled' })
+      pubsub.publish('EVENT_ENABLED', {
+        eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+      })
       return Object.assign(event, { locked: event.reserved ? true : false })
     },
     lockEvent: async (root, args) => {
@@ -239,12 +245,15 @@ const resolvers = {
       setTimeout(() => {
         event.reserved = null
         event.save()
-        pubsub.publish('EVENT_UNLOCKED', { eventLocked: event })
-      }, 50000)//420000)
+        pubsub.publish('EVENT_UNLOCKED', {
+          eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+        })
+      }, 305000)
 
       await event.save()
-      pubsub.publish('EVENT_LOCKED', { eventLocked: event })
-      console.log(event)
+      pubsub.publish('EVENT_LOCKED', {
+        eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+      })
       return {
         event: event.id,
         token,
@@ -256,7 +265,7 @@ const resolvers = {
 
       event.reserved = null
       await event.save()
-      pubsub.publish('EVENT_UNLOCKED', { eventLocked: event })
+      pubsub.publish('EVENT_UNLOCKED', { eventModified: event })
       return Object.assign(event, { locked: event.reserved ? true : false })
     },
     modifyEvent: async (root, args, { currentUser }) => {
@@ -266,6 +275,7 @@ const resolvers = {
       if (!currentUser) throw new AuthenticationError('not authenticated')
       if (new Date(args.start).getTime() < set(new Date(args.start), { hours: 8, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid start time')
       if (new Date(args.end).getTime() > set(new Date(args.end), { hours: 17, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid end time')
+      if (event.reserved) throw new UserInputError('Event cannot be modified because booking form is open')
 
       title !== undefined ? event.title = title : null
       desc !== undefined ? event.desc = desc : null
@@ -305,6 +315,9 @@ const resolvers = {
         }]
       }
       await event.save()
+      pubsub.publish('EVENT_MODIFIED', {
+        eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+      })
       return Object.assign(event, { locked: event.reserved ? true : false })
     },
     createVisit: async (root, args, { currentUser }) => {
@@ -367,6 +380,9 @@ const resolvers = {
           event.visits = event.visits.concat(savedVisit._id)
           event.reserved = null
           await event.save()
+          pubsub.publish('EVENT_BOOKED', {
+            eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+          })
           return savedVisit
         }
       } catch (error) {
@@ -408,6 +424,9 @@ const resolvers = {
         visit.status = false
         await visit.save()
         await event.save()
+        pubsub.publish('EVENT_RESERVATION_CANCELLED', {
+          eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+        })
         return visit
       } catch (error) {
         event.visits = event.visits.concat(visit._id)
@@ -470,6 +489,9 @@ const resolvers = {
           throw new UserInputError('Event has visits!')
         }
         await Event.deleteOne({ _id:args.id })
+        pubsub.publish('EVENT_DELETED', {
+          eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+        })
         return 'Deleted Event with ID ' + args.id
       } catch (error) {
         throw new UserInputError('Event has visits!')
@@ -548,11 +570,18 @@ const resolvers = {
     }
   },
   Subscription: {
-    test: {
-      subscribe: () => pubsub.asyncIterator(['TEST'])
-    },
-    eventLocked: {
-      subscribe: () => pubsub.asyncIterator(['EVENT_LOCKED', 'EVENT_UNLOCKED'])
+    eventModified: {
+      subscribe: () => pubsub.asyncIterator([
+        'EVENT_LOCKED',
+        'EVENT_UNLOCKED',
+        'EVENT_CREATED',
+        'EVENT_MODIFIED',
+        'EVENT_DISABLED',
+        'EVENT_ENABLED',
+        'EVENT_BOOKED',
+        'EVENT_RESERVATION_CANCELLED',
+        'EVENT_DELETED'
+      ])
     }
   }
 }

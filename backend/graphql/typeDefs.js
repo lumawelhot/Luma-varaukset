@@ -217,8 +217,7 @@ const typeDefs = gql`
     ): String
   }
   type Subscription {
-    eventLocked: Event
-    test: String!
+    eventModified: Event
   }
 `
 module.exports = typeDefs

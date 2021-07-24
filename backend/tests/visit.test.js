@@ -86,7 +86,8 @@ beforeEach(async () => {
     status: true,
     startTime: availableEvent.start,
     endTime: availableEvent.end,
-    dataUseAgreement: true
+    dataUseAgreement: true,
+    reserved: 'token'
   }
 
   const testVisit = new VisitModel(testVisitData)
@@ -110,7 +111,8 @@ describe('Visit Model Test', () => {
       status: true,
       startTime: availableEvent.start,
       endTime: availableEvent.end,
-      dataUseAgreement: true
+      dataUseAgreement: true,
+      reserved: 'token'
     }
     const validVisit = new VisitModel(newVisitData)
     const savedVisit = await validVisit.save()
@@ -159,7 +161,8 @@ describe('Visit server test', () => {
         remoteVisit: false,
         startTime: event.start,
         endTime: event.end,
-        dataUseAgreement: false
+        dataUseAgreement: false,
+        token: 'token'
       }
     })
 
@@ -198,7 +201,8 @@ describe('Visit server test', () => {
         endTime: event.end,
         inPersonVisit: true,
         remoteVisit: false,
-        dataUseAgreement: true
+        dataUseAgreement: true,
+        token: 'token'
       }
     })
     const { createVisit } = data
@@ -231,7 +235,8 @@ describe('Visit server test', () => {
         endTime: event.end,
         inPersonVisit: true,
         remoteVisit: false,
-        dataUseAgreement: true
+        dataUseAgreement: true,
+        token: 'token'
       }
     })
 
@@ -275,7 +280,8 @@ describe('Visit server test', () => {
         endTime: event.end,
         inPersonVisit: true,
         remoteVisit: false,
-        dataUseAgreement: true
+        dataUseAgreement: true,
+        token: 'token'
       }
     })
     const { createVisit } = data
