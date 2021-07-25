@@ -3,10 +3,10 @@ const { createTestClient } = require('apollo-server-testing')
 const { ApolloServer } = require('apollo-server-express')
 const bcrypt = require('bcrypt')
 
-const EventModel = require('../models/event')
-const UserModel = require('../models/user')
-const ExtraModel = require('../models/extra')
-const TagModel = require('../models/tag')
+const Event = require('../models/event')
+const User = require('../models/user')
+const Extra = require('../models/extra')
+const Tag = require('../models/tag')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
 const { GET_ALL_EVENTS, CREATE_EVENT } = require('./testHelpers')
@@ -26,14 +26,14 @@ beforeAll(async () => {
     .catch((error) => {
       console.log('connection error: ', error.message)
     })
-  await UserModel.deleteMany({})
-  await EventModel.deleteMany({})
-  await ExtraModel.deleteMany({})
+  await User.deleteMany({})
+  await Event.deleteMany({})
+  await Extra.deleteMany({})
 
-  newTags = await TagModel.insertMany({ name: 'Matematiikka' }, { name: 'Fysiikka' })
+  newTags = await Tag.insertMany({ name: 'Matematiikka' }, { name: 'Fysiikka' })
 
-  const extra1 = new ExtraModel({ name: 'Kampuskierros', classes: [1, 2, 3, 4], remoteLength: 5, inPersonLength: 15 })
-  const extra2 = new ExtraModel({ name: 'Opiskelijan elämää', remoteLength: 15, inPersonLength: 20, classes: [2, 3, 4] })
+  const extra1 = new Extra({ name: 'Kampuskierros', classes: [1, 2, 3, 4], remoteLength: 5, inPersonLength: 15 })
+  const extra2 = new Extra({ name: 'Opiskelijan elämää', remoteLength: 15, inPersonLength: 20, classes: [2, 3, 4] })
   const savedExtra1 = await extra1.save()
   const savedExtra2 = await extra2.save()
   newExtras = [savedExtra1, savedExtra2]
@@ -41,7 +41,7 @@ beforeAll(async () => {
   const userPassword = await bcrypt.hash('password', 10)
   const userData = { username: 'employee', passwordHash: userPassword, isAdmin: false }
 
-  const user = new UserModel(userData)
+  const user = new User(userData)
   const savedUser = await user.save()
   expect(savedUser.isAdmin).toBe(user.isAdmin)
 
@@ -74,9 +74,9 @@ beforeEach(async () => {
     ...eventDetails3
   }
 
-  const testEvent1 = new EventModel(testData1)
-  const testEvent2 = new EventModel(testData2)
-  const testEvent3 = new EventModel(testData3)
+  const testEvent1 = new Event(testData1)
+  const testEvent2 = new Event(testData2)
+  const testEvent3 = new Event(testData3)
 
   await testEvent1.save()
   await testEvent2.save()
@@ -122,14 +122,14 @@ it('employee can create new event successfully', async () => {
 describe('Event Model Test', () => {
 
   it('create & save new event successfully', async () => {
-    const tags = await TagModel.find({ name: { $in: ['Matematiikka', 'Fysiikka'] } })
+    const tags = await Tag.find({ name: { $in: ['Matematiikka', 'Fysiikka'] } })
     const eventData = {
       tags: tags,
       extras: newExtras,
       ...eventDetails4
     }
 
-    const validEvent = new EventModel(eventData)
+    const validEvent = new Event(eventData)
     const savedEvent = await validEvent.save()
 
     expect(savedEvent._id).toBeDefined()
@@ -144,14 +144,14 @@ describe('Event Model Test', () => {
   })
 
   it('insert event successfully, but the field not defined in schema should be "undefined"', async () => {
-    const eventWithInvalidField = new EventModel(invalidEventFieldDetails)
+    const eventWithInvalidField = new Event(invalidEventFieldDetails)
     const savedEventWithInvalidField = await eventWithInvalidField.save()
     expect(savedEventWithInvalidField._id).toBeDefined()
     expect(savedEventWithInvalidField.fieldNotInSchema).toBeUndefined()
   })
 
   it('cannot create event without required field', async () => {
-    const eventWithoutRequiredField = new EventModel({ allDay: false })
+    const eventWithoutRequiredField = new Event({ allDay: false })
     let err
     try {
       await eventWithoutRequiredField.save()
@@ -168,10 +168,10 @@ describe('Event Model Test', () => {
 })
 
 afterAll(async () => {
-  await EventModel.deleteMany({})
-  await UserModel.deleteMany({})
-  await ExtraModel.deleteMany({})
-  await TagModel.deleteMany({})
+  await Event.deleteMany({})
+  await User.deleteMany({})
+  await Extra.deleteMany({})
+  await Tag.deleteMany({})
   await mongoose.connection.close()
   console.log('test-mongodb connection closed')
 })

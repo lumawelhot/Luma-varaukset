@@ -3,8 +3,8 @@ const { createTestClient } = require('apollo-server-testing')
 const { ApolloServer } = require('apollo-server-express')
 const bcrypt = require('bcrypt')
 
-const UserModel = require('../models/user')
-const FormModel = require('../models/forms')
+const User = require('../models/user')
+const Form = require('../models/forms')
 const FormSubmissionsModel = require('../models/formSubmissions')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
@@ -23,13 +23,13 @@ beforeAll(async () => {
     .catch((error) => {
       console.log('connection error: ', error.message)
     })
-  await UserModel.deleteMany({})
+  await User.deleteMany({})
   await FormSubmissionsModel.deleteMany({})
-  await FormModel.deleteMany({})
+  await Form.deleteMany({})
 
   const adminPassword = await bcrypt.hash('admin-password', 10)
   adminUserData = { username: 'admin', passwordHash: adminPassword, isAdmin: true }
-  const adminUser = new UserModel(adminUserData)
+  const adminUser = new User(adminUserData)
   const savedAdminUser = await adminUser.save()
   expect(savedAdminUser.isAdmin).toBe(adminUser.isAdmin)
 
@@ -59,7 +59,7 @@ describe('Form model test', () => {
         }
       ]
     }
-    const form = new FormModel(formData)
+    const form = new Form(formData)
     const savedForm = await form.save()
     expect(savedForm._id).toBeDefined()
     expect(savedForm.name).toBe(formData.name)
@@ -95,7 +95,7 @@ describe('Form server test', () => {
 
   it('Current user can update a form successfully', async () => {
     const { mutate } = createTestClient(serverAdmin)
-    const form = await FormModel.findOne({})
+    const form = await Form.findOne({})
     const response = await mutate({
       mutation: UPDATE_FORM,
       variables: {
@@ -118,7 +118,7 @@ describe('Form server test', () => {
 
   it('Current user can delete a form successfully', async () => {
     const { mutate } = createTestClient(serverAdmin)
-    const form = await FormModel.findOne({})
+    const form = await Form.findOne({})
     const response = await mutate({
       mutation: DELETE_FORM,
       variables: {
@@ -144,7 +144,7 @@ describe('Form Submissions model test', () => {
         }
       ]
     }
-    const form = new FormModel(formData)
+    const form = new Form(formData)
     const savedForm = await form.save()
     const submissionData = {
       form: savedForm._id,
@@ -170,7 +170,7 @@ describe('Form Submissions model test', () => {
 describe('Form Submissions server test', () => {
   it('Form submission can be created', async () => {
     const { mutate } = createTestClient(serverAdmin)
-    const form = await FormModel.findOne({})
+    const form = await Form.findOne({})
     const values = [
       {
         name: 'username', value: 'tester'
@@ -191,9 +191,9 @@ describe('Form Submissions server test', () => {
 })
 
 afterAll(async () => {
-  await UserModel.deleteMany({})
+  await User.deleteMany({})
   await FormSubmissionsModel.deleteMany({})
-  await FormModel.deleteMany({})
+  await Form.deleteMany({})
   await mongoose.connection.close()
   console.log('test-mongodb connection closed')
 })

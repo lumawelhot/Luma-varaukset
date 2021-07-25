@@ -74,14 +74,13 @@ beforeAll(async () => {
   const userData = { username: 'employee', passwordHash: userPassword, isAdmin: false }
 
   const user = new User(userData)
-  const savedUser = await user.save()
-  expect(savedUser.isAdmin).toBe(user.isAdmin)
+  await user.save()
 
   server = new ApolloServer({
     typeDefs,
     resolvers,
     context: async () => {
-      const currentUser = savedUser
+      const currentUser = user
       return { currentUser }
     }
   })

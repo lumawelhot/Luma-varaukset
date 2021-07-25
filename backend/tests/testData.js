@@ -1,10 +1,11 @@
 const { set, subDays, setHours, add, sub, addDays } = require('date-fns')
+const { createDate } = require('./testHelpers')
 
 const details = {
   clientName: 'Teacher',
   clientEmail: 'teacher@school.com',
   clientPhone: '040-1234567',
-  grade: '1',
+  grade: '1. grade',
   schoolName: 'school',
   schoolLocation: 'Helsinki',
   participants: 13,
@@ -189,6 +190,60 @@ const eventNow = {
   ...mailSenderTestDetails
 }
 
+const eventDataDetails = {
+  title: 'Up-And-Atom!',
+  resourceids: [2],
+  grades: [1],
+  inPersonVisit: false,
+  remoteVisit: true,
+  disabled: false,
+  reserved: 'token',
+  extras: [],
+}
+
+const eventData1 = {
+  start: createDate(9, 0),
+  end: createDate(15, 0),
+  availableTimes: [{ startTime: createDate(9, 0), endTime: createDate(15, 0) }],
+  waitingTime: 20,
+  duration: 60,
+  ...eventDataDetails
+}
+
+const eventData2 = {
+  start: createDate(9, 0),
+  end: createDate(15, 0),
+  availableTimes: [{
+    startTime: createDate(9, 0),
+    endTime: createDate(11, 0)
+  },
+  {
+    startTime: createDate(13, 0),
+    endTime: createDate(15, 0)
+  }],
+  waitingTime: 15,
+  duration: 60,
+  ...eventDataDetails
+}
+
+const eventData3 = {
+  start: createDate(9, 0),
+  end: createDate(15, 0),
+  availableTimes: [{ startTime: createDate(9, 0), endTime: createDate(15, 0) }],
+  waitingTime: 10,
+  duration: 30,
+  ...eventDataDetails
+}
+
+const eventData4 = {
+  start: createDate(9, 0),
+  end: createDate(15, 0),
+  availableTimes: [{ startTime: createDate(9, 0), endTime: createDate(15, 0) }],
+  waitingTime: 15,
+  duration: 60,
+  ...eventDataDetails
+}
+
 module.exports = {
   details,
   eventDetails1,
@@ -202,5 +257,9 @@ module.exports = {
   unvailableForLoggedInUserEventData,
   eventDayAfter,
   eventDayBefore,
-  eventNow
+  eventNow,
+  eventData1,
+  eventData2,
+  eventData3,
+  eventData4
 }

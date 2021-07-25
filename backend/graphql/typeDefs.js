@@ -170,7 +170,6 @@ const typeDefs = gql`
       grade: String!
       participants: Int!
       extras: [ID]
-      username: String
       inPersonVisit: Boolean!
       remoteVisit: Boolean!
       dataUseAgreement: Boolean!

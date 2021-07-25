@@ -40,7 +40,6 @@ const CREATE_VISIT = gql `
     $clientPhone: String!
     $grade: String!
     $participants: Int!
-    $username: String
     $startTime: String!
     $endTime: String!,
     $inPersonVisit: Boolean!,
@@ -62,7 +61,6 @@ const CREATE_VISIT = gql `
       dataUseAgreement: $dataUseAgreement
       grade: $grade
       participants: $participants
-      username: $username
       token: $token
     ) {
       id
