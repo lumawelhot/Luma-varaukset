@@ -115,6 +115,13 @@ const App = () => {
   }, [result])
 
   useEffect(() => {
+    if (clickedEvent) {
+      const event = events.find(e => e.id === clickedEvent.id)
+      if (event) setClickedEvent(event)
+    }
+  }, [events])
+
+  useEffect(() => {
     if (localStorage.getItem('app-token')) getUser()
   }, [])
 

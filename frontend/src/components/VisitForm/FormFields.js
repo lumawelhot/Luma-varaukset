@@ -63,7 +63,6 @@ export const TextArea = (field) => {
 }
 
 export const RadioButton = (field) => {
-  console.log(field)
   const { form, label, onChange, className, style, id, checked } = field
   const { handleChange } = form
   return (

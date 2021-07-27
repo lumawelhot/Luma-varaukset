@@ -207,7 +207,6 @@ export const CREATE_VISIT = gql`
     $participants: Int!
     $inPersonVisit: Boolean!
     $remoteVisit: Boolean!
-    $username: String
     $startTime: String!
     $endTime: String!
     $dataUseAgreement: Boolean!
@@ -228,7 +227,6 @@ export const CREATE_VISIT = gql`
       participants: $participants
       inPersonVisit: $inPersonVisit
       remoteVisit: $remoteVisit
-      username: $username
       dataUseAgreement: $dataUseAgreement
       extras: $extras
       remotePlatform: $remotePlatform

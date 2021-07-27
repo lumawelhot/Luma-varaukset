@@ -8,12 +8,12 @@ Scenario: Event page shows the correct event information
     And available event page has the correct start date
     And available event page contains booking button
 
-Scenario: Event can be booked when booking button is clicked
-    Given I am on the front page
-    And there is an event 1 more than two weeks ahead
-    When I click on available event 1
-    And I click the booking button
-    Then booking form opens
+#Scenario: Event can be booked when booking button is clicked
+#    Given I am on the front page
+#    And there is an event 1 more than two weeks ahead
+#    When I click on available event 1
+#    And I click the booking button
+#    Then booking form opens
 
 Scenario: Event cannot be booked if it is less than two weeks ahead
     Given I am on the front page

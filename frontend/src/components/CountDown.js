@@ -34,7 +34,6 @@ const CountDown = () => {
   }]
 
   const domNode = document.getElementById('timer')
-  console.log(domNode)
   if (!domNode) return <></>
 
   return createPortal(
