@@ -4,8 +4,8 @@ import 'antd/dist/antd.css'
 import LoginForm from './components/LoginForm'
 import MyCalendar from './MyCalendar'
 import { Switch, Route, useHistory } from 'react-router-dom'
-import { EVENTS } from './graphql/queries'
-import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client'
+import { EVENTS, EVENT_STATUS, LOCK_EVENT } from './graphql/queries'
+import { useApolloClient, useLazyQuery, useMutation, useQuery, useSubscription } from '@apollo/client'
 import UserForm from './components/UserForm'
 import { CURRENT_USER } from './graphql/queries'
 import UserList from './components/UserList'
@@ -36,6 +36,22 @@ const App = () => {
   const [getUser, { loading, data }] = useLazyQuery(CURRENT_USER, {
     fetchPolicy: 'cache-and-network'
   })
+  const [sessionToken, setSessionToken] = useState(null)
+
+  const [lockEvent] = useMutation(LOCK_EVENT, {
+    onCompleted: ({ lockEvent }) => {
+      history.push('/book')
+      setSessionToken(lockEvent.token)
+    },
+    onError: (error) => console.log(error)
+  })
+
+  useSubscription(EVENT_STATUS, {
+    refetchQueries: EVENTS,
+    onSubscriptionData: () => result.refetch(),
+    onError: (error) => console.log(error)
+  })
+
   const [clickedEvent, setClickedEvent] = useState(null)
 
   const [currentUser, setUser] = useState(null)
@@ -77,7 +93,7 @@ const App = () => {
       start: new Date(timeSlot.startTime),
       end: new Date(timeSlot.endTime),
       booked: event.booked,
-      disabled: event.disabled
+      disabled: event.locked || event.disabled
     }))
     events = events.concat(event.visits.map(visit => Object({
       ...details,
@@ -89,6 +105,7 @@ const App = () => {
 
     return events
   }
+  console.log(events)
 
   useEffect(() => {
     if (result.data) {
@@ -96,6 +113,13 @@ const App = () => {
       setEvents(events)
     }
   }, [result])
+
+  useEffect(() => {
+    if (clickedEvent) {
+      const event = events.find(e => e.id === clickedEvent.id)
+      if (event) setClickedEvent(event)
+    }
+  }, [events])
 
   useEffect(() => {
     if (localStorage.getItem('app-token')) getUser()
@@ -142,7 +166,11 @@ const App = () => {
   }
 
   const handleBookingButtonClick = () => {
-    history.push('/book')
+    lockEvent({
+      variables: {
+        event: clickedEvent.id
+      }
+    })
   }
 
   const [toasts, setToasts] = useState([])
@@ -169,10 +197,10 @@ const App = () => {
 
   return (
     <div className="App container">
+      {!toasts.length && <div id="timer"></div>}
       <Banner/>
       <Toasts toasts={toasts} />
       <Switch>
-
         <Route path='/event-page'>
           <EventPage
             currentUser={currentUser}
@@ -183,7 +211,7 @@ const App = () => {
           />
         </Route>
         <Route path='/book'>
-          <VisitForm currentUser={currentUser} event={clickedEvent} sendMessage={notify} />
+          <VisitForm currentUser={currentUser} event={clickedEvent} sendMessage={notify} token={sessionToken} />
         </Route>
         <Route path='/admin'>
           {!currentUser &&

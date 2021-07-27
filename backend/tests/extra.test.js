@@ -3,8 +3,8 @@ const { createTestClient } = require('apollo-server-testing')
 const { ApolloServer } = require('apollo-server-express')
 const bcrypt = require('bcrypt')
 
-const UserModel = require('../models/user')
-const ExtraModel = require('../models/extra')
+const User = require('../models/user')
+const Extra = require('../models/extra')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
 const { GET_ALL_EXTRAS, CREATE_EXTRA } = require('./testHelpers')
@@ -23,16 +23,16 @@ beforeAll(async () => {
     .catch((error) => {
       console.log('connection error: ', error.message)
     })
-  await UserModel.deleteMany({})
+  await User.deleteMany({})
 
   const adminPassword = await bcrypt.hash('admin-password', 10)
   adminUserData = { username: 'admin', passwordHash: adminPassword, isAdmin: true }
-  const adminUser = new UserModel(adminUserData)
+  const adminUser = new User(adminUserData)
   const savedAdminUser = await adminUser.save()
   expect(savedAdminUser.isAdmin).toBe(adminUser.isAdmin)
 
   extraData = { name: 'kampuskierros', classes: [1,2], remoteLength: 5 , inPersonLength: 15 }
-  const extra = new ExtraModel(extraData)
+  const extra = new Extra(extraData)
   await extra.save()
 
   serverAdmin = new ApolloServer({
@@ -76,7 +76,7 @@ describe('Extra Model Test', () => {
 
   it('create & save extra successfully', async () => {
     const newExtraData = { name: 'tieteenalan esittely', classes: [1, 2, 3, 4, 5], remoteLength: 5 , inPersonLength: 15 }
-    const newExtra = new ExtraModel(newExtraData)
+    const newExtra = new Extra(newExtraData)
     const savedExtra = await newExtra.save()
 
     expect(savedExtra._id).toBeDefined()
@@ -87,14 +87,14 @@ describe('Extra Model Test', () => {
   })
 
   it('insert extra successfully, but the field not defined in schema should be "undefined"', async () => {
-    const extraWithInvalidField = new ExtraModel({ name: 'opiskelijan elämää - tyypillinen päivä', classes: [1, 2, 3, 4, 5], remoteLength: 5 , inPersonLength: 15, additionalField: true })
+    const extraWithInvalidField = new Extra({ name: 'opiskelijan elämää - tyypillinen päivä', classes: [1, 2, 3, 4, 5], remoteLength: 5 , inPersonLength: 15, additionalField: true })
     const savedExtraWithInvalidField = await extraWithInvalidField.save()
     expect(savedExtraWithInvalidField._id).toBeDefined()
     expect(savedExtraWithInvalidField.additionalField).toBeUndefined()
   })
 
   it('cannot create extra without required field', async () => {
-    const extraWithoutRequiredField = new ExtraModel({ name: 'lisäpalvelu' })
+    const extraWithoutRequiredField = new Extra({ name: 'lisäpalvelu' })
     let err
     try {
       await extraWithoutRequiredField.save()
@@ -108,7 +108,7 @@ describe('Extra Model Test', () => {
 })
 
 afterAll(async () => {
-  await UserModel.deleteMany({})
+  await User.deleteMany({})
   await mongoose.connection.close()
   console.log('test-mongodb connection closed')
 })

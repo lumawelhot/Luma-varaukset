@@ -9,6 +9,9 @@ import InfoBox from './InfoBox'
 import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import CustomForm from './CustomForm'
+import CountDown from '../CountDown'
+import { useMutation } from '@apollo/client'
+import { UNLOCK_EVENT } from '../../graphql/queries'
 
 let selectedEvent
 let eventPlatforms
@@ -16,6 +19,9 @@ let eventPlatforms
 const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
   const { t } = useTranslation(['visit', 'common'])
   const history = useHistory()
+  const [unlockEvent] = useMutation(UNLOCK_EVENT, {
+    onError: (error) => console.log(error)
+  })
   selectedEvent = event
 
   const grades = [
@@ -60,9 +66,13 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
     return platformArray
   }
 
-  const cancel = (event) => {
-    event.preventDefault()
-
+  const cancel = (e) => {
+    e.preventDefault()
+    unlockEvent({
+      variables: {
+        event: event.id
+      }
+    })
     history.push('/')
   }
 
@@ -101,6 +111,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
             <div className="container">
               <div className="columns is-centered">
                 <div className="section">
+                  <CountDown />
                   <InfoBox event={event} eventClass={eventClass} eventGrades={eventGrades} />
                   <h1 className="title">{t('give-info')}</h1>
 

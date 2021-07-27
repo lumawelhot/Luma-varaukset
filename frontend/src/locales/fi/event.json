@@ -92,5 +92,6 @@
   "failed-to-disable": "Käytöstä poistaminen epäonnistui",
   "failed-to-enable": "Käyttöönotto epäonnistui",
   "event-disabled": "Käytöstä poistaminen onnistui",
-  "event-enabled": "Käyttöönotto onnistui"
+  "event-enabled": "Käyttöönotto onnistui",
+  "book-event": "Varaa vierailu"
 }

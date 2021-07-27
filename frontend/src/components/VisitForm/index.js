@@ -30,13 +30,14 @@ const calculateVisitEndTime = (startTimeAsDate, values, selectedEvent, extras) =
   return visitEndTime
 }
 
-export const VisitForm = ({ sendMessage, event }) => {
+export const VisitForm = ({ sendMessage, event, token }) => {
   const { t } = useTranslation('event')
   const history = useHistory()
 
   const [create, result] = useMutation(CREATE_VISIT, {
     refetchQueries: [{ query: EVENTS }],
     onError: (error) => {
+      console.log(error)
       if (error.message === 'File not found') {
         sendMessage(t('failed-to-book-visit'), 'danger')
       } else {
@@ -136,6 +137,7 @@ export const VisitForm = ({ sendMessage, event }) => {
           dataUseAgreement: values.dataUseAgreement,
           extras: values.extras,
           remotePlatform: remotePlatform,
+          token
         }
       })
     } catch (error) {

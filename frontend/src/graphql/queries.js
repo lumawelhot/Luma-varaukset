@@ -70,6 +70,7 @@ export const EVENTS = gql`
       duration
       customForm
       disabled
+      locked
     }
   }
 `
@@ -189,6 +190,7 @@ export const CREATE_EVENT = gql`
       customForm
       disabled
       waitingTime
+      locked
     }
   }
 `
@@ -205,12 +207,12 @@ export const CREATE_VISIT = gql`
     $participants: Int!
     $inPersonVisit: Boolean!
     $remoteVisit: Boolean!
-    $username: String
     $startTime: String!
     $endTime: String!
     $dataUseAgreement: Boolean!
     $extras: [ID]
     $remotePlatform: String
+    $token: String!
     ) {
     createVisit(
       event: $event
@@ -225,10 +227,10 @@ export const CREATE_VISIT = gql`
       participants: $participants
       inPersonVisit: $inPersonVisit
       remoteVisit: $remoteVisit
-      username: $username
       dataUseAgreement: $dataUseAgreement
       extras: $extras
       remotePlatform: $remotePlatform
+      token: $token
     ) {
       id
       event {
@@ -543,6 +545,34 @@ export const CHANGE_USERNAME = gql`
       username: $username
       isAdmin: $isAdmin
     ) {
+      id
+    }
+  }
+`
+
+export const LOCK_EVENT = gql`
+  mutation lockEvent($event: ID!) {
+    lockEvent(
+      event: $event
+    ) {
+      token
+    }
+  }
+`
+
+export const UNLOCK_EVENT = gql`
+  mutation unlockEvent($event: ID!) {
+    unlockEvent(
+      event: $event
+    ) {
+      id
+    }
+  }
+`
+
+export const EVENT_STATUS = gql`
+  subscription {
+    eventModified {
       id
     }
   }

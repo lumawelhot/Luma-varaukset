@@ -1,5 +1,7 @@
 /* eslint-disable no-undef */
 import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps'
+import { addDays } from 'date-fns'
+import set from 'date-fns/set'
 
 Given('Employee is logged in', () => {
   cy.login({ username: 'Admin', password: 'salainen' })
@@ -7,12 +9,8 @@ Given('Employee is logged in', () => {
 
 Given('an event with title yyyyy is created', () => {
 
-  const date = new Date()
-  date.setMinutes(0)
-  const start = new Date(date)
-  const end = new Date(date)
-  start.setHours(8)
-  end.setHours(16)
+  const start = addDays(set(new Date(), { minutes: 0, hours: 8 }), 7)
+  const end = addDays(set(new Date(), { minutes: 0, hours: 16 }), 7)
   cy.createEvent({
     title: 'yyyyy',
     scienceClass: [1,2],

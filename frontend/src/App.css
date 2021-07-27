@@ -206,7 +206,7 @@ button.button.luma {
 }
 
 .rbc-event {
-  border: none;
+  border: 1px solid white;
   box-sizing: border-box;
   box-shadow: none;
   margin: 0;
@@ -743,11 +743,6 @@ button.button.luma {
 .rbc-events-container {
   margin: 0 0.3em;
   border-left: none;
-}
-
-.rbc-event {
-  border: none;
-  border-radius: 1px;
 }
 
 .rbc-event .rbc-event-label {

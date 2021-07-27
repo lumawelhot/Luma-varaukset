@@ -3,25 +3,68 @@ const { createTestClient } = require('apollo-server-testing')
 const { ApolloServer, gql } = require('apollo-server-express')
 const bcrypt = require('bcrypt')
 
-const UserModel = require('../models/user')
-const EventModel = require('../models/event')
-const VisitModel = require('../models/visit')
+const User = require('../models/user')
+const Event = require('../models/event')
+const Visit = require('../models/visit')
+
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
-const { GET_ALL_VISITS, CREATE_VISIT, FIND_VISIT, LOGIN } = require('./testHelpers.js')
-const { availableEventData, availableForLoggedInEventData, unvailableForLoggedInUserEventData } = require('./testData')
+const { GET_ALL_VISITS, CREATE_VISIT, FIND_VISIT } = require('./testHelpers.js')
+const { availableEventData, availableForLoggedInEventData, unvailableForLoggedInUserEventData, details } = require('./testData')
 
 let availableEvent
 let availableForLoggedInEvent
 let unvailableForLoggedInUserEvent
-let savedAvailableEvent
-let savedAvailableForLoggedInEvent
-let savedUnvailableForLoggedInUserEvent
-let savedTestVisit
 let server
-let basicUserData
-let savedUser
+let user
 let serverNoUser
+let testVisit
+
+const visitWithoutUser = async (event, start, end) => {
+  const { mutate } = createTestClient(serverNoUser)
+  return await mutate({
+    mutation: CREATE_VISIT,
+    variables: {
+      event,
+      grade: '13. grade',
+      clientName: 'Teacher',
+      schoolName: 'School',
+      schoolLocation: 'ivalo',
+      participants: 13,
+      clientEmail: 'ivalonkoulu@school.com',
+      clientPhone: '040-7654321',
+      inPersonVisit: true,
+      remoteVisit: false,
+      dataUseAgreement: true,
+      token: 'token',
+      startTime: new Date(start).toISOString(),
+      endTime: new Date(end).toISOString(),
+    }
+  })
+}
+
+const visitWithUser = async (event, start, end) => {
+  const { mutate } = createTestClient(server)
+  return await mutate({
+    mutation: CREATE_VISIT,
+    variables: {
+      event,
+      grade: '31. grade',
+      clientName: 'Admin',
+      schoolName: 'University',
+      schoolLocation: 'helsinki',
+      participants: 13,
+      clientEmail: 'university@school.com',
+      clientPhone: '040-3131313',
+      inPersonVisit: false,
+      remoteVisit: true,
+      startTime: new Date(start).toISOString(),
+      endTime: new Date(end).toISOString(),
+      dataUseAgreement: true,
+      token: 'token'
+    }
+  })
+}
 
 beforeAll(async () => {
 
@@ -34,18 +77,19 @@ beforeAll(async () => {
       console.log('connection error: ', error.message)
     })
 
-  await UserModel.deleteMany({})
-  const basicPassword = await bcrypt.hash('basic-password', 10)
-  basicUserData = { username: 'basic', passwordHash: basicPassword, isAdmin: false }
+  await User.deleteMany({})
 
-  const basicUser = new UserModel(basicUserData)
-  savedUser = await basicUser.save()
+  const userPassword = await bcrypt.hash('password', 10)
+  const userData = { username: 'employee', passwordHash: userPassword, isAdmin: false }
+
+  user = new User(userData)
+  await user.save()
 
   server = new ApolloServer({
     typeDefs,
     resolvers,
     context: async () => {
-      const currentUser = savedUser
+      const currentUser = user
       return { currentUser }
     }
   })
@@ -61,231 +105,134 @@ beforeAll(async () => {
 })
 
 beforeEach(async () => {
-  await EventModel.deleteMany({})
-  await VisitModel.deleteMany({})
+  await Event.deleteMany({})
+  await Visit.deleteMany({})
 
-  availableEvent = new EventModel(availableEventData)
-  availableForLoggedInEvent = new EventModel(availableForLoggedInEventData)
-  unvailableForLoggedInUserEvent = new EventModel(unvailableForLoggedInUserEventData)
+  availableEvent = new Event(availableEventData)
+  availableForLoggedInEvent = new Event(availableForLoggedInEventData)
+  unvailableForLoggedInUserEvent = new Event(unvailableForLoggedInUserEventData)
 
-  savedAvailableEvent = await availableEvent.save()
-  savedAvailableForLoggedInEvent = await availableForLoggedInEvent.save()
-  savedUnvailableForLoggedInUserEvent = await unvailableForLoggedInUserEvent.save()
+  await availableEvent.save()
+  await availableForLoggedInEvent.save()
+  await unvailableForLoggedInUserEvent.save()
 
   const testVisitData = {
+    ...details,
     event: availableEvent,
-    grade: '1. grade',
-    clientName: 'Teacher',
-    schoolName: 'School',
-    schoolLocation: 'Location',
-    participants: 13,
-    clientEmail: 'teacher@school.com',
-    clientPhone: '040-1234567',
-    inPersonVisit: true,
-    remoteVisit: false,
     status: true,
     startTime: availableEvent.start,
     endTime: availableEvent.end,
-    dataUseAgreement: true
+    reserved: 'token'
   }
 
-  const testVisit = new VisitModel(testVisitData)
-  savedTestVisit = await testVisit.save()
+  testVisit = new Visit(testVisitData)
+  await testVisit.save()
 })
 
-describe('Visit Model Test', () => {
+describe('Visit model test. Visit', () => {
 
-  it('anonymous user can create new visit successfully', async () => {
+  it('is successfully saved with valid information', async () => {
     const newVisitData = {
       event: availableEvent,
-      grade: '1. grade',
-      clientName: 'Teacher 2',
-      schoolName: 'School 2',
-      schoolLocation: 'Location 2',
-      participants: 15,
-      clientEmail: 'teacher2@someschool.com',
-      clientPhone: '050-8912345',
-      inPersonVisit: true,
-      remoteVisit: true,
-      status: true,
+      ...details,
       startTime: availableEvent.start,
       endTime: availableEvent.end,
-      dataUseAgreement: true
+      reserved: 'token',
+      status: true
     }
-    const validVisit = new VisitModel(newVisitData)
+    const validVisit = new Visit(newVisitData)
     const savedVisit = await validVisit.save()
 
     expect(savedVisit._id).toBeDefined()
   })
 
-  it('anonymous user cannot create visit without required field', async () => {
-    const visitWithoutRequiredField = new VisitModel()
-    let err
+  it('is not saved if any information missing', async () => {
+    const invalidVisit = new Visit()
+    let error
     try {
-      await visitWithoutRequiredField.save()
-    } catch (error) {
-      err = error
+      await invalidVisit.save()
+    } catch (e) {
+      error = e
     }
-    expect(err).toBeInstanceOf(mongoose.Error.ValidationError)
-    expect(err.errors.event).toBeDefined()
-    expect(err.errors.grade).toBeDefined()
-    expect(err.errors.clientName).toBeDefined()
-    expect(err.errors.schoolName).toBeDefined()
-    expect(err.errors.schoolLocation).toBeDefined()
-    expect(err.errors.participants).toBeDefined()
-    expect(err.errors.clientEmail).toBeDefined()
-    expect(err.errors.clientPhone).toBeDefined()
-    expect(err.errors.dataUseAgreement).toBeDefined()
+
+    expect(error).toBeInstanceOf(mongoose.Error.ValidationError)
+    expect(error.errors.event).toBeDefined()
+    expect(error.errors.grade).toBeDefined()
+    expect(error.errors.clientName).toBeDefined()
+    expect(error.errors.schoolName).toBeDefined()
+    expect(error.errors.schoolLocation).toBeDefined()
+    expect(error.errors.participants).toBeDefined()
+    expect(error.errors.clientEmail).toBeDefined()
+    expect(error.errors.clientPhone).toBeDefined()
+    expect(error.errors.dataUseAgreement).toBeDefined()
+
   })
 })
 
-describe('Visit server test', () => {
+describe('Visit server test. Event', () => {
 
-  it('anonymous user can create visit successfully', async () => {
-    const { mutate } = createTestClient(server)
-    const event = savedAvailableEvent
-    const { data } = await mutate({
-      mutation: CREATE_VISIT,
-      variables: {
-        event: event.id,
-        grade: '1. grade',
-        clientName: 'Teacher',
-        schoolName: 'School',
-        schoolLocation: 'Location',
-        participants: 13,
-        clientEmail: 'teacher@school.com',
-        clientPhone: '040-1234567',
-        inPersonVisit: true,
-        remoteVisit: false,
-        startTime: event.start,
-        endTime: event.end,
-        dataUseAgreement: false
-      }
-    })
+  it('can be booked by anonymous user', async () => {
+    const event = availableEvent
+    const visit = await visitWithoutUser(event.id, event.start, event.end)
 
-    const { createVisit } = data
+    const { createVisit } = visit.data
 
     expect(createVisit.id).toBeDefined()
-    expect(createVisit.event.title).toBe(savedAvailableEvent.title)
-    expect(createVisit.grade).toBe('1. grade')
+    expect(createVisit.event.title).toBe(event.title)
     expect(createVisit.clientName).toBe('Teacher')
     expect(createVisit.schoolName).toBe('School')
-    expect(createVisit.schoolLocation).toBe('Location')
+    expect(createVisit.schoolLocation).toBe('ivalo')
     expect(createVisit.participants).toBe(13)
-    expect(createVisit.clientEmail).toBe('teacher@school.com')
-    expect(createVisit.clientPhone).toBe('040-1234567')
-    expect(createVisit.grade).toBe('1. grade')
-    expect(createVisit.participants).toBe(13)
-    expect(createVisit.status).toBe(true)
-    expect(createVisit.dataUseAgreement).toBe(false)
-  })
-
-  it('anonymous user cannot create visit for event less than two weeks ahead', async () => {
-    const { mutate } = createTestClient(serverNoUser)
-    const event = savedAvailableForLoggedInEvent
-    const { data } = await mutate({
-      mutation: CREATE_VISIT,
-      variables: {
-        event: event.id,
-        grade: '1. grade',
-        clientName: 'Teacher',
-        schoolName: 'School',
-        schoolLocation: 'Location',
-        participants: 13,
-        clientEmail: 'teacher@school.com',
-        clientPhone: '040-1234567',
-        startTime: event.start,
-        endTime: event.end,
-        inPersonVisit: true,
-        remoteVisit: false,
-        dataUseAgreement: true
-      }
-    })
-    const { createVisit } = data
-
-    expect(createVisit).toBe(null)
-  })
-
-  it('logged in user can create visit for event more than one hour ahead', async () => {
-    const { mutate } = createTestClient(server)
-
-    // Login
-    let response = await mutate({ mutation: LOGIN })
-    expect(response.errors).toBeUndefined()
-
-    // create event
-    const event = savedAvailableForLoggedInEvent
-    const res = await mutate({
-      mutation: CREATE_VISIT,
-      variables: {
-        event: event.id,
-        grade: '1. grade',
-        clientName: 'Teacher',
-        schoolName: 'School',
-        schoolLocation: 'Location',
-        participants: 17,
-        clientEmail: 'teacher@school.com',
-        clientPhone: '040-1234567',
-        username: basicUserData.username,
-        startTime: event.start,
-        endTime: event.end,
-        inPersonVisit: true,
-        remoteVisit: false,
-        dataUseAgreement: true
-      }
-    })
-
-    const { createVisit } = res.data
-
-    expect(createVisit.id).toBeDefined()
-    expect(createVisit.event.title).toBe(savedAvailableForLoggedInEvent.title)
-    expect(createVisit.grade).toBe('1. grade')
-    expect(createVisit.clientName).toBe('Teacher')
-    expect(createVisit.schoolName).toBe('School')
-    expect(createVisit.schoolLocation).toBe('Location')
-    expect(createVisit.participants).toBe(17)
-    expect(createVisit.clientEmail).toBe('teacher@school.com')
-    expect(createVisit.clientPhone).toBe('040-1234567')
+    expect(createVisit.clientEmail).toBe('ivalonkoulu@school.com')
+    expect(createVisit.clientPhone).toBe('040-7654321')
+    expect(createVisit.grade).toBe('13. grade')
     expect(createVisit.status).toBe(true)
     expect(createVisit.dataUseAgreement).toBe(true)
   })
 
-  it('logged in user can\'t create visit for event less than one hour ahead', async () => {
-    const { mutate } = createTestClient(server)
+  it('cannot be booked by anonymous user for less than two weeks ahead', async () => {
+    const event = availableForLoggedInEvent
+    const visit = await visitWithoutUser(event.id, event.start, event.end)
 
-    // Login
-    let response = await mutate({ mutation: LOGIN })
-    expect(response.errors).toBeUndefined()
+    const { createVisit } = visit.data
+    expect(createVisit).toBe(null)
+  })
 
-    // create event
-    const event = savedUnvailableForLoggedInUserEvent
-    const { data } = await mutate({
-      mutation: CREATE_VISIT,
-      variables: {
-        event: event.id,
-        grade: '1. grade',
-        clientName: 'Teacher',
-        schoolName: 'School',
-        schoolLocation: 'Location',
-        participants: 17,
-        clientEmail: 'teacher@school.com',
-        clientPhone: '040-1234567',
-        username: basicUserData.username,
-        startTime: event.start,
-        endTime: event.end,
-        inPersonVisit: true,
-        remoteVisit: false,
-        dataUseAgreement: true
-      }
-    })
-    const { createVisit } = data
+  it('can be booked by logged in user for more than one hour ahead', async () => {
+    const event = availableForLoggedInEvent
+    const visit = await visitWithUser(event.id, event.start, event.end)
+
+    const { createVisit } = visit.data
+
+    expect(createVisit.id).toBeDefined()
+    expect(createVisit.event.title).toBe(availableForLoggedInEvent.title)
+    expect(createVisit.grade).toBe('31. grade')
+    expect(createVisit.clientName).toBe('Admin')
+    expect(createVisit.schoolName).toBe('University')
+    expect(createVisit.schoolLocation).toBe('helsinki')
+    expect(createVisit.participants).toBe(13)
+    expect(createVisit.clientEmail).toBe('university@school.com')
+    expect(createVisit.clientPhone).toBe('040-3131313')
+    expect(createVisit.status).toBe(true)
+    expect(createVisit.dataUseAgreement).toBe(true)
+  })
+
+  it('cannot be booked by logged in user for less than one hour ahead', async () => {
+    const event = unvailableForLoggedInUserEvent
+    const visit = await visitWithUser(event.id, event.start, event.end)
+
+    const { createVisit } = visit.data
 
     expect(createVisit).toBe(null)
   })
 
-  it('Find visit by id', async () => {
+})
+
+describe('Visit', () => {
+
+  it('can be find by id', async () => {
     const { query } = createTestClient(server)
-    const id = savedTestVisit.id
+    const id = testVisit.id
     const { data } = await query({
       query: FIND_VISIT,
       variables: { id }
@@ -293,20 +240,20 @@ describe('Visit server test', () => {
 
     const { findVisit } = data
 
-    expect(findVisit.event.id).toBe(savedTestVisit.event.id)
-    expect(findVisit.grade).toBe(savedTestVisit.grade)
-    expect(findVisit.clientName).toBe(savedTestVisit.clientName)
-    expect(findVisit.schoolName).toBe(savedTestVisit.schoolName)
-    expect(findVisit.schoolLocation).toBe(savedTestVisit.schoolLocation)
-    expect(findVisit.participants).toBe(savedTestVisit.participants)
-    expect(findVisit.clientEmail).toBe(savedTestVisit.clientEmail)
-    expect(findVisit.clientPhone).toBe(savedTestVisit.clientPhone)
-    expect(findVisit.dataUseAgreement).toBe(savedTestVisit.dataUseAgreement)
+    expect(findVisit.event.id).toBe(testVisit.event.id)
+    expect(findVisit.grade).toBe(testVisit.grade)
+    expect(findVisit.clientName).toBe(testVisit.clientName)
+    expect(findVisit.schoolName).toBe(testVisit.schoolName)
+    expect(findVisit.schoolLocation).toBe(testVisit.schoolLocation)
+    expect(findVisit.participants).toBe(testVisit.participants)
+    expect(findVisit.clientEmail).toBe(testVisit.clientEmail)
+    expect(findVisit.clientPhone).toBe(testVisit.clientPhone)
+    expect(findVisit.dataUseAgreement).toBe(testVisit.dataUseAgreement)
   })
 
-  it('Cancel visit by id', async () => {
+  it('can be cancelled by id', async () => {
     const { mutate } = createTestClient(server)
-    const id = savedTestVisit.id
+    const id = testVisit.id
     const CANCEL_VISIT = gql`
     mutation cancelVisit($id: ID!) {
       cancelVisit(id: $id) {
@@ -320,36 +267,31 @@ describe('Visit server test', () => {
       variables: { id }
     })
     const { cancelVisit } = data
-    expect(cancelVisit.id).toBe(savedTestVisit.id)
+    expect(cancelVisit.id).toBe(testVisit.id)
     expect(cancelVisit.status).toBe(false)
-
-    const cancelledVisit = await VisitModel.findById(savedTestVisit.id)
+    const cancelledVisit = await Visit.findById(testVisit.id)
     expect(cancelledVisit.id).toBeDefined()
 
-    const event = await EventModel.findById(cancelledVisit.event)
+    const event = await Event.findById(cancelledVisit.event)
     expect(event.visits.length).toBe(0)
   })
 
-  it('logged in user gets a list of visits', async () => {
+})
+
+describe('Visits', () => {
+
+  it('are given to logged in users', async () => {
     const { query } = createTestClient(server)
     const { data } = await query({
       query: GET_ALL_VISITS
     })
     const { getVisits } = data
-    getVisits.map(visit => {
-      expect(visit.event.id).toBeDefined()
-      expect(visit.grade).toBeDefined()
-      expect(visit.clientName).toBeDefined()
-      expect(visit.schoolName).toBeDefined()
-      expect(visit.schoolLocation).toBeDefined()
-      expect(visit.participants).toBeDefined()
-      expect(visit.clientEmail).toBeDefined()
-      expect(visit.clientPhone).toBeDefined()
-      expect(visit.dataUseAgreement).toBeDefined()
-    })
+
+    expect(getVisits.length).toBe(1)
+    expect(getVisits[0].clientName).toBe('Teacher')
   })
 
-  it('anonymous user gets an empty list', async () => {
+  it('aren\'t given to anonymous user', async () => {
     const { query } = createTestClient(serverNoUser)
     const { data } = await query({
       query: GET_ALL_VISITS
@@ -360,8 +302,8 @@ describe('Visit server test', () => {
 })
 
 afterAll(async () => {
-  await EventModel.deleteMany({})
-  await VisitModel.deleteMany({})
+  await Event.deleteMany({})
+  await Visit.deleteMany({})
   await mongoose.connection.close()
   console.log('test-mongodb connection closed')
 })

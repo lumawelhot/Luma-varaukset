@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const mailer = require('../services/mailer')
 const config = require('../utils/config')
+const uuid = require('uuid')
 
 const User = require('../models/user')
 const Event = require('../models/event')
@@ -15,6 +16,9 @@ const Form = require('../models/forms')
 const FormSubmissions = require('../models/formSubmissions')
 const { addNewTags } = require('../utils/helpers')
 const { set } = require('date-fns')
+
+const { PubSub } = require('graphql-subscriptions')
+const pubsub = new PubSub()
 
 const resolvers = {
   Query: {
@@ -29,7 +33,7 @@ const resolvers = {
         .populate('tags', { name: 1, id: 1 })
         .populate('visits')
         .populate('extras')
-      return events
+      return events.map(event => Object.assign(event, { locked: event.reserved ? true : false }))
     },
     getTags: async () => {
       const tags = await Tag.find({})
@@ -97,7 +101,7 @@ const resolvers = {
   Visit: {
     event: async (root) => {
       const event = await Event.findById(root.event).populate('tags', { name: 1, id: 1 }).populate('extras')
-      return event
+      return Object.assign(event, { locked: event.reserved ? true : false })
     },
   },
   Form: {
@@ -177,7 +181,7 @@ const resolvers = {
 
       const extras = await Extra.find({ _id: { $in: args.extras } })
 
-      const newEvent = new Event({
+      const event = new Event({
         title: args.title,
         start: args.start,
         end: args.end,
@@ -198,10 +202,13 @@ const resolvers = {
         disabled: false
       })
 
-      newEvent.extras = extras
-      newEvent.tags = mongoTags
-      await newEvent.save()
-      return newEvent
+      event.extras = extras
+      event.tags = mongoTags
+      await event.save()
+      pubsub.publish('EVENT_CREATED', {
+        eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+      })
+      return Object.assign(event, { locked: event.reserved ? true : false })
     },
     disableEvent: async (root, args, { currentUser }) => {
       if (!currentUser) throw new AuthenticationError('not authenticated')
@@ -210,7 +217,10 @@ const resolvers = {
 
       event.disabled = true
       event.save()
-      return event
+      pubsub.publish('EVENT_DISABLED', {
+        eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+      })
+      return Object.assign(event, { locked: event.reserved ? true : false })
     },
     enableEvent: async (root, args, { currentUser }) => {
       if (!currentUser) throw new AuthenticationError('not authenticated')
@@ -218,8 +228,45 @@ const resolvers = {
       const event = await Event.findById(args.event)
 
       event.disabled = false
+      event.reserved = null
       event.save()
-      return event
+      pubsub.publish('EVENT_ENABLED', {
+        eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+      })
+      return Object.assign(event, { locked: event.reserved ? true : false })
+    },
+    lockEvent: async (root, args) => {
+      const event = await Event.findById(args.event)
+      if (event.reserved) throw new UserInputError('Older session is already active')
+      if (event.disabled) throw new UserInputError('This event is disabled')
+
+      const token = uuid.v4()
+      event.reserved = token
+      setTimeout(() => {
+        event.reserved = null
+        event.save()
+        pubsub.publish('EVENT_UNLOCKED', {
+          eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+        })
+      }, 305000)
+
+      await event.save()
+      pubsub.publish('EVENT_LOCKED', {
+        eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+      })
+      return {
+        event: event.id,
+        token,
+        locked: event.reserved ? true : false
+      }
+    },
+    unlockEvent: async (root, args) => {
+      const event = await Event.findById(args.event)
+
+      event.reserved = null
+      await event.save()
+      pubsub.publish('EVENT_UNLOCKED', { eventModified: event })
+      return Object.assign(event, { locked: event.reserved ? true : false })
     },
     modifyEvent: async (root, args, { currentUser }) => {
       const extras = await Extra.find({ _id: { $in: args.extras } })
@@ -228,6 +275,7 @@ const resolvers = {
       if (!currentUser) throw new AuthenticationError('not authenticated')
       if (new Date(args.start).getTime() < set(new Date(args.start), { hours: 8, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid start time')
       if (new Date(args.end).getTime() > set(new Date(args.end), { hours: 17, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid end time')
+      if (event.reserved) throw new UserInputError('Event cannot be modified because booking form is open')
 
       title !== undefined ? event.title = title : null
       desc !== undefined ? event.desc = desc : null
@@ -267,10 +315,14 @@ const resolvers = {
         }]
       }
       await event.save()
-      return event
+      pubsub.publish('EVENT_MODIFIED', {
+        eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+      })
+      return Object.assign(event, { locked: event.reserved ? true : false })
     },
     createVisit: async (root, args, { currentUser }) => {
       const event = await Event.findById(args.event).populate('visits', { startTime: 1, endTime: 1 })
+      if (event.reserved && event.reserved !== args.token) throw new UserInputError('Invalid session')
       if (event.disabled) throw new UserInputError('This event is disabled')
 
       const visitTime = {
@@ -326,7 +378,11 @@ const resolvers = {
             html
           })
           event.visits = event.visits.concat(savedVisit._id)
+          event.reserved = null
           await event.save()
+          pubsub.publish('EVENT_BOOKED', {
+            eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+          })
           return savedVisit
         }
       } catch (error) {
@@ -368,6 +424,9 @@ const resolvers = {
         visit.status = false
         await visit.save()
         await event.save()
+        pubsub.publish('EVENT_RESERVATION_CANCELLED', {
+          eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+        })
         return visit
       } catch (error) {
         event.visits = event.visits.concat(visit._id)
@@ -430,6 +489,9 @@ const resolvers = {
           throw new UserInputError('Event has visits!')
         }
         await Event.deleteOne({ _id:args.id })
+        pubsub.publish('EVENT_DELETED', {
+          eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+        })
         return 'Deleted Event with ID ' + args.id
       } catch (error) {
         throw new UserInputError('Event has visits!')
@@ -507,6 +569,21 @@ const resolvers = {
       }
     }
   },
+  Subscription: {
+    eventModified: {
+      subscribe: () => pubsub.asyncIterator([
+        'EVENT_LOCKED',
+        'EVENT_UNLOCKED',
+        'EVENT_CREATED',
+        'EVENT_MODIFIED',
+        'EVENT_DISABLED',
+        'EVENT_ENABLED',
+        'EVENT_BOOKED',
+        'EVENT_RESERVATION_CANCELLED',
+        'EVENT_DELETED'
+      ])
+    }
+  }
 }
 
 module.exports = resolvers
