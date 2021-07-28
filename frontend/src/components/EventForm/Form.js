@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import { Field, Formik } from 'formik'
 import { useQuery } from '@apollo/client'
-import { TAGS, EXTRAS, GET_ALL_FORMS } from '../../graphql/queries'
+import { EXTRAS, GET_ALL_FORMS } from '../../graphql/queries'
 import LumaTagInput from '../LumaTagInput/LumaTagInput'
 import { TextArea, TextField } from '../VisitForm/FormFields'
 import { AdditionalServices, DatePick, EventType, Grades, Platforms, ScienceClasses, TimePick, SelectField } from './FormComponents'
 import { useTranslation } from 'react-i18next'
 import { eventInitialValues, createGradeList, createPlatformList, createResourceList } from '../../helpers/form'
 
-const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmit, event }) => {
+const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmit, event, tags }) => {
   const { t } = useTranslation('event')
   const [suggestedTags, setSuggestedTags] = useState([])
   const [suggestedForms, setSuggestedForms] = useState([])
-  const tags = useQuery(TAGS)
   const extras = useQuery(EXTRAS)
   const forms = useQuery(GET_ALL_FORMS)
 
   useEffect(() => {
-    if (tags.data) setSuggestedTags(tags.data.getTags.map(tag => tag.name))
-  }, [tags.data])
+    if (tags) setSuggestedTags(tags)
+  }, [tags])
 
   useEffect(() => {
     if (forms.data) setSuggestedForms(forms.data.getForms.map(form => Object({ id: form.id, name: form.name })))
@@ -44,7 +43,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
         date: new Date(event.eventStart)
       } : eventInitialValues(newEventTimeRange)}
       validate={validate}
-      onSubmit={(values) => onSubmit(values, tags)}
+      onSubmit={onSubmit}
     >
       {({ handleSubmit, setFieldValue, touched, errors, values }) => {
         return (

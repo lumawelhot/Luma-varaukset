@@ -1,18 +1,19 @@
 const Tag = require('../models/tag')
 
-const addNewTags = async (tags) => {
-  const eventTags = JSON.parse(JSON.stringify(tags))
-  const eventTagsNames = eventTags.map(e => e.name)
-  let mongoTags = await Tag.find({ name: { $in: eventTagsNames } })
+const addNewTags = async tags => {
+  const mongoTags = await Tag.find({ name: { $in: tags } })
+  let result = []
   const foundTagNames = mongoTags.map(t => t.name)
-  eventTags.forEach(tag => {
-    if (!foundTagNames.includes(tag.name)) {
-      const newTag = new Tag({ name: tag.name })
-      mongoTags = mongoTags.concat(newTag)
-      tag = newTag.save()
+  mongoTags.forEach(tag => result.push(tag))
+  tags.forEach(tag => {
+    if (!foundTagNames.includes(tag)) {
+      const newTag = new Tag({ name: tag })
+      result.push(newTag)
+      newTag.save()
     }
   })
-  return mongoTags
+  console.log(result)
+  return result
 }
 
 module.exports = { addNewTags }

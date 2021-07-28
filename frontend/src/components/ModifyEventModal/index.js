@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { EVENTS, UPDATE_EVENT } from '../../graphql/queries'
 import Form from './Form'
 
-export const ModifyEvent = ({ event, close, setEvent, sendMessage }) => {
+export const ModifyEvent = ({ event, close, setEvent, sendMessage, tags }) => {
   const { t } = useTranslation('event')
 
   const validate = (values) => {
@@ -90,7 +90,7 @@ export const ModifyEvent = ({ event, close, setEvent, sendMessage }) => {
     tags,
     startTime,
     endTime
-  }, { data }) => {
+  }) => {
     const gradeList = []
     grades.forEach((element, index) => element ? gradeList.push(index + 1) : null)
 
@@ -112,12 +112,7 @@ export const ModifyEvent = ({ event, close, setEvent, sendMessage }) => {
         inPersonVisit,
         remoteVisit,
         extras,
-        tags: tags.map((tag) =>
-          Object({
-            id: data.getTags.find((t) => t.name === tag)?.id || null,
-            name: tag,
-          })
-        ),
+        tags,
         start: startTime.toISOString(),
         end: endTime.toISOString()
       }
@@ -130,6 +125,7 @@ export const ModifyEvent = ({ event, close, setEvent, sendMessage }) => {
       close={close}
       save={saveDetails}
       validate={validate}
+      tags={tags}
     />
   )
 }

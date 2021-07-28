@@ -122,11 +122,11 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
       setFocused(false)
     }
   }
-
+  console.log(suggestedTags)
   const dropdownItems = newTag === '' ?
-    suggestedTags.filter(element => !tags.includes(element))
+    suggestedTags.sort((a, b) => b.count - a.count).filter(element => !tags.includes(element.name))
     :
-    suggestedTags.filter(element => !tags.includes(element)).filter(element => element.toLowerCase().includes(newTag.toLowerCase()))
+    suggestedTags.filter(element => !tags.includes(element.name)).filter(element => element.name.toLowerCase().includes(newTag.toLowerCase()))
 
   return (
     <div className='field' style={style} onBlur={handleBlur}>
@@ -154,14 +154,14 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
             </div>
             <div className='dropdown-menu' style={{ display: focused && dropdownItems.length > 0 ? 'block' : 'none' }}>
               <div className='dropdown-content'>
-                {dropdownItems.sort().map((suggestion,index) =>
+                {dropdownItems.slice(0, 5).map((suggestion,index) =>
                   <a
                     key={index}
                     className={`dropdown-item ${selected === index ? 'is-hovered' : ''}`}
                     style={{ background: selected === index ? '#f5f5f5' : '' }}
-                    onMouseDown={(e) => handleAddTag(suggestion,e)}
+                    onMouseDown={(e) => handleAddTag(suggestion.name,e)}
                   >
-                    <span>{suggestion}</span>
+                    <span>{suggestion.name}</span><span className='tag-count'>{suggestion.count}</span>
                   </a>
                 )}
               </div>

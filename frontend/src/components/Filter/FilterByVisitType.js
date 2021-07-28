@@ -1,28 +1,44 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-const FilterByVisitType = (props) => {
+const FilterByVisitType = ({ inPerson, remote, setInPerson, setRemote }) => {
   const { t } = useTranslation('common')
+  const style = { marginRight: 5 }
+
+  const setAll = (value) => {
+    if (value) {
+      setInPerson(true)
+      setRemote(true)
+    }
+    else {
+      setInPerson(false)
+      setRemote(false)
+    }
+  }
 
   return (
     <>
       <p className="label">{t('filter-by-visit-type')}</p>
       <div className="field is-grouped">
+        <button
+          style={style}
+          className={`button luma ${inPerson ? 'active' : ''}`}
+          onClick={() => setInPerson(!inPerson)}
+        >
+          {t('inperson')}
+        </button>
+        <button
+          style={style}
+          className={`button luma ${remote ? 'active' : ''}`}
+          onClick={() => setRemote(!remote)}
+        >
+          {t('remote')}
+        </button>
         <div className="field">
-          <button
-            className={`button luma ${props.inPerson ? 'active' : ''}`}
-            onClick={() => props.setInPerson(!props.inPerson)}
-          >
-            {t('inperson')}
-          </button>
-        </div>
-        <div className="field">
-          <button
-            className={`button luma ${props.remote ? 'active' : ''}`}
-            onClick={() => props.setRemote(!props.remote)}
-          >
-            {t('remote')}
-          </button>
+          {remote && inPerson ?
+            <button className="button luma" onClick={() => setAll(false)}>{t('remove-all')}</button>
+            :
+            <button className="button luma" onClick={() => setAll(true)}>{t('show-all')}</button>}
         </div>
       </div>
     </>

@@ -94,10 +94,6 @@ const typeDefs = gql`
     getFormSubmissions(formID: ID): FormSubmissions
     getFormSubmission(id: ID): FormSubmissions
   }
-  input TagInput {
-    id: String
-    name: String!
-  }
   type Mutation {
     lockEvent(
       event: ID!
@@ -134,7 +130,7 @@ const typeDefs = gql`
       desc: String
       inPersonVisit: Boolean!
       remoteVisit: Boolean!
-      tags: [TagInput]
+      tags: [String]
       waitingTime: Int!
       extras: [ID]
       duration: Int!
@@ -153,7 +149,7 @@ const typeDefs = gql`
       extras: [ID]
       start: String
       end: String
-      tags: [TagInput]
+      tags: [String]
       #waitingTime: Int!
       #duration: Int!
       customForm: ID

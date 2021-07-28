@@ -2,21 +2,20 @@ import { useQuery } from '@apollo/client'
 import { Field, Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { EXTRAS, TAGS } from '../../graphql/queries'
+import { EXTRAS } from '../../graphql/queries'
 import { createGradeList, createPlatformList, createResourceList } from '../../helpers/form'
 import { AdditionalServices, EventType, Grades, Platforms, ScienceClasses, TimePick } from '../EventForm/FormComponents'
 import LumaTagInput from '../LumaTagInput/LumaTagInput'
 import { TextArea, TextField } from '../VisitForm/FormFields'
 
-const Form = ({ event, close, save, validate }) => {
+const Form = ({ event, close, save, validate, tags }) => {
   const { t } = useTranslation('event')
   const [suggestedTags, setSuggestedTags] = useState([])
-  const tags = useQuery(TAGS)
   const extras = useQuery(EXTRAS)
 
   useEffect(() => {
-    if (tags.data) setSuggestedTags(tags.data.getTags.map(tag => tag.name))
-  }, [tags.data])
+    if (tags) setSuggestedTags(tags)
+  }, [tags])
 
   return (
     <Formik
@@ -35,7 +34,7 @@ const Form = ({ event, close, save, validate }) => {
         endTime: new Date(event.eventEnd)
       }}
       validate={validate}
-      onSubmit={(values) => save(values, tags)}
+      onSubmit={save}
     >
       {({ handleSubmit, values, setFieldValue, touched, errors }) => {
         return (

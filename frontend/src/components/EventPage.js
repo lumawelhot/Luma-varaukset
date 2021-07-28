@@ -8,7 +8,7 @@ import { DELETE_EVENT, DISABLE_EVENT, ENABLE_EVENT, EVENTS } from '../graphql/qu
 import { ModifyEvent } from './ModifyEventModal'
 import { useTranslation } from 'react-i18next'
 
-const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, setEvent }) => {
+const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, setEvent, tags }) => {
   const { t } = useTranslation('event')
   const history = useHistory()
 
@@ -144,6 +144,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
             setEvent={setEvent}
             close={() => closeModal()}
             sendMessage={sendMessage}
+            tags={tags}
           />}
         </div>
         <div className="container">
