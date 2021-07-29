@@ -4,10 +4,16 @@ import { useTranslation } from 'react-i18next'
 
 const Filterform = ({ values, setValues }) => {
   const { t } = useTranslation('common')
+  const style = { marginRight: 5 }
 
-  const muuta = (item) => {
+  const change = (item) => {
     const newValues = values.includes(item) ? values.filter(v => v !== item) : values.concat(item)
     setValues(newValues)
+  }
+
+  const setAll = (value) => {
+    if (value) setValues([1, 2, 3, 4, 5])
+    else setValues([])
   }
 
   return (
@@ -15,45 +21,66 @@ const Filterform = ({ values, setValues }) => {
       <p className="label">{t('filter-by-resource')} </p>
       <div className="field is-grouped">
         <Tooltip title={t('mathematic')} color={'geekblue'}>
-          <button
-            className={`button luma ${values.includes(1) ? 'active' : ''}`}
-            onClick={() => muuta(1)}
-          >
-            SUMMAMUTIKKA
-          </button>
+          <div className="field">
+            <button
+              style={style}
+              className={`button luma ${values.includes(1) ? 'active' : ''}`}
+              onClick={() => change(1)}
+            >
+              SUMMAMUTIKKA
+            </button>
+          </div>
         </Tooltip>
         <Tooltip title={t('physics')} color={'geekblue'}>
-          <button
-            className={`button luma ${values.includes(2) ? 'active' : ''}`}
-            onClick={() => muuta(2)}
-          >
-            FOTONI
-          </button>
+          <div className="field">
+            <button
+              style={style}
+              className={`button luma ${values.includes(2) ? 'active' : ''}`}
+              onClick={() => change(2)}
+            >
+              FOTONI
+            </button>
+          </div>
         </Tooltip>
         <Tooltip title={t('computer-science')} color={'geekblue'}>
-          <button
-            className={`button luma ${values.includes(3) ? 'active' : ''}`}
-            onClick={() => muuta(3)}
-          >
-            LINKKI
-          </button>
+          <div className="field">
+            <button
+              style={style}
+              className={`button luma ${values.includes(3) ? 'active' : ''}`}
+              onClick={() => change(3)}
+            >
+              LINKKI
+            </button>
+          </div>
         </Tooltip>
         <Tooltip title={t('geography')} color={'geekblue'}>
-          <button
-            className={`button luma ${values.includes(4) ? 'active' : ''}`}
-            onClick={() => muuta(4)}
-          >
-            GEOPISTE
-          </button>
+          <div className="field">
+            <button
+              style={style}
+              className={`button luma ${values.includes(4) ? 'active' : ''}`}
+              onClick={() => change(4)}
+            >
+              GEOPISTE
+            </button>
+          </div>
         </Tooltip>
         <Tooltip title={t('chemistry')} color={'geekblue'}>
-          <button
-            className={`button luma ${values.includes(5) ? 'active' : ''}`}
-            onClick={() => muuta(5)}
-          >
-            GADOLIN
-          </button>
+          <div className="field">
+            <button
+              style={style}
+              className={`button luma ${values.includes(5) ? 'active' : ''}`}
+              onClick={() => change(5)}
+            >
+              GADOLIN
+            </button>
+          </div>
         </Tooltip>
+        <div className="field">
+          {values.length === 5 ?
+            <button className="button luma" onClick={() => setAll(false)}>{t('remove-all')}</button>
+            :
+            <button className="button luma" onClick={() => setAll(true)}>{t('show-all')}</button>}
+        </div>
       </div>
     </div>
   )

@@ -1049,7 +1049,7 @@ input.hidden {
   top: 109px;
   z-index: 10;
   right: 10px;
-  width: 820px;
+  width: 920px;
   border: 1px solid #d9d9d9;
   border-radius: 7px;
 }
@@ -1125,4 +1125,10 @@ form.luma hr,
 
 .tags.eventpage {
   max-width: fit-content;
+}
+
+.tag-count {
+  margin-left: 165px;
+  position: absolute;
+  left: 0px
 }

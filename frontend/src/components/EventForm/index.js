@@ -2,10 +2,10 @@ import { useMutation } from '@apollo/client'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
-import { CREATE_EVENT } from '../../graphql/queries'
+import { CREATE_EVENT, TAGS } from '../../graphql/queries'
 import Form from './Form'
 
-export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeRange, event }) => {
+export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeRange, event, tags }) => {
   const { t } = useTranslation('event')
   const history = useHistory()
 
@@ -58,6 +58,7 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
   }
 
   const [create] = useMutation(CREATE_EVENT, {
+    refetchQueries: TAGS,
     onError: () => { sendMessage(t('event-creation-failed'), 'danger')},
     onCompleted: (data) => {
       data.createEvent.booked = false
@@ -67,7 +68,7 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
     }
   })
 
-  const onSubmit = (values, tags) => {
+  const onSubmit = values => {
     const gradelist = []
     values.grades.forEach((element, index) => {
       if (element) {
@@ -87,6 +88,7 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
         remotePlatformList.push(index + 1)
       }
     })
+    console.log(values.tags, 'values')
 
     create({
       variables: {
@@ -100,12 +102,7 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
         otherRemotePlatformOption: values.otherRemotePlatformOption,
         scienceClass: scienceClassList,
         desc: values.desc,
-        tags: values.tags.map((tag) =>
-          Object({
-            id: tags.data.getTags.find((t) => t.name === tag)?.id || null,
-            name: tag,
-          })
-        ),
+        tags: values.tags,
         waitingTime: values.waitingTime,
         extras: values.extras,
         duration: values.duration,
@@ -113,6 +110,7 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
       },
     })
   }
+
   return (
     <Form
       sendMessage={sendMessage}
@@ -121,6 +119,7 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
       closeEventForm={closeEventForm}
       newEventTimeRange={newEventTimeRange}
       event={event}
+      tags={tags}
     />
   )
 }

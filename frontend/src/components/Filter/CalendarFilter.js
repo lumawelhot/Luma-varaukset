@@ -1,15 +1,31 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Filterform from './Filterform'
 import FilterByVisitType from './FilterByVisitType'
 import FilterByGrades from './FilterByGrades'
-import { useTranslation } from 'react-i18next'
+import TagFilter from './TagFilter'
 
 const CalendarFilter = (props) => {
-  const { t } = useTranslation('common')
   const [resources, setResources] = useState([1,2,3,4,5])
   const [remote, setRemote] = useState(true)
   const [inPerson, setInPerson] = useState(true)
   const [grades, setGrades] = useState([1,2,3,4,5])
+  const [tags, setTags] = useState([])
+
+  useEffect(() => {
+    try {
+      let count = 0
+      if (resources.length < 5) count += 1
+      if (grades.length < 5) count += 1
+      if (!inPerson || !remote) count += 1
+      if (tags.length) count += 1
+      count ?
+        document.getElementById('filterButton').classList.add('active')
+        : document.getElementById('filterButton').classList.remove('active')
+      count ?
+        document.getElementById('filterCount').innerHTML = ` (${count})`
+        : document.getElementById('filterCount').innerHTML = ''
+    } catch (error) {null}
+  })
 
   const handleChange = (newValues) => {
     setResources(newValues)
@@ -22,29 +38,23 @@ const CalendarFilter = (props) => {
         ((inPerson!==false && event.inPersonVisit) || (remote!==false && event.remoteVisit))
         &&
         (grades.length ? event.grades.some(grade => grades.includes(grade)) : false)
+        &&
+        (!tags.length || tags.some(t => event.tags.map(tag => tag.name).includes(t)))
       })
     }
   }
 
-  const handleChangeRemote = (newValue) => {
-    setRemote(newValue)
+  const handleChangeType = (remote, inPerson) => {
+    setRemote(remote)
+    setInPerson(inPerson)
     props.setFilterFunction(() => (event) => {
       return (resources.length ? event.resourceids.some(r => resources.includes(r)) : false)
         &&
-        ((inPerson!==false && event.inPersonVisit) || (newValue!==false && event.remoteVisit))
+        ((inPerson!==false && event.inPersonVisit) || (remote!==false && event.remoteVisit))
         &&
         (grades.length ? event.grades.some(grade => grades.includes(grade)) : false)
-    })
-  }
-
-  const handleChangeInPerson = (newValue) => {
-    setInPerson(newValue)
-    props.setFilterFunction(() => (event) => {
-      return (resources.length ? event.resourceids.some(r => resources.includes(r)) : false)
-      &&
-      ((newValue!==false && event.inPersonVisit) || (remote!==false && event.remoteVisit))
-      &&
-      (grades.length ? event.grades.some(grade => grades.includes(grade)) : false)
+        &&
+        (!tags.length || tags.some(t => event.tags.map(tag => tag.name).includes(t)))
     })
   }
 
@@ -56,38 +66,29 @@ const CalendarFilter = (props) => {
       ((inPerson!==false && event.inPersonVisit) || (remote!==false && event.remoteVisit))
       &&
       (newValues.length ? event.grades.some(grade => newValues.includes(grade)) : false)
+      &&
+      (!tags.length || tags.some(t => event.tags.map(tag => tag.name).includes(t)))
     })
   }
 
-  const setAll = (selectAll) => {
-    if (selectAll) {
-      setResources([1,2,3,4,5])
-      setRemote(true)
-      setInPerson(true)
-      setGrades([1,2,3,4,5])
-      props.setFilterFunction(() => () => { return true })
-    } else {
-      setResources([])
-      setRemote(false)
-      setInPerson(false)
-      setGrades([])
-      props.setFilterFunction(() => () => { return false })
-    }
+  const handleChangeTags = (newTags) => {
+    setTags(newTags)
+    props.setFilterFunction(() => (event) => {
+      return (resources.length ? event.resourceids.some(r => resources.includes(r)) : false)
+      &&
+      ((inPerson!==false && event.inPersonVisit) || (remote!==false && event.remoteVisit))
+      &&
+      (grades.length ? event.grades.some(grade => grades.includes(grade)) : false)
+      &&
+      (!newTags.length || newTags.some(t => event.tags.map(tag => tag.name).includes(t)))
+    })
   }
-
-  const allSelected = (resources.length === 5 && remote && inPerson && grades.length === 5)
 
   return (
     <>
-      <div className="field">
-        {allSelected ?
-          <button className="button luma" onClick={() => setAll(false)}>{t('remove-all')}</button>
-          :
-          <button className="button luma" onClick={() => setAll(true)}>{t('show-all')}</button>}
-      </div>
+      <TagFilter suggestedTags={props.tags} setTags={handleChangeTags} tags={tags} />
       <Filterform values={resources} setValues={handleChange} />
-      <p></p>
-      <FilterByVisitType remote={remote} setRemote={handleChangeRemote} inPerson={inPerson} setInPerson={handleChangeInPerson} />
+      <FilterByVisitType remote={remote} setType={handleChangeType} inPerson={inPerson} />
       <FilterByGrades grades={grades} setGrades={handleChangeGrades} />
     </>
   )

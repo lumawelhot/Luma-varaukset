@@ -4,7 +4,7 @@ import 'antd/dist/antd.css'
 import LoginForm from './components/LoginForm'
 import MyCalendar from './MyCalendar'
 import { Switch, Route, useHistory } from 'react-router-dom'
-import { EVENTS, EVENT_STATUS, LOCK_EVENT } from './graphql/queries'
+import { EVENTS, EVENT_STATUS, LOCK_EVENT, TAGS } from './graphql/queries'
 import { useApolloClient, useLazyQuery, useMutation, useQuery, useSubscription } from '@apollo/client'
 import UserForm from './components/UserForm'
 import { CURRENT_USER } from './graphql/queries'
@@ -26,9 +26,11 @@ import { useTranslation } from 'react-i18next'
 const App = () => {
   const { t } = useTranslation('common')
   const history = useHistory()
+  const allTags = useQuery(TAGS)
   const [currentDate, setCurrentDate] = useState(null)
   const [currentView, setCurrentView] = useState('work_week')
   const [events, setEvents] = useState([])
+  const [tags, setTags] = useState([])
   const client = useApolloClient()
   const result = useQuery(EVENTS)
   const [showEventForm, setShowEventForm] = useState(false)
@@ -105,14 +107,29 @@ const App = () => {
 
     return events
   }
-  console.log(events)
 
   useEffect(() => {
-    if (result.data) {
+    if (result.data && allTags.data) {
+      setTags([])
       const events = result.data.getEvents.map(event => parseEvent(event)).flat() // Lisätty flat(), mikäli parseEvent palauttaa taulukon
+      const tags = []
+      allTags.data.getTags.forEach(tag => tags[tag.name] = 0)
+      events.forEach(event => {
+        event.tags.forEach(tag => {
+          if (!tags[tag.name]) {
+            tags[tag.name] = 1
+          } else tags[tag.name] += 1
+        })
+      })
+      const tagList = []
+      for (let key in tags) tagList.push({
+        name: key,
+        count: tags[key]
+      })
+      setTags(tagList)
       setEvents(events)
     }
-  }, [result])
+  }, [result, allTags])
 
   useEffect(() => {
     if (clickedEvent) {
@@ -194,7 +211,6 @@ const App = () => {
   }, [toasts])
 
   if (loading) return <div></div>
-
   return (
     <div className="App container">
       {!toasts.length && <div id="timer"></div>}
@@ -208,6 +224,7 @@ const App = () => {
             event={clickedEvent}
             setEvent={setClickedEvent}
             sendMessage={notify}
+            tags={tags}
           />
         </Route>
         <Route path='/book'>
@@ -223,7 +240,7 @@ const App = () => {
         </Route>
         <Route path='/event'>
           {currentUser &&
-            <EventForm sendMessage={notify} addEvent={addEvent} closeEventForm={closeEventForm} />
+            <EventForm sendMessage={notify} addEvent={addEvent} closeEventForm={closeEventForm} tags={tags} />
           }
           {!(currentUser && currentUser.isAdmin) && <p>{t('not-logged-in')}</p>}
         </Route>
@@ -280,6 +297,7 @@ const App = () => {
                 addEvent={addEvent}
                 newEventTimeRange={newEventTimeRange}
                 closeEventForm={closeEventForm}
+                tags={tags}
               />
             </div>
           }
@@ -294,6 +312,7 @@ const App = () => {
             currentView={currentView}
             setCurrentView={setCurrentView}
             addEvent={addEvent}
+            tags={tags}
           />
           <UserPage currentUser={currentUser} setShowEventForm={setShowEventForm} />
           {!currentUser &&

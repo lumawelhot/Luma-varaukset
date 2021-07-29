@@ -51,7 +51,8 @@ const MyCalendar = ({
   currentView,
   setCurrentView,
   sendMessage,
-  addEvent
+  addEvent,
+  tags
 }) => {
   const [showModifyModal, setShowModifyModal] = useState(false)
   const [showCopyModal, setShowCopyModal] = useState(false)
@@ -230,6 +231,7 @@ const MyCalendar = ({
           setEvent={setEvent}
           close={handleClose}
           sendMessage={sendMessage}
+          tags={tags}
         />}
       </div>
       <div className={`modal ${showCopyModal ? 'is-active':''}`}>
@@ -243,10 +245,15 @@ const MyCalendar = ({
             setEvent(null)
           }}
           closeEventForm={handleClose}
+          tags={tags}
         />}
       </div>
       <Wrapper elementId='filterdiv'>
-        <CalendarFilter filterFunction={filterFunction} setFilterFunction={setFilterFunction} />
+        <CalendarFilter
+          filterFunction={filterFunction}
+          setFilterFunction={setFilterFunction}
+          tags={tags}
+        />
       </Wrapper>
       <DragAndDropCalendar
         culture='fi'

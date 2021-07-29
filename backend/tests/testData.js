@@ -82,7 +82,7 @@ const eventDetails5 = {
   remoteVisit: true,
   inPersonVisit: false,
   grades: [1, 3, 4],
-  tags: [{ name: 'Matematiikka' }, { name: 'Fysiikka' }, { name: 'Ohjelmointi' }, { name: 'Maantiede' }, { name: 'Kemia' } ],
+  tags: ['Matematiikka', 'Fysiikka', 'Ohjelmointi', 'Maantiede', 'Kemia'],
   waitingTime: 15,
   duration: 60,
   extras: [],

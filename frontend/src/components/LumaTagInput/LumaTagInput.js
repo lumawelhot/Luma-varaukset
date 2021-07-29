@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import Tags from './Tags'
 
-const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[], setTags, style }) => {
+const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[], setTags, style, tagCount }) => {
 
   const [newTag, setNewTag] = useState('')
   const [focused, setFocused] = useState(false)
@@ -54,7 +54,7 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
       case 'Tab': {
         event.preventDefault()
         setNewTag('')
-        const value = items.length ? items[selected === -1 ? 0 : selected] : newTag
+        const value = items.length ? items[selected === -1 ? 0 : selected].name : newTag
         addTagIfNotExist(value)
         setSelected(-1)
         break
@@ -122,11 +122,10 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
       setFocused(false)
     }
   }
-
   const dropdownItems = newTag === '' ?
-    suggestedTags.filter(element => !tags.includes(element))
+    suggestedTags.sort((a, b) => b.count - a.count).filter(element => !tags.includes(element.name))
     :
-    suggestedTags.filter(element => !tags.includes(element)).filter(element => element.toLowerCase().includes(newTag.toLowerCase()))
+    suggestedTags.filter(element => !tags.includes(element.name)).filter(element => element.name.toLowerCase().includes(newTag.toLowerCase()))
 
   return (
     <div className='field' style={style} onBlur={handleBlur}>
@@ -154,14 +153,14 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
             </div>
             <div className='dropdown-menu' style={{ display: focused && dropdownItems.length > 0 ? 'block' : 'none' }}>
               <div className='dropdown-content'>
-                {dropdownItems.sort().map((suggestion,index) =>
+                {dropdownItems.slice(0, tagCount).map((suggestion,index) =>
                   <a
                     key={index}
                     className={`dropdown-item ${selected === index ? 'is-hovered' : ''}`}
                     style={{ background: selected === index ? '#f5f5f5' : '' }}
-                    onMouseDown={(e) => handleAddTag(suggestion,e)}
+                    onMouseDown={(e) => handleAddTag(suggestion.name,e)}
                   >
-                    <span>{suggestion}</span>
+                    <span>{suggestion.name}</span><span className='tag-count'>{suggestion.count}</span>
                   </a>
                 )}
               </div>
