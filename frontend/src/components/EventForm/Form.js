@@ -72,6 +72,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
                 setTags={tags => setFieldValue('tags', tags)}
                 prompt={t('tag')}
                 suggestedTags={suggestedTags}
+                tagCount={10}
               />
 
               <EventType />

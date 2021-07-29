@@ -69,9 +69,10 @@ const LumaToolbar = (props) => {
         {viewNamesGroup(messages)}
       </span>
 
-      <button type="button" className="button luma" style={{ marginLeft: 10, paddingTop: 3 }} onClick={() => setShowFilterOptions(!showFilterOptions)}>
+      <button id="filterButton" type="button" className="button luma" style={{ marginLeft: 10, paddingTop: 3 }} onClick={() => setShowFilterOptions(!showFilterOptions)}>
         <span className="icon is-small" style={{ position: 'relative', top: 2 }}><FaFilter/></span>
         <span>{t('filter')}</span>
+        <span id="filterCount"></span>
       </button>
       <div className="filterbox" style={{ display: showFilterOptions ? 'block' : 'none' }}>
         <div className="box">

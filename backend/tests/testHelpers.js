@@ -171,7 +171,7 @@ const CREATE_EVENT = gql `
     $remoteVisit: Boolean!,
     $inPersonVisit: Boolean!,
     $desc: String,
-    $tags: [TagInput],
+    $tags: [String],
     $waitingTime: Int!
     $extras: [ID]
     $duration: Int!
@@ -312,7 +312,7 @@ const UPDATE_EVENT = gql`
     $inPersonVisit: Boolean
     $remoteVisit: Boolean
     $extras: [ID]
-    $tags:[TagInput]
+    $tags:[String]
     $start:String
     $end:String
   ) {

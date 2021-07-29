@@ -59,6 +59,7 @@ const Form = ({ event, close, save, validate, tags }) => {
                 tags={values.tags}
                 setTags={tags => setFieldValue('tags', tags)}
                 suggestedTags={suggestedTags}
+                tagCount={10}
               />
               <EventType />
               {touched.inPersonVisit && touched.remoteVisit && errors.location ?

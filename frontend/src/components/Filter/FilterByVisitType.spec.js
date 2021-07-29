@@ -7,15 +7,13 @@ import '../../i18n'
 test('Checkboxes working', async () => {
   const remote = true
   const inPerson = true
-  const setRemote = jest.fn()
-  const setInPerson = jest.fn()
+  const setType = jest.fn()
 
   const component = render(
     <FilterByVisitType
       remote={remote}
       inPerson={inPerson}
-      setRemote={setRemote}
-      setInPerson={setInPerson}
+      setType={setType}
     />
   )
   await waitFor(() => new Promise((res) => setTimeout(res, 0)))
@@ -23,6 +21,5 @@ test('Checkboxes working', async () => {
   fireEvent.click(checkbox)
   checkbox = await component.findByText('Etäopetus')
   fireEvent.click(checkbox)
-  expect(setRemote.mock.calls).toHaveLength(1)
-  expect(setInPerson.mock.calls).toHaveLength(1)
+  expect(setType.mock.calls).toHaveLength(2)
 })

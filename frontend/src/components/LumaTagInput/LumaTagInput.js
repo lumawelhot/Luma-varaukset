@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import Tags from './Tags'
 
-const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[], setTags, style }) => {
+const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[], setTags, style, tagCount }) => {
 
   const [newTag, setNewTag] = useState('')
   const [focused, setFocused] = useState(false)
@@ -54,7 +54,7 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
       case 'Tab': {
         event.preventDefault()
         setNewTag('')
-        const value = items.length ? items[selected === -1 ? 0 : selected] : newTag
+        const value = items.length ? items[selected === -1 ? 0 : selected].name : newTag
         addTagIfNotExist(value)
         setSelected(-1)
         break
@@ -122,7 +122,6 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
       setFocused(false)
     }
   }
-  console.log(suggestedTags)
   const dropdownItems = newTag === '' ?
     suggestedTags.sort((a, b) => b.count - a.count).filter(element => !tags.includes(element.name))
     :
@@ -154,7 +153,7 @@ const LumaTagInput = ({ label, suggestedTags=[], prompt='Lisää tagi', tags=[],
             </div>
             <div className='dropdown-menu' style={{ display: focused && dropdownItems.length > 0 ? 'block' : 'none' }}>
               <div className='dropdown-content'>
-                {dropdownItems.slice(0, 5).map((suggestion,index) =>
+                {dropdownItems.slice(0, tagCount).map((suggestion,index) =>
                   <a
                     key={index}
                     className={`dropdown-item ${selected === index ? 'is-hovered' : ''}`}

@@ -56,5 +56,7 @@
   "close": "Sulje",
   "disabled": "Poissa käytöstä",
   "time-left": "Aikaa jäljellä",
-  "timeout-message": "Aika loppui! Lomakkeen lähettäminen ei onnistu jos joku muu avaa lomakkeen!"
+  "timeout-message": "Aika loppui! Lomakkeen lähettäminen ei onnistu jos joku muu avaa lomakkeen!",
+  "filter-by-tags": "Suodata tunnisteiden mukaan",
+  "add-tag": "Lisää tunniste"
 }

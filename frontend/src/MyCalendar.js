@@ -249,7 +249,11 @@ const MyCalendar = ({
         />}
       </div>
       <Wrapper elementId='filterdiv'>
-        <CalendarFilter filterFunction={filterFunction} setFilterFunction={setFilterFunction} />
+        <CalendarFilter
+          filterFunction={filterFunction}
+          setFilterFunction={setFilterFunction}
+          tags={tags}
+        />
       </Wrapper>
       <DragAndDropCalendar
         culture='fi'

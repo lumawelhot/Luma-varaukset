@@ -28,7 +28,7 @@ const testData = {
   desc: 'Algebra is one of the broad areas of mathematics, together with number theory, geometry and analysis.',
   start: addDays(set(new Date(), { hours: 9, minutes: 0, seconds: 0, milliseconds: 0 }), 16).toISOString(),
   end: addDays(set(new Date(), { hours: 15, minutes: 0, seconds: 0, milliseconds: 0 }), 16).toISOString(),
-  tags: [{ name: 'Matematiikka' }, { name: 'Fysiikka' }],
+  tags: ['Matematiikka', 'Fysiikka'],
   booked: false,
   inPersonVisit: true,
   remoteVisit: false,
@@ -135,11 +135,7 @@ describe('Event modification test', () => {
       mutation: UPDATE_EVENT,
       variables: {
         event: event.id,
-        tags: [{
-          name: 'Matematiikka'
-        }, {
-          name: 'Tira'
-        }]
+        tags: ['Matematiikka', 'Tira']
       }
     })
     const { data } = response

@@ -12,7 +12,6 @@ const addNewTags = async tags => {
       newTag.save()
     }
   })
-  console.log(result)
   return result
 }
 

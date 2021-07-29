@@ -1,19 +1,13 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-const FilterByVisitType = ({ inPerson, remote, setInPerson, setRemote }) => {
+const FilterByVisitType = ({ inPerson, remote, setType }) => {
   const { t } = useTranslation('common')
   const style = { marginRight: 5 }
 
   const setAll = (value) => {
-    if (value) {
-      setInPerson(true)
-      setRemote(true)
-    }
-    else {
-      setInPerson(false)
-      setRemote(false)
-    }
+    if (value) setType(true, true)
+    else setType(false, false)
   }
 
   return (
@@ -23,14 +17,14 @@ const FilterByVisitType = ({ inPerson, remote, setInPerson, setRemote }) => {
         <button
           style={style}
           className={`button luma ${inPerson ? 'active' : ''}`}
-          onClick={() => setInPerson(!inPerson)}
+          onClick={() => setType(remote, !inPerson)}
         >
           {t('inperson')}
         </button>
         <button
           style={style}
           className={`button luma ${remote ? 'active' : ''}`}
-          onClick={() => setRemote(!remote)}
+          onClick={() => setType(!remote, inPerson)}
         >
           {t('remote')}
         </button>

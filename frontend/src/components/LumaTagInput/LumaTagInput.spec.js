@@ -4,7 +4,7 @@ import { render, fireEvent } from '@testing-library/react'
 import LumaTagInput from './LumaTagInput'
 import '../../i18n'
 
-const tags = ['Matematiikka', 'Fysiikka', 'Ohjelmointi', 'Maantiede', 'Kemia']
+const tags = [{ name: 'Matematiikka' }, { name: 'Fysiikka' }, { name: 'Ohjelmointi' }, { name: 'Maantiede' }, { name:'Kemia' }]
 
 test('Renders content correctly', () => {
   const component = render(

@@ -14,7 +14,7 @@ When('valid information is entered', () => {
   cy.get('#title').type('Test event')
   cy.wait(500)
   cy.get('.autocomplete > .control > .input').type('Uusi tagi').type('{enter}')
-  cy.get('.autocomplete > .dropdown-menu > .dropdown-content > :nth-child(2) > span').click()
+  cy.get('.autocomplete > .dropdown-menu > .dropdown-content > :nth-child(2)').click()
   cy.wait(100)
   cy.get(':nth-child(13) > .checkbox2 > input').click()
   cy.wait(100)
@@ -50,7 +50,7 @@ Then('an event is succesfully created and success toast is shown', () => {
 When('too short a title is entered', () => {
   cy.get('#title').type('test')
   cy.get('.autocomplete > .control > .input').type('Uusi tagi').type('{enter}')
-  cy.get('.autocomplete > .dropdown-menu > .dropdown-content > :nth-child(2) > span').click()
+  cy.get('.autocomplete > .dropdown-menu > .dropdown-content > :nth-child(2)').click()
   cy.wait(100)
   cy.get('input[name="remoteVisit"]').click()
   cy.wait(100)

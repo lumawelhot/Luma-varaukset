@@ -127,7 +127,6 @@ const App = () => {
         count: tags[key]
       })
       setTags(tagList)
-      console.log(tagList, 'tagList')
       setEvents(events)
     }
   }, [result, allTags])
@@ -212,7 +211,6 @@ const App = () => {
   }, [toasts])
 
   if (loading) return <div></div>
-  console.log(tags, 'here we are')
   return (
     <div className="App container">
       {!toasts.length && <div id="timer"></div>}
@@ -239,6 +237,12 @@ const App = () => {
           {currentUser &&
             <div>{t('already-logged-in')}</div>
           }
+        </Route>
+        <Route path='/event'>
+          {currentUser &&
+            <EventForm sendMessage={notify} addEvent={addEvent} closeEventForm={closeEventForm} tags={tags} />
+          }
+          {!(currentUser && currentUser.isAdmin) && <p>{t('not-logged-in')}</p>}
         </Route>
         <Route path='/extras'>
           {currentUser &&
