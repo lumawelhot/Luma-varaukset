@@ -4,7 +4,7 @@ import 'antd/dist/antd.css'
 import LoginForm from './components/LoginForm'
 import MyCalendar from './MyCalendar'
 import { Switch, Route, useHistory } from 'react-router-dom'
-import { EVENTS, EVENT_STATUS, LOCK_EVENT, TAGS } from './graphql/queries'
+import { EVENTS, EVENTS_DELETED, EVENT_STATUS, LOCK_EVENT, TAGS } from './graphql/queries'
 import { useApolloClient, useLazyQuery, useMutation, useQuery, useSubscription } from '@apollo/client'
 import UserForm from './components/UserForm'
 import { CURRENT_USER } from './graphql/queries'
@@ -22,6 +22,7 @@ import VisitList from './components/VisitList'
 import ExtrasAdmin from './components/EventExtras/ExtrasAdmin'
 import FormList from './components/FormEditor/FormList'
 import { useTranslation } from 'react-i18next'
+import EventList from './components/EventList'
 
 const App = () => {
   const { t } = useTranslation('common')
@@ -49,6 +50,12 @@ const App = () => {
   })
 
   useSubscription(EVENT_STATUS, {
+    refetchQueries: EVENTS,
+    onSubscriptionData: () => result.refetch(),
+    onError: (error) => console.log(error)
+  })
+
+  useSubscription(EVENTS_DELETED, {
     refetchQueries: EVENTS,
     onSubscriptionData: () => result.refetch(),
     onError: (error) => console.log(error)
@@ -243,6 +250,11 @@ const App = () => {
             <EventForm sendMessage={notify} addEvent={addEvent} closeEventForm={closeEventForm} tags={tags} />
           }
           {!(currentUser && currentUser.isAdmin) && <p>{t('not-logged-in')}</p>}
+        </Route>
+        <Route path='/events'>
+          {currentUser && currentUser.isAdmin && result.data &&
+            <EventList events={result.data.getEvents} currentUser={currentUser} />
+          }
         </Route>
         <Route path='/extras'>
           {currentUser &&

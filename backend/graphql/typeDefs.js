@@ -191,6 +191,10 @@ const typeDefs = gql`
     deleteEvent(
       id: String!
     ): String
+    forceDeleteEvents(
+      events: [ID]
+      password: String!
+    ): [Event]
     deleteUser(
       id: String!
     ): String
@@ -213,6 +217,7 @@ const typeDefs = gql`
   }
   type Subscription {
     eventModified: Event
+    eventsDeleted: [Event]
   }
 `
 module.exports = typeDefs

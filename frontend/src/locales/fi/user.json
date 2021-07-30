@@ -50,5 +50,6 @@
   "password-changed": "Salasana muutettu",
   "delete": "Poista",
   "change-username": "Muuta käyttäjänimeä",
-  "username-changed": "Käyttäjätunnus muutettu"
+  "username-changed": "Käyttäjätunnus muutettu",
+  "event-list": "Tapahtuma lista"
 }

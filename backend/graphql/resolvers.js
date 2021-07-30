@@ -497,6 +497,35 @@ const resolvers = {
         throw new UserInputError('Event has visits!')
       }
     },
+    forceDeleteEvents: async (root, args, { currentUser }) => {
+      if (!currentUser || !currentUser.isAdmin) {
+        throw new AuthenticationError('not authenticatd or no admin priviledges')
+      }
+      const user = await User.findOne({ username: currentUser.username })
+      const passwordCorrect = user === null
+        ? false
+        : await bcrypt.compare(args.password, user.passwordHash)
+      if (!user || !passwordCorrect) {
+        throw new AuthenticationError('incorrect password')
+      }
+      const success = []
+      try {
+        for (const eventId of args.events) {
+          try {
+            const event = await Event.findById(eventId)
+            await Visit.deleteMany({ _id: event.visits })
+            await Event.deleteOne({ _id: event._id })
+            success.push(event)
+          } catch (e) { null }
+        }
+        pubsub.publish('EVENTS_DELETED', {
+          eventsDeleted: success
+        })
+        return success
+      } catch (error) {
+        throw new UserInputError('Error occured')
+      }
+    },
     deleteUser: async (root, args, { currentUser }) => {
       if (!currentUser || !currentUser.isAdmin) {
         throw new AuthenticationError('not authenticated or no admin priviledges')
@@ -582,6 +611,9 @@ const resolvers = {
         'EVENT_RESERVATION_CANCELLED',
         'EVENT_DELETED'
       ])
+    },
+    eventsDeleted: {
+      subscribe: () => pubsub.asyncIterator(['EVENTS_DELETED'])
     }
   }
 }

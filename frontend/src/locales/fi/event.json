@@ -93,5 +93,12 @@
   "failed-to-enable": "Käyttöönotto epäonnistui",
   "event-disabled": "Käytöstä poistaminen onnistui",
   "event-enabled": "Käyttöönotto onnistui",
-  "book-event": "Varaa vierailu"
+  "book-event": "Varaa vierailu",
+  "event": "Tapahtuma",
+  "events": "Tapahtumat",
+  "delete-choosen-events": "Poista valitut tapahtumat",
+  "back": "Takaisin",
+  "time": "Kellonaika",
+  "delete-events-confirm": "Tapahtumien poistamisen vahvistus",
+  "delete-events": "Poista tapahtumat"
 }
