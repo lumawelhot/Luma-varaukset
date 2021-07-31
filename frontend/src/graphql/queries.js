@@ -581,3 +581,22 @@ export const EVENT_STATUS = gql`
     }
   }
 `
+
+export const EVENTS_DELETED = gql`
+  subscription {
+    eventsDeleted {
+      id
+    }
+  }
+`
+
+export const FORCE_DELETE_EVENTS = gql`
+  mutation forceDeleteEvents($events: [ID], $password: String!) {
+    forceDeleteEvents(
+      events: $events
+      password: $password
+    ) {
+      id
+    }
+  }
+`

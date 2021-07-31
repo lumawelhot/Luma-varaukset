@@ -31,6 +31,11 @@ const UserPage = ({ currentUser, setShowEventForm }) => {
     history.push('/forms')
   }
 
+  const eventList = (event) => {
+    event.preventDefault()
+    history.push('/events')
+  }
+
   if (!currentUser) return <div></div>
 
   return (
@@ -48,9 +53,14 @@ const UserPage = ({ currentUser, setShowEventForm }) => {
         <button className="button luma" onClick={forms}>{t('forms')}</button>
       </p>
       {currentUser.isAdmin &&
-        <p className="control">
-          <button className="button luma" onClick={listUsers}>{t('user-list')}</button>
-        </p>
+        <>
+          <p className="control">
+            <button className="button luma" onClick={listUsers}>{t('user-list')}</button>
+          </p>
+          <p className="control">
+            <button className="button luma" onClick={eventList}>{t('event-list')}</button>
+          </p>
+        </>
       }
     </div>
   )
