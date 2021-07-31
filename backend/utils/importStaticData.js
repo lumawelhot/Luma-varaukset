@@ -39,6 +39,7 @@ const extras = [
 ]
 
 const importStaticEvents = async () => {
+  console.log('Importing static events')
   const staticEvents = require('../events.json')
   await Event.deleteMany({})
   await Extra.deleteMany({})
@@ -66,14 +67,16 @@ const importStaticEvents = async () => {
   })
 }
 
-console.log('Importing static events')
+if (!(process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test')) {
+  mongoose.connect('mongodb://luma-varaukset-db:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(async () => {
+      console.log('Connected!')
+      await importStaticEvents()
+      console.log('Done. Press Ctrl+C to disconnect.')
+    })
+    .catch((error) => {
+      console.log('Error connecting to MongoDB: ', error.message)
+    })
+}
 
-mongoose.connect('mongodb://luma-varaukset-db:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(async () => {
-    console.log('Connected!')
-    await importStaticEvents()
-    console.log('Done. Press Ctrl+C to disconnect.')
-  })
-  .catch((error) => {
-    console.log('Error connecting to MongoDB: ', error.message)
-  })
+module.exports = { importStaticEvents }

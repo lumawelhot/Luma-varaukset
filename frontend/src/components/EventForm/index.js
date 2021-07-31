@@ -88,7 +88,6 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
         remotePlatformList.push(index + 1)
       }
     })
-    console.log(values.tags, 'values')
 
     create({
       variables: {

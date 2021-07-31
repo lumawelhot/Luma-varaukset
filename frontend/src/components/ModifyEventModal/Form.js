@@ -37,7 +37,8 @@ const Form = ({ event, close, save, validate, tags }) => {
         extras: event.extras.map(extra => extra.id),
         tags: event.tags.map(tag => tag.name),
         startTime: new Date(event.eventStart),
-        endTime: new Date(event.eventEnd)
+        endTime: new Date(event.eventEnd),
+        customForm: event.customForm
       }}
       validate={validate}
       onSubmit={save}

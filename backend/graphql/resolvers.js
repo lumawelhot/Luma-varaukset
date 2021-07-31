@@ -13,7 +13,6 @@ const Visit = require('../models/visit')
 const Extra = require('../models/extra')
 const Tag = require('../models/tag')
 const Form = require('../models/forms')
-const FormSubmissions = require('../models/formSubmissions')
 const { addNewTags } = require('../utils/helpers')
 const { set } = require('date-fns')
 
@@ -75,40 +74,16 @@ const resolvers = {
       const forms = await Form.find({})
       return forms
     },
-    getFormSubmissions: async (root, args, { currentUser }) => {
-      if (!currentUser) {
-        throw new AuthenticationError('not authenticated or no credentials')
-      }
-      try {
-        const formSubmissions = await Form.findById(args.id).populate('submissions')
-        return formSubmissions
-      } catch (error) {
-        throw new UserInputError('Form submissions not found!')
-      }
-    },
-    getFormSubmission: async (root, args, { currentUser }) => {
-      if (!currentUser) {
-        throw new AuthenticationError('not authenticated or no credentials')
-      }
-      try {
-        const formValues = await FormSubmissions.findById(args.id)
-        return formValues
-      } catch (e) {
-        throw new UserInputError('Form submission not found!')
-      }
-    }
   },
   Visit: {
     event: async (root) => {
       const event = await Event.findById(root.event).populate('tags', { name: 1, id: 1 }).populate('extras')
       return Object.assign(event, { locked: event.reserved ? true : false })
     },
+    customFormData: (data) => data.customFormData ? JSON.stringify(data.customFormData) : null
   },
   Form: {
     fields: (form) => JSON.stringify(form.fields)
-  },
-  FormSubmissions: {
-    values: (submission) => JSON.stringify(submission.values)
   },
   Mutation: {
     resetPassword: async (root, args, { currentUser }) => {
@@ -349,7 +324,8 @@ const resolvers = {
         ...args,
         event: event,
         status: true,
-        extras: []
+        extras: [],
+        customFormData: args.customFormData ? JSON.parse(args.customFormData) : null
       })
       const extras = await Extra.find({ _id: { $in: args.extras } })
       visit.extras = extras
@@ -383,6 +359,7 @@ const resolvers = {
           pubsub.publish('EVENT_BOOKED', {
             eventModified: Object.assign(event, { locked: event.reserved ? true : false })
           })
+          savedVisit.customFormData ? savedVisit.customFormData = JSON.stringify(savedVisit.customFormData) : null
           return savedVisit
         }
       } catch (error) {
@@ -553,19 +530,6 @@ const resolvers = {
         return 'Deleted form with ID ' + args.id
       } catch (error) {
         throw new UserInputError('Form deletion failed')
-      }
-    },
-    createFormSubmission: async (root, args) => {
-      try {
-        const form = await Form.findById(args.formID)
-        const newFormSubmissions = new FormSubmissions({
-          form,
-          values: JSON.parse(args.values)
-        })
-        const savedFormSubmissions = await newFormSubmissions.save()
-        return savedFormSubmissions
-      } catch (error) {
-        throw new UserInputError(error.message, { invalidArgs: args })
       }
     }
   },

@@ -19,6 +19,8 @@
   "filter": "Suodata",
   "extra-name": "Lisäpalvelun nimi",
   "extra-resource": "Valitse lisäpalvelun tiedeluokat",
+  "extra-duration-on-premises": "Kesto lähi",
+  "extra-duration-remote": "Kesto etä",
   "submit": "Lähetä",
   "extras": "Lisäpalvelut",
   "name": "Nimi",

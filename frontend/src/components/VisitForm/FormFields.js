@@ -32,7 +32,7 @@ export const TextField = (field) => {
           className={`input ${className}`}
           onChange={handleChange}
           onBlur={handleBlur}
-          value={values[fieldName]}
+          value={values[fieldName] || ''}
           autoComplete={autocomplete}
         />
       }
@@ -63,7 +63,7 @@ export const TextArea = (field) => {
 }
 
 export const RadioButton = (field) => {
-  const { form, label, onChange, className, style, id, checked } = field
+  const { form, label, onChange, className, style, id, value } = field
   const { handleChange } = form
   return (
     <div className="control" style={style}>
@@ -71,7 +71,7 @@ export const RadioButton = (field) => {
         <input
           name={id}
           type="radio"
-          checked={checked}
+          value={value}
           onChange={onChange ? onChange : handleChange}
         /> {label}
       </label>
@@ -80,7 +80,7 @@ export const RadioButton = (field) => {
 }
 
 export const CheckBox = (field) => {
-  const { form, label, fieldName, onChange, className, style, index } = field
+  const { form, label, fieldName, onChange, className, style, index, value } = field
   const { handleChange, values, touched, errors } = form
   return (
     <>
@@ -89,10 +89,50 @@ export const CheckBox = (field) => {
           <input
             type="checkbox"
             name={fieldName}
+            value={value}
             checked = {typeof index !== 'boolean' ?
               index !== undefined ? values[fieldName][index] : values[fieldName]
               : index
             }
+            onChange={onChange ? onChange : handleChange}
+          /> {label}
+        </label>
+      </div>
+      {touched[fieldName] && errors[fieldName] ? (
+        <p className="help is-danger">{errors[fieldName]}</p>
+      ) : null}
+    </>
+  )
+}
+
+export const CustomFormRadioButton = (field) => {
+  const { form, label, onChange, className, style, id, value } = field
+  const { handleChange } = form
+  return (
+    <div className="control" style={style}>
+      <label className={className}>
+        <input
+          name={id}
+          type="radio"
+          value={value}
+          onChange={onChange ? onChange : handleChange}
+        /> {label}
+      </label>
+    </div>
+  )
+}
+
+export const CustomFormCheckBox = (field) => {
+  const { form, label, fieldName, onChange, className, style, value } = field
+  const { handleChange, touched, errors } = form
+  return (
+    <>
+      <div className="control" style={style}>
+        <label className={className}>
+          <input
+            type="checkbox"
+            name={fieldName}
+            value={value}
             onChange={onChange ? onChange : handleChange}
           /> {label}
         </label>

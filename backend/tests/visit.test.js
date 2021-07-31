@@ -39,6 +39,7 @@ const visitWithoutUser = async (event, start, end) => {
       token: 'token',
       startTime: new Date(start).toISOString(),
       endTime: new Date(end).toISOString(),
+      customFormData: JSON.stringify([{ name: 'question1', value: 'answer2' }])
     }
   })
 }
@@ -61,7 +62,8 @@ const visitWithUser = async (event, start, end) => {
       startTime: new Date(start).toISOString(),
       endTime: new Date(end).toISOString(),
       dataUseAgreement: true,
-      token: 'token'
+      token: 'token',
+      customFormData: JSON.stringify([{ name: 'question1', value: 'answer2' }])
     }
   })
 }
@@ -122,7 +124,8 @@ beforeEach(async () => {
     status: true,
     startTime: availableEvent.start,
     endTime: availableEvent.end,
-    reserved: 'token'
+    reserved: 'token',
+    customFormData: JSON.stringify([{ name: 'question1', value: 'answer2' }])
   }
 
   testVisit = new Visit(testVisitData)
@@ -169,7 +172,7 @@ describe('Visit model test. Visit', () => {
   })
 })
 
-describe('Visit server test. Event', () => {
+describe('Visit server test. Visit', () => {
 
   it('can be booked by anonymous user', async () => {
     const event = availableEvent
@@ -289,6 +292,7 @@ describe('Visits', () => {
 
     expect(getVisits.length).toBe(1)
     expect(getVisits[0].clientName).toBe('Teacher')
+    console.log(getVisits)
   })
 
   it('aren\'t given to anonymous user', async () => {

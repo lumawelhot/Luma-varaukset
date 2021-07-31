@@ -67,6 +67,7 @@ const typeDefs = gql`
     remoteVisit: Boolean!
     dataUseAgreement: Boolean!
     remotePlatform: String
+    customFormData: String
   }
   type Token {
     value: String!
@@ -75,11 +76,6 @@ const typeDefs = gql`
     id: ID!
     name: String!
     fields: String!
-  }
-  type FormSubmissions {
-    id: ID
-    form: Form
-    values: String
   }
   type Query {
     getUsers: [User]!
@@ -91,8 +87,6 @@ const typeDefs = gql`
     getExtras: [Extra]!
     getForm(id: ID): Form
     getForms: [Form]
-    getFormSubmissions(formID: ID): FormSubmissions
-    getFormSubmission(id: ID): FormSubmissions
   }
   type Mutation {
     lockEvent(
@@ -171,6 +165,7 @@ const typeDefs = gql`
       dataUseAgreement: Boolean!
       remotePlatform: String
       token: String!
+      customFormData: String
     ): Visit
     disableEvent(
       event: ID!
@@ -198,10 +193,6 @@ const typeDefs = gql`
       name: String!
       fields: String
     ): Form
-    createFormSubmission(
-      formID: ID
-      values: String
-    ): FormSubmissions
     updateForm(
       id: ID!
       name: String!

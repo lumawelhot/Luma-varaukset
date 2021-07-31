@@ -36,6 +36,20 @@ const AddExtraForm = ({ handleAdd }) => {
               style={{ width: 300 }}
               component={TextField}
             />
+            <Field
+              label={t('extra-duration-on-premises')}
+              fieldName='inPersonLength'
+              type='number'
+              style={{ width: 300 }}
+              component={TextField}
+            />
+            <Field
+              label={t('extra-duration-remote')}
+              fieldName='remoteLength'
+              type='number'
+              style={{ width: 300 }}
+              component={TextField}
+            />
             <ScienceClasses
               label={t('extra-resource')}
               values={values}

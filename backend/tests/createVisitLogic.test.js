@@ -23,7 +23,8 @@ const visitResponse = async (event, start, end) => {
       ...details,
       startTime: start.toISOString(),
       endTime: end.toISOString(),
-      token: 'token'
+      token: 'token',
+      customFormData: '[{"name": "customQuestion", "value": "answer"}]'
     }
   })
 }

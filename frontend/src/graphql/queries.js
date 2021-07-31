@@ -213,6 +213,7 @@ export const CREATE_VISIT = gql`
     $extras: [ID]
     $remotePlatform: String
     $token: String!
+    $customFormData: String
     ) {
     createVisit(
       event: $event
@@ -231,6 +232,7 @@ export const CREATE_VISIT = gql`
       extras: $extras
       remotePlatform: $remotePlatform
       token: $token
+      customFormData: $customFormData
     ) {
       id
       event {
@@ -248,6 +250,7 @@ export const CREATE_VISIT = gql`
       participants
       remotePlatform
       status
+      customFormData
     }
   }
 `
@@ -278,6 +281,7 @@ export const FIND_VISIT = gql`
       remoteVisit
       status
       remotePlatform
+      customFormData
     }
   }
 `

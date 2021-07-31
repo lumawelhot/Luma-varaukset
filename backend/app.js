@@ -125,15 +125,17 @@ const createTags = async () => {
   await extra3.save()
 } */
 
-const staticEvents = require('./events.json')
-const createEvents = async () => {
-  await Event.deleteMany({})
-  const exampleTag = await Tag.findOne({ name: 'Maantiede' })
-  staticEvents.forEach(event => {
-    const newEvent = new Event({ ...event, tags: [exampleTag] })
-    newEvent.save()
-  })
-}
+// const staticEvents = require('./events.json')
+// const createEvents = async () => {
+//   await Event.deleteMany({})
+//   const exampleTag = await Tag.findOne({ name: 'Maantiede' })
+//   staticEvents.forEach(event => {
+//     const newEvent = new Event({ ...event, tags: [exampleTag] })
+//     newEvent.save()
+//   })
+// }
+
+const { importStaticEvents }  = require('./utils/importStaticData')
 
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   const { MongoMemoryServer } = require('mongodb-memory-server')
@@ -147,7 +149,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
         await createAdmin()
         await createEmployee()
         await createTags()
-        await createEvents()
+        await importStaticEvents()
         //await createExtras()
       })
       .catch((error) => {

@@ -55,6 +55,7 @@ const VisitPage = ({ sendMessage }) => {
         parsedVisit.startTime=parseISO(data.findVisit.startTime)
         parsedVisit.endTime=parseISO(data.findVisit.endTime)
       }
+      parsedVisit.customFormData = JSON.parse(parsedVisit.customFormData)
       setVisit(parsedVisit)
     }
   }, [data])
@@ -120,6 +121,12 @@ const VisitPage = ({ sendMessage }) => {
 
               {visit.remoteVisit &&
               <p><strong>{t('selected-remote-platform')}:</strong> {visit.remotePlatform}</p>
+              }
+
+              {!!visit.customFormData &&
+                visit.customFormData.map((f,index) =>
+                  <p key={index}><strong>{f.name}:</strong> {f.value}</p>
+                )
               }
             </div>
 
