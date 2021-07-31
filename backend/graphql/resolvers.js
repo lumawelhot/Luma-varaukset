@@ -15,7 +15,7 @@ const Tag = require('../models/tag')
 const Form = require('../models/forms')
 const FormSubmissions = require('../models/formSubmissions')
 const { addNewTags } = require('../utils/helpers')
-const { set } = require('date-fns')
+const { set, sub } = require('date-fns')
 
 const { PubSub } = require('graphql-subscriptions')
 const pubsub = new PubSub()
@@ -26,13 +26,20 @@ const resolvers = {
       const users = await User.find({})
       return users
     },
-    getEvents: async () => {
-      const date = new Date()
-      date.setDate(date.getDate() - 90)
-      const events = await Event.find({ end: { $gt: date.toISOString() } })
-        .populate('tags', { name: 1, id: 1 })
-        .populate('visits')
-        .populate('extras')
+    getEvents: async (root, args, { currentUser }) => {
+      let events
+      if (currentUser && currentUser.isAdmin) {
+        events = await Event.find({})
+          .populate('tags', { name: 1, id: 1 })
+          .populate('visits')
+          .populate('extras')
+      } else {
+        const date = sub(new Date(), { days: 90 })
+        events = await Event.find({ end: { $gt: date.toISOString() } })
+          .populate('tags', { name: 1, id: 1 })
+          .populate('visits')
+          .populate('extras')
+      }
       return events.map(event => Object.assign(event, { locked: event.reserved ? true : false }))
     },
     getTags: async () => {
@@ -497,6 +504,35 @@ const resolvers = {
         throw new UserInputError('Event has visits!')
       }
     },
+    forceDeleteEvents: async (root, args, { currentUser }) => {
+      if (!currentUser || !currentUser.isAdmin) {
+        throw new AuthenticationError('not authenticatd or no admin priviledges')
+      }
+      const user = await User.findOne({ username: currentUser.username })
+      const passwordCorrect = user === null
+        ? false
+        : await bcrypt.compare(args.password, user.passwordHash)
+      if (!user || !passwordCorrect) {
+        throw new AuthenticationError('incorrect password')
+      }
+      const success = []
+      try {
+        for (const eventId of args.events) {
+          try {
+            const event = await Event.findById(eventId)
+            await Visit.deleteMany({ _id: event.visits })
+            await Event.deleteOne({ _id: event._id })
+            success.push(event)
+          } catch (e) { null }
+        }
+        pubsub.publish('EVENTS_DELETED', {
+          eventsDeleted: success
+        })
+        return success
+      } catch (error) {
+        throw new UserInputError('Error occured')
+      }
+    },
     deleteUser: async (root, args, { currentUser }) => {
       if (!currentUser || !currentUser.isAdmin) {
         throw new AuthenticationError('not authenticated or no admin priviledges')
@@ -582,6 +618,9 @@ const resolvers = {
         'EVENT_RESERVATION_CANCELLED',
         'EVENT_DELETED'
       ])
+    },
+    eventsDeleted: {
+      subscribe: () => pubsub.asyncIterator(['EVENTS_DELETED'])
     }
   }
 }

@@ -484,6 +484,17 @@ const UNLOCK_EVENT = gql`
   }
 `
 
+const FORCE_DELETE_EVENTS = gql`
+  mutation forceDeleteEvents($events: [ID], $password: String!) {
+    forceDeleteEvents(
+      events: $events
+      password: $password
+    ) {
+      id
+    }
+  }
+`
+
 module.exports = {
   LOGIN,
   GET_ALL_VISITS,
@@ -509,6 +520,7 @@ module.exports = {
   CHANGE_USERNAME,
   LOCK_EVENT,
   UNLOCK_EVENT,
+  FORCE_DELETE_EVENTS,
   createTimeList,
   createAvailableList,
   createDate,
