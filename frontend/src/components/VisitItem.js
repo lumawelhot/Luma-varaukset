@@ -7,6 +7,8 @@ const VisitItem = ({ item, close }) => {
   if (!item) return <div></div>
 
   const { t } = useTranslation('visit')
+  const customFormData = item.customFormData ? JSON.parse(item.customFormData) : null
+
   return (
     <div className="modal-card">
       <header className="modal-card-head">
@@ -22,6 +24,9 @@ const VisitItem = ({ item, close }) => {
         <p>{`${t('client-email')}: ${item.clientEmail}`}</p>
         <p>{`${t('client-phone')}: ${item.clientPhone}`}</p>
         <p>{`${t('school')}: ${item.schoolName}, ${item.schoolLocation}`}</p>
+        { customFormData && customFormData.map((f,index) =>
+          <p key={index}>{f.name}: {f.value}</p>
+        )}
       </section>
       <footer className="modal-card-foot">
         <button className="button" onClick={close}>{t('close')}</button>

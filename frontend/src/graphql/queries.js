@@ -108,6 +108,7 @@ export const VISITS = gql`
       startTime
       endTime
       remotePlatform
+      customFormData
     }
   }
 `
