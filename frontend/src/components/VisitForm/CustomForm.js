@@ -46,6 +46,11 @@ const CustomForm = ({ formid }) => {
 
   const fields = JSON.parse(data.getForm.fields)
 
+  // eslint-disable-next-line no-unused-vars
+  const submit = () => {
+    alert('Submit called on customform')
+  }
+
   return (
     <>
       {fields.map((field,index) =>

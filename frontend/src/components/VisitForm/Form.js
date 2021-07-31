@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { forwardRef, useRef } from 'react'
 import { Formik, Field } from 'formik'
 import format from 'date-fns/format'
 import { Tooltip } from 'antd'
@@ -16,7 +16,16 @@ import { UNLOCK_EVENT } from '../../graphql/queries'
 let selectedEvent
 let eventPlatforms
 
+const CustomFormComponent = forwardRef(props => {
+  return (
+    <CustomForm formid={props.formid}/>
+  )
+})
+
+CustomFormComponent.displayName = 'CustomFormComponent'
+
 const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
+  const customFormRef = useRef()
   const { t } = useTranslation(['visit', 'common'])
   const history = useHistory()
   const [unlockEvent] = useMutation(UNLOCK_EVENT, {
@@ -79,6 +88,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
   const eventGrades = filterEventGrades(event.grades)
   const eventClass = filterEventClass(event.resourceids)
   eventPlatforms = filterEventPlatforms(event.remotePlatforms, event.otherRemotePlatformOption)
+
   return (
     <Formik
       initialValues={{
@@ -102,7 +112,11 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
         finalEndTime: new Date(add(event.start, { minutes: event.duration }))
       }}
       validate={(values) => validate(values, selectedEvent, eventPlatforms)}
-      onSubmit={(values) => onSubmit(values, eventPlatforms)}
+      onSubmit={(values) => {
+        onSubmit(values, eventPlatforms)
+        customFormRef.current.submit()
+      }
+      }
     >
       {({ handleSubmit, handleBlur, setFieldValue, touched, errors, values }) => {
 
@@ -248,8 +262,11 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                     {touched.startTime && errors.startTime ? (
                       <p className="help is-danger">{errors.startTime}</p>
                     ) : null}
-                    <hr></hr>
-                    <CustomForm formid={event.customForm}/>
+                    {!!event.customForm &&
+                    <>
+                      <hr></hr>
+                      <CustomFormComponent ref={customFormRef} formid={event.customForm}/>
+                    </>}
                     <hr></hr>
 
                     <Field
