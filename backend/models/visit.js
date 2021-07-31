@@ -42,11 +42,11 @@ const visitSchema = mongoose.Schema({
     required: true,
   },
   startTime: {
-    type: String,
+    type: Date,
     required: true
   },
   endTime: {
-    type: String,
+    type: Date,
     required: true
   },
   inPersonVisit: {
@@ -80,7 +80,9 @@ const visitSchema = mongoose.Schema({
 visitSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
-    returnedObject.customFormData = document.customFormData ? JSON.stringify(document.customFormData) : null
+    returnedObject.customFormData = returnedObject.customFormData ? JSON.stringify(document.customFormData) : null
+    returnedObject.startTime = returnedObject.startTime.toISOString()
+    returnedObject.endTime = returnedObject.endTime.toISOString()
     delete returnedObject._id
     delete returnedObject.__v
   }

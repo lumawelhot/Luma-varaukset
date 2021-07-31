@@ -97,6 +97,8 @@ const GET_ALL_VISITS = gql `
       event {
         id
       }
+      startTime
+      endTime
       clientName
       schoolName
       schoolLocation
