@@ -292,7 +292,6 @@ describe('Visits', () => {
 
     expect(getVisits.length).toBe(1)
     expect(getVisits[0].clientName).toBe('Teacher')
-    console.log(getVisits)
   })
 
   it('aren\'t given to anonymous user', async () => {

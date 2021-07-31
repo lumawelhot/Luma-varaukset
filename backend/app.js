@@ -11,7 +11,7 @@ const cors = require('cors')
 const jwt = require('jsonwebtoken')
 
 const User = require('./models/user')
-const Event = require('./models/event')
+// const Event = require('./models/event')
 const Tag = require('./models/tag')
 //const Extra = require('./models/tag')
 const config = require('./utils/config')
@@ -178,7 +178,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
     .then(() => {
       console.log('connected to MongoDB, initializing database')
       createAdmin()
-      createEvents()
+      //createEvents()
     })
   const db = mongoose.connection
   db.on('error', console.error.bind(console, 'MongoDB connection error:'))

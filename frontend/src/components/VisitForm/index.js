@@ -40,7 +40,7 @@ export const VisitForm = ({ sendMessage, event, token }) => {
     variables: { id: event.customForm },
     onError: (error) => console.log('virheviesti: ', error),
   })
-    : null
+    : { loading: null, error: null, data: null }
 
   const [create, result] = useMutation(CREATE_VISIT, {
     refetchQueries: [{ query: EVENTS }],
@@ -122,6 +122,7 @@ export const VisitForm = ({ sendMessage, event, token }) => {
   }
 
   const parseCustomFormData = (values) => {
+    if (!customFormFields) return null
     return JSON.stringify(customFormFields.map((f,index) => {
       return {
         name: f.name,

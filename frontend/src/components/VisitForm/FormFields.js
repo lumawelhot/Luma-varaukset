@@ -63,7 +63,7 @@ export const TextArea = (field) => {
 }
 
 export const RadioButton = (field) => {
-  const { form, label, onChange, className, style, id, value } = field
+  const { form, label, onChange, className, style, id } = field
   const { handleChange } = form
   return (
     <div className="control" style={style}>
@@ -71,7 +71,6 @@ export const RadioButton = (field) => {
         <input
           name={id}
           type="radio"
-          value={value}
           onChange={onChange ? onChange : handleChange}
         /> {label}
       </label>
@@ -80,7 +79,7 @@ export const RadioButton = (field) => {
 }
 
 export const CheckBox = (field) => {
-  const { form, label, fieldName, onChange, className, style, index, value } = field
+  const { form, label, fieldName, onChange, className, style, index } = field
   const { handleChange, values, touched, errors } = form
   return (
     <>
@@ -89,7 +88,6 @@ export const CheckBox = (field) => {
           <input
             type="checkbox"
             name={fieldName}
-            value={value}
             checked = {typeof index !== 'boolean' ?
               index !== undefined ? values[fieldName][index] : values[fieldName]
               : index
