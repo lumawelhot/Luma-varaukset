@@ -14,11 +14,11 @@ const eventSchema = mongoose.Schema({
     type: Boolean,
   },
   start: {
-    type: String,
+    type: Date,
     required: true,
   },
   end: {
-    type: String,
+    type: Date,
     required: true,
   },
   resourceids: {
@@ -91,6 +91,8 @@ const eventSchema = mongoose.Schema({
 eventSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
+    returnedObject.start = document.start.toISOString()
+    returnedObject.end = document.end.toISOString()
     delete returnedObject._id
     delete returnedObject.__v
   }

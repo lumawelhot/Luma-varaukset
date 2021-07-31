@@ -34,12 +34,12 @@ const resolvers = {
           .populate('extras')
       } else {
         const date = sub(new Date(), { days: 90 })
-        events = await Event.find({ end: { $gt: date.toISOString() } })
+        events = await Event.find({ end: { $gt: date } })
           .populate('tags', { name: 1, id: 1 })
           .populate('visits')
           .populate('extras')
       }
-      return events.map(event => Object.assign(event, { locked: event.reserved ? true : false }))
+      return events.map(event => Object.assign(event.toJSON(), { locked: event.reserved ? true : false }))
     },
     getTags: async () => {
       const tags = await Tag.find({})
@@ -57,7 +57,7 @@ const resolvers = {
     findVisit: async (root, args) => {
       try {
         const visit = await Visit.findById(args.id).populate('extras')
-        return visit
+        return visit.toJSON()
       } catch (e) {
         throw new UserInputError('Varausta ei löytynyt!')
       }
@@ -87,7 +87,8 @@ const resolvers = {
       const event = await Event.findById(root.event).populate('tags', { name: 1, id: 1 }).populate('extras')
       return Object.assign(event, { locked: event.reserved ? true : false })
     },
-    customFormData: (data) => data.customFormData ? JSON.stringify(data.customFormData) : null
+    //startTime: (data) => data.startTime.toISOString(),
+    //endTime: (data) => data.endTime.toISOString()
   },
   Form: {
     fields: (form) => JSON.stringify(form.fields)
@@ -188,9 +189,9 @@ const resolvers = {
       event.tags = mongoTags
       await event.save()
       pubsub.publish('EVENT_CREATED', {
-        eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+        eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
       })
-      return Object.assign(event, { locked: event.reserved ? true : false })
+      return Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
     },
     disableEvent: async (root, args, { currentUser }) => {
       if (!currentUser) throw new AuthenticationError('not authenticated')
@@ -200,9 +201,9 @@ const resolvers = {
       event.disabled = true
       event.save()
       pubsub.publish('EVENT_DISABLED', {
-        eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+        eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
       })
-      return Object.assign(event, { locked: event.reserved ? true : false })
+      return Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
     },
     enableEvent: async (root, args, { currentUser }) => {
       if (!currentUser) throw new AuthenticationError('not authenticated')
@@ -213,9 +214,9 @@ const resolvers = {
       event.reserved = null
       event.save()
       pubsub.publish('EVENT_ENABLED', {
-        eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+        eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
       })
-      return Object.assign(event, { locked: event.reserved ? true : false })
+      return Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
     },
     lockEvent: async (root, args) => {
       const event = await Event.findById(args.event)
@@ -228,13 +229,13 @@ const resolvers = {
         event.reserved = null
         event.save()
         pubsub.publish('EVENT_UNLOCKED', {
-          eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+          eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
         })
       }, 305000)
 
       await event.save()
       pubsub.publish('EVENT_LOCKED', {
-        eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+        eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
       })
       return {
         event: event.id,
@@ -248,7 +249,7 @@ const resolvers = {
       event.reserved = null
       await event.save()
       pubsub.publish('EVENT_UNLOCKED', { eventModified: event })
-      return Object.assign(event, { locked: event.reserved ? true : false })
+      return Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
     },
     modifyEvent: async (root, args, { currentUser }) => {
       const extras = await Extra.find({ _id: { $in: args.extras } })
@@ -292,15 +293,15 @@ const resolvers = {
         args.start ? event.start = args.start : null
         args.end ? event.end = args.end : null
         event.availableTimes = [{
-          startTime: args.start ? args.start : event.start,
-          endTime: args.end ? args.end : event.end
+          startTime: args.start ? args.start : event.start.toISOString(),
+          endTime: args.end ? args.end : event.end.toISOString()
         }]
       }
       await event.save()
       pubsub.publish('EVENT_MODIFIED', {
-        eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+        eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
       })
-      return Object.assign(event, { locked: event.reserved ? true : false })
+      return Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
     },
     createVisit: async (root, args, { currentUser }) => {
       const event = await Event.findById(args.event).populate('visits', { startTime: 1, endTime: 1 })
@@ -364,7 +365,7 @@ const resolvers = {
           event.reserved = null
           await event.save()
           pubsub.publish('EVENT_BOOKED', {
-            eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+            eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
           })
           savedVisit.customFormData ? savedVisit.customFormData = JSON.stringify(savedVisit.customFormData) : null
           return savedVisit
@@ -409,7 +410,7 @@ const resolvers = {
         await visit.save()
         await event.save()
         pubsub.publish('EVENT_RESERVATION_CANCELLED', {
-          eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+          eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
         })
         return visit
       } catch (error) {

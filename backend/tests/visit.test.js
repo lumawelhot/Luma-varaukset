@@ -122,8 +122,8 @@ beforeEach(async () => {
     ...details,
     event: availableEvent,
     status: true,
-    startTime: availableEvent.start,
-    endTime: availableEvent.end,
+    startTime: availableEvent.start.toISOString(),
+    endTime: availableEvent.end.toISOString(),
     reserved: 'token',
     customFormData: JSON.stringify([{ name: 'question1', value: 'answer2' }])
   }
@@ -289,7 +289,6 @@ describe('Visits', () => {
       query: GET_ALL_VISITS
     })
     const { getVisits } = data
-
     expect(getVisits.length).toBe(1)
     expect(getVisits[0].clientName).toBe('Teacher')
   })

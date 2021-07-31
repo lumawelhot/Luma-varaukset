@@ -51,10 +51,9 @@ const calculateAvailabelTimes = (visitTimes, eventTime, waitingTime, duration) =
 
 const formatAvailableTimes = (availableTimes) => {
   return availableTimes.map(time => {
-    if (typeof time.startTime === 'string') return time
     return {
-      startTime: time.startTime.toISOString(),
-      endTime: time.endTime.toISOString()
+      startTime: new Date(time.startTime).toISOString(),
+      endTime: new Date(time.endTime).toISOString()
     }
   })
 }
