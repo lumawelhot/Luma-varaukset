@@ -47,7 +47,8 @@ const singleItem = [
             'status':true,
             'startTime': new Date().toISOString(),
             'endTime': new Date().toISOString(),
-            'remotePlatform': 'Zoom'
+            'remotePlatform': 'Zoom',
+            'customFormData': null
           }
         ],
       },
