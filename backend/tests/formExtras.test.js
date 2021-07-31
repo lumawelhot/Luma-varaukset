@@ -5,10 +5,9 @@ const bcrypt = require('bcrypt')
 
 const User = require('../models/user')
 const Form = require('../models/forms')
-const FormSubmissionsModel = require('../models/formSubmissions')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
-const { CREATE_FORM, UPDATE_FORM, DELETE_FORM, CREATE_FORM_SUBMISSION } = require('./testHelpers')
+const { CREATE_FORM, UPDATE_FORM, DELETE_FORM } = require('./testHelpers')
 
 let adminUserData
 let serverAdmin
@@ -24,7 +23,6 @@ beforeAll(async () => {
       console.log('connection error: ', error.message)
     })
   await User.deleteMany({})
-  await FormSubmissionsModel.deleteMany({})
   await Form.deleteMany({})
 
   const adminPassword = await bcrypt.hash('admin-password', 10)
@@ -129,70 +127,8 @@ describe('Form server test', () => {
   })
 })
 
-describe('Form Submissions model test', () => {
-  it('Form submission can be created', async () => {
-    const formData = {
-      name: 'Test form for submissions',
-      fields: [
-        { name: 'username',
-          type: 'text',
-          validation: { required: true, min: 1, max: null },
-        },
-        { name: 'email',
-          type: 'text',
-          validation: { required: true, min: 5, max: null, email: true },
-        }
-      ]
-    }
-    const form = new Form(formData)
-    const savedForm = await form.save()
-    const submissionData = {
-      form: savedForm._id,
-      values: [
-        {
-          name: 'username', value: 'tester'
-        },
-        {
-          name: 'email', value: 'test@example.com'
-        }
-      ]
-    }
-    const submission = new FormSubmissionsModel(submissionData)
-    const savedSubmission = await submission.save()
-    expect(savedSubmission._id).toBeDefined()
-    expect(savedSubmission.form).toEqual(savedForm._id)
-    expect(savedSubmission.values[0]).toBe(submissionData.values[0])
-    expect(savedSubmission.values[1]).toBe(submissionData.values[1])
-  })
-
-})
-
-describe('Form Submissions server test', () => {
-  it('Form submission can be created', async () => {
-    const { mutate } = createTestClient(serverAdmin)
-    const form = await Form.findOne({})
-    const values = [
-      {
-        name: 'username', value: 'tester'
-      },
-      {
-        name: 'email', value: 'test@example.com'
-      }
-    ]
-    const response = await mutate({
-      mutation: CREATE_FORM_SUBMISSION,
-      variables: {
-        formID: form._id.toString(),
-        values: JSON.stringify(values)
-      }
-    })
-    expect(response.errors).toBeUndefined()
-  })
-})
-
 afterAll(async () => {
   await User.deleteMany({})
-  await FormSubmissionsModel.deleteMany({})
   await Form.deleteMany({})
   await mongoose.connection.close()
   console.log('test-mongodb connection closed')

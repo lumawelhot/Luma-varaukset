@@ -1,6 +1,6 @@
 import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
-import { render, waitFor, fireEvent, screen } from '@testing-library/react'
+import { render, waitFor, fireEvent } from '@testing-library/react'
 import { createMemoryHistory } from 'history'
 import { Router } from 'react-router-dom'
 import UserPage from './UserPage'

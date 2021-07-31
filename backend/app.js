@@ -11,7 +11,7 @@ const cors = require('cors')
 const jwt = require('jsonwebtoken')
 
 const User = require('./models/user')
-const Event = require('./models/event')
+// const Event = require('./models/event')
 const Tag = require('./models/tag')
 //const Extra = require('./models/tag')
 const config = require('./utils/config')
@@ -125,15 +125,17 @@ const createTags = async () => {
   await extra3.save()
 } */
 
-const staticEvents = require('./events.json')
-const createEvents = async () => {
-  await Event.deleteMany({})
-  const exampleTag = await Tag.findOne({ name: 'Maantiede' })
-  staticEvents.forEach(event => {
-    const newEvent = new Event({ ...event, tags: [exampleTag] })
-    newEvent.save()
-  })
-}
+// const staticEvents = require('./events.json')
+// const createEvents = async () => {
+//   await Event.deleteMany({})
+//   const exampleTag = await Tag.findOne({ name: 'Maantiede' })
+//   staticEvents.forEach(event => {
+//     const newEvent = new Event({ ...event, tags: [exampleTag] })
+//     newEvent.save()
+//   })
+// }
+
+const { importStaticEvents }  = require('./utils/importStaticData')
 
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   const { MongoMemoryServer } = require('mongodb-memory-server')
@@ -147,7 +149,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
         await createAdmin()
         await createEmployee()
         await createTags()
-        await createEvents()
+        await importStaticEvents()
         //await createExtras()
       })
       .catch((error) => {
@@ -176,7 +178,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
     .then(() => {
       console.log('connected to MongoDB, initializing database')
       createAdmin()
-      createEvents()
+      //createEvents()
     })
   const db = mongoose.connection
   db.on('error', console.error.bind(console, 'MongoDB connection error:'))

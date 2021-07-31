@@ -70,12 +70,17 @@ const visitSchema = mongoose.Schema({
   remotePlatform: {
     type: String,
     required: false
+  },
+  customFormData: {
+    type: mongoose.Schema.Types.Mixed,
+    required: false,
   }
 })
 
 visitSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
+    returnedObject.customFormData = document.customFormData ? JSON.stringify(document.customFormData) : null
     delete returnedObject._id
     delete returnedObject.__v
   }

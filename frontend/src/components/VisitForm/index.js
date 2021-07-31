@@ -1,8 +1,8 @@
-import { useMutation } from '@apollo/client'
-import React, { useEffect } from 'react'
+import { useMutation, useQuery } from '@apollo/client'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
-import { CREATE_VISIT, EVENTS } from '../../graphql/queries'
+import { CREATE_VISIT, EVENTS, GET_FORM } from '../../graphql/queries'
 import Form from './Form'
 
 const calculateVisitEndTime = (startTimeAsDate, values, selectedEvent, extras) => {
@@ -34,6 +34,14 @@ export const VisitForm = ({ sendMessage, event, token }) => {
   const { t } = useTranslation('event')
   const history = useHistory()
 
+  const [customFormFields, setCustomFormFields] = useState(null)
+
+  const { loading, error, data } = event.customForm ? useQuery(GET_FORM, {
+    variables: { id: event.customForm },
+    onError: (error) => console.log('virheviesti: ', error),
+  })
+    : { loading: null, error: null, data: null }
+
   const [create, result] = useMutation(CREATE_VISIT, {
     refetchQueries: [{ query: EVENTS }],
     onError: (error) => {
@@ -45,6 +53,10 @@ export const VisitForm = ({ sendMessage, event, token }) => {
       }
     }
   })
+
+  useEffect(() => {
+    if (data?.getForm) setCustomFormFields(JSON.parse(data.getForm.fields))
+  },[data])
 
   const validate = (values, selectedEvent, eventPlatforms) => {
     const messageIfMissing = t('is-required')
@@ -109,6 +121,16 @@ export const VisitForm = ({ sendMessage, event, token }) => {
     return errors
   }
 
+  const parseCustomFormData = (values) => {
+    if (!customFormFields) return null
+    return JSON.stringify(customFormFields.map((f,index) => {
+      return {
+        name: f.name,
+        value: values['custom-' + index]
+      }
+    }))
+  }
+
   const onSubmit = (values, eventPlatforms) => {
     try {
       const remoteVisit = (values.visitMode === '0')? event.remoteVisit : (values.visitMode === '1') ? true : false
@@ -119,6 +141,8 @@ export const VisitForm = ({ sendMessage, event, token }) => {
         : values.remotePlatform <= eventPlatforms.length ?
           eventPlatforms[Number(values.remotePlatform)]
           : values.otherRemotePlatformOption
+
+      const customFormData = parseCustomFormData(values)
 
       create({
         variables: {
@@ -137,7 +161,8 @@ export const VisitForm = ({ sendMessage, event, token }) => {
           dataUseAgreement: values.dataUseAgreement,
           extras: values.extras,
           remotePlatform: remotePlatform,
-          token
+          token,
+          customFormData: customFormData
         }
       })
     } catch (error) {
@@ -158,6 +183,9 @@ export const VisitForm = ({ sendMessage, event, token }) => {
     )
   }
 
+  if (loading) return <p className="notification">Searching form...</p>
+  if (error) return <p className="notification">{t('error')}</p>
+
   return (
     <Form
       sendMessage={sendMessage}
@@ -165,6 +193,7 @@ export const VisitForm = ({ sendMessage, event, token }) => {
       validate={validate}
       calculateVisitEndTime={calculateVisitEndTime}
       onSubmit={onSubmit}
+      customFormFields={customFormFields}
     />
   )
 }

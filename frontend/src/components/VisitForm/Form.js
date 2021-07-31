@@ -16,7 +16,7 @@ import { UNLOCK_EVENT } from '../../graphql/queries'
 let selectedEvent
 let eventPlatforms
 
-const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
+const Form = ({ event, calculateVisitEndTime, validate, onSubmit, customFormFields }) => {
   const { t } = useTranslation(['visit', 'common'])
   const history = useHistory()
   const [unlockEvent] = useMutation(UNLOCK_EVENT, {
@@ -79,6 +79,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
   const eventGrades = filterEventGrades(event.grades)
   const eventClass = filterEventClass(event.resourceids)
   eventPlatforms = filterEventPlatforms(event.remotePlatforms, event.otherRemotePlatformOption)
+
   return (
     <Formik
       initialValues={{
@@ -102,7 +103,10 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
         finalEndTime: new Date(add(event.start, { minutes: event.duration }))
       }}
       validate={(values) => validate(values, selectedEvent, eventPlatforms)}
-      onSubmit={(values) => onSubmit(values, eventPlatforms)}
+      onSubmit={(values) => {
+        onSubmit(values, eventPlatforms)
+      }
+      }
     >
       {({ handleSubmit, handleBlur, setFieldValue, touched, errors, values }) => {
 
@@ -248,8 +252,11 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit }) => {
                     {touched.startTime && errors.startTime ? (
                       <p className="help is-danger">{errors.startTime}</p>
                     ) : null}
-                    <hr></hr>
-                    <CustomForm formid={event.customForm}/>
+                    {!!customFormFields &&
+                    <>
+                      <hr></hr>
+                      <CustomForm customFormFields={customFormFields}/>
+                    </>}
                     <hr></hr>
 
                     <Field
