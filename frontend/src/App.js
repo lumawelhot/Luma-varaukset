@@ -253,7 +253,7 @@ const App = () => {
         </Route>
         <Route path='/events'>
           {currentUser && currentUser.isAdmin && result.data &&
-            <EventList events={result.data.getEvents} currentUser={currentUser} />
+            <EventList events={result.data.getEvents} sendMessage={notify} />
           }
         </Route>
         <Route path='/extras'>

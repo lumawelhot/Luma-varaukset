@@ -15,7 +15,7 @@ const Tag = require('../models/tag')
 const Form = require('../models/forms')
 const FormSubmissions = require('../models/formSubmissions')
 const { addNewTags } = require('../utils/helpers')
-const { set } = require('date-fns')
+const { set, sub } = require('date-fns')
 
 const { PubSub } = require('graphql-subscriptions')
 const pubsub = new PubSub()
@@ -26,13 +26,20 @@ const resolvers = {
       const users = await User.find({})
       return users
     },
-    getEvents: async () => {
-      const date = new Date()
-      date.setDate(date.getDate() - 90)
-      const events = await Event.find({ end: { $gt: date.toISOString() } })
-        .populate('tags', { name: 1, id: 1 })
-        .populate('visits')
-        .populate('extras')
+    getEvents: async (root, args, { currentUser }) => {
+      let events
+      if (currentUser && currentUser.isAdmin) {
+        events = await Event.find({})
+          .populate('tags', { name: 1, id: 1 })
+          .populate('visits')
+          .populate('extras')
+      } else {
+        const date = sub(new Date(), { days: 90 })
+        events = await Event.find({ end: { $gt: date.toISOString() } })
+          .populate('tags', { name: 1, id: 1 })
+          .populate('visits')
+          .populate('extras')
+      }
       return events.map(event => Object.assign(event, { locked: event.reserved ? true : false }))
     },
     getTags: async () => {
