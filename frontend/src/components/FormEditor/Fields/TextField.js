@@ -37,16 +37,16 @@ const InputField = ({ add, item, cancel, save }) => {
       <div className="field is-grouped">
         <label className="checkbox">
           <input className="checkbox" type="checkbox" checked={required} onChange={() => setRequired(!required)}/>
-          {t('form-field-input-required')}
+          {` ${t('form-field-input-required')}`}
         </label>
       </div>
       {item ?
         <>
-          <button onClick={() => handleSave()}>{t('save')}</button>
+          <button className="button luma" onClick={() => handleSave()}>{t('save')}</button>
           <button onClick={() => cancel()}>{t('back')}</button>
         </>
         :
-        <button onClick={() => handleAdd()}>{t('form-field-add')}</button>
+        <button className="button luma" onClick={() => handleAdd()}>{t('form-field-add')}</button>
       }
     </div>
   )

@@ -41,39 +41,51 @@ const RadioField = ({ add, item, cancel, save }) => {
   }
 
   const addOption = () => {
-    setOptions(options.concat({ value: options.length+1, text: t('form-field-radio-value') + '-' + (options.length+1) }))
+    setOptions(options.concat({ value: options.length + 1, text: t('form-field-radio-value') + '-' + (options.length+1) }))
+  }
+
+  const removeOption = index => {
+    const newOptions = []
+    options
+      .filter((_option, i) => i !== index)
+      .forEach(option => newOptions.push(
+        { value: newOptions.length + 1, text: option.text }
+      ))
+    console.log(newOptions)
+    setOptions(newOptions)
   }
 
   return (
     <div className="box">
-      <div className="field is-horizontal">
-        <div className="field-label">
-          <label className="label">{t('form-field-label')}</label>
-        </div>
+      <div className="field">
+        <label className="label">{t('form-field-label')}</label>
         <div className="field-body">
-          <p className="control">
-            <input className="input" type="text" value={name} onChange={(e) => setName(e.target.value)}/>
-          </p>
+          <input className="input" type="text" value={name} onChange={(e) => setName(e.target.value)}/>
         </div>
       </div>
-      <p>{t('form-options')}</p>
-      {options.map((o,index) =>
+      <label className="label">{t('form-options')}</label>
+      {options.map((o, index) =>
         <div className="field-is-horizontal" key={index}>
           <div className="field-body is-grouped">
-            <p className="control">
-              <input className="input" type="text" value={o.value} onChange={(e) => setOption(index, e.target.value)}/>
+            <p className="control" style={{ marginRight: 10 }}>
+              <input className="input" style={{ width: 70 }} type="text" value={o.value} onChange={(e) => setOption(index, e.target.value)}/>
             </p>
-            <p className="control">
+            <p className="control" style={{ marginRight: 10 }}>
               <input className="input" type="text" value={o.text} onChange={(e) => setOptionText(index, e.target.value)}/>
             </p>
+            {options.length > 1 &&
+              <button className="input" style={{ width: 30, marginRight: 10 }} onClick={() => removeOption(index)}>-</button>
+            }
+            {options.length === index + 1 &&
+              <button className="input" style={{ width: 35 }} onClick={() => addOption()}>+</button>
+            }
           </div>
         </div>
       )}
-      <button onClick={() => addOption()}>+</button>
       <div className="field is-grouped">
         <label className="checkbox">
           <input className="checkbox" type="checkbox" checked={required} onChange={() => setRequired(!required)}/>
-          {t('form-field-input-required')}
+          {` ${t('form-field-input-required')}`}
         </label>
       </div>
       {item ?
@@ -82,7 +94,7 @@ const RadioField = ({ add, item, cancel, save }) => {
           <button onClick={() => cancel()}>{t('back')}</button>
         </>
         :
-        <button onClick={() => handleAdd()}>{t('form-field-add')}</button>
+        <button className="button luma" onClick={() => handleAdd()}>{t('form-field-add')}</button>
       }
     </div>
   )

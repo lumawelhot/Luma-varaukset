@@ -153,27 +153,32 @@ export const AdditionalServices = ({ extras, values, setFieldValue }) => {
     <>
       {extras.data &&
         <>
-          { extras.data.getExtras.length !== 0 &&
+          {extras.data.getExtras.some(extra => extra.classes.some(value => values.scienceClass[value - 1]) ? true : false) &&
             <label className="label">
               {t('choose-event-extras')}
             </label>
           }
-          {extras.data.getExtras.map(extra => (
-            <Field
-              key={extra.id}
-              label={`${extra.name}, ${t('length-inperson')}: ${extra.inPersonLength} ${t('minutes-remote')}: ${extra.remoteLength} min`}
-              fieldName='extras'
-              index={values.extras.includes(extra.id) ? true : false}
-              onChange={() => {
-                if (values.extras.includes(extra.id)) {
-                  setFieldValue('extras', values.extras.filter(e => e !== extra.id))
-                } else {
-                  setFieldValue('extras', values.extras.concat(extra.id))
-                }
-              }}
-              component={CheckBox}
-            />
-          ))}
+          {extras.data.getExtras.map(extra => {
+            const validExtras = extra.classes.some(value => values.scienceClass[value - 1])
+            if (validExtras) {
+              return (
+                <Field
+                  key={extra.id}
+                  label={`${extra.name}, ${t('length-inperson')}: ${extra.inPersonLength} ${t('minutes-remote')}: ${extra.remoteLength} min`}
+                  fieldName='extras'
+                  index={values.extras.includes(extra.id) ? true : false}
+                  onChange={() => {
+                    if (values.extras.includes(extra.id)) {
+                      setFieldValue('extras', values.extras.filter(e => e !== extra.id))
+                    } else {
+                      setFieldValue('extras', values.extras.concat(extra.id))
+                    }
+                  }}
+                  component={CheckBox}
+                />
+              )
+            }
+          })}
         </>
       }
     </>
