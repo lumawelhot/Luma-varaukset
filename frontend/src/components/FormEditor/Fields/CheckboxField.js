@@ -89,8 +89,8 @@ const CheckboxField = ({ add, item, cancel, save }) => {
       </div>
       {item ?
         <>
-          <button onClick={() => handleSave()}>{t('save')}</button>
-          <button onClick={() => cancel()}>{t('back')}</button>
+          <button className="button luma primary" onClick={() => handleSave()}>{t('save')}</button>
+          <button className="button luma" onClick={() => cancel()}>{t('back')}</button>
         </>
         :
         <button className="button luma" onClick={() => handleAdd()}>{t('form-field-add')}</button>

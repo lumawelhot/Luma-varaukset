@@ -106,37 +106,15 @@ const FormEditor = ({ form, back, sendMessage }) => {
           </tr>
         </thead>
         <tbody>
-          {fields.map((f, index) =>
-            <tr key={index}>
-              <td>
-                <FieldItem
-                  item={f}
-                  down={index === fields.length-1 ? null : () => moveDown(index)}
-                  up={index === 0 ? null : () => moveUp(index)}
-                  remove={() => handleRemove(index)}
-                  update={(data) => handleUpdateField(index,data)}
-                />
-              </td>
-              <td>
-                {f.validation.required ? t('yes') : t('no') }
-              </td>
-              <td>
-                {t(f.type)}
-              </td>
-              <td>
-                <div className="media-right">
-                  <button className="button is-small" onClick={() => handleRemove(index)}>{t('form-field-remove')}</button>
-                  {index === fields.length-1 ?
-                    <button className="button is-small" disabled>{t('form-field-move-down')}</button>
-                    :
-                    <button className="button is-small" onClick={() => moveDown(index)}>{t('form-field-move-down')}</button>}
-                  {index === 0 ?
-                    <button className="button is-small" disabled>{t('form-field-move-up')}</button>
-                    :
-                    <button className="button is-small" onClick={() => moveUp(index)}>{t('form-field-move-up')}</button>}
-                </div>
-              </td>
-            </tr>
+          {fields.map((field, index) =>
+            <FieldItem
+              key={index}
+              item={field}
+              update={handleUpdateField}
+              remove={handleRemove}
+              down={index === fields.length - 1 ? null : () => moveDown(index)}
+              up={index === 0 ? null : () => moveUp(index)}
+            />
           )}
         </tbody>
       </table>
@@ -150,41 +128,5 @@ const FormEditor = ({ form, back, sendMessage }) => {
     </div>
   )
 }
-
-/*<table className="table" style={{ marginTop: 10 }}>
-          <thead>
-            <tr>
-              <th></th>
-              <th>{t('event')}</th>
-              <th>{t('resource')}</th>
-              <th>{t('date')}</th>
-              <th>{t('time')}</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableEvents.map(event => {
-              const resourceNames = event.resourceids.map(id => { return { name: classes[id-1]?.label || null, color: resourceColorsLUMA[id - 1] }})
-              return (
-                <tr key={event.id}>
-                  <td>
-                    <input
-                      type="checkbox" checked={checkedEvents.includes(event.id) ? 'checked' : ''}
-                      onChange={(e) => handleCheckEvent(e, event.id)} />
-                  </td>
-                  <td>{event.title}</td>
-                  <td>
-                    {!!resourceNames.length && <div className="tags">
-                      {resourceNames.map(r =>
-                        <span key={r.name} className='tag is-small is-link' style={{ backgroundColor: r.color }}>{r.name}</span>)}
-                    </div>}
-                  </td>
-                  <td>{`${format(new Date(event.start), 'dd.MM.yyyy')}`}</td>
-                  <td>{`${format(new Date(event.start), 'HH:mm')} - ${format(new Date(event.end), 'HH:mm')}`}</td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>*/
 
 export default FormEditor

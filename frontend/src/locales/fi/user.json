@@ -54,5 +54,10 @@
   "event-list": "Tapahtuma lista",
   "field": "Kenttä",
   "field-type": "Kentän tyyppi",
-  "options": "Valinnat"
+  "options": "Valinnat",
+  "no": "Ei",
+  "yes": "Kyllä",
+  "text": "Tekstikenttä",
+  "checkbox": "Rastiruutu",
+  "radio": "Radio-valinta"
 }
