@@ -52,6 +52,10 @@ const resolvers = {
       const visits = await Visit.find({})
         .populate('event', { id: 1, title: 1, resourceids: 1, remoteVisit: 1, inPersonVisit : 1 })
         .populate('extras')
+      visits.forEach(visit => {
+        visit.customFormData ? visit.customFormData = JSON.stringify(visit.customFormData) : null
+      })
+
       return visits
     },
     findVisit: async (root, args) => {
