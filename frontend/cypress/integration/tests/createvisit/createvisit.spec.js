@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import { Given, When, Then, And } from 'cypress-cucumber-preprocessor/steps'
 import { format, set, addBusinessDays } from 'date-fns'
+import { aliasMutation, aliasQuery } from '../../../utils/graphql-test-utils'
 
 const eventDate1 = addBusinessDays(set(new Date(), { hours: 10, minutes: 0, seconds: 0, milliseconds: 0 }), 14)
 const eventDate2 = addBusinessDays(set(new Date(), { hours: 10, minutes: 0, seconds: 0, milliseconds: 0 }), 16)
@@ -10,6 +11,20 @@ const availableEvent2 = 'EVENT2'
 const availableEvent3 = 'EVENT3'
 const unavailableEventName = 'Test unavailable event'
 const unavailableEventDate = addBusinessDays(set(new Date(), { hours: 10, minutes: 0, seconds: 0, milliseconds: 0 }), 3)
+
+beforeEach(() => {
+  cy.intercept('POST', 'http://localhost:3001/graphql', (req) => {
+    // Queries
+    aliasQuery(req, 'getEvents')
+    aliasQuery(req, 'findVisit')
+    aliasQuery(req, 'me')
+    aliasQuery(req, 'getTags')
+    // Mutations
+    aliasMutation(req, 'createVisit')
+    aliasMutation(req, 'createEvent')
+    aliasMutation(req, 'login')
+  })
+})
 
 it('Initialize tests', () => {
   cy.request('http://localhost:3001/reset')
@@ -56,6 +71,7 @@ it('Initialize tests', () => {
 
 Given('I am on the front page', () => {
   cy.visit('http://localhost:3000')
+  cy.wait('@gqlgetEventsQuery')
   cy.get('.rbc-toolbar > :nth-child(3) > :nth-child(1)').click()
 })
 
@@ -72,7 +88,6 @@ And('there is an event 3 more than two weeks ahead', () => {
 })
 
 When('I click on available event 1', () => {
-  cy.wait(500)
   cy.findEvent(availableEvent1).click()
 })
 
@@ -111,7 +126,9 @@ Then('booking form opens', () => {
 })
 
 And('there is an event less than two weeks ahead', () => {
-  cy.wait(500)
+  cy.visit('http://localhost:3000')
+  cy.wait('@gqlgetEventsQuery')
+  cy.get('.rbc-toolbar > :nth-child(3) > :nth-child(1)').click()
   cy.findEvent(unavailableEventName)
 })
 
@@ -160,8 +177,11 @@ And('valid information is entered and visit mode selected', () => {
   cy.get('.privacyPolicy > input').click()
   cy.get('.remoteVisitGuidelines > input').click()
   cy.get('#create').click()
-  cy.wait(2000)
+  cy.wait('@gqlcreateVisitMutation')
+  cy.wait('@gqlfindVisitQuery')
   cy.visit('http://localhost:3000')
+  cy.wait('@gqlgetEventsQuery')
+  cy.wait(200)
   cy.get('.rbc-toolbar > :nth-child(3) > :nth-child(1)').click()
 })
 
@@ -184,18 +204,19 @@ And('valid information is entered and visit mode predetermined', () => {
   cy.get('.privacyPolicy > input').click()
   cy.get('.remoteVisitGuidelines > input').click()
   cy.get('#create').click()
-  cy.wait(2000)
+  cy.wait('@gqlcreateVisitMutation')
+  cy.wait('@gqlfindVisitQuery')
   cy.visit('http://localhost:3000')
+  cy.wait('@gqlgetEventsQuery')
+  cy.wait(200)
   cy.get('.rbc-toolbar > :nth-child(3) > :nth-child(1)').click()
 })
 
 Then('booked event turns grey in calendar view', () => {
-  cy.wait(500)
   cy.findEvent(availableEvent1).parent().parent().should('have.class', 'booked')
 })
 
 When('I click on available event 2', () => {
-  cy.wait(500)
   cy.findEvent(availableEvent2).click()
 })
 
@@ -208,7 +229,6 @@ When('invalid client name is entered', () => {
   cy.get('#clientPhone').type('040-1234567')
   cy.wait(100)
   cy.get('#create').click()
-  cy.wait(2000)
 })
 
 Then('an error message is shown', () => {
@@ -216,8 +236,9 @@ Then('an error message is shown', () => {
 })
 
 Given('admin logs in', () => {
-  cy.login({ username: 'Admin', password: 'salainen' })
-  cy.get('.level > .button').should('have.text', 'Kirjaudu ulos')
+  cy.login({ username: 'Admin', password: 'salainen' }).should(() => {
+    expect(localStorage.getItem('app-token')).to.not.be.null
+  })
 })
 
 Then('unavailable event page contains booking button', () => {
@@ -225,6 +246,5 @@ Then('unavailable event page contains booking button', () => {
 })
 
 Then('unavailable event turns grey in calendar view', () => {
-  cy.wait(500)
   cy.findEvent(unavailableEventName).parent().parent().parent().should('have.class', 'booked')
 })
