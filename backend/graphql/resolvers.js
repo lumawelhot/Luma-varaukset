@@ -361,7 +361,7 @@ const resolvers = {
           }]
           const text = await readMessage('welcome.txt', details)
           const html = await readMessage('welcome.html', details)
-          mailer.sendMail({
+          await mailer.sendMail({
             from: 'Luma-Varaukset <noreply@helsinki.fi>',
             to: visit.clientEmail,
             subject: 'Tervetuloa!',
