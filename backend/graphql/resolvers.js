@@ -89,6 +89,7 @@ const resolvers = {
   Visit: {
     event: async (root) => {
       const event = await Event.findById(root.event).populate('tags', { name: 1, id: 1 }).populate('extras')
+      if (!event) throw new UserInputError('Event could not be found!')
       return Object.assign(event, { locked: event.reserved ? true : false })
     },
     //startTime: (data) => data.startTime.toISOString(),
