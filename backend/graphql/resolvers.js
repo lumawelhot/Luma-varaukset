@@ -199,9 +199,8 @@ const resolvers = {
     },
     disableEvent: async (root, args, { currentUser }) => {
       if (!currentUser) throw new AuthenticationError('not authenticated')
-
       const event = await Event.findById(args.event)
-
+      if (!event) throw new UserInputError('Event could not be found')
       event.disabled = true
       event.save()
       pubsub.publish('EVENT_DISABLED', {
@@ -213,7 +212,7 @@ const resolvers = {
       if (!currentUser) throw new AuthenticationError('not authenticated')
 
       const event = await Event.findById(args.event)
-
+      if (!event) throw new UserInputError('Event could not be found')
       event.disabled = false
       event.reserved = null
       event.save()
@@ -224,6 +223,7 @@ const resolvers = {
     },
     lockEvent: async (root, args) => {
       const event = await Event.findById(args.event)
+      if (!event) throw new UserInputError('Event could not be found')
       if (event.reserved) throw new UserInputError('Older session is already active')
       if (event.disabled) throw new UserInputError('This event is disabled')
 
@@ -249,7 +249,7 @@ const resolvers = {
     },
     unlockEvent: async (root, args) => {
       const event = await Event.findById(args.event)
-
+      if (!event) throw new UserInputError('Event could not be found')
       event.reserved = null
       await event.save()
       pubsub.publish('EVENT_UNLOCKED', { eventModified: event })
@@ -259,6 +259,7 @@ const resolvers = {
       const extras = await Extra.find({ _id: { $in: args.extras } })
       const { title, desc, resourceids, grades, remotePlatforms, otherRemotePlatformOption, remoteVisit, inPersonVisit, customForm } = args
       const event = await Event.findById(args.event).populate('visits')
+      if (!event) throw new UserInputError('Event could not be found')
       if (!currentUser) throw new AuthenticationError('not authenticated')
       if (new Date(args.start).getTime() < set(new Date(args.start), { hours: 8, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid start time')
       if (new Date(args.end).getTime() > set(new Date(args.end), { hours: 17, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid end time')
@@ -309,6 +310,7 @@ const resolvers = {
     },
     createVisit: async (root, args, { currentUser }) => {
       const event = await Event.findById(args.event).populate('visits', { startTime: 1, endTime: 1 })
+      if (!event) throw new UserInputError('Event could not be found')
       if (event.reserved && event.reserved !== args.token) throw new UserInputError('Invalid session')
       if (event.disabled) throw new UserInputError('This event is disabled')
 
@@ -387,6 +389,7 @@ const resolvers = {
       const visit = await Visit.findById(args.id)
       if (!visit || visit.status === false) throw new UserInputError('Varausta ei löydy')
       const event = await Event.findById(visit.event).populate('visits', { startTime: 1, endTime: 1 })
+      if (!event) throw new UserInputError('Event could not be found')
       const oldAvailableTimes = event.availableTimes.map(time => ({
         startTime: new Date(time.startTime),
         endTime: new Date(time.endTime)
