@@ -25,6 +25,7 @@ const FormList = ({ sendMessage }) => {
   if (forms.loading) return <></>
 
   const create = () => {
+    setForm(null)
     setShowEditor(true)
   }
 
@@ -65,7 +66,7 @@ const FormList = ({ sendMessage }) => {
             <tr key={form.id}>
               <td>{form.name}</td>
               <td>
-                <button className='button luma' onClick={() => handleEdit(form.id)}>{t('edit')}</button>
+                <button className='button luma' style={{ marginRight: 10 }} onClick={() => handleEdit(form.id)}>{t('edit')}</button>
                 <button className='button luma' onClick={() => handleRemove(form.id)}>{t('remove')}</button>
               </td>
             </tr>

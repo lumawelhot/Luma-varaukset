@@ -30,11 +30,13 @@ const AddField = ({ add }) => {
           :
           <button className="button luma" onClick={() => setShowOptions(!showOptions)}>{t('form-field-add')}</button>
         }
-        {showOptions && (<>
-          <button className="button luma" onClick={() => setComponent('text')}>{t('form-field-input')}</button>
-          <button className="button luma" onClick={() => setComponent('radio')}>{t('form-field-radio')}</button>
-          <button className="button luma" onClick={() => setComponent('checkbox')}>{t('form-field-checkbox')}</button>
-        </>)}
+        {showOptions &&
+          <>
+            <button className="button luma" onClick={() => setComponent('text')}>{t('form-field-input')}</button>
+            <button className="button luma" onClick={() => setComponent('radio')}>{t('form-field-radio')}</button>
+            <button className="button luma" onClick={() => setComponent('checkbox')}>{t('form-field-checkbox')}</button>
+          </>
+        }
       </nav>
       {renderComponent()}
     </div>

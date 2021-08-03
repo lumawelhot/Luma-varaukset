@@ -11,6 +11,7 @@ const FormEditor = ({ form, back, sendMessage }) => {
   const { t } = useTranslation('user')
   const [name, setName] = useState(form?.name || t('new-form'))
   const [fields, setFields]  = useState(form ? JSON.parse(form.fields) : [])
+  console.log(fields)
   const [createForm, result] = useMutation(CREATE_FORM, {
     refetchQueries: [{ query: GET_ALL_FORMS }],
     onError: (error) => sendMessage(error.graphQLErrors[0].message, 'danger')
@@ -89,27 +90,41 @@ const FormEditor = ({ form, back, sendMessage }) => {
       <div className="field">
         <label className="label">{t('form-name')}</label>
         <div className="control">
-          <input className="input" type="text" value={name} onChange={(e) => setName(e.target.value)}/>
+          <input className="input" type="text" value={name} onChange={(e) => setName(e.target.value)} />
         </div>
       </div>
+      {fields.length ?
+        <label className="label">{t('form-fields')}</label> : null
+      }
+      <table className="table">
+        <thead>
+          <tr>
+            <th>{t('field')}</th>
+            <th>{t('form-field-input-required')}</th>
+            <th>{t('field-type')}</th>
+            <th>{t('options')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {fields.map((field, index) =>
+            <FieldItem
+              key={index}
+              item={field}
+              update={handleUpdateField}
+              remove={handleRemove}
+              down={index === fields.length - 1 ? null : () => moveDown(index)}
+              up={index === 0 ? null : () => moveUp(index)}
+            />
+          )}
+        </tbody>
+      </table>
       <div className="content">
-        <label className="label">{t('form-fields')}</label>
-        {fields.map((f,index) =>
-          <FieldItem
-            key={index}
-            item={f}
-            down={index === fields.length-1 ? null : () => moveDown(index)}
-            up={index === 0 ? null : () => moveUp(index)}
-            remove={() => handleRemove(index)}
-            update={(data) => handleUpdateField(index,data)}/>)}
-      </div>
-      <div className="control">
         <AddField add={handleAdd}/>
       </div>
-      <p className="control">
+      <div className="control">
         <button className="button luma primary" onClick={() => handleSave()}>{t('save')}</button>
-        <button className="button luma primary" onClick={back}>{t('back')}</button>
-      </p>
+        <button className="button luma " onClick={back}>{t('back')}</button>
+      </div>
     </div>
   )
 }

@@ -1,32 +1,14 @@
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import TextField from './Fields/TextField'
 import RadioField from './Fields/RadioField'
 import CheckboxField from './Fields/CheckboxField'
+import { useTranslation } from 'react-i18next'
 
-const FieldItem = ({ item, remove, update, down, up }) => {
+const FieldItem = ({ item, update, remove, down, up }) => {
+  const { t } = useTranslation('user')
 
   if (!item) return null
-
-  const { t } = useTranslation('user')
   const [editMode, setEditMode] = useState(false)
-  const [showActionButtons, setShowActionButtons] = useState(false)
-
-  const drawField = () => {
-    if (!item.type) return null
-
-    if (item.type === 'text') return (<input className="input" type="text" placeholder="Text input"></input>)
-    if (item.type === 'radio') return (
-      <p className="control">
-        {item.options.map(o => <label key={o.value} className="radio"><input type="radio" name={item.name}/>{o.text}</label>)}
-      </p>
-    )
-    if (item.type === 'checkbox') return (
-      <p className="control">
-        {item.options.map(o => <label key={o.value} className="checkbox"><input type="checkbox" name={item.name}/>{o.text}</label>)}
-      </p>
-    )
-  }
 
   const handleSaveField = (data) => {
     setEditMode(false)
@@ -48,18 +30,28 @@ const FieldItem = ({ item, remove, update, down, up }) => {
   }
 
   return (
-    <div className="media" onMouseLeave={() => setShowActionButtons(false)}>
-      {editMode && drawEditor()}
-      {!editMode && (
-        <button className="media-content" onMouseEnter={() => setShowActionButtons(true)} onClick={() => setEditMode(true)}>
-          <div className="field formeditor">
-            <label className="label">{item.name}{item.validation?.required ? <span className="tag is-small">{t('form-field-input-required')}</span> : null}</label>
-            {drawField()}
+    <tr>
+      {editMode &&
+        <td colSpan="4">
+          {drawEditor()}
+        </td>
+      }
+      {!editMode &&
+      <>
+        <td>
+          <div className="media">
+            <div className="field formeditor" onClick={() => setEditMode(true)}>
+              <label style={{ cursor: 'pointer' }}>{item.name}</label>
+            </div>
           </div>
-        </button>
-      )}
-      <div className="media-right">
-        {showActionButtons && <>
+        </td>
+        <td>
+          {item.validation.required ? t('yes') : t('no') }
+        </td>
+        <td>
+          {t(item.type)}
+        </td>
+        <td>
           <button className="button is-small" onClick={() => handleAction('remove')}>{t('form-field-remove')}</button>
           {down === null ?
             <button className="button is-small" disabled>{t('form-field-move-down')}</button>
@@ -69,9 +61,9 @@ const FieldItem = ({ item, remove, update, down, up }) => {
             <button className="button is-small" disabled>{t('form-field-move-up')}</button>
             :
             <button className="button is-small" onClick={() => handleAction('up')}>{t('form-field-move-up')}</button>}
-        </>}
-      </div>
-    </div>
+        </td>
+      </>}
+    </tr>
   )
 }
 
