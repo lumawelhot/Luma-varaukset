@@ -45,8 +45,8 @@ const singleItem = [
             'clientEmail':'opettaja@luma.com',
             'clientPhone':'4234242',
             'status':true,
-            'startTime': new Date().toISOString(),
-            'endTime': new Date().toISOString(),
+            'startTime': new Date().getTime(),
+            'endTime': new Date().getTime(),
             'remotePlatform': 'Zoom',
             'customFormData': null
           }
