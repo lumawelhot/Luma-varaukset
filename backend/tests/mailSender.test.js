@@ -26,6 +26,7 @@ beforeAll(async () => {
 })
 
 beforeEach(async () => {
+  jest.setTimeout(60000)
   await Event.deleteMany({})
   await Visit.deleteMany({})
 

@@ -87,6 +87,7 @@ beforeAll(async () => {
 })
 
 beforeEach(async () => {
+  jest.setTimeout(60000)
   const eventWithReservationData = {
     tags: [],
     extras: [],

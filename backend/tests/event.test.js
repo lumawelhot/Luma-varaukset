@@ -56,7 +56,7 @@ beforeAll(async () => {
 })
 
 beforeEach(async () => {
-
+  jest.setTimeout(60000)
   const testData1 = {
     tags: newTags,
     extras: newExtras,
