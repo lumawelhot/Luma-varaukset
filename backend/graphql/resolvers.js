@@ -27,36 +27,44 @@ const resolvers = {
     },
     getEvents: async (root, args, { currentUser }) => {
       let events
-      if (currentUser && currentUser.isAdmin) {
-        events = await Event.find({})
-          .populate('tags', { name: 1, id: 1 })
-          .populate('visits')
-          .populate('extras')
-      } else {
-        const date = sub(new Date(), { days: 90 })
-        events = await Event.find({ end: { $gt: date } })
-          .populate('tags', { name: 1, id: 1 })
-          .populate('visits')
-          .populate('extras')
+      try {
+        if (currentUser && currentUser.isAdmin) {
+          events = await Event.find({})
+            .populate('tags', { name: 1, id: 1 })
+            .populate('visits')
+            .populate('extras')
+        } else {
+          const date = sub(new Date(), { days: 90 })
+          events = await Event.find({ end: { $gt: date } })
+            .populate('tags', { name: 1, id: 1 })
+            .populate('visits')
+            .populate('extras')
+        }
+        return events.map(event => Object.assign(event.toJSON(), { locked: event.reserved ? true : false }))
+      } catch (error) {
+        throw new UserInputError('Error occured when fetching events')
       }
-      return events.map(event => Object.assign(event.toJSON(), { locked: event.reserved ? true : false }))
     },
     getTags: async () => {
       const tags = await Tag.find({})
       return tags
     },
     getVisits: async (root, args, { currentUser }) => {
-      if (!currentUser) {
-        return []
-      }
-      const visits = await Visit.find({})
-        .populate('event', { id: 1, title: 1, resourceids: 1, remoteVisit: 1, inPersonVisit : 1 })
-        .populate('extras')
-      visits.forEach(visit => {
-        visit.customFormData ? visit.customFormData = JSON.stringify(visit.customFormData) : null
-      })
+      try {
+        if (!currentUser) {
+          return []
+        }
+        const visits = await Visit.find({})
+          .populate('event', { id: 1, title: 1, resourceids: 1, remoteVisit: 1, inPersonVisit : 1 })
+          .populate('extras')
+        visits.forEach(visit => {
+          visit.customFormData ? visit.customFormData = JSON.stringify(visit.customFormData) : null
+        })
 
-      return visits
+        return visits
+      } catch (error) {
+        throw new UserInputError('Error occured when fetching visits')
+      }
     },
     findVisit: async (root, args) => {
       try {

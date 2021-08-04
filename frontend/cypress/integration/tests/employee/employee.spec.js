@@ -14,6 +14,7 @@ const availableEvent = 'NONBOOKED'
 it('Initialize tests', () => {
   cy.request('http://localhost:3001/reset')
   cy.login({ username: 'Admin', password: 'salainen' })
+  cy.createUser({ username: 'employeeUser', password: 'emp', isAdmin: false })
   cy.createEventWithVisit({
     title: bookedEvent1,
     start: new Date(eventDate1.setHours(10, 0)),
@@ -41,8 +42,26 @@ it('Initialize tests', () => {
   })
 })
 
+Given('Employee is not logged in', () => {
+  // This only describes that specific user is not logged in
+})
+
+When('I navigate to the login form', () => {
+  cy.get('svg.admin-button').click()
+})
+
+And('I enter correct login credentials', () => {
+  cy.get('#username').type('employeeUser')
+  cy.get('#password').type('emp')
+  cy.get('#login').click()
+})
+
+Then('I am logged in', () => {
+  cy.get('.is-pulled-right').contains('Olet kirjautunut käyttäjänä: employeeUser')
+})
+
 Given('Employee is logged in', () => {
-  cy.login({ username: 'Employee', password: 'emp' })
+  cy.login({ username: 'employeeUser', password: 'emp' })
 })
 
 And('employee is on the main page', () => {

@@ -11,7 +11,6 @@ const FormEditor = ({ form, back, sendMessage }) => {
   const { t } = useTranslation('user')
   const [name, setName] = useState(form?.name || t('new-form'))
   const [fields, setFields]  = useState(form ? JSON.parse(form.fields) : [])
-  console.log(fields)
   const [createForm, result] = useMutation(CREATE_FORM, {
     refetchQueries: [{ query: GET_ALL_FORMS }],
     onError: (error) => sendMessage(error.graphQLErrors[0].message, 'danger')

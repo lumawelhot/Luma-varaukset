@@ -1,6 +1,6 @@
 Feature: Admin functionality
 
-Scenario: As an admin I want to log in to the software
+Scenario: As an admin I want to log in
   Given Admin is not logged in
   And admin is on the main page
   When I navigate to the login form
