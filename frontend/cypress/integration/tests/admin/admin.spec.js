@@ -19,6 +19,16 @@ And('I enter correct login credentials', () => {
   cy.get('#login').click()
 })
 
+And('I enter incorrect password', () => {
+  cy.get('#username').type('Admin')
+  cy.get('#password').type('incorrect')
+  cy.get('#login').click()
+})
+
+Then('I am not logged in', () => {
+  cy.get('.toast').should('have.class', 'is-danger')
+})
+
 Then('I am logged in', () => {
   cy.get('.is-pulled-right').contains('Olet kirjautunut käyttäjänä: Admin')
 })
@@ -41,6 +51,8 @@ And('I enter new user credentials', () => {
 
 Then('the user is created', () => {
   cy.get('.toast').should('have.class', 'is-success')
+  cy.get(':nth-child(8) > :nth-child(5) > .button').click()
+  cy.contains('User123')
 })
 
 When('I navigate to the user list page', () => {

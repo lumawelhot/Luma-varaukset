@@ -7,6 +7,13 @@ Scenario: As an employee I want to log in
   And I enter correct login credentials
   Then I am logged in
 
+Scenario: As an employee I cannot log in with wrong password
+  Given Employee is not logged in
+  And employee is on the main page
+  When I navigate to the login form
+  And I enter incorrect password
+  Then I am not logged in
+
 Scenario: As an employee I can create an event
   Given Employee is logged in
   And employee is on the main page

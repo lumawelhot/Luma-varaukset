@@ -7,6 +7,13 @@ Scenario: As an admin I want to log in
   And I enter correct login credentials
   Then I am logged in
 
+Scenario: As an admin I cannot log in with wrong password
+  Given Admin is not logged in
+  And admin is on the main page
+  When I navigate to the login form
+  And I enter incorrect password
+  Then I am not logged in
+
 Scenario: As an admin I want to create a new user
   Given Admin is logged in
   And admin is on the main page

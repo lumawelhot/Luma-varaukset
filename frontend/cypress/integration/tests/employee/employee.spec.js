@@ -64,6 +64,16 @@ Given('Employee is logged in', () => {
   cy.login({ username: 'employeeUser', password: 'emp' })
 })
 
+And('I enter incorrect password', () => {
+  cy.get('#username').type('employeeUser')
+  cy.get('#password').type('incorrect')
+  cy.get('#login').click()
+})
+
+Then('I am not logged in', () => {
+  cy.get('.toast').should('have.class', 'is-danger')
+})
+
 And('employee is on the main page', () => {
   cy.visit('http://localhost:3000')
 })

@@ -103,6 +103,7 @@ Cypress.Commands.add('createEventWithVisit', ({ title, start, end }) => {
       `
     }
   }).then(({ body }) => {
+    console.log(body)
     cy.request({
       url: 'http://localhost:3001/graphql',
       method: 'POST',
@@ -134,12 +135,13 @@ Cypress.Commands.add('createEventWithVisit', ({ title, start, end }) => {
           }
         `
       }
+    }).then(({ body }) => {
+      return cy.wrap(body.data.createVisit.id)
     })
-    cy.visit('http://localhost:3000')
   })
 })
 
-Cypress.Commands.add('createEvent', ({ title, remoteVisit, inPersonVisit, start, end, desc, remotePlatforms=[] }) => {
+Cypress.Commands.add('createEvent', ({ title, remoteVisit, inPersonVisit, start, end, desc, remotePlatforms=[], grades=[1, 2], scienceClass }) => {
   cy.request({
     url: 'http://localhost:3001/graphql',
     method: 'POST',
@@ -151,11 +153,11 @@ Cypress.Commands.add('createEvent', ({ title, remoteVisit, inPersonVisit, start,
         mutation {
           createEvent(
             title: "${title}"
-            scienceClass: [1,2,3]
+            scienceClass: ${JSON.stringify(scienceClass)}
             start: "${start.toISOString()}"
             end: "${end.toISOString()}"
             desc: "${desc}"
-            grades: [1, 2]
+            grades: ${JSON.stringify(grades)}
             remoteVisit: ${remoteVisit}
             inPersonVisit: ${inPersonVisit}
             tags: ["Matematiikka", "Fysiikka"]
