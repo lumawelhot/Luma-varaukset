@@ -90,7 +90,7 @@ beforeAll(async () => {
 })
 
 beforeEach(async () => {
-  jest.setTimeout(60000)
+
   const { mutate } = createTestClient(server)
   const response = await mutate({
     mutation: CREATE_EVENT,
