@@ -60,7 +60,7 @@ When('I navigate to the user list page', () => {
 })
 
 And('I click user deletion button', () => {
-  cy.get(':nth-child(3) > :nth-child(3) > .button').click()
+  cy.contains('td', 'User123').siblings().contains('Poista').click()
 })
 
 Then('the user is deleted', () => {
