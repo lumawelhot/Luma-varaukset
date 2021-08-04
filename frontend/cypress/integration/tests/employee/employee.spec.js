@@ -204,7 +204,8 @@ And('I design new custom fields', () => {
 })
 
 Then('the custom form is succesfully created', () => {
-  cy.get('tbody > tr > :nth-child(1)').contains('New custom form')
+  cy.get('.toast').should('have.class', 'is-success')
+  cy.get('tbody > tr > :nth-child(1)', { timeout: 6000 }).contains('New custom form')
   cy.get('[style="margin-right: 10px;"]').click()
   cy.get(':nth-child(1) > :nth-child(1) > .media > .field > label').contains('Is now summer?')
   cy.get(':nth-child(2) > :nth-child(1) > .media > .field > label').contains('Is this question')
