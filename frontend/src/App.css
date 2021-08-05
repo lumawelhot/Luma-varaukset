@@ -1077,6 +1077,11 @@ input.hidden {
   background-color: #0479a5;
 }
 
+.hero.body {
+  padding-top: 20px;
+  padding-bottom: 5px;
+}
+
 .hero.luma .title {
   color: #dedede;
 }
