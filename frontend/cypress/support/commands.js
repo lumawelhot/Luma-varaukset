@@ -43,7 +43,6 @@ Cypress.Commands.add('login', ({ username, password }) => {
     }
   }).then(({ body }) => {
     localStorage.setItem('app-token', body.data.login.value)
-    cy.visit('http://localhost:3000')
   })
 })
 
@@ -72,8 +71,8 @@ Cypress.Commands.add('createUser', ({ username, password, isAdmin }) => {
     cy.log(body)
   })
 })
-//eslint-disable-next-line
-Cypress.Commands.add('createEvent', ({ title, scienceClass, remoteVisit, inPersonVisit, start, end, desc, remotePlatforms=[] }) => {
+
+Cypress.Commands.add('createEventWithVisit', ({ title, start, end }) => {
   cy.request({
     url: 'http://localhost:3001/graphql',
     method: 'POST',
@@ -82,37 +81,107 @@ Cypress.Commands.add('createEvent', ({ title, scienceClass, remoteVisit, inPerso
     },
     body: {
       query: `
-      mutation {
-        createEvent(
-          title: "${title}"
-          scienceClass: [1,2,3]
-          start: "${start.toISOString()}"
-          end: "${end.toISOString()}"
-          desc: "${desc}"
-          grades: [1, 2]
-          remoteVisit: ${remoteVisit}
-          inPersonVisit: ${inPersonVisit}
-          tags: ["Matematiikka", "Fysiikka"]
-          waitingTime: 15
-          duration: 60,
-          extras: [],
-          remotePlatforms: ${JSON.stringify(remotePlatforms)}
-        ){
-          title,
-          resourceids,
-          start,
-          end,
-          grades,
-          remoteVisit,
-          inPersonVisit,
-          desc,
-          tags {
-            name
-          },
-          disabled
+        mutation {
+          createEvent(
+            title: "${title}"
+            scienceClass: [1,2,3]
+            start: "${start.toISOString()}"
+            end: "${end.toISOString()}"
+            desc: "desc"
+            grades: [1, 2]
+            remoteVisit: ${true}
+            inPersonVisit: ${false}
+            tags: ["Matematiikka", "Fysiikka"]
+            waitingTime: 15
+            duration: 60,
+            extras: [],
+            remotePlatforms: [1]
+          ){
+            id
+          }
         }
+      `
+    }
+  }).then(({ body }) => {
+    console.log(body)
+    cy.request({
+      url: 'http://localhost:3001/graphql',
+      method: 'POST',
+      headers: {
+        authorization: `bearer ${localStorage.getItem('app-token')}`
+      },
+      body: {
+        query: `
+          mutation {
+            createVisit(
+              event: "${body.data.createEvent.id}"
+              clientName: "Clien"
+              schoolName: "School"
+              schoolLocation: "Location"
+              clientEmail: "email@test.com"
+              clientPhone: "email@test.com"
+              startTime: "${start.toISOString()}"
+              endTime: "${end.toISOString()}"
+              grade: "1. grade"
+              participants: 13
+              inPersonVisit: ${true}
+              remoteVisit: ${false}
+              dataUseAgreement: ${true}
+              extras: []
+              token: "token"
+            ){
+              id
+            }
+          }
+        `
       }
-    `
+    }).then(({ body }) => {
+      return cy.wrap(body.data.createVisit.id)
+    })
+  })
+})
+
+Cypress.Commands.add('createEvent', ({ title, remoteVisit, inPersonVisit, start, end, desc, remotePlatforms=[], grades=[1, 2], scienceClass }) => {
+  cy.request({
+    url: 'http://localhost:3001/graphql',
+    method: 'POST',
+    headers: {
+      authorization: `bearer ${localStorage.getItem('app-token')}`
+    },
+    body: {
+      query: `
+        mutation {
+          createEvent(
+            title: "${title}"
+            scienceClass: ${JSON.stringify(scienceClass)}
+            start: "${start.toISOString()}"
+            end: "${end.toISOString()}"
+            desc: "${desc}"
+            grades: ${JSON.stringify(grades)}
+            remoteVisit: ${remoteVisit}
+            inPersonVisit: ${inPersonVisit}
+            tags: ["Matematiikka", "Fysiikka"]
+            waitingTime: 15
+            duration: 60,
+            extras: [],
+            remotePlatforms: ${JSON.stringify(remotePlatforms)}
+          ){
+            id,
+            title,
+            resourceids,
+            start,
+            end,
+            grades,
+            remoteVisit,
+            inPersonVisit,
+            desc,
+            tags {
+              name
+            },
+            disabled
+          }
+        }
+      `
     }
   }).then(({ body }) => {
     console.log(body)

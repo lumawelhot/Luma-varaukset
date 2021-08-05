@@ -208,7 +208,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
                           <button className="button luma" onClick={openModal}>{t('change-info')}</button>
                         </div>
                         <div className="control">
-                          <button className="button luma" onClick={() => handleRemoveEventClick()}>{t('remove-event')}</button>
+                          <button id="remove" className="button luma" onClick={() => handleRemoveEventClick()}>{t('remove-event')}</button>
                         </div>
                         {!event.booked && event.disabled &&
                           <div className="control">

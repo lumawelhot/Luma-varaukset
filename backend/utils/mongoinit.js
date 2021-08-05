@@ -4,6 +4,7 @@ const User = require('../models/user')
 const Event = require('../models/event')
 const Extra = require('../models/extra')
 const Visit = require('../models/visit')
+const Form = require('../models/forms')
 
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
@@ -39,6 +40,7 @@ const resetDbForE2E = async () => {
   await Visit.deleteMany({})
   await Extra.deleteMany({})
   await Event.deleteMany({})
+  await Form.deleteMany({})
   console.log('Database reset!')
 }
 

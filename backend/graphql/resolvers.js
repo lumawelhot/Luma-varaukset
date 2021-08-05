@@ -27,32 +27,44 @@ const resolvers = {
     },
     getEvents: async (root, args, { currentUser }) => {
       let events
-      if (currentUser && currentUser.isAdmin) {
-        events = await Event.find({})
-          .populate('tags', { name: 1, id: 1 })
-          .populate('visits')
-          .populate('extras')
-      } else {
-        const date = sub(new Date(), { days: 90 })
-        events = await Event.find({ end: { $gt: date } })
-          .populate('tags', { name: 1, id: 1 })
-          .populate('visits')
-          .populate('extras')
+      try {
+        if (currentUser && currentUser.isAdmin) {
+          events = await Event.find({})
+            .populate('tags', { name: 1, id: 1 })
+            .populate('visits')
+            .populate('extras')
+        } else {
+          const date = sub(new Date(), { days: 90 })
+          events = await Event.find({ end: { $gt: date } })
+            .populate('tags', { name: 1, id: 1 })
+            .populate('visits')
+            .populate('extras')
+        }
+        return events.map(event => Object.assign(event.toJSON(), { locked: event.reserved ? true : false }))
+      } catch (error) {
+        throw new UserInputError('Error occured when fetching events')
       }
-      return events.map(event => Object.assign(event.toJSON(), { locked: event.reserved ? true : false }))
     },
     getTags: async () => {
       const tags = await Tag.find({})
       return tags
     },
     getVisits: async (root, args, { currentUser }) => {
-      if (!currentUser) {
-        return []
+      try {
+        if (!currentUser) {
+          return []
+        }
+        const visits = await Visit.find({})
+          .populate('event', { id: 1, title: 1, resourceids: 1, remoteVisit: 1, inPersonVisit : 1 })
+          .populate('extras')
+        visits.forEach(visit => {
+          visit.customFormData ? visit.customFormData = JSON.stringify(visit.customFormData) : null
+        })
+
+        return visits
+      } catch (error) {
+        throw new UserInputError('Error occured when fetching visits')
       }
-      const visits = await Visit.find({})
-        .populate('event', { id: 1, title: 1, resourceids: 1, remoteVisit: 1, inPersonVisit : 1 })
-        .populate('extras')
-      return visits
     },
     findVisit: async (root, args) => {
       try {
@@ -85,6 +97,7 @@ const resolvers = {
   Visit: {
     event: async (root) => {
       const event = await Event.findById(root.event).populate('tags', { name: 1, id: 1 }).populate('extras')
+      if (!event) throw new UserInputError('Event could not be found!')
       return Object.assign(event, { locked: event.reserved ? true : false })
     },
     //startTime: (data) => data.startTime.toISOString(),
@@ -195,9 +208,8 @@ const resolvers = {
     },
     disableEvent: async (root, args, { currentUser }) => {
       if (!currentUser) throw new AuthenticationError('not authenticated')
-
       const event = await Event.findById(args.event)
-
+      if (!event) throw new UserInputError('Event could not be found')
       event.disabled = true
       event.save()
       pubsub.publish('EVENT_DISABLED', {
@@ -209,7 +221,7 @@ const resolvers = {
       if (!currentUser) throw new AuthenticationError('not authenticated')
 
       const event = await Event.findById(args.event)
-
+      if (!event) throw new UserInputError('Event could not be found')
       event.disabled = false
       event.reserved = null
       event.save()
@@ -220,6 +232,7 @@ const resolvers = {
     },
     lockEvent: async (root, args) => {
       const event = await Event.findById(args.event)
+      if (!event) throw new UserInputError('Event could not be found')
       if (event.reserved) throw new UserInputError('Older session is already active')
       if (event.disabled) throw new UserInputError('This event is disabled')
 
@@ -245,7 +258,7 @@ const resolvers = {
     },
     unlockEvent: async (root, args) => {
       const event = await Event.findById(args.event)
-
+      if (!event) throw new UserInputError('Event could not be found')
       event.reserved = null
       await event.save()
       pubsub.publish('EVENT_UNLOCKED', { eventModified: event })
@@ -255,6 +268,7 @@ const resolvers = {
       const extras = await Extra.find({ _id: { $in: args.extras } })
       const { title, desc, resourceids, grades, remotePlatforms, otherRemotePlatformOption, remoteVisit, inPersonVisit, customForm } = args
       const event = await Event.findById(args.event).populate('visits')
+      if (!event) throw new UserInputError('Event could not be found')
       if (!currentUser) throw new AuthenticationError('not authenticated')
       if (new Date(args.start).getTime() < set(new Date(args.start), { hours: 8, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid start time')
       if (new Date(args.end).getTime() > set(new Date(args.end), { hours: 17, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid end time')
@@ -305,6 +319,7 @@ const resolvers = {
     },
     createVisit: async (root, args, { currentUser }) => {
       const event = await Event.findById(args.event).populate('visits', { startTime: 1, endTime: 1 })
+      if (!event) throw new UserInputError('Event could not be found')
       if (event.reserved && event.reserved !== args.token) throw new UserInputError('Invalid session')
       if (event.disabled) throw new UserInputError('This event is disabled')
 
@@ -354,7 +369,7 @@ const resolvers = {
           }]
           const text = await readMessage('welcome.txt', details)
           const html = await readMessage('welcome.html', details)
-          mailer.sendMail({
+          await mailer.sendMail({
             from: 'Luma-Varaukset <noreply@helsinki.fi>',
             to: visit.clientEmail,
             subject: 'Tervetuloa!',
@@ -383,6 +398,7 @@ const resolvers = {
       const visit = await Visit.findById(args.id)
       if (!visit || visit.status === false) throw new UserInputError('Varausta ei löydy')
       const event = await Event.findById(visit.event).populate('visits', { startTime: 1, endTime: 1 })
+      if (!event) throw new UserInputError('Event could not be found')
       const oldAvailableTimes = event.availableTimes.map(time => ({
         startTime: new Date(time.startTime),
         endTime: new Date(time.endTime)
