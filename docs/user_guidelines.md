@@ -42,7 +42,7 @@ Sovellukseen voidaan kirjautua painamalla keltaista avaimen kuvaa kalenterin oik
 
 ### Vierailun luonti lomakkeella
 
-Kirjautuneena käyttäjänä voit luoda yksittäisen vierailun järjestelmään. Vierailun luonti tapahtuu napsautamalla ```Luo uusi vierailu```-näppäintä, mikä siirtää selaimen vierailun luontilomakkeelle.
+Kirjautuneena käyttäjänä vierailun voi luoda kolmella eri tavalla. Vierailu voidaan luoda kalenterissa näkyvää ```Luo uusi vierailu``` painiketta painamalla, raahaamalla vierailulle haluttu aikaikkuna kalenterinäkymässä tai siirtämällä olemassa olevaa vierailua toiseen paikkaan kalenteria ja painamalla kopioi painiketta ilmestyneestä ponnahdusikkunasta. Kaikki edellä mainitut tavat avaavat vierailun luontilomakkeen, mutta valittu tapa vaikuttaa siihen, miten lomake on esitäytetty kun se avautuu. Kopioinnin yhteydessä avautuva lomake sisältää kaikki tiedot valmiiksi esitäytettyinä.
 
 Lomakkeeseen lisättävät tiedot ovat:
  * vierailun nimi
@@ -55,35 +55,72 @@ Lomakkeeseen lisättävät tiedot ovat:
  * päivämäärä
  * aloitus- ja lopetuskellonajat
  * vierailun kuvaus
+ * valintaruutu mahdollisten räätälöityjen lomakkeiden lisäämiseksi
 
-Sen jälkeen kun olet syöttänyt lomakkeeseen tarvittavat tiedot, napsauta ```Tallenna```-näppäintä.
+Kun lomake on täytetty kaikilla tarvittavilla tiedoilla, voidaan vierailu tällöin julkaista varattavaksi painamalla ```Luo vierailu``` painiketta lomakkeen alaosassa.
 
 <p align="center">
-  <img src="./img/create-event.png" width="600" />
+  <img src="./img/create-event.png" width="1000" />
 </p>
 
-### Vierailun luonti suoraan kalenterinäkymästä
-Lomakkeen sijaan voit myös luoda vierailun menemällä viikko- tai päivänäkymään ja raahaamalla kalenterista sopivan aikavälin. Vierailun luontilomake avautuu, ja päivämäärä sekä kellonajat on esitäytetty raahauksen mukaan. Voit vielä muokata niitä.
+### Vierailun muokkaaminen
 
-### Varausten listaus
-Kirjautuneena käyttäjänä voit listata varaukset napsauttamalla sivun pohjalta löytyvää ```Varaukset```-näppäintä. Listausnäkymässä näet varaukseen liittyvän vierailun nimen, tiedeluokan ja päivämäärän. Lisäksi näet varauksen statuksen, eli onko se voimassa vai peruttu. Voit myös kopioida varauksen infosivun URL-osoitteen leikepöydälle. Saat infosivun näkyviin myös klikkaamalla varaukseen liittyvän vierailun nimeä.
+Jo olemassa olevan vierailun tietoja voidaan muokata painamalla vierailun sivulla olevaa ```Muokkaa tietoja``` painiketta. Muokkauslomake on esitäytetty muokattavan vierailun tiedoilla, joita voidaan muuttaa käyttäjän haluamalla tavalla. Kun halutut muutokset on tehty voidaan ne tallentaa painamalla ```Tallenna``` nappulaa.
 
 <p align="center">
-  <img src="./img/list-visit.png" width="600" />
+  <img src="./img/modify-event.png" width="1000" />
+</p>
+
+### Vierailun siirtäminen
+
+Olemassa olevan vierailun paikkaa voidaan siirtää raahaamalla vierailua toiseen paikkaan kalenterinäkymässä ja painamalla siirtämisen jälkeen ilmestyvässä ponnahdusikkunassa ```Siirrä``` painiketta. Tämän jälkeen käyttäjälle avauttuu vierailun muokkaus lomake, joka on esitäytetty vierailun muilla tiedoilla, sekä sen uudella ajankohdalla. Vierailu voidaan siirtää painamalla ```Tallenna``` nappulaa.
+
+### Varausten listaus
+
+Vierailuihin tehdyt varaukset voidaan listata painamalla kalenterin alla olevaa ```Varaukset``` painiketta. Listauksessa näkyy joitain tietoja, kuten otsikko, tiedeluokka ja päivämäärä. Tarvittaessa lisätietoja varauksesta nähdään painamalla varauksen otsikkoa, jonka tietoja halutaan tarkastella. Listauksessa olevia varauksia voidaan suodattaa tiedeluokan mukaan ja se sisältää toiminnallisuuden kopioida tarvittaessa leikepöydälle URL-osoite, jolla pääsee vierailun sivulle.
+
+<p align="center">
+  <img src="./img/list-visit.png" width="1000" />
+</p>
+
+### Lisäpalvelut
+
+Olemassa olevien lisäpalveluiden listauksen pääsee näkemään painamalla kalenterinäkymän alapuolella olevaa ```Lisäpalvelut``` painiketta. Listauksessa näkyy, mille tiedeluokille lisäpalvelut on tarkoitettu ja niiden kestot riippuen onko kyseessä etä- tai lähivierailu. Lisäpalvelu voidaan lisätä painamalla ```Lisää uusi``` painiketta ja lähettämällä painikkeen alle ilmestynyt lomake halutuilla tiedoilla.
+
+<p align="center">
+  <img src="./img/extras.png" width="1000" />
+</p>
+
+### Räätälöityjen lomakkeiden luominen
+
+Sovellus mahdollistaa räätölöityjen lomakkeiden luomisen, jotka voidaan lisätä vierailun varaus lomakkeeseen täytettäviksi lisäkentiksi. Mahdollisia lisäkenttiä ovat teksti, radio-valinta ja rastiruutu kentät. Räätälöidylle lomakkeelle voidaan antaa nimi riippuen esimerkiksi lomakkeen käyttötarkoituksesta. Kenttien järjestystä voidaan myös vaihtaa tai tarpeettomaksi jääneitä kysymys kenttiä voidaan poistaa.
+
+<p align="center">
+  <img src="./img/custom-form.png" width="1000" />
 </p>
 
 ## Ylläpitäjän oikeuksia vaativat toiminnallisuudet
 
 ### Käyttäjien listaus
-Ylläpitäjänä voit tarkastella sovellukseen rekisteröityjä käyttäjiä osoitteessa ```/users```.
+
+Käyttäjien listaukseen pääsee painamalla kalenterinäkymän alla olevaa painiketta ```Käyttäjälista```. Listauksesta näkyy, mitä käyttäjiä sovellukeen on rekisteröity, millä käyttäjänimellä ja oikeuksilla. Listattujen käyttäjien käyttäjätunnuksia, salasanaa ja oikeuksia voidaan muokata, sekä tarvittaessa käyttäjiä voidaan myös poistaa. Kirjautunut ylläpitäjä on kuitenkin rajoitettu siten, että se ei voi poistaa omaa käyttäjäänsä tai muuttaa oman käyttäjänsä oikeuksia. Listauksen alla näkyy myös painike uuden käyttäjän luonnille, joka avaa lomakkeen käyttäjän luomista varten.
 
 <p align="center">
-  <img src="./img/users-list.png" width="300" />
+  <img src="./img/users-list.png" width="1000" />
 </p>
 
-### Uuden käyttäjän luonti
-Ylläpitäjänä voit luoda uuden käyttäjän varausjärjestelmään osoitteessa ```/users/create```. Syötä uuden käyttäjän käyttäjänimi ja salasana lomakkeen kenttiin. Valitse käyttäjärooli (ylläpitäjä tai työntekijä) ja klikkaa lopuksi ```Tallenna käyttäjä``` .
+### Vierailuiden listaus
+
+Vierailuiden listaukseen pääsee painamalla ```Vierailulista``` painiketta kalenterinäkymän alaosassa. Listauksessa näkyy kaikki vierailut valitulta aikaväliltä. Oletusarvoisesti listaus näyttää vain menneet vierailut turvallisuus syistä. Listauksessa näkyy vierailuiden nimet, päivämäärät, kellonajat ja tiedeluokat.
 
 <p align="center">
-  <img src="./img/users-create.png" height="300" />
+  <img src="./img/event-list.png" width="1000" />
+</p>
+
+### Vierailuiden ja niihin liittyvien varausten tietojen poistaminen
+
+Vierailuiden listauksessa on mahdollista valita ne vierailut joihin liittyvät tiedot halutaan poistaa sovelluksen tietokannasta kokonaan. Poistettaviin tietoihin kuuluvat vierailu ja siihen linkietetyt varaukset. Ennen poistamista valitaan ne virailut jotka halutaan poistaa ja painetaan painiketta ```Poista valitut vierailut```. Poistamista ei voida tehdä vahingossa, sillä ennen poistamista ylläpitäjältä kysytään varmistukseksi salasanaa. Ennen poistamista pääsee tarvittaessa näkemään vielä yhteenvedon niiden vierailuiden nimistä, joita on tarkoitus poistaa.
+
+<p align="center">
+  <img src="./img/remove-events.png" width="1000" />
 </p>
