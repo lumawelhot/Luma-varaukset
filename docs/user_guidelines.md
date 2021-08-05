@@ -10,7 +10,7 @@ Sovellukseen rekisteröidyt vierailut ovat kaikkien nähtävillä ja näkyvät s
 <img src="./img/front-page.png" width="1000" />
 
 ### Vierailujen suodatus
-Kalenterissa näkyvät vierailut voi suodattaa sivustolla olevan suodatuslomakkeen avulla. Suodatinvaihtoehtoina ovat tiedeluokka, vierailutyyppi (etä- tai lähiopetus) sekä luokka-aste. Oletusarvoisesti kaikki vierailut näytetään. ```Suodata```-nappia klikkaamalla saat näkyviin käytettävissä olevat suodattimet. Valitsemalla ```Poista kaikki``` kaikki suodattimet valitaan pois käytöstä. Sen jälkeen voit klikkailla niitä päälle yksi kerrallaan. Klikkaa lopuksi ```OK```.
+Kalenterissa näkyvät vierailut voi suodattaa sivustolla olevan suodatuslomakkeen avulla. Suodatinvaihtoehtoina ovat tunniste, tiedeluokka, vierailutyyppi (etä- tai lähiopetus) sekä luokka-aste. Oletusarvoisesti kaikki vierailut näytetään. ```Suodata```-nappia klikkaamalla pystyy  avaamaan suodatuslomakkeen. Tunniste suodatus kenttä on oletusarvoisesti tyhjä ja näyttää tyhjänä kaikki kalenterissa näkyviksi merkityt vierailut. Lisäämällä yksi tai useampi tunniste, voidaan määrittää millä tunnisteilla halutaan näyttää kalenterissa olevat vierailut. Jokaisen suodatustyypin perässä on ```Poista kaikki``` tai ```Näytä kaikki``` nappula, joista toinen on näkyvissä riippuen siitä, millä tavalla suodatukset ollaan kyseisellä suodatustyypin rivillä on valittu. Suodatuslomakkeen sulkeminen onnistuu painamalla ```OK``` tai ```Suodata``` nappulaa.
 
 <img src="./img/filtering.png" width="1000" />
 
@@ -18,15 +18,14 @@ Kalenterissa näkyvät vierailut voi suodattaa sivustolla olevan suodatuslomakke
 Vierailun voi valita kalenterinäkymästä, jolloin selain ohjautuu vierailun sivulle. Vierailun sivulta näkee vierailun tiedot, ja sieltä voit tehdä varauksen, jos vierailu on varattavissa.
 
 <p align="center">
-  <img src="./img/event-page.png" width="400" />
+  <img src="./img/event-page.png" width="1000" />
 </p>
 
 ### Varauksen luonti
-Kun olet napsauttanut vierailusivulta löytyvää ```Varaa vierailu``` -näppäintä,
-sinut ohjataan vierailun varaussivulle. Syötä tarvittavat tiedot lomakkeeseen ja napsauta ```Tallenna```-näppäintä. Varausvahvistus lähetetään antamaasi sähköpostiosoitteeseen.
+Vierailun sivulla olevaa ```Varaa vierailu``` nappulaa painamalla pääset vierailun varaus lomakkeeseen. Lomakkeen täyttämiseen on varattu 5 minuuttia aikaa, jonka aikana kukaan muu käyttäjä ei voi varata vierailua. Mikäli aika loppuu kesken ja vierailua ei olla keretty varaamaan, vapautuu tällöin vierailu taas varattavaksi sovelluksen muille käyttäjille. Ensisijaisesti vierailun varauksen voi tehdä vain käyttäjä joka on pitänyt lomaketta yhtäjaksoisesti auki maksimissaan annetun viiden minuutin ajana. Vierailu on kuitenkin mahdollista varata annetun viiden minuutin jälkeen jos kukaan muu käyttäjä ei ole avannut varauslomaketta. Kun varauslomakkeen kentät on täytetty tarvittavilla tiedoilla, voidaan lomake lähettää painamalla ```Varaa vierailu``` nappulaa lomakkeen alaosassa. Varausvahvistus lähetetään lomakkeen onnistuneen lähettämisen jälkeen antamaasi sähköpostiosoitteeseen.
 
 <p align="center">
-  <img src="./img/book-visit.png" width="600" />
+  <img src="./img/book-event.png" width="1000" />
 </p>
 
 ---
@@ -35,13 +34,14 @@ sinut ohjataan vierailun varaussivulle. Syötä tarvittavat tiedot lomakkeeseen 
 
 ### Kirjautuminen
 
-Sovellukseen voit kirjautua osoitteen ```/admin``` kautta. Vain tiedeluokkien työntekijät voivat kirjautua sovellukseen.
+Sovellukseen voidaan kirjautua painamalla keltaista avaimen kuvaa kalenterin oikeassa alalaidassa. Vain tiedeluokkien työntekijät ja ylläpitäjät voivat kirjautua sovellukseen. Kaikki ne oikeudet joita työntekijällä on, ovat myös ylläpitäjällä.
 
 <p align="center">
-  <img src="./img/login.png" height="300" />
+  <img src="./img/login.png" height="450" />
 </p>
 
 ### Vierailun luonti lomakkeella
+
 Kirjautuneena käyttäjänä voit luoda yksittäisen vierailun järjestelmään. Vierailun luonti tapahtuu napsautamalla ```Luo uusi vierailu```-näppäintä, mikä siirtää selaimen vierailun luontilomakkeelle.
 
 Lomakkeeseen lisättävät tiedot ovat:
