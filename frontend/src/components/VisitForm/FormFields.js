@@ -1,12 +1,12 @@
 import React from 'react'
 
 const FieldProvider = ({ field, component }) => {
-  const { form, label, fieldName, style } = field
+  const { form, label, fieldName, style, required } = field
   const { touched, errors } = form
   return (
     <>
       <div className="field" style={style}>
-        <label className="label" htmlFor={fieldName}>{label}</label>
+        <label className="label" htmlFor={fieldName}>{label}{!!required && <span style={{ color: 'red' }}>*</span>}</label>
         <div className="control">
           {component}
         </div>

@@ -55,6 +55,7 @@ const Form = ({ event, close, save, validate, tags }) => {
                 label={t('visit-name')}
                 fieldName='title'
                 component={TextField}
+                required={true}
               />
               <Field
                 label={t('description')}
@@ -102,6 +103,7 @@ const Form = ({ event, close, save, validate, tags }) => {
                 fieldName='startTime'
                 component={TimePick}
                 disabledHours={() => [0,1,2,3,4,5,6,7,17,18,19,20,21,22,23]}
+                required={true}
               />
 
               <Field
@@ -109,6 +111,7 @@ const Form = ({ event, close, save, validate, tags }) => {
                 fieldName='endTime'
                 component={TimePick}
                 disabledHours={() => [0,1,2,3,4,5,6,7,8,18,19,20,21,22,23]}
+                required={true}
               />
 
               <Field

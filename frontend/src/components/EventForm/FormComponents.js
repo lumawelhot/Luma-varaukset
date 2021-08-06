@@ -35,6 +35,7 @@ export const EventType = () => {
     <>
       <label className="label" id="checkbox-group">
         {t('choose-remote-or-inperson')}
+        <span style={{ color: 'red' }}>*</span>
       </label>
       <Field
         label={t('remote')}
@@ -56,6 +57,7 @@ export const Platforms = ({ values, touched, errors, setFieldValue }) => {
     <>
       <div className="label" id="checkbox-group">
         {t('choose-remote-platforms')}
+        <span style={{ color: 'red' }}>*</span>
       </div>
       {platformList.map(platform => (
         <Field
@@ -92,6 +94,7 @@ export const Grades = ({ values, touched, errors, setFieldValue }) => {
     <>
       <label className="label" id="checkbox-group">
         {t('choose-grades')}
+        <span style={{ color: 'red' }}>*</span>
       </label>
 
       {gradesList.map(grade => (
@@ -123,6 +126,7 @@ export const ScienceClasses = ({ values, touched, errors, setFieldValue, label }
     <>
       <label className="label" id="checkbox-group">
         {label ? label : t('choose-resources')}
+        <span style={{ color: 'red' }}>*</span>
       </label>
 
       {resourceList.map(resource => (
@@ -191,6 +195,7 @@ export const TimePick = ({ form, fieldName, label, disabledHours }) => {
     <div className="field">
       <label className="label" htmlFor="fieldName">
         {label}
+        <span style={{ color: 'red' }}>*</span>
       </label>
       <div className="control">
         <TimePicker
@@ -219,9 +224,11 @@ export const DatePick = ({ form }) => {
     <div className="field">
       <label className="label" htmlFor="date">
         {t('date')}
+        <span style={{ color: 'red' }}>*</span>
       </label>
       <div className="control">
         <DatePicker
+          allowClear={false}
           className={`input ${touched.date
             ? errors.date
               ? 'is-danger'
