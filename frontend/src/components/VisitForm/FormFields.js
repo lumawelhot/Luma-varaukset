@@ -6,7 +6,7 @@ const FieldProvider = ({ field, component }) => {
   return (
     <>
       <div className="field" style={style}>
-        <label className="label" htmlFor={fieldName}>{label}{!!required && <span style={{ color: 'red' }}>*</span>}</label>
+        <label className="label" htmlFor={fieldName}>{label}{!!required && <span style={{ color: 'red' }}> *</span>}</label>
         <div className="control">
           {component}
         </div>
