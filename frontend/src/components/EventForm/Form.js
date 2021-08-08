@@ -57,6 +57,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
                 label={t('visit-name')}
                 fieldName='title'
                 component={TextField}
+                required={true}
               />
 
               <Field
@@ -64,6 +65,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
                 fieldName='duration'
                 type='number'
                 component={TextField}
+                required={true}
               />
 
               <LumaTagInput
@@ -138,6 +140,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
                     : ''
                   }`}
                   component={TextField}
+                  required={true}
                 />
 
               </div>

@@ -123,7 +123,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit, customFormFiel
 
                     {event.inPersonVisit && event.remoteVisit ? (
                       <>
-                        <label className="label">{t('choose-type')}</label>
+                        <label className="label">{t('choose-type')}<span style={{ color: 'red' }}> *</span></label>
                         <Field
                           label={t('remote')}
                           id='visitMode'
@@ -144,7 +144,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit, customFormFiel
 
                     {values.visitMode === '1' || (values.visitMode === '0' && event.remoteVisit && !event.inPersonVisit) ?
                       <>
-                        <label className="label" id="radio-group">{t('choose-remote-platform')}</label>
+                        <label className="label" id="radio-group">{t('choose-remote-platform')}<span style={{ color: 'red' }}> *</span></label>
                         {eventPlatforms.map((platform, index) => {
                           return (
                             <Field
@@ -176,24 +176,24 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit, customFormFiel
                       :null
                     }
 
-                    <Field component={TextField} label={t('client-name')} fieldName='clientName' />
+                    <Field component={TextField} label={t('client-name')} fieldName='clientName' required={true}/>
 
-                    <Field component={TextField} label={t('community-name')} fieldName='schoolName' />
+                    <Field component={TextField} label={t('community-name')} fieldName='schoolName' required={true}/>
 
-                    <Field component={TextField} label={t('community-location')} fieldName='schoolLocation' />
+                    <Field component={TextField} label={t('community-location')} fieldName='schoolLocation' required={true}/>
 
-                    <Field component={TextField} label={t('client-email')} fieldName='clientEmail' />
+                    <Field component={TextField} label={t('client-email')} fieldName='clientEmail' required={true}/>
 
-                    <Field component={TextField} label={t('email-confirm')} fieldName='verifyEmail' />
+                    <Field component={TextField} label={t('email-confirm')} fieldName='verifyEmail' required={true}/>
 
-                    <Field component={TextField} label={t('client-phone')} fieldName='clientPhone' />
+                    <Field component={TextField} label={t('client-phone')} fieldName='clientPhone' required={true}/>
 
                     <hr></hr>
                     <div className="field is-grouped" style={{ justifyContent: 'space-between' }}>
 
-                      <Field component={TextField} style={{ width: 360 }} label={t('grade')} fieldName='visitGrade' />
+                      <Field component={TextField} style={{ width: 360 }} label={t('grade')} fieldName='visitGrade' required={true}/>
 
-                      <Field component={TextField} type='number' label={t('participants')} fieldName='participants' />
+                      <Field component={TextField} type='number' label={t('participants')} fieldName='participants' required={true}/>
 
                     </div>
 
@@ -229,6 +229,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit, customFormFiel
                     ) : null}
                     <label htmlFor="startTime" className="label">
                       {t('start-and-timeslot')} {format(event.start, 'HH:mm')} - {format(event.end, 'HH:mm')})
+                      <span style={{ color: 'red' }}> *</span>
                     </label>
                     <div className="field is-grouped level">
                       <div className="control">
@@ -263,6 +264,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit, customFormFiel
                       label={
                         <label>
                           {t('accept-privacy-policy1')} <a href="https://www2.helsinki.fi/fi/tiedekasvatus/tietosuojailmoitus-opintokaynnit" target="_blank" rel="noopener noreferrer">{t('privacy-policy')}</a> {t('accept-privacy-policy2')}.
+                          <span style={{ color: 'red' }}> *</span>
                         </label>
                       }
                       className='privacyPolicy'
@@ -280,6 +282,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit, customFormFiel
                       label={
                         <label>
                           {t('accept-instructions1')} <a href="https://www2.helsinki.fi/fi/tiedekasvatus/opettajille-ja-oppimisyhteisoille/varaa-opintokaynti">{t('instructions')}</a> {t('accept-instructions2')}.
+                          <span style={{ color: 'red' }}> *</span>
                         </label>
                       }
                       style={{ marginBottom: 7 }}
