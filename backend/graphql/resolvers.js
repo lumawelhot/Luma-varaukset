@@ -1,5 +1,4 @@
 const { UserInputError, AuthenticationError } = require('apollo-server-errors')
-const { readMessage } = require('../services/fileReader')
 const { findValidTimeSlot, calculateAvailabelTimes, calculateNewTimeSlot, formatAvailableTimes } = require('../utils/timeCalculation')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -13,7 +12,8 @@ const Visit = require('../models/visit')
 const Extra = require('../models/extra')
 const Tag = require('../models/tag')
 const Form = require('../models/forms')
-const { addNewTags } = require('../utils/helpers')
+const Email = require('../models/email')
+const { addNewTags, fillStringWithValues } = require('../utils/helpers')
 const { set, sub } = require('date-fns')
 
 const { PubSub } = require('graphql-subscriptions')
@@ -367,14 +367,13 @@ const resolvers = {
             name: 'link',
             value: `${config.HOST_URI}/${savedVisit.id}`
           }]
-          const text = await readMessage('welcome.txt', details)
-          const html = await readMessage('welcome.html', details)
+          const mail = await Email.findOne({ name: 'welcome' })
           await mailer.sendMail({
             from: 'Luma-Varaukset <noreply@helsinki.fi>',
             to: visit.clientEmail,
-            subject: 'Tervetuloa!',
-            text,
-            html
+            subject: mail.subject,
+            text: fillStringWithValues(mail.text, details),
+            html: fillStringWithValues(mail.html, details)
           })
           event.visits = event.visits.concat(savedVisit._id)
           event.reserved = null

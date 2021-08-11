@@ -14,14 +14,6 @@ let serverAdmin
 let serverBasic
 
 beforeAll(async () => {
-  await mongoose.connect(process.env.MONGO_URL,
-    { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false })
-    .then(() => {
-      console.log('connected to test-mongodb')
-    })
-    .catch((error) => {
-      console.log('connection error: ', error.message)
-    })
   await User.deleteMany({})
 
   const adminPassword = await bcrypt.hash('admin-password', 10)
@@ -140,10 +132,4 @@ describe('User model test. User', () => {
     expect(error).toBeInstanceOf(mongoose.Error.ValidationError)
     expect(error.errors.passwordHash).toBeDefined()
   })
-})
-
-afterAll(async () => {
-  await User.deleteMany({})
-  await mongoose.connection.close()
-  console.log('test-mongodb connection closed')
 })

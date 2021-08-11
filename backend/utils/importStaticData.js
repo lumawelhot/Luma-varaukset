@@ -7,6 +7,7 @@ const Event = require('../models/event')
 const Extra = require('../models/extra')
 const Tag = require('../models/tag')
 const { set, addBusinessDays, subBusinessDays } = require('date-fns')
+const { initEmailMessages } = require('./helpers')
 
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
@@ -132,6 +133,10 @@ const importStaticEvents = async () => {
     await newEvent.save()
   })
   console.log('Done.')
+}
+
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+  initEmailMessages()
 }
 
 if (!(process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test')) {
