@@ -28,6 +28,12 @@ const fillStringWithValues = (str, replace) => {
 
 const initEmailMessages = async () => {
   await Email.deleteMany({})
+  const cancellation = new Email({
+    name: 'cancellation',
+    text: 'text',
+    html: '<h1>html</h1>',
+    subject: 'Cancellation'
+  })
   const thanks = new Email({
     name: 'thanks',
     text: 'text',
@@ -49,6 +55,7 @@ const initEmailMessages = async () => {
   await thanks.save()
   await reminder.save()
   await welcome.save()
+  await cancellation.save()
 }
 
 module.exports = { addNewTags, fillStringWithValues, initEmailMessages }

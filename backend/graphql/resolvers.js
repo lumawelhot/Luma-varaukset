@@ -66,12 +66,19 @@ const resolvers = {
         throw new UserInputError('Error occured when fetching visits')
       }
     },
+    getEmailTemplates: async (root, args, { currentUser }) => {
+      if (!currentUser || !currentUser.isAdmin) {
+        throw new AuthenticationError('Not authenticated or no admin priviledges')
+      }
+      const emails = await Email.find({})
+      return emails
+    },
     findVisit: async (root, args) => {
       try {
         const visit = await Visit.findById(args.id).populate('extras')
         return visit.toJSON()
       } catch (e) {
-        throw new UserInputError('Varausta ei löytynyt!')
+        throw new UserInputError('Visit not found!')
       }
     },
     me: (root, args, context) => {
@@ -426,6 +433,14 @@ const resolvers = {
         await event.save()
         pubsub.publish('EVENT_RESERVATION_CANCELLED', {
           eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
+        })
+        const mail = await Email.findOne({ name: 'cancellation' })
+        await mailer.sendMail({
+          from: 'Luma-Varaukset <noreply@helsinki.fi>',
+          to: visit.clientEmail,
+          subject: mail.subject,
+          text: fillStringWithValues(mail.text),
+          html: fillStringWithValues(mail.html)
         })
         return visit
       } catch (error) {

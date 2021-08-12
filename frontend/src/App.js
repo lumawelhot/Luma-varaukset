@@ -23,6 +23,7 @@ import ExtrasAdmin from './components/EventExtras/ExtrasAdmin'
 import FormList from './components/FormEditor/FormList'
 import { useTranslation } from 'react-i18next'
 import EventList from './components/EventList'
+import EmailConfig from './components/EmailConfig'
 
 const App = () => {
   const { t } = useTranslation('common')
@@ -224,6 +225,11 @@ const App = () => {
       <Banner/>
       <Toasts toasts={toasts} />
       <Switch>
+        <Route path='/email-config'>
+          <EmailConfig
+
+          />
+        </Route>
         <Route path='/event-page'>
           <EventPage
             currentUser={currentUser}

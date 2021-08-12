@@ -36,6 +36,11 @@ const UserPage = ({ currentUser, setShowEventForm }) => {
     history.push('/events')
   }
 
+  const emailConfig = (event) => {
+    event.preventDefault()
+    history.push('/email-config')
+  }
+
   if (!currentUser) return <div></div>
 
   return (
@@ -59,6 +64,9 @@ const UserPage = ({ currentUser, setShowEventForm }) => {
           </p>
           <p className="control">
             <button className="button luma" onClick={eventList}>{t('event-list')}</button>
+          </p>
+          <p className="control">
+            <button className="button luma" onClick={emailConfig}>{t('email-config')}</button>
           </p>
         </>
       }

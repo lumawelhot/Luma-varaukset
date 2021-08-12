@@ -461,6 +461,17 @@ export const GET_ALL_FORMS = gql`
   }
 `
 
+export const GET_EMAIL_TEMPLATES = gql`
+  query getEmailTemplates {
+    getEmailTemplates {
+      subject
+      html
+      text
+      name
+    }
+  }
+`
+
 export const GET_FORM = gql`
   query getForm($id: ID!) {
     getForm(id: $id) {
