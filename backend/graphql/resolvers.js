@@ -397,6 +397,14 @@ const resolvers = {
             text: fillStringWithValues(mail.text, details),
             html: fillStringWithValues(mail.html, details)
           })
+          for (let recipient of mail.ad) {
+            await mailer.sendMail({
+              from: 'Luma-Varaukset <noreply@helsinki.fi>',
+              to: recipient,
+              subject: mail.adSubject,
+              text: fillStringWithValues(mail.adText, details)
+            })
+          }
           event.visits = event.visits.concat(savedVisit._id)
           event.reserved = null
           await event.save()
@@ -457,6 +465,14 @@ const resolvers = {
           text: fillStringWithValues(mail.text),
           html: fillStringWithValues(mail.html)
         })
+        for (let recipient of mail.ad) {
+          await mailer.sendMail({
+            from: 'Luma-Varaukset <noreply@helsinki.fi>',
+            to: recipient,
+            subject: mail.adSubject,
+            text: fillStringWithValues(mail.adText)
+          })
+        }
         return visit
       } catch (error) {
         event.visits = event.visits.concat(visit._id)

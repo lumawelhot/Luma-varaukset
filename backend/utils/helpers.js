@@ -33,8 +33,8 @@ const initEmailMessages = async () => {
     text: 'text',
     html: '<h1>html</h1>',
     subject: 'Cancellation',
-    adSubject: 'New visit',
-    ad: ['tester@jest.com'],
+    adSubject: 'Cancellation',
+    ad: ['tester@jest.com', 'jester@second.com'],
     adText: 'text'
   })
   const thanks = new Email({
@@ -61,7 +61,7 @@ const initEmailMessages = async () => {
     html: '<h1>html/link/r</h1>',
     subject: 'Welcome',
     adSubject: 'New visit',
-    ad: ['tester@jest.com'],
+    ad: ['tester@jest.com', 'jester@second.com'],
     adText: 'text'
   })
   await thanks.save()
