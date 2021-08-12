@@ -21,7 +21,6 @@ const EmailConfig = ({ sendMessage }) => {
     }
   })
   if (templates.loading) return <></>
-  console.log(templates.data.getEmailTemplates)
 
   const handleBack = (event) => {
     event.preventDefault()
@@ -39,7 +38,10 @@ const EmailConfig = ({ sendMessage }) => {
         name: selectedTemlate.name,
         html: values.html,
         text: values.text,
-        subject: values.subject
+        subject: values.subject,
+        ad: values.ad,
+        adSubject: values.adSubject,
+        adText: values.adText
       }
     })
     setShowModal(false)
@@ -55,11 +57,15 @@ const EmailConfig = ({ sendMessage }) => {
             initialValues={{
               html: selectedTemlate.html,
               text: selectedTemlate.text,
-              subject: selectedTemlate.subject
+              subject: selectedTemlate.subject,
+              address: '',
+              ad: selectedTemlate.ad,
+              adSubject: selectedTemlate.adSubject,
+              adText: selectedTemlate.adText
             }}
             onSubmit={handleChangeData}
           >
-            {({ handleSubmit }) => {
+            {({ setFieldValue, handleSubmit, handleChange, values }) => {
               return (
                 <div className="modal-card">
                   <header className="modal-card-head">
@@ -74,13 +80,39 @@ const EmailConfig = ({ sendMessage }) => {
                     <Field
                       label={t('text')}
                       fieldName='text'
-                      placeholder={t('description-placeholder')}
                       component={TextArea}
                     />
                     <Field
                       label={t('html')}
                       fieldName='html'
-                      placeholder={t('description-placeholder')}
+                      component={TextArea}
+                    />
+                    <div className="label">{t('notification-to')}</div>
+                    <ul>
+                      {values.ad.map(ad =>
+                        <li key={ad}>
+                          {ad}
+                          <button onClick={() => {
+                            setFieldValue('ad', values.ad.filter(email => email !== ad))
+                          }} style={{ marginLeft: 10 }}>{t('remove')}</button>
+                        </li>
+                      )}
+                    </ul>
+                    <div className="field-is-grouped" style={{ marginBottom: 10 }}>
+                      <input value={values.address} name="address" className="input" style={{ width: '70%' }} onChange={handleChange} />
+                      <button className="button luma" style={{ float: 'right' }} onClick={() => {
+                        setFieldValue('ad', values.ad.includes(values.address) ? values.ad : values.ad.concat(values.address))
+                        setFieldValue('address', '')
+                      }} >{t('add-address')}</button>
+                    </div>
+                    <Field
+                      label={t('ad-subject')}
+                      fieldName='adSubject'
+                      component={TextField}
+                    />
+                    <Field
+                      label={t('ad-text')}
+                      fieldName='adText'
                       component={TextArea}
                     />
                   </section>

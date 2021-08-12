@@ -32,25 +32,37 @@ const initEmailMessages = async () => {
     name: 'cancellation',
     text: 'text',
     html: '<h1>html</h1>',
-    subject: 'Cancellation'
+    subject: 'Cancellation',
+    adSubject: 'New visit',
+    ad: ['tester@jest.com'],
+    adText: 'text'
   })
   const thanks = new Email({
     name: 'thanks',
     text: 'text',
     html: '<h1>html</h1>',
-    subject: 'Thanks'
+    subject: 'Thanks',
+    adSubject: 'New visit',
+    ad: ['tester@jest.com'],
+    adText: 'text'
   })
   const reminder = new Email({
     name: 'reminder',
     text: 'text',
     html: '<h1>html</h1>',
-    subject: 'Reminder'
+    subject: 'Reminder',
+    adSubject: 'New visit',
+    ad: ['tester@jest.com'],
+    adText: 'text'
   })
   const welcome = new Email({
     name: 'welcome',
     text: 'text/link/r',
     html: '<h1>html/link/r</h1>',
-    subject: 'Welcome'
+    subject: 'Welcome',
+    adSubject: 'New visit',
+    ad: ['tester@jest.com'],
+    adText: 'text'
   })
   await thanks.save()
   await reminder.save()

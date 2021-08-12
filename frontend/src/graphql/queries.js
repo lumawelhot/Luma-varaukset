@@ -468,6 +468,9 @@ export const GET_EMAIL_TEMPLATES = gql`
       html
       text
       name
+      ad
+      adSubject
+      adText
     }
   }
 `
@@ -614,12 +617,23 @@ export const FORCE_DELETE_EVENTS = gql`
 `
 
 export const UPDATE_EMAIL = gql`
-  mutation updateEmail($name: String!, $subject: String!, $html: String!, $text: String!) {
+  mutation updateEmail(
+    $name: String!,
+    $subject: String!, 
+    $html: String!, 
+    $text: String!, 
+    $ad: [String]!, 
+    $adSubject: String!, 
+    $adText: String!
+  ) {
     updateEmail(
       name: $name
       subject: $subject
       html: $html
       text: $text
+      ad: $ad
+      adSubject: $adSubject
+      adText: $adText
     ) {
       name
     }

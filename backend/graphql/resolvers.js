@@ -122,6 +122,9 @@ const resolvers = {
       email.html = args.html
       email.text = args.text
       email.subject = args.subject
+      email.ad = args.ad
+      email.adSubject = args.adSubject
+      email.adText = args.adText
       await email.save()
 
       return email

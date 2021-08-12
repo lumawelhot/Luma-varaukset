@@ -19,6 +19,18 @@ const emailSchema = mongoose.Schema({
   subject: {
     type: String,
     required: true
+  },
+  ad: {
+    type: [String],
+    required: true
+  },
+  adSubject: {
+    type: String,
+    required: true
+  },
+  adText: {
+    type: String,
+    required: true
   }
 })
 

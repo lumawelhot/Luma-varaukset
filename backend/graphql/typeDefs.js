@@ -82,6 +82,9 @@ const typeDefs = gql`
     text: String!
     subject: String!
     name: String!
+    ad: [String]!
+    adSubject: String!
+    adText: String!
   }
   type Query {
     getUsers: [User]!
@@ -101,6 +104,9 @@ const typeDefs = gql`
       html: String!
       text: String!
       subject: String!
+      ad: [String]!
+      adSubject: String!
+      adText: String!
     ): EmailTemplate
     lockEvent(
       event: ID!
