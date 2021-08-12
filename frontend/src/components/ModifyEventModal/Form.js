@@ -26,7 +26,7 @@ const Form = ({ event, close, save, validate, tags }) => {
   return (
     <Formik
       initialValues={{
-        title: event.title,
+        title: event.titleText,
         scienceClass: createResourceList(event),
         grades: createGradeList(event),
         remotePlatforms: createPlatformList(event),

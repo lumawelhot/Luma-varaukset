@@ -87,6 +87,7 @@ const App = () => {
         }
         {event.title}
       </>,
+      titleText: event.title,
       resourceids: event.resourceids,
       grades: event.grades,
       inPersonVisit: event.inPersonVisit,

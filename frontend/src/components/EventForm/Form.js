@@ -26,7 +26,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
   return (
     <Formik
       initialValues= {event ? {
-        title: event.title,
+        title: event.titleText,
         scienceClass: createResourceList(event),
         grades: createGradeList(event),
         remotePlatforms: createPlatformList(event),

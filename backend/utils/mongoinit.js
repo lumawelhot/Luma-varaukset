@@ -5,12 +5,57 @@ const Event = require('../models/event')
 const Extra = require('../models/extra')
 const Visit = require('../models/visit')
 const Form = require('../models/forms')
+const Email = require('../models/email')
 
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
 
 var ADMIN_USERNAME = process.argv[2]
 var ADMIN_PASSWORD = process.argv[3]
+
+const createEmailTemplates = async () => {
+  await Email.deleteMany({})
+  const cancellation = new Email({
+    name: 'cancellation',
+    text: 'null',
+    html: '<h1>null</h1>',
+    subject: 'Cancellation',
+    adSubject: 'Cancellation',
+    ad: [],
+    adText: 'null'
+  })
+  const thanks = new Email({
+    name: 'thanks',
+    text: 'null',
+    html: '<h1>null</h1>',
+    subject: 'Thanks',
+    adSubject: 'Thanks',
+    ad: [],
+    adText: 'null'
+  })
+  const reminder = new Email({
+    name: 'reminder',
+    text: 'text',
+    html: '<h1>html</h1>',
+    subject: 'Reminder',
+    adSubject: 'Reminder',
+    ad: [],
+    adText: 'text'
+  })
+  const welcome = new Email({
+    name: 'welcome',
+    text: '/link/r',
+    html: '<h1>/link/r</h1>',
+    subject: 'Welcome',
+    adSubject: 'Welcome',
+    ad: [],
+    adText: 'null'
+  })
+  await thanks.save()
+  await reminder.save()
+  await welcome.save()
+  await cancellation.save()
+}
 
 const createAdmin = async () => {
   await User.deleteMany({})
@@ -26,9 +71,11 @@ if (ADMIN_USERNAME && ADMIN_PASSWORD ) {
   console.log('Initializing Luma-varaukset administrator: ' + ADMIN_USERNAME)
   mongoose.connect('mongodb://luma-varaukset-db:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
-      createAdmin().then(() => {
-        mongoose.disconnect()
-        console.log('Done.')
+      createEmailTemplates().then(() => {
+        createAdmin().then(() => {
+          mongoose.disconnect()
+          console.log('Done.')
+        })
       })
     })
     .catch((error) => {

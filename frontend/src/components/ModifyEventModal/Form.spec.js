@@ -23,7 +23,7 @@ const testEvent = {
   start: set(new Date(), { hours: 9, minutes: 0, seconds: 0, milliseconds: 0 }),
   end: set(new Date(), { hours: 14, minutes: 0, seconds: 0, milliseconds: 0 }),
   tags: [{ id: '60eef65c2c93e42db00ff6f6', name: 'Maantiede' }],
-  title: 'Scratch-ohjelmointikieli'
+  titleText: 'Scratch-ohjelmointikieli'
 }
 
 test('Form renders correctly', async () => {

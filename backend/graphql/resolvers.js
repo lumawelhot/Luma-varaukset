@@ -390,19 +390,21 @@ const resolvers = {
             value: `${config.HOST_URI}/${savedVisit.id}`
           }]
           const mail = await Email.findOne({ name: 'welcome' })
-          await mailer.sendMail({
-            from: 'Luma-Varaukset <noreply@helsinki.fi>',
-            to: visit.clientEmail,
-            subject: mail.subject,
-            text: fillStringWithValues(mail.text, details),
-            html: fillStringWithValues(mail.html, details)
-          })
-          for (let recipient of mail.ad) {
+          if (process.env.NODE_ENV !== 'test') {
             await mailer.sendMail({
               from: 'Luma-Varaukset <noreply@helsinki.fi>',
-              to: recipient,
-              subject: mail.adSubject,
-              text: fillStringWithValues(mail.adText, details)
+              to: visit.clientEmail,
+              subject: mail.subject,
+              text: fillStringWithValues(mail.text, details),
+              html: fillStringWithValues(mail.html, details)
+            })
+            mail.ad.forEach(recipient => {
+              mailer.sendMail({
+                from: 'Luma-Varaukset <noreply@helsinki.fi>',
+                to: recipient,
+                subject: mail.adSubject,
+                text: fillStringWithValues(mail.adText)
+              })
             })
           }
           event.visits = event.visits.concat(savedVisit._id)
@@ -458,19 +460,21 @@ const resolvers = {
           eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
         })
         const mail = await Email.findOne({ name: 'cancellation' })
-        await mailer.sendMail({
-          from: 'Luma-Varaukset <noreply@helsinki.fi>',
-          to: visit.clientEmail,
-          subject: mail.subject,
-          text: fillStringWithValues(mail.text),
-          html: fillStringWithValues(mail.html)
-        })
-        for (let recipient of mail.ad) {
+        if (process.env.NODE_ENV !== 'test') {
           await mailer.sendMail({
             from: 'Luma-Varaukset <noreply@helsinki.fi>',
-            to: recipient,
-            subject: mail.adSubject,
-            text: fillStringWithValues(mail.adText)
+            to: visit.clientEmail,
+            subject: mail.subject,
+            text: fillStringWithValues(mail.text),
+            html: fillStringWithValues(mail.html)
+          })
+          mail.ad.forEach(recipient => {
+            mailer.sendMail({
+              from: 'Luma-Varaukset <noreply@helsinki.fi>',
+              to: recipient,
+              subject: mail.adSubject,
+              text: fillStringWithValues(mail.adText)
+            })
           })
         }
         return visit
