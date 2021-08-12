@@ -1,17 +1,25 @@
-import { useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { Field, Formik } from 'formik'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
-import { GET_EMAIL_TEMPLATES } from '../graphql/queries'
+import { GET_EMAIL_TEMPLATES, UPDATE_EMAIL } from '../graphql/queries'
 import { TextArea, TextField } from './VisitForm/FormFields'
 
-const EmailConfig = () => {
+const EmailConfig = ({ sendMessage }) => {
   const history = useHistory()
   const { t } = useTranslation('common')
   const [showModal, setShowModal] = useState(false)
   const [selectedTemlate, setSelectedTemplate] = useState(null)
   const templates = useQuery(GET_EMAIL_TEMPLATES)
+  const [updateEmail] = useMutation(UPDATE_EMAIL,  {
+    refetchQueries: GET_EMAIL_TEMPLATES,
+    onError: () => sendMessage(t('failed-to-update-email'), 'danger'),
+    onCompleted: () => {
+      templates.refetch()
+      sendMessage(t('email-updated-successfully'), 'success')
+    }
+  })
   if (templates.loading) return <></>
   console.log(templates.data.getEmailTemplates)
 
@@ -25,8 +33,17 @@ const EmailConfig = () => {
     setSelectedTemplate(template)
   }
 
-  const handleChangeData = () => {
-    console.log('change')
+  const handleChangeData = (values) => {
+    updateEmail({
+      variables: {
+        name: selectedTemlate.name,
+        html: values.html,
+        text: values.text,
+        subject: values.subject
+      }
+    })
+    setShowModal(false)
+    setSelectedTemplate(null)
   }
 
   return (

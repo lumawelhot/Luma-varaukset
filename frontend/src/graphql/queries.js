@@ -612,3 +612,16 @@ export const FORCE_DELETE_EVENTS = gql`
     }
   }
 `
+
+export const UPDATE_EMAIL = gql`
+  mutation updateEmail($name: String!, $subject: String!, $html: String!, $text: String!) {
+    updateEmail(
+      name: $name
+      subject: $subject
+      html: $html
+      text: $text
+    ) {
+      name
+    }
+  }
+`

@@ -96,6 +96,12 @@ const typeDefs = gql`
     getEmailTemplates: [EmailTemplate]
   }
   type Mutation {
+    updateEmail(
+      name: String!
+      html: String!
+      text: String!
+      subject: String!
+    ): EmailTemplate
     lockEvent(
       event: ID!
     ): Lock

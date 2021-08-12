@@ -226,9 +226,9 @@ const App = () => {
       <Toasts toasts={toasts} />
       <Switch>
         <Route path='/email-config'>
-          <EmailConfig
-
-          />
+          {currentUser && currentUser.isAdmin &&
+            <EmailConfig sendMessage={notify} />
+          }
         </Route>
         <Route path='/event-page'>
           <EventPage

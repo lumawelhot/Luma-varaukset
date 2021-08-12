@@ -114,6 +114,19 @@ const resolvers = {
     fields: (form) => JSON.stringify(form.fields)
   },
   Mutation: {
+    updateEmail: async (root, args, { currentUser }) => {
+      if (!currentUser || !currentUser.isAdmin) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
+      console.log(args)
+      const email = await Email.findOne({ name: args.name })
+      email.html = args.html
+      email.text = args.text
+      email.subject = args.subject
+      await email.save()
+
+      return email
+    },
     resetPassword: async (root, args, { currentUser }) => {
       if (!currentUser || !currentUser.isAdmin) {
         throw new AuthenticationError('not authenticated or no credentials')
