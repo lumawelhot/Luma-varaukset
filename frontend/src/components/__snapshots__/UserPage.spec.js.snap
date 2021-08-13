@@ -65,7 +65,7 @@ exports[`Renders without error with admin user 1`] = `
       <button
         class="button luma"
       >
-        Sähköposti konfiguraatiot
+        Sähköpostit
       </button>
     </p>
   </div>
