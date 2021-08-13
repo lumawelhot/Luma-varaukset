@@ -186,7 +186,7 @@ const resolvers = {
         throw new UserInputError('Wrong credentials!')
       }
       const userForToken = { username: user.username, id: user._id }
-      return { value: jwt.sign(userForToken, config.SECRET) }
+      return { value: jwt.sign(userForToken, config.SECRET, { expiresIn: '12h' }) }
     },
     createEvent: async (root, args, { currentUser }) => {
       if (!currentUser) throw new AuthenticationError('not authenticated')
