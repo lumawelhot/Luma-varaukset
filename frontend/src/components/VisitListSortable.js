@@ -109,7 +109,7 @@ const VisitListSortable = ({ visits, copyURL }) => {
                   </div>}
                 </td>
                 <td>{`${format(parseISO(visit.startTime), 'd.M.yyyy')}`}</td>
-                <td>{visit.status ? 'VOIMASSA' : 'PERUTTU'}</td>
+                <td>{visit.status ? t('booked') : t('cancelled')}</td>
                 <td>
                   <button className="button luma" onClick={() => copyURL(visit)}>{t('url-copy')}</button>
                   <input readOnly className="hidden" type="text" id={'value-' + visit.id} value={copiedURL} />

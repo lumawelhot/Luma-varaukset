@@ -44,5 +44,7 @@
   "book-event": "Varaa vierailu",
   "to-calendar": "Takaisin kalenteriin",
   "choose-remote-or-inperson": "Valitse etä- ja/tai lähivierailu",
-  "choose-event-extras": "Valitse vierailulle sopivat lisäpalvelut"
+  "choose-event-extras": "Valitse vierailulle sopivat lisäpalvelut",
+  "booked": "VOIMASSA",
+  "cancelled": "PERUTTU"
 }

@@ -44,5 +44,7 @@
   "book-event": "Book event",
   "to-calendar": "Back to calendar",
   "choose-remote-or-inperson": "Choose between on-premises or remote teaching",
-  "choose-event-extras": "Choose applicable extra services"
+  "choose-event-extras": "Choose applicable extra services",
+  "booked": "BOOKED",
+  "cancelled": "CANCELLED"
 }
