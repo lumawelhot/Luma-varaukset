@@ -78,7 +78,7 @@ const resolvers = {
       if (!currentUser) {
         throw new AuthenticationError('Not authenticated')
       }
-      const groups = await Group.find({})
+      const groups = await Group.find({}).populate('events')
       return groups
     },
     findVisit: async (root, args) => {
@@ -156,12 +156,11 @@ const resolvers = {
         throw new AuthenticationError('not authenticated')
       }
       const event = await Event.findById(args.event)
+      if (!event) throw new UserInputError('no event found')
       const group = await Group.findById(event.group)
-      if (!group || !event) {
-        throw new UserInputError('no group or event found')
-      }
+      if (!group) throw new UserInputError('no group or event found')
       event.group = null
-      group.events = group.events.filter(event => event !== args.event)
+      group.events = group.events.filter(event => event.toString() !== args.event)
       await event.save()
       await group.save()
       return event
