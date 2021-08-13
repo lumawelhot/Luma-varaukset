@@ -44,5 +44,7 @@
   "book-event": "Reservera",
   "to-calendar": "Till kalendern",
   "choose-remote-or-inperson": "Välj när- och/eller distansbesök",
-  "choose-event-extras": "Välj tillämpliga tillägstjänster"
+  "choose-event-extras": "Välj tillämpliga tillägstjänster",
+  "booked": "BOKAD",
+  "cancelled": "AVBOKAD"
 }
