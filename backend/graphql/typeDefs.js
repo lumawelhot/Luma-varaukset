@@ -77,6 +77,15 @@ const typeDefs = gql`
     name: String!
     fields: String!
   }
+  type EmailTemplate {
+    html: String!
+    text: String!
+    subject: String!
+    name: String!
+    ad: [String]!
+    adSubject: String!
+    adText: String!
+  }
   type Query {
     getUsers: [User]!
     me: User!
@@ -87,8 +96,18 @@ const typeDefs = gql`
     getExtras: [Extra]!
     getForm(id: ID): Form
     getForms: [Form]
+    getEmailTemplates: [EmailTemplate]
   }
   type Mutation {
+    updateEmail(
+      name: String!
+      html: String!
+      text: String!
+      subject: String!
+      ad: [String]!
+      adSubject: String!
+      adText: String!
+    ): EmailTemplate
     lockEvent(
       event: ID!
     ): Lock

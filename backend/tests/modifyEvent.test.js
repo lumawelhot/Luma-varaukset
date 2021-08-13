@@ -1,4 +1,3 @@
-const mongoose = require('mongoose')
 const { ApolloServer } = require('apollo-server-express')
 const bcrypt = require('bcrypt')
 
@@ -52,15 +51,6 @@ const visitResponse = async (event, start, end) => {
 }
 
 beforeAll(async () => {
-
-  await mongoose.connect(process.env.MONGO_URL,
-    { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false })
-    .then(() => {
-      console.log('connected to test-mongodb')
-    })
-    .catch((error) => {
-      console.log('connection error: ', error.message)
-    })
   await User.deleteMany({})
   await Event.deleteMany({})
   await Tag.deleteMany({})
@@ -289,13 +279,4 @@ describe('Event has one visit, then', () => {
     expect(modifyEvent.end).toEqual(createDate(12, 0).toISOString())
     expect(modifyEvent.availableTimes).toEqual([])
   })
-})
-
-afterAll(async () => {
-  await Event.deleteMany({})
-  await User.deleteMany({})
-  await Extra.deleteMany({})
-  await Tag.deleteMany({})
-  await mongoose.connection.close()
-  console.log('test-mongodb connection closed')
 })

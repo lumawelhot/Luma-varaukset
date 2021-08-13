@@ -70,15 +70,6 @@ const visitWithUser = async (event, start, end) => {
 
 beforeAll(async () => {
 
-  await mongoose.connect(process.env.MONGO_URL,
-    { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false })
-    .then(() => {
-      console.log('connected to test-mongodb')
-    })
-    .catch((error) => {
-      console.log('connection error: ', error.message)
-    })
-
   await User.deleteMany({})
 
   const userPassword = await bcrypt.hash('password', 10)
@@ -301,11 +292,4 @@ describe('Visits', () => {
     const { getVisits } = data
     expect(getVisits.length).toBe(0)
   })
-})
-
-afterAll(async () => {
-  await Event.deleteMany({})
-  await Visit.deleteMany({})
-  await mongoose.connection.close()
-  console.log('test-mongodb connection closed')
 })

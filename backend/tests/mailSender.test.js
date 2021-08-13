@@ -1,5 +1,3 @@
-const mongoose = require('mongoose')
-
 const Event = require('../models/event')
 const Visit = require('../models/visit')
 const { eventDayAfter, eventDayBefore, eventNow, details } = require('./testData')
@@ -11,19 +9,6 @@ let cancelledDayAfterVisit
 let dayAfterVisit
 let eventTodayVisit
 let cancelledEventTodayVisit
-
-beforeAll(async () => {
-
-  await mongoose.connect(process.env.MONGO_URL,
-    { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false })
-    .then(() => {
-      console.log('connected to test-mongodb')
-    })
-    .catch((error) => {
-      console.log('connection error: ', error.message)
-    })
-
-})
 
 beforeEach(async () => {
   await Event.deleteMany({})
@@ -109,11 +94,4 @@ describe('Visit thank you message', () => {
     expect(failed.length).toBe(1)
     expect(failed[0]._id).toEqual(cancelledEventTodayVisit._id)
   })
-})
-
-afterAll(async () => {
-  await Event.deleteMany({})
-  await Visit.deleteMany({})
-  await mongoose.connection.close()
-  console.log('test-mongodb connection closed')
 })

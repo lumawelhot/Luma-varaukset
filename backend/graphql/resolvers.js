@@ -1,5 +1,4 @@
 const { UserInputError, AuthenticationError } = require('apollo-server-errors')
-const { readMessage } = require('../services/fileReader')
 const { findValidTimeSlot, calculateAvailabelTimes, calculateNewTimeSlot, formatAvailableTimes } = require('../utils/timeCalculation')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -13,7 +12,8 @@ const Visit = require('../models/visit')
 const Extra = require('../models/extra')
 const Tag = require('../models/tag')
 const Form = require('../models/forms')
-const { addNewTags } = require('../utils/helpers')
+const Email = require('../models/email')
+const { addNewTags, fillStringWithValues } = require('../utils/helpers')
 const { set, sub } = require('date-fns')
 
 const { PubSub } = require('graphql-subscriptions')
@@ -66,12 +66,19 @@ const resolvers = {
         throw new UserInputError('Error occured when fetching visits')
       }
     },
+    getEmailTemplates: async (root, args, { currentUser }) => {
+      if (!currentUser || !currentUser.isAdmin) {
+        throw new AuthenticationError('Not authenticated or no admin priviledges')
+      }
+      const emails = await Email.find({})
+      return emails
+    },
     findVisit: async (root, args) => {
       try {
         const visit = await Visit.findById(args.id).populate('extras')
         return visit.toJSON()
       } catch (e) {
-        throw new UserInputError('Varausta ei löytynyt!')
+        throw new UserInputError('Visit not found!')
       }
     },
     me: (root, args, context) => {
@@ -107,6 +114,21 @@ const resolvers = {
     fields: (form) => JSON.stringify(form.fields)
   },
   Mutation: {
+    updateEmail: async (root, args, { currentUser }) => {
+      if (!currentUser || !currentUser.isAdmin) {
+        throw new AuthenticationError('not authenticated or no credentials')
+      }
+      const email = await Email.findOne({ name: args.name })
+      email.html = args.html
+      email.text = args.text
+      email.subject = args.subject
+      email.ad = args.ad
+      email.adSubject = args.adSubject
+      email.adText = args.adText
+      await email.save()
+
+      return email
+    },
     resetPassword: async (root, args, { currentUser }) => {
       if (!currentUser || !currentUser.isAdmin) {
         throw new AuthenticationError('not authenticated or no credentials')
@@ -367,15 +389,24 @@ const resolvers = {
             name: 'link',
             value: `${config.HOST_URI}/${savedVisit.id}`
           }]
-          const text = await readMessage('welcome.txt', details)
-          const html = await readMessage('welcome.html', details)
-          await mailer.sendMail({
-            from: 'Luma-Varaukset <noreply@helsinki.fi>',
-            to: visit.clientEmail,
-            subject: 'Tervetuloa!',
-            text,
-            html
-          })
+          const mail = await Email.findOne({ name: 'welcome' })
+          if (process.env.NODE_ENV !== 'test') {
+            await mailer.sendMail({
+              from: 'Luma-Varaukset <noreply@helsinki.fi>',
+              to: visit.clientEmail,
+              subject: mail.subject,
+              text: fillStringWithValues(mail.text, details),
+              html: fillStringWithValues(mail.html, details)
+            })
+            mail.ad.forEach(recipient => {
+              mailer.sendMail({
+                from: 'Luma-Varaukset <noreply@helsinki.fi>',
+                to: recipient,
+                subject: mail.adSubject,
+                text: fillStringWithValues(mail.adText)
+              })
+            })
+          }
           event.visits = event.visits.concat(savedVisit._id)
           event.reserved = null
           await event.save()
@@ -428,6 +459,24 @@ const resolvers = {
         pubsub.publish('EVENT_RESERVATION_CANCELLED', {
           eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
         })
+        const mail = await Email.findOne({ name: 'cancellation' })
+        if (process.env.NODE_ENV !== 'test') {
+          await mailer.sendMail({
+            from: 'Luma-Varaukset <noreply@helsinki.fi>',
+            to: visit.clientEmail,
+            subject: mail.subject,
+            text: fillStringWithValues(mail.text),
+            html: fillStringWithValues(mail.html)
+          })
+          mail.ad.forEach(recipient => {
+            mailer.sendMail({
+              from: 'Luma-Varaukset <noreply@helsinki.fi>',
+              to: recipient,
+              subject: mail.adSubject,
+              text: fillStringWithValues(mail.adText)
+            })
+          })
+        }
         return visit
       } catch (error) {
         event.visits = event.visits.concat(visit._id)

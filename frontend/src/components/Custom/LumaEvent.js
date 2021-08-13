@@ -18,6 +18,9 @@ const LumaEvent = ({ event }) => {
   const popoverContent = () => {
     return (
       <>
+        {event.locked ? <div style={{ color: 'red', margin: 5 }}>
+          {t('this-event-is-locked')}
+        </div> : null}
         <div className="tags">
           {event.tags.map(t => <span key={t.id} className="tag" style={{ color: 'geekblue' }}>{t.name}</span> )}
         </div>

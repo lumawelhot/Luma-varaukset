@@ -461,6 +461,20 @@ export const GET_ALL_FORMS = gql`
   }
 `
 
+export const GET_EMAIL_TEMPLATES = gql`
+  query getEmailTemplates {
+    getEmailTemplates {
+      subject
+      html
+      text
+      name
+      ad
+      adSubject
+      adText
+    }
+  }
+`
+
 export const GET_FORM = gql`
   query getForm($id: ID!) {
     getForm(id: $id) {
@@ -598,6 +612,30 @@ export const FORCE_DELETE_EVENTS = gql`
       password: $password
     ) {
       id
+    }
+  }
+`
+
+export const UPDATE_EMAIL = gql`
+  mutation updateEmail(
+    $name: String!,
+    $subject: String!, 
+    $html: String!, 
+    $text: String!, 
+    $ad: [String]!, 
+    $adSubject: String!, 
+    $adText: String!
+  ) {
+    updateEmail(
+      name: $name
+      subject: $subject
+      html: $html
+      text: $text
+      ad: $ad
+      adSubject: $adSubject
+      adText: $adText
+    ) {
+      name
     }
   }
 `

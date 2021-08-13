@@ -17,15 +17,6 @@ let newTags = []
 let newExtras = []
 
 beforeAll(async () => {
-
-  await mongoose.connect(process.env.MONGO_URL,
-    { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false })
-    .then(() => {
-      console.log('connected to test-mongodb')
-    })
-    .catch((error) => {
-      console.log('connection error: ', error.message)
-    })
   await User.deleteMany({})
   await Event.deleteMany({})
   await Extra.deleteMany({})
@@ -165,13 +156,4 @@ describe('Event Model Test', () => {
     expect(err.errors.grades).toBeDefined()
   })
 
-})
-
-afterAll(async () => {
-  await Event.deleteMany({})
-  await User.deleteMany({})
-  await Extra.deleteMany({})
-  await Tag.deleteMany({})
-  await mongoose.connection.close()
-  console.log('test-mongodb connection closed')
 })

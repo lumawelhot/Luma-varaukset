@@ -1,4 +1,3 @@
-const mongoose = require('mongoose')
 const { createTestClient } = require('apollo-server-testing')
 const { ApolloServer } = require('apollo-server-express')
 const bcrypt = require('bcrypt')
@@ -58,15 +57,6 @@ const unlockEventResponse = async (event) => {
 }
 
 beforeAll(async () => {
-
-  await mongoose.connect(process.env.MONGO_URL,
-    { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false })
-    .then(() => {
-      console.log('connected to test-mongodb')
-    })
-    .catch((error) => {
-      console.log('connection error: ', error.message)
-    })
   await User.deleteMany({})
   await Event.deleteMany({})
 
@@ -158,11 +148,4 @@ describe('Event without reservation', () => {
     expect(response.data.modifyEvent.title).toBe('modified')
   })
 
-})
-
-afterAll(async () => {
-  await Event.deleteMany({})
-  await User.deleteMany({})
-  await mongoose.connection.close()
-  console.log('test-mongodb connection closed')
 })

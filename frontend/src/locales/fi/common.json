@@ -60,5 +60,20 @@
   "time-left": "Aikaa jäljellä",
   "timeout-message": "Aika loppui! Lomakkeen lähettäminen ei onnistu jos joku muu avaa lomakkeen!",
   "filter-by-tags": "Suodata tunnisteiden mukaan",
-  "add-tag": "Lisää tunniste"
+  "add-tag": "Lisää tunniste",
+  "this-event-is-locked": "Tämä vierailu on lukittu, tarkista hetken kuluttua uudelleen!",
+  "email-configurations": "Sähköposti konfiguraatiot",
+  "type": "Typpi",
+  "subject": "Aihe",
+  "configure": "Konfiguroi",
+  "configure-email-message": "Konfiguroi sähköpostiviestipohjia",
+  "text": "Teksti sisältö",
+  "html": "HTML sisältö",
+  "update-details": "Päivitä tiedot",
+  "email-updated-successfully": "Sähköpostipohja päivitetty onnistuneesti",
+  "failed-to-update-email": "Sähköpostiviestipohjan päivittäminen epäonnistui",
+  "notification-to": "Ilmoitus osoitteisiin",
+  "ad-subject": "Ilmoituksen aihe",
+  "ad-text": "Ilmoituksen sisältö",
+  "add-address": "Lisää osoite"
 }

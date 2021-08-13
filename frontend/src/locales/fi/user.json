@@ -59,5 +59,6 @@
   "yes": "Kyllä",
   "text": "Tekstikenttä",
   "checkbox": "Rastiruutu",
-  "radio": "Radio-valinta"
+  "radio": "Radio-valinta",
+  "email-config": "Sähköposti konfiguraatiot"
 }

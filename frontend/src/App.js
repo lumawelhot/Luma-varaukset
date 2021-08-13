@@ -23,6 +23,8 @@ import ExtrasAdmin from './components/EventExtras/ExtrasAdmin'
 import FormList from './components/FormEditor/FormList'
 import { useTranslation } from 'react-i18next'
 import EventList from './components/EventList'
+import EmailConfig from './components/EmailConfig'
+import { FaLock } from 'react-icons/fa'
 
 const App = () => {
   const { t } = useTranslation('common')
@@ -77,7 +79,15 @@ const App = () => {
 
     const details = {
       id: event.id,
-      title: event.title,
+      title: <>
+        {!event.booked && event.locked &&
+          <label style={{ color: 'red', margin: 5 }}>
+            <FaLock />
+          </label>
+        }
+        {event.title}
+      </>,
+      titleText: event.title,
       resourceids: event.resourceids,
       grades: event.grades,
       inPersonVisit: event.inPersonVisit,
@@ -94,6 +104,7 @@ const App = () => {
       customForm: event.customForm,
       waitingTime: event.waitingTime,
       hasVisits: event.visits.length ? true : false,
+      locked: event.locked
     }
     delete details.availableTimes
     delete details.visits
@@ -102,7 +113,7 @@ const App = () => {
       start: new Date(timeSlot.startTime),
       end: new Date(timeSlot.endTime),
       booked: event.booked,
-      disabled: event.locked || event.disabled
+      disabled: event.disabled
     }))
     events = events.concat(event.visits.map(visit => Object({
       ...details,
@@ -224,6 +235,11 @@ const App = () => {
       <Banner/>
       <Toasts toasts={toasts} />
       <Switch>
+        <Route path='/email-config'>
+          {currentUser && currentUser.isAdmin &&
+            <EmailConfig sendMessage={notify} />
+          }
+        </Route>
         <Route path='/event-page'>
           <EventPage
             currentUser={currentUser}

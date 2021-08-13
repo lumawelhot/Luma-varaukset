@@ -14,15 +14,6 @@ let extraData
 let serverAdmin
 
 beforeAll(async () => {
-  // connect to database
-  await mongoose.connect(process.env.MONGO_URL,
-    { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false })
-    .then(() => {
-      console.log('connected to test-mongodb')
-    })
-    .catch((error) => {
-      console.log('connection error: ', error.message)
-    })
   await User.deleteMany({})
 
   const adminPassword = await bcrypt.hash('admin-password', 10)
@@ -105,10 +96,4 @@ describe('Extra Model Test', () => {
     expect(err.errors.remoteLength).toBeDefined()
     expect(err.errors.inPersonLength).toBeDefined()
   })
-})
-
-afterAll(async () => {
-  await User.deleteMany({})
-  await mongoose.connection.close()
-  console.log('test-mongodb connection closed')
 })

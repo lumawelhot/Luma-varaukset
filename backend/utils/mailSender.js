@@ -1,10 +1,13 @@
 
 const { add, set } = require('date-fns')
 const Visit = require('../models/visit')
-const { readMessage } = require('../services/fileReader')
 const mailer = require('../services/mailer')
+const Email = require('../models/email')
+const { fillStringWithValues } = require('./helpers')
 
 const sendReminder = async () => {
+  const mail = await Email.findOne({ name: 'reminder' })
+  if (!mail) return null
   const start = add(set(new Date(), { hours: 5, minutes: 0, seconds: 0, milliseconds: 0 }), { days: 1 })
   const end = add(set(new Date(), { hours: 23, minutes: 0, seconds: 0, milliseconds: 0 }), { days: 1 })
   const visits = await Visit.find({
@@ -21,14 +24,12 @@ const sendReminder = async () => {
   for (let visit of visits) {
     try {
       if (visit.status) {
-        const text = await readMessage('reminder.txt', [])
-        const html = await readMessage('reminder.html', [])
         await mailer.sendMail({
           from: 'Luma-Varaukset <noreply@helsinki.fi>',
           to: visit.clientEmail,
-          subject: 'Muistutus varauksesta!',
-          text,
-          html
+          subject: mail.subject,
+          text: fillStringWithValues(mail.text),
+          html: fillStringWithValues(mail.html)
         })
         report.success.push(visit)
       } else {
@@ -43,6 +44,8 @@ const sendReminder = async () => {
 }
 
 const sendThanks = async () => {
+  const mail = await Email.findOne({ name: 'thanks' })
+  if (!mail) return null
   const start = set(new Date(), { hours: 5, minutes: 0, seconds: 0, milliseconds: 0 })
   const end = set(new Date(), { hours: 23, minutes: 0, seconds: 0, milliseconds: 0 })
   const visits = await Visit.find({
@@ -59,14 +62,12 @@ const sendThanks = async () => {
   for (let visit of visits) {
     try {
       if (visit.status) {
-        const text = await readMessage('thanks.txt', [])
-        const html = await readMessage('thanks.html', [])
         await mailer.sendMail({
           from: 'Luma-Varaukset <noreply@helsinki.fi>',
           to: visit.clientEmail,
-          subject: 'Kiitokset vierailusta!',
-          text,
-          html
+          subject: mail.subject,
+          text: fillStringWithValues(mail.text),
+          html: fillStringWithValues(mail.html)
         })
         report.success.push(visit)
       } else {

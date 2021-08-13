@@ -59,6 +59,15 @@ exports[`Renders without error with admin user 1`] = `
         Vierailulista
       </button>
     </p>
+    <p
+      class="control"
+    >
+      <button
+        class="button luma"
+      >
+        Sähköposti konfiguraatiot
+      </button>
+    </p>
   </div>
 </div>
 `;
