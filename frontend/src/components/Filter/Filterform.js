@@ -20,7 +20,7 @@ const Filterform = ({ values, setValues }) => {
     <div>
       <p className="label">{t('filter-by-resource')} </p>
       <div className="field is-grouped">
-        <Tooltip title={t('mathematic')} color={'geekblue'}>
+        <Tooltip title={t('mathematics')} color={'geekblue'}>
           <div className="field">
             <button
               style={style}
