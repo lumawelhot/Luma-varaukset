@@ -27,11 +27,13 @@ const resolvers = require('./graphql/resolvers')
 const typeDefs = require('./graphql/typeDefs')
 const schema = makeExecutableSchema({ typeDefs, resolvers })
 
+const graphQLEndpoint = process.env.NODE_ENV==='production' ? '/luma-varaukset/graphql' : '/graphql'
 const server = new ApolloServer({
   schema,
   introspection: true,
   playground: {
-    endpoint: process.env.NODE_ENV==='production' ? '/luma-varaukset/graphql' : '/graphql'
+    endpoint: graphQLEndpoint,
+    subscriptionEndpoint: graphQLEndpoint + '/ws'
   },
   context: async ({ req }) => {
     const auth = req ? req.headers.authorization : null
@@ -56,7 +58,7 @@ SubscriptionServer.create({
   subscribe,
 }, {
   server: httpServer,
-  path: server.graphqlPath,
+  path: server.graphqlPath + '/ws',
 })
 
 const mongoose = require('mongoose')
