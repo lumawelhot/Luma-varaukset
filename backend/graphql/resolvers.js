@@ -13,6 +13,7 @@ const Extra = require('../models/extra')
 const Tag = require('../models/tag')
 const Form = require('../models/forms')
 const Email = require('../models/email')
+const Group = require('../models/group')
 const { addNewTags, fillStringWithValues } = require('../utils/helpers')
 const { set, sub } = require('date-fns')
 
@@ -73,6 +74,13 @@ const resolvers = {
       const emails = await Email.find({})
       return emails
     },
+    getGroups: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('Not authenticated')
+      }
+      const groups = await Group.find({})
+      return groups
+    },
     findVisit: async (root, args) => {
       try {
         const visit = await Visit.findById(args.id).populate('extras')
@@ -114,6 +122,50 @@ const resolvers = {
     fields: (form) => JSON.stringify(form.fields)
   },
   Mutation: {
+    createGroup: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+      const group = new Group({
+        name: args.name,
+        maxCount: args.maxCount,
+        visitCount: 0,
+        publishDate: args.publishDate,
+        events: []
+      })
+      await group.save()
+      return group
+    },
+    assignEventToGroup: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+      const event = await Event.findById(args.event)
+      const group = await Group.findOne({ name: args.groupName })
+      if (!group || !event) {
+        throw new UserInputError('no group or event found')
+      }
+      event.group = group.id
+      group.events = group.events.concat(event.id)
+      await event.save()
+      await group.save()
+      return event
+    },
+    removeEventFromGroup: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+      const event = await Event.findById(args.event)
+      const group = await Group.findById(event.group)
+      if (!group || !event) {
+        throw new UserInputError('no group or event found')
+      }
+      event.group = null
+      group.events = group.events.filter(event => event !== args.event)
+      await event.save()
+      await group.save()
+      return event
+    },
     updateEmail: async (root, args, { currentUser }) => {
       if (!currentUser || !currentUser.isAdmin) {
         throw new AuthenticationError('not authenticated or no credentials')

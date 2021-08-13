@@ -85,6 +85,11 @@ const eventSchema = mongoose.Schema({
   },
   reserved: {
     type: String
+  },
+  group: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Group',
+    required: false
   }
 })
 
