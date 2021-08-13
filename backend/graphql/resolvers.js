@@ -107,8 +107,8 @@ const resolvers = {
       if (!event) return null
       return Object.assign(event, { locked: event.reserved ? true : false })
     },
-    //startTime: (data) => data.startTime.toISOString(),
-    //endTime: (data) => data.endTime.toISOString()
+    startTime: (data) => new Date(data.startTime).toISOString(),
+    endTime: (data) => new Date(data.endTime).toISOString()
   },
   Form: {
     fields: (form) => JSON.stringify(form.fields)

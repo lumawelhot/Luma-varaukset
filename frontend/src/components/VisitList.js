@@ -31,8 +31,6 @@ const VisitList = ({ notify }) => {
 
   const renderedVisits = result.data.getVisits.filter(visit => {
     return filters.length ? visit.event.resourceids.some(r => filters.includes(r)) : true
-  }).map(visit => {
-    return { ...visit, startTime: new Date(Number(visit.startTime)).toISOString(), endTime: new Date(Number(visit.endTime)).toISOString() }
   })
 
   return (
