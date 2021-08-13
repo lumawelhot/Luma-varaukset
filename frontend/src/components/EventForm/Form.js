@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Field, Formik } from 'formik'
 import { useQuery } from '@apollo/client'
-import { EXTRAS, GET_ALL_FORMS } from '../../graphql/queries'
+import { EXTRAS, GET_ALL_FORMS, GET_GROUPS } from '../../graphql/queries'
 import LumaTagInput from '../LumaTagInput/LumaTagInput'
 import { TextArea, TextField } from '../VisitForm/FormFields'
 import { AdditionalServices, DatePick, EventType, Grades, Platforms, ScienceClasses, TimePick, SelectField } from './FormComponents'
@@ -12,8 +12,10 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
   const { t } = useTranslation('event')
   const [suggestedTags, setSuggestedTags] = useState([])
   const [suggestedForms, setSuggestedForms] = useState([])
+  const [suggestedGroups, setSuggestedGroups] = useState([])
   const extras = useQuery(EXTRAS)
   const forms = useQuery(GET_ALL_FORMS)
+  const groups = useQuery(GET_GROUPS)
 
   useEffect(() => {
     if (tags) setSuggestedTags(tags)
@@ -22,6 +24,10 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
   useEffect(() => {
     if (forms.data) setSuggestedForms(forms.data.getForms.map(form => Object({ id: form.id, name: form.name })))
   }, [forms.data])
+
+  useEffect(() => {
+    if (groups.data) setSuggestedGroups(groups.data.getGroups.map(group => Object({ id: group.id, name: group.name })))
+  }, [groups.data])
 
   return (
     <Formik
@@ -40,7 +46,8 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
         endTime: new Date(event.eventEnd),
         duration: event.duration,
         waitingTime: event.waitingTime,
-        date: new Date(event.eventStart)
+        date: new Date(event.eventStart),
+        group: ''
       } : eventInitialValues(newEventTimeRange)}
       validate={validate}
       onSubmit={onSubmit}
@@ -58,6 +65,12 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
                 fieldName='title'
                 component={TextField}
                 required={true}
+              />
+              <Field
+                label={t('group')}
+                fieldName='group'
+                options={suggestedGroups}
+                component={SelectField}
               />
 
               <Field

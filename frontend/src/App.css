@@ -1137,3 +1137,7 @@ form.luma hr,
   position: absolute;
   left: 0px
 }
+
+.select, .select select{ 
+  width: 100%;
+}

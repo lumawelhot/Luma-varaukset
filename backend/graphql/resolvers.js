@@ -245,7 +245,7 @@ const resolvers = {
       if (args.title.length < 5)  throw new UserInputError('title too short')
       if (new Date(args.start).getTime() < set(new Date(args.start), { hours: 8, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid start time')
       if (new Date(args.end).getTime() > set(new Date(args.end), { hours: 17, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid end time')
-
+      const group = await Group.findById(args.group)
       const mongoTags = await addNewTags(args.tags)
 
       const extras = await Extra.find({ _id: { $in: args.extras } })
@@ -273,6 +273,11 @@ const resolvers = {
 
       event.extras = extras
       event.tags = mongoTags
+      if (group) {
+        group.events = group.events.concat(event.id)
+        event.group = group.id
+        await group.save()
+      }
       await event.save()
       pubsub.publish('EVENT_CREATED', {
         eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })

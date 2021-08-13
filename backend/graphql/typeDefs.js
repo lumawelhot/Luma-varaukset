@@ -170,6 +170,7 @@ const typeDefs = gql`
       extras: [ID]
       duration: Int!
       customForm: ID
+      group: ID
     ): Event
     modifyEvent(
       event: ID!

@@ -25,6 +25,7 @@ import { useTranslation } from 'react-i18next'
 import EventList from './components/EventList'
 import EmailConfig from './components/EmailConfig'
 import { FaLock } from 'react-icons/fa'
+import GroupList from './components/GroupList'
 
 const App = () => {
   const { t } = useTranslation('common')
@@ -249,6 +250,9 @@ const App = () => {
             sendMessage={notify}
             tags={tags}
           />
+        </Route>
+        <Route path='/group-list'>
+          <GroupList />
         </Route>
         <Route path='/book'>
           <VisitForm currentUser={currentUser} event={clickedEvent} sendMessage={notify} token={sessionToken} />

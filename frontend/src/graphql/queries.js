@@ -139,7 +139,8 @@ export const CREATE_EVENT = gql`
     $waitingTime: Int!
     $extras: [ID]
     $duration: Int!,
-    $customForm: ID
+    $customForm: ID,
+    $group: ID,
     ) {
     createEvent (
       title: $title,
@@ -157,6 +158,7 @@ export const CREATE_EVENT = gql`
       extras: $extras
       duration: $duration
       customForm: $customForm
+      group: $group
     ) {
       id
       title
@@ -192,6 +194,7 @@ export const CREATE_EVENT = gql`
       disabled
       waitingTime
       locked
+      group
     }
   }
 `
@@ -635,6 +638,42 @@ export const UPDATE_EMAIL = gql`
       adSubject: $adSubject
       adText: $adText
     ) {
+      name
+    }
+  }
+`
+
+export const GET_GROUPS = gql`
+  query getGroups {
+    getGroups {
+      id
+      name
+      events {
+        id
+        title
+        resourceids
+        grades
+        remotePlatforms
+        otherRemotePlatformOption
+        start
+        end
+      }
+      maxCount
+      visitCount
+    }
+  }
+`
+
+export const CREATE_GROUP = gql`
+  mutation createGroup (
+    $name: String!
+    $maxCount: Int!
+  ) {
+    createGroup(
+      name: $name
+      maxCount: $maxCount
+    ) {
+      id
       name
     }
   }
