@@ -131,12 +131,36 @@ const resolvers = {
         maxCount: args.maxCount,
         visitCount: 0,
         publishDate: args.publishDate,
-        events: []
+        events: [],
+        disabled: false
       })
       await group.save()
       return group
     },
-    assignEventToGroup: async (root, args, { currentUser }) => {
+    modifyGroup: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+      const group = await Group.findById(args.group)
+      group.name = args.name ? args.name : group.name
+      group.maxCount = group.visitCount <= args.maxCount ? args.maxCount : group.maxCount
+      group.publishDate = args.publishDate ? args.publishDate : group.publishDate
+      group.disabled = args.disabled || group.maxCount <= group.visitCount
+      await group.save()
+      return group
+    },
+    removeGroup: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+      try {
+        await Group.deleteOne({ _id: args.group })
+        return 'Deleted Group with ID ' + args.group
+      } catch (error) {
+        throw new UserInputError('Backend problem')
+      }
+    },
+    /* assignEventToGroup: async (root, args, { currentUser }) => {
       if (!currentUser) {
         throw new AuthenticationError('not authenticated')
       }
@@ -164,7 +188,7 @@ const resolvers = {
       await event.save()
       await group.save()
       return event
-    },
+    }, */
     updateEmail: async (root, args, { currentUser }) => {
       if (!currentUser || !currentUser.isAdmin) {
         throw new AuthenticationError('not authenticated or no credentials')
@@ -400,6 +424,21 @@ const resolvers = {
       if (!event) throw new UserInputError('Event could not be found')
       if (event.reserved && event.reserved !== args.token) throw new UserInputError('Invalid session')
       if (event.disabled) throw new UserInputError('This event is disabled')
+      let group
+      if (event.group) {
+        group = await Group.findById(event.group)
+        if (group) {
+          if (group.disabled) {
+            throw new UserInputError('this group is disabled')
+          }
+          group.visitCount = group.visitCount + 1
+          if (group.visitCount === group.maxCount) {
+            group.disabled = true
+          } else if (group.visitCount > group.maxCount) {
+            throw new UserInputError('this group has maximum amount of visits')
+          }
+        }
+      }
 
       const visitTime = {
         startTime: new Date(args.startTime),
@@ -465,6 +504,7 @@ const resolvers = {
           }
           event.visits = event.visits.concat(savedVisit._id)
           event.reserved = null
+          await group.save()
           await event.save()
           pubsub.publish('EVENT_BOOKED', {
             eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
@@ -490,6 +530,16 @@ const resolvers = {
         startTime: new Date(time.startTime),
         endTime: new Date(time.endTime)
       }))
+      let group
+      if (event.group) {
+        group = await Group.findById(event.group)
+        if (group.disabled) {
+          console.log('event should be created')
+          throw new UserInputError('event should be created')
+        } else {
+          group.visitCount = group.visitCount - 1
+        }
+      }
       const visitTimes = event.visits.filter(v => v.id !== visit.id)
 
       const eventTime = {
@@ -533,6 +583,7 @@ const resolvers = {
             })
           })
         }
+        await group.save()
         return visit
       } catch (error) {
         event.visits = event.visits.concat(visit._id)

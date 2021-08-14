@@ -252,7 +252,9 @@ const App = () => {
           />
         </Route>
         <Route path='/group-list'>
-          <GroupList />
+          {currentUser &&
+            <GroupList />
+          }
         </Route>
         <Route path='/book'>
           <VisitForm currentUser={currentUser} event={clickedEvent} sendMessage={notify} token={sessionToken} />

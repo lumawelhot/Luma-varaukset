@@ -85,6 +85,7 @@ const typeDefs = gql`
     visitCount: Int!
     events: [Event]
     publishDate: String
+    disabled: Boolean
   }
   type EmailTemplate {
     html: String!
@@ -114,6 +115,15 @@ const typeDefs = gql`
       maxCount: Int!
       publishDate: String
     ): Group
+    modifyGroup(
+      name: String
+      maxCount: String
+      publishDate: String
+      disabled: Boolean
+    ): Group
+    removeGroup(
+      group: ID!
+    ): String
     assignEventToGroup(
       event: ID!
       groupName: String!

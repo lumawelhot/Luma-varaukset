@@ -25,6 +25,10 @@ const groupSchema = mongoose.Schema({
   publishDate: {
     type: Date,
     required: false
+  },
+  disabled: {
+    type: Boolean,
+    required: true
   }
 })
 
