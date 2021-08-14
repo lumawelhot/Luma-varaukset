@@ -124,12 +124,12 @@ const typeDefs = gql`
     deleteGroup(
       group: ID!
     ): String
-    assignEventToGroup(
-      event: ID!
-      groupName: String!
-    ): Event
-    removeEventFromGroup(
-      event: ID!
+    assignEventsToGroup(
+      events: [ID]
+      group: ID!
+    ): [Event]
+    removeEventsFromGroup(
+      events: [ID]
     ): Event
     updateEmail(
       name: String!

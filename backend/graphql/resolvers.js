@@ -160,22 +160,42 @@ const resolvers = {
         throw new UserInputError('Backend problem')
       }
     },
-    /* assignEventToGroup: async (root, args, { currentUser }) => {
+    assignEventsToGroup: async (root, args, { currentUser }) => {
       if (!currentUser) {
         throw new AuthenticationError('not authenticated')
       }
-      const event = await Event.findById(args.event)
-      const group = await Group.findOne({ name: args.groupName })
-      if (!group || !event) {
-        throw new UserInputError('no group or event found')
+      let returnedEvents = []
+      for (let e of args.events) {
+        const event = await Event.findById(e)
+        console.log(event, '<------- event')
+        if (event) {
+          let group
+          const oldGroup = await Group.findById(event.group)
+          console.log(oldGroup, '<------- oldGroup')
+          if (oldGroup) {
+            oldGroup.events = oldGroup.events.filter(e => e.toString() !== event.id)
+            event.group = null
+          }
+          if (args.group) {
+            group = await Group.findById(args.group)
+            console.log(group, '<------- group')
+            if (group) {
+              event.group = group.id
+              group.events = group.events.concat(event.id)
+            }
+          }
+          await event.save()
+          if (group) await group.save()
+          if (oldGroup) await oldGroup.save()
+          console.log(event, '<------- eventNEW')
+          console.log(oldGroup, '<------- oldGroupNEW')
+          console.log(group, '<------- groupNEW')
+          returnedEvents.push(event)
+        }
       }
-      event.group = group.id
-      group.events = group.events.concat(event.id)
-      await event.save()
-      await group.save()
-      return event
+      return returnedEvents
     },
-    removeEventFromGroup: async (root, args, { currentUser }) => {
+    removeEventsFromGroup: async (root, args, { currentUser }) => {
       if (!currentUser) {
         throw new AuthenticationError('not authenticated')
       }
@@ -188,7 +208,7 @@ const resolvers = {
       await event.save()
       await group.save()
       return event
-    }, */
+    },
     updateEmail: async (root, args, { currentUser }) => {
       if (!currentUser || !currentUser.isAdmin) {
         throw new AuthenticationError('not authenticated or no credentials')
@@ -388,20 +408,6 @@ const resolvers = {
           group.events = group.events.concat(event.id)
         }
       }
-
-      /* let group
-      const oldGroup = await Group.findById(event.group)
-      console.log(oldGroup.id, args.group, typeof oldGroup.id, typeof args.group)
-      if (oldGroup && oldGroup.id !== args.group) {
-        oldGroup.events.filter(e => e.toString() !== event.group)
-      }
-      if (args.group) {
-        group = await Group.findById(args.group)
-        if (group) {
-          event.group = group.id
-          group.events = group.events.concat(event.id)
-        }
-      } */
 
       title !== undefined ? event.title = title : null
       desc !== undefined ? event.desc = desc : null

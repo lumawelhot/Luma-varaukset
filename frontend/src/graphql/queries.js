@@ -685,10 +685,25 @@ export const CREATE_GROUP = gql`
 
 export const DELETE_GROUP = gql`
   mutation deleteGroup(
-  $group: ID!
+    $group: ID!
   ) {
     deleteGroup(
       group: $group
     )
+  }
+`
+
+export const ASSIGN_EVENTS_TO_GROUP = gql`
+  mutation assignEventsToGroup(
+    $events: [ID]
+    $group: ID!
+  ) {
+    assignEventsToGroup(
+      group: $group
+      events: $events
+    ) {
+      id
+      title
+    }
   }
 `
