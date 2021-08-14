@@ -149,7 +149,7 @@ const resolvers = {
       await group.save()
       return group
     },
-    removeGroup: async (root, args, { currentUser }) => {
+    deleteGroup: async (root, args, { currentUser }) => {
       if (!currentUser) {
         throw new AuthenticationError('not authenticated')
       }
@@ -375,6 +375,33 @@ const resolvers = {
       if (new Date(args.start).getTime() < set(new Date(args.start), { hours: 8, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid start time')
       if (new Date(args.end).getTime() > set(new Date(args.end), { hours: 17, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid end time')
       if (event.reserved) throw new UserInputError('Event cannot be modified because booking form is open')
+      let group
+      const oldGroup = await Group.findById(event.group)
+      if (oldGroup) {
+        oldGroup.events = oldGroup.events.filter(e => e.toString() !== event.id)
+        event.group = null
+      }
+      if (args.group) {
+        group = await Group.findById(args.group)
+        if (group) {
+          event.group = group.id
+          group.events = group.events.concat(event.id)
+        }
+      }
+
+      /* let group
+      const oldGroup = await Group.findById(event.group)
+      console.log(oldGroup.id, args.group, typeof oldGroup.id, typeof args.group)
+      if (oldGroup && oldGroup.id !== args.group) {
+        oldGroup.events.filter(e => e.toString() !== event.group)
+      }
+      if (args.group) {
+        group = await Group.findById(args.group)
+        if (group) {
+          event.group = group.id
+          group.events = group.events.concat(event.id)
+        }
+      } */
 
       title !== undefined ? event.title = title : null
       desc !== undefined ? event.desc = desc : null
@@ -414,6 +441,8 @@ const resolvers = {
         }]
       }
       await event.save()
+      if (group) await group.save()
+      if (oldGroup) await oldGroup.save()
       pubsub.publish('EVENT_MODIFIED', {
         eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
       })

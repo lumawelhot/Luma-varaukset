@@ -121,7 +121,7 @@ const typeDefs = gql`
       publishDate: String
       disabled: Boolean
     ): Group
-    removeGroup(
+    deleteGroup(
       group: ID!
     ): String
     assignEventToGroup(
@@ -199,6 +199,7 @@ const typeDefs = gql`
       #waitingTime: Int!
       #duration: Int!
       customForm: ID
+      group: ID
     ): Event
     createVisit(
       event: ID!

@@ -90,7 +90,8 @@ export const ModifyEvent = ({ event, close, setEvent, sendMessage, tags }) => {
     tags,
     startTime,
     endTime,
-    customForm
+    customForm,
+    group
   }) => {
     const gradeList = []
     grades.forEach((element, index) => element ? gradeList.push(index + 1) : null)
@@ -116,7 +117,8 @@ export const ModifyEvent = ({ event, close, setEvent, sendMessage, tags }) => {
         tags,
         start: startTime.toISOString(),
         end: endTime.toISOString(),
-        customForm: customForm
+        customForm: customForm.length ? customForm : null,
+        group: group.length ? group : null
       }
     })
   }

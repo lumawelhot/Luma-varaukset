@@ -71,6 +71,7 @@ export const EVENTS = gql`
       customForm
       disabled
       locked
+      group
     }
   }
 `
@@ -378,6 +379,7 @@ export const UPDATE_EVENT = gql`
     $start:String
     $end:String
     $customForm: ID
+    $group: ID
   ) {
     modifyEvent(
       event: $event
@@ -394,6 +396,7 @@ export const UPDATE_EVENT = gql`
       start: $start
       end: $end
       customForm: $customForm
+      group: $group
     ) {
       id
       title
@@ -422,6 +425,7 @@ export const UPDATE_EVENT = gql`
       }
       customForm
       disabled
+      group
     }
   }
 `
@@ -676,5 +680,15 @@ export const CREATE_GROUP = gql`
       id
       name
     }
+  }
+`
+
+export const DELETE_GROUP = gql`
+  mutation deleteGroup(
+  $group: ID!
+  ) {
+    deleteGroup(
+      group: $group
+    )
   }
 `

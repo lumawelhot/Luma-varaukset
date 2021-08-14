@@ -105,7 +105,8 @@ const App = () => {
       customForm: event.customForm,
       waitingTime: event.waitingTime,
       hasVisits: event.visits.length ? true : false,
-      locked: event.locked
+      locked: event.locked,
+      group: event.group
     }
     delete details.availableTimes
     delete details.visits
