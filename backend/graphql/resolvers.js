@@ -124,7 +124,7 @@ const resolvers = {
     fields: (form) => JSON.stringify(form.fields)
   },
   Group: {
-    publishDate: (group) => new Date(group.publishDate).toISOString()
+    publishDate: (group) => group.publishDate ? new Date(group.publishDate).toISOString() : null
   },
   Mutation: {
     createGroup: async (root, args, { currentUser }) => {
@@ -135,7 +135,7 @@ const resolvers = {
         name: args.name,
         maxCount: args.maxCount,
         visitCount: 0,
-        publishDate: args.publishDate ? new Date(args.publishDate) : null,
+        publishDate: args.publishDate ? new Date(args.publishDate) : undefined,
         events: [],
         disabled: false
       })
@@ -146,7 +146,7 @@ const resolvers = {
       if (!currentUser) {
         throw new AuthenticationError('not authenticated')
       }
-      const group = await Group.findById(args.group)
+      const group = await Group.findById(args.id)
       group.name = args.name ? args.name : group.name
       group.maxCount = group.visitCount <= args.maxCount ? args.maxCount : group.maxCount
       group.publishDate = args.publishDate ? new Date(args.publishDate) : group.publishDate

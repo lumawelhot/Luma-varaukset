@@ -116,8 +116,9 @@ const typeDefs = gql`
       publishDate: String
     ): Group
     modifyGroup(
+      id: ID!
       name: String
-      maxCount: String
+      maxCount: Int
       publishDate: String
       disabled: Boolean
     ): Group

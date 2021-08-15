@@ -674,6 +674,7 @@ export const GET_GROUPS = gql`
       maxCount
       visitCount
       publishDate
+      disabled
     }
   }
 `
@@ -716,6 +717,27 @@ export const ASSIGN_EVENTS_TO_GROUP = gql`
     ) {
       id
       title
+    }
+  }
+`
+
+export const UPDATE_GROUP = gql`
+  mutation modifyGroup(
+    $id: ID!
+    $name: String
+    $maxCount: Int
+    $publishDate: String
+    $disabled: Boolean
+  ) {
+    modifyGroup(
+      id: $id
+      name: $name
+      maxCount: $maxCount
+      publishDate: $publishDate
+      disabled: $disabled
+    ) {
+      id
+      name
     }
   }
 `

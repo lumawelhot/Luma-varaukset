@@ -3,7 +3,7 @@ import { format, parseISO, set } from 'date-fns'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
-import { CREATE_GROUP, DELETE_GROUP, EVENTS, GET_GROUPS } from '../graphql/queries'
+import { CREATE_GROUP, DELETE_GROUP, EVENTS, GET_GROUPS, UPDATE_GROUP } from '../graphql/queries'
 import DatePicker from './Pickers/DatePicker'
 import TimePicker from './Pickers/TimePicker'
 
@@ -14,38 +14,57 @@ const GroupList = () => {
   const [maxCount, setMaxCount] = useState('')
   const groups = useQuery(GET_GROUPS)
   const [createGroup] = useMutation(CREATE_GROUP, {
-    refetchQueries: GET_GROUPS,
-    onError: error => console.log(error),
-    onCompleted: () => groups.refetch()
+    refetchQueries: [{ query: GET_GROUPS }],
+    onError: error => console.log(error)
+  })
+  const [modifyGroup] = useMutation(UPDATE_GROUP, {
+    refetchQueries: [{ query: GET_GROUPS }],
+    onError: error => console.log(error)
   })
   const [deleteGroup] = useMutation(DELETE_GROUP, {
     refetchQueries: [{ query: GET_GROUPS }, { query: EVENTS }],
     onError: error => console.log(error),
   })
+  const [selectedGroup, setSelectedGroup] = useState(null)
   const [publishDay, setPublishDay] = useState(null)
   const [publishTime, setPublishTime] = useState(null)
 
   if (groups.loading) return <></>
-
   const handleBack = () => {
     history.push('/')
   }
 
-  const addGroup = () => {
+  const getPublishDate = () => {
     let publishDate = null
     if (publishDay && publishTime) {
       const time = new Date(publishTime)
       publishDate = set(new Date(publishDay), { hours: time.getHours(), minutes: time.getMinutes(), seconds: 0 })
+      return publishDate.toISOString()
     }
+    return null
+  }
+
+  const addGroup = () => {
     createGroup({
       variables: {
         name,
         maxCount,
-        publishDate: publishDate ? publishDate.toISOString() : null
+        publishDate: getPublishDate()
       }
     })
     setName('')
     setMaxCount('')
+  }
+
+  const updateGroup = () => {
+    modifyGroup({
+      variables: {
+        id: selectedGroup,
+        name,
+        maxCount,
+        publishDate: getPublishDate()
+      }
+    })
   }
 
   const handleRemove = (group) => {
@@ -54,6 +73,22 @@ const GroupList = () => {
         group
       }
     })
+  }
+
+  const handleUpdate = group => {
+    if (group.id === selectedGroup) {
+      setSelectedGroup(null)
+      setName('')
+      setMaxCount('')
+      setPublishTime(null)
+      setPublishDay(null)
+    } else {
+      setSelectedGroup(group.id)
+      setName(group.name)
+      setMaxCount(Number(group.maxCount))
+      setPublishDay(group.publishDate ? new Date(group.publishDate) : undefined)
+      setPublishTime(group.publishDate ? new Date(group.publishDate) : undefined)
+    }
   }
 
   return (
@@ -67,6 +102,8 @@ const GroupList = () => {
             <th>{t('number-of-booked-visits')}</th>
             <th>{t('publish-date')}</th>
             <th>{t('number-of-events')}</th>
+            <th>{t('disabled')}</th>
+            <th></th>
             <th></th>
           </tr>
         </thead>
@@ -76,8 +113,12 @@ const GroupList = () => {
               <td>{group.name}</td>
               <td>{group.maxCount}</td>
               <td>{group.visitCount}</td>
-              <td>{format(parseISO(group.publishDate), 'd.M.yyyy, HH:mm')}</td>
+              <td>{group.publishDate ? format(parseISO(group.publishDate), 'd.M.yyyy, HH:mm') : ''}</td>
               <td>{group.events.length}</td>
+              <td>{group.disabled ? t('yes') : t('no')}</td>
+              <td>
+                <button className={`button luma ${selectedGroup === group.id ? 'active' : ''}`} onClick={() => handleUpdate(group)}>{t('change-details')}</button>
+              </td>
               <td>
                 <button className="button luma" onClick={() => handleRemove(group.id)}>{t('remove')}</button>
               </td>
@@ -99,9 +140,10 @@ const GroupList = () => {
           value={maxCount}
           placeholder={t('max-count')}
           style={{ width: 150, marginRight: 10 }}
-          onChange={(event) => setMaxCount(Number(event.target.value))}
+          onChange={(event) => setMaxCount(Number(event.target.value) > 0 ? Number(event.target.value) : '')}
         />
         <DatePicker
+          format={'d.M.yyyy'}
           value={publishDay}
           placeholder={t('publish-date')}
           style={{ width: 150, marginRight: 10 }}
@@ -113,7 +155,14 @@ const GroupList = () => {
           style={{ width: 150, marginRight: 10 }}
           onChange={value => setPublishTime(value)}
         />
-        <button className="button luma primary" onClick={addGroup} >{t('add-group')}</button>
+        {!selectedGroup &&
+          <button className="button luma primary" onClick={addGroup} >{t('add-group')}</button>
+        }
+        {selectedGroup &&
+          <button className="button luma primary" onClick={updateGroup} >{t('update')}</button>
+        }
+      </div>
+      <div className="control" >
         <button className="button luma" onClick={handleBack} >{t('back')}</button>
       </div>
     </div>
