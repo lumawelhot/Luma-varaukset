@@ -71,7 +71,10 @@ export const EVENTS = gql`
       customForm
       disabled
       locked
-      group
+      group {
+        id
+        name
+      }
     }
   }
 `

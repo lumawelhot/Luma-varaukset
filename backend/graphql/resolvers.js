@@ -34,12 +34,14 @@ const resolvers = {
             .populate('tags', { name: 1, id: 1 })
             .populate('visits')
             .populate('extras')
+            .populate('group')
         } else {
           const date = sub(new Date(), { days: 90 })
           events = await Event.find({ end: { $gt: date } })
             .populate('tags', { name: 1, id: 1 })
             .populate('visits')
             .populate('extras')
+            .populate('group')
         }
         return events.map(event => Object.assign(event.toJSON(), { locked: event.reserved ? true : false }))
       } catch (error) {
@@ -79,7 +81,7 @@ const resolvers = {
         throw new AuthenticationError('Not authenticated')
       }
       const groups = await Group.find({}).populate('events')
-      return groups
+      return groups.map(group => group.toJSON())
     },
     findVisit: async (root, args) => {
       try {
@@ -113,7 +115,7 @@ const resolvers = {
     event: async (root) => {
       const event = await Event.findById(root.event).populate('tags', { name: 1, id: 1 }).populate('extras')
       if (!event) return null
-      return Object.assign(event, { locked: event.reserved ? true : false })
+      return Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
     },
     startTime: (data) => new Date(data.startTime).toISOString(),
     endTime: (data) => new Date(data.endTime).toISOString()
@@ -167,18 +169,15 @@ const resolvers = {
       let returnedEvents = []
       for (let e of args.events) {
         const event = await Event.findById(e)
-        console.log(event, '<------- event')
-        if (event) {
+        if (event && (!event.group || event.group.toString() !== args.group.toString())) {
           let group
           const oldGroup = await Group.findById(event.group)
-          console.log(oldGroup, '<------- oldGroup')
           if (oldGroup) {
             oldGroup.events = oldGroup.events.filter(e => e.toString() !== event.id)
             event.group = null
           }
           if (args.group) {
             group = await Group.findById(args.group)
-            console.log(group, '<------- group')
             if (group) {
               event.group = group.id
               group.events = group.events.concat(event.id)
@@ -187,12 +186,10 @@ const resolvers = {
           await event.save()
           if (group) await group.save()
           if (oldGroup) await oldGroup.save()
-          console.log(event, '<------- eventNEW')
-          console.log(oldGroup, '<------- oldGroupNEW')
-          console.log(group, '<------- groupNEW')
           returnedEvents.push(event)
         }
       }
+      console.log(returnedEvents)
       return returnedEvents
     },
     removeEventsFromGroup: async (root, args, { currentUser }) => {
@@ -682,7 +679,7 @@ const resolvers = {
         }
         await Event.deleteOne({ _id:args.id })
         pubsub.publish('EVENT_DELETED', {
-          eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+          eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
         })
         return 'Deleted Event with ID ' + args.id
       } catch (error) {

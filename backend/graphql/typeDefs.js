@@ -48,7 +48,7 @@ const typeDefs = gql`
     customForm: ID
     disabled: Boolean!
     locked: Boolean!
-    group: ID
+    group: Group
   }
   type Visit {
     id: ID!

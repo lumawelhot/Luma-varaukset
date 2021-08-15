@@ -15,7 +15,7 @@ const GroupModal = ({ setModalState, checkedEvents, events }) => {
   const groups = useQuery(GET_GROUPS)
   const [selectedGroup, setSelectedGroup] = useState('')
   const [assignEventsToGroup] = useMutation(ASSIGN_EVENTS_TO_GROUP, {
-    refetchQueries: EVENTS,
+    refetchQueries: [{ query: EVENTS }],
     onError: (error) => console.log(error),
     onCompleted: () => setModalState(null)
   })
@@ -87,9 +87,10 @@ const EventList = ({ events, sendMessage }) => {
     }).sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime()))
     setCheckedEvents([])
   }, [startDate, endDate, events])
+  console.log(events)
 
   const [forceDeleteEvents] = useMutation(FORCE_DELETE_EVENTS, {
-    refetchQueries: EVENTS,
+    refetchQueries: [{ query: EVENTS }],
     onError: () => sendMessage(t('failed-to-remove-events'), 'danger'),
     onCompleted: () => {
       setModalState(null)
@@ -140,7 +141,11 @@ const EventList = ({ events, sendMessage }) => {
     <>
       <div className={`modal ${modalState === 'group' ? 'is-active':''}`}>
         <div className="modal-background"></div>
-        <GroupModal setModalState={setModalState} checkedEvents={checkedEvents} events={events} />
+        <GroupModal
+          setModalState={setModalState}
+          checkedEvents={checkedEvents}
+          events={events}
+        />
       </div>
       {modalState === 'delete' &&
         <div className={`modal ${modalState ? 'is-active': ''}`}>
@@ -215,7 +220,7 @@ const EventList = ({ events, sendMessage }) => {
               <th>{t('resource')}</th>
               <th>{t('date')}</th>
               <th>{t('time')}</th>
-              <th></th>
+              <th>{t('group')}</th>
             </tr>
           </thead>
           <tbody>
@@ -237,6 +242,7 @@ const EventList = ({ events, sendMessage }) => {
                   </td>
                   <td>{`${format(new Date(event.start), 'dd.MM.yyyy')}`}</td>
                   <td>{`${format(new Date(event.start), 'HH:mm')} - ${format(new Date(event.end), 'HH:mm')}`}</td>
+                  <td>{event.group ? event.group.name : ''}</td>
                 </tr>
               )
             })}
