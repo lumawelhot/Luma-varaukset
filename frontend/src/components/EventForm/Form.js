@@ -47,7 +47,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
         duration: event.duration,
         waitingTime: event.waitingTime,
         date: new Date(event.eventStart),
-        group: event.group ? event.group : ''
+        group: event.group ? event.group.id : ''
       } : eventInitialValues(newEventTimeRange)}
       validate={validate}
       onSubmit={onSubmit}

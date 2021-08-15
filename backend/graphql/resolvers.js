@@ -189,7 +189,6 @@ const resolvers = {
           returnedEvents.push(event)
         }
       }
-      console.log(returnedEvents)
       return returnedEvents
     },
     removeEventsFromGroup: async (root, args, { currentUser }) => {
@@ -320,6 +319,8 @@ const resolvers = {
         await group.save()
       }
       await event.save()
+      await event.populate('group').execPopulate()
+      console.log(event)
       pubsub.publish('EVENT_CREATED', {
         eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
       })
@@ -393,18 +394,23 @@ const resolvers = {
       if (new Date(args.end).getTime() > set(new Date(args.end), { hours: 17, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid end time')
       if (event.reserved) throw new UserInputError('Event cannot be modified because booking form is open')
       let group
-      const oldGroup = await Group.findById(event.group)
-      if (oldGroup) {
-        oldGroup.events = oldGroup.events.filter(e => e.toString() !== event.id)
-        event.group = null
-      }
-      if (args.group) {
-        group = await Group.findById(args.group)
-        if (group) {
-          event.group = group.id
-          group.events = group.events.concat(event.id)
+      let oldGroup
+      if (event && (!event.group || event.group.toString() !== args.group.toString())) {
+        oldGroup = await Group.findById(event.group)
+        console.log(oldGroup)
+        if (oldGroup) {
+          oldGroup.events = oldGroup.events.filter(e => e.toString() !== event.id)
+          event.group = null
+        }
+        if (args.group) {
+          group = await Group.findById(args.group)
+          if (group) {
+            event.group = group.id
+            group.events = group.events.concat(event.id)
+          }
         }
       }
+      console.log('here')
 
       title !== undefined ? event.title = title : null
       desc !== undefined ? event.desc = desc : null
@@ -444,6 +450,8 @@ const resolvers = {
         }]
       }
       await event.save()
+      await event.populate('group').execPopulate()
+      console.log(event)
       if (group) await group.save()
       if (oldGroup) await oldGroup.save()
       pubsub.publish('EVENT_MODIFIED', {

@@ -45,7 +45,7 @@ const Form = ({ event, close, save, validate, tags }) => {
         startTime: new Date(event.eventStart),
         endTime: new Date(event.eventEnd),
         customForm: event.customForm ? event.customForm : '',
-        group: event.group ? event.group : ''
+        group: event.group ? event.group.id : ''
       }}
       validate={validate}
       onSubmit={save}

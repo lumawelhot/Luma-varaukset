@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@apollo/client'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
-import { CREATE_GROUP, DELETE_GROUP, GET_GROUPS } from '../graphql/queries'
+import { CREATE_GROUP, DELETE_GROUP, EVENTS, GET_GROUPS } from '../graphql/queries'
 
 const GroupList = () => {
   const { t } = useTranslation('common')
@@ -16,12 +16,10 @@ const GroupList = () => {
     onCompleted: () => groups.refetch()
   })
   const [deleteGroup] = useMutation(DELETE_GROUP, {
-    refetchQueries: GET_GROUPS,
+    refetchQueries: [{ query: GET_GROUPS }, { query: EVENTS }],
     onError: error => console.log(error),
-    onCompleted: () => groups.refetch()
   })
   if (groups.loading) return <></>
-  console.log(groups)
 
   const handleBack = () => {
     history.push('/')
@@ -56,6 +54,7 @@ const GroupList = () => {
             <th>{t('max-number-of-visits')}</th>
             <th>{t('number-of-booked-visits')}</th>
             <th>{t('publish-date')}</th>
+            <th>{t('number-of-events')}</th>
             <th></th>
           </tr>
         </thead>
@@ -66,6 +65,7 @@ const GroupList = () => {
               <td>{group.maxCount}</td>
               <td>{group.visitCount}</td>
               <td>{group.publishDate}</td>
+              <td>{group.events.length}</td>
               <td>
                 <button className="button luma" onClick={() => handleRemove(group.id)}>{t('remove')}</button>
               </td>

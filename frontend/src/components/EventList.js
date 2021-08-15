@@ -15,7 +15,7 @@ const GroupModal = ({ setModalState, checkedEvents, events }) => {
   const groups = useQuery(GET_GROUPS)
   const [selectedGroup, setSelectedGroup] = useState('')
   const [assignEventsToGroup] = useMutation(ASSIGN_EVENTS_TO_GROUP, {
-    refetchQueries: [{ query: EVENTS }],
+    refetchQueries: [{ query: EVENTS }, { query: GET_GROUPS }],
     onError: (error) => console.log(error),
     onCompleted: () => setModalState(null)
   })
@@ -87,7 +87,6 @@ const EventList = ({ events, sendMessage }) => {
     }).sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime()))
     setCheckedEvents([])
   }, [startDate, endDate, events])
-  console.log(events)
 
   const [forceDeleteEvents] = useMutation(FORCE_DELETE_EVENTS, {
     refetchQueries: [{ query: EVENTS }],

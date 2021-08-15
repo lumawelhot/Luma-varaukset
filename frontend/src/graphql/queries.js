@@ -198,7 +198,10 @@ export const CREATE_EVENT = gql`
       disabled
       waitingTime
       locked
-      group
+      group {
+        id
+        name
+      }
     }
   }
 `
@@ -428,7 +431,10 @@ export const UPDATE_EVENT = gql`
       }
       customForm
       disabled
-      group
+      group {
+        id
+        name
+      }
     }
   }
 `

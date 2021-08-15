@@ -118,7 +118,7 @@ export const ModifyEvent = ({ event, close, setEvent, sendMessage, tags }) => {
         start: startTime.toISOString(),
         end: endTime.toISOString(),
         customForm: customForm.length ? customForm : null,
-        group: group.length ? group : null
+        group: group.length ? group : ''
       }
     })
   }
