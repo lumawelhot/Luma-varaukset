@@ -123,6 +123,9 @@ const resolvers = {
   Form: {
     fields: (form) => JSON.stringify(form.fields)
   },
+  Group: {
+    publishDate: (group) => new Date(group.publishDate).toISOString()
+  },
   Mutation: {
     createGroup: async (root, args, { currentUser }) => {
       if (!currentUser) {
@@ -132,7 +135,7 @@ const resolvers = {
         name: args.name,
         maxCount: args.maxCount,
         visitCount: 0,
-        publishDate: args.publishDate,
+        publishDate: args.publishDate ? new Date(args.publishDate) : null,
         events: [],
         disabled: false
       })
@@ -146,7 +149,7 @@ const resolvers = {
       const group = await Group.findById(args.group)
       group.name = args.name ? args.name : group.name
       group.maxCount = group.visitCount <= args.maxCount ? args.maxCount : group.maxCount
-      group.publishDate = args.publishDate ? args.publishDate : group.publishDate
+      group.publishDate = args.publishDate ? new Date(args.publishDate) : group.publishDate
       group.disabled = args.disabled || group.maxCount <= group.visitCount
       await group.save()
       return group
@@ -175,12 +178,17 @@ const resolvers = {
           if (oldGroup) {
             oldGroup.events = oldGroup.events.filter(e => e.toString() !== event.id)
             event.group = null
+            oldGroup.visitCount = oldGroup.visitCount - event.visits.length
           }
           if (args.group) {
             group = await Group.findById(args.group)
             if (group) {
               event.group = group.id
               group.events = group.events.concat(event.id)
+              group.visitCount = group.visitCount + event.visits.length
+            }
+            if (group.visitCount > group.maxCount) {
+              throw new UserInputError('max number of visits exceeded')
             }
           }
           await event.save()
@@ -190,20 +198,6 @@ const resolvers = {
         }
       }
       return returnedEvents
-    },
-    removeEventsFromGroup: async (root, args, { currentUser }) => {
-      if (!currentUser) {
-        throw new AuthenticationError('not authenticated')
-      }
-      const event = await Event.findById(args.event)
-      if (!event) throw new UserInputError('no event found')
-      const group = await Group.findById(event.group)
-      if (!group) throw new UserInputError('no group or event found')
-      event.group = null
-      group.events = group.events.filter(event => event.toString() !== args.event)
-      await event.save()
-      await group.save()
-      return event
     },
     updateEmail: async (root, args, { currentUser }) => {
       if (!currentUser || !currentUser.isAdmin) {
@@ -544,7 +538,7 @@ const resolvers = {
           }
           event.visits = event.visits.concat(savedVisit._id)
           event.reserved = null
-          await group.save()
+          if (group) await group.save()
           await event.save()
           pubsub.publish('EVENT_BOOKED', {
             eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })

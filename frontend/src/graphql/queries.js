@@ -673,6 +673,7 @@ export const GET_GROUPS = gql`
       }
       maxCount
       visitCount
+      publishDate
     }
   }
 `
@@ -681,10 +682,12 @@ export const CREATE_GROUP = gql`
   mutation createGroup (
     $name: String!
     $maxCount: Int!
+    $publishDate: String
   ) {
     createGroup(
       name: $name
       maxCount: $maxCount
+      publishDate: $publishDate
     ) {
       id
       name

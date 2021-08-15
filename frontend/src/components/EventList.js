@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { format } from 'date-fns'
+import { addYears, format } from 'date-fns'
 import { Field, Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -127,6 +127,10 @@ const EventList = ({ events, sendMessage }) => {
     values.password = ''
   }
 
+  const showAll = () => {
+    setEndDate(addYears(new Date(), 10))
+  }
+
   const handleChooseAll = () => {
     if (checkedEvents.length === tableEvents.length) {
       setCheckedEvents([])
@@ -220,6 +224,7 @@ const EventList = ({ events, sendMessage }) => {
               <th>{t('date')}</th>
               <th>{t('time')}</th>
               <th>{t('group')}</th>
+              <th>{t('has-visits')}</th>
             </tr>
           </thead>
           <tbody>
@@ -242,6 +247,7 @@ const EventList = ({ events, sendMessage }) => {
                   <td>{`${format(new Date(event.start), 'dd.MM.yyyy')}`}</td>
                   <td>{`${format(new Date(event.start), 'HH:mm')} - ${format(new Date(event.end), 'HH:mm')}`}</td>
                   <td>{event.group ? event.group.name : ''}</td>
+                  <td>{event.visits.length}</td>
                 </tr>
               )
             })}
@@ -250,6 +256,9 @@ const EventList = ({ events, sendMessage }) => {
         <div className="field is-grouped">
           <button className="button luma primary" onClick={openGroupModal} >{t('assign-to-group')}</button>
           <button className="button luma primary" onClick={openDeleteModal} >{t('delete-choosen-events')}</button>
+          <div className="control">
+            <button className="button luma" onClick={showAll} >{t('show-all')}</button>
+          </div>
           <div className="control">
             <button className="button luma" onClick={handleChooseAll} >{checkedEvents.length !== tableEvents.length ? t('choose-all') : t('deselect')}</button>
           </div>

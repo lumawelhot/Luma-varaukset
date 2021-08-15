@@ -128,9 +128,6 @@ const typeDefs = gql`
       events: [ID]
       group: ID!
     ): [Event]
-    removeEventsFromGroup(
-      events: [ID]
-    ): Event
     updateEmail(
       name: String!
       html: String!

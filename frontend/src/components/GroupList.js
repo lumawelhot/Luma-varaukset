@@ -1,8 +1,11 @@
 import { useMutation, useQuery } from '@apollo/client'
+import { format, parseISO, set } from 'date-fns'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { CREATE_GROUP, DELETE_GROUP, EVENTS, GET_GROUPS } from '../graphql/queries'
+import DatePicker from './Pickers/DatePicker'
+import TimePicker from './Pickers/TimePicker'
 
 const GroupList = () => {
   const { t } = useTranslation('common')
@@ -19,6 +22,9 @@ const GroupList = () => {
     refetchQueries: [{ query: GET_GROUPS }, { query: EVENTS }],
     onError: error => console.log(error),
   })
+  const [publishDay, setPublishDay] = useState(null)
+  const [publishTime, setPublishTime] = useState(null)
+
   if (groups.loading) return <></>
 
   const handleBack = () => {
@@ -26,10 +32,16 @@ const GroupList = () => {
   }
 
   const addGroup = () => {
+    let publishDate = null
+    if (publishDay && publishTime) {
+      const time = new Date(publishTime)
+      publishDate = set(new Date(publishDay), { hours: time.getHours(), minutes: time.getMinutes(), seconds: 0 })
+    }
     createGroup({
       variables: {
         name,
-        maxCount
+        maxCount,
+        publishDate: publishDate ? publishDate.toISOString() : null
       }
     })
     setName('')
@@ -64,7 +76,7 @@ const GroupList = () => {
               <td>{group.name}</td>
               <td>{group.maxCount}</td>
               <td>{group.visitCount}</td>
-              <td>{group.publishDate}</td>
+              <td>{format(parseISO(group.publishDate), 'd.M.yyyy, HH:mm')}</td>
               <td>{group.events.length}</td>
               <td>
                 <button className="button luma" onClick={() => handleRemove(group.id)}>{t('remove')}</button>
@@ -88,6 +100,18 @@ const GroupList = () => {
           placeholder={t('max-count')}
           style={{ width: 150, marginRight: 10 }}
           onChange={(event) => setMaxCount(Number(event.target.value))}
+        />
+        <DatePicker
+          value={publishDay}
+          placeholder={t('publish-date')}
+          style={{ width: 150, marginRight: 10 }}
+          onChange={value => setPublishDay(value)}
+        />
+        <TimePicker
+          value={publishTime}
+          placeholder={t('publish-time')}
+          style={{ width: 150, marginRight: 10 }}
+          onChange={value => setPublishTime(value)}
         />
         <button className="button luma primary" onClick={addGroup} >{t('add-group')}</button>
         <button className="button luma" onClick={handleBack} >{t('back')}</button>

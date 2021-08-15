@@ -217,7 +217,6 @@ const App = () => {
     const newToasts = toasts.concat({ id: toastID, message, type })
     setToasts(newToasts)
   }
-  if(result.data) console.log(result.data.getEvents)
 
   useEffect(() => {
     if (toasts.length) {
