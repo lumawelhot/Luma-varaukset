@@ -106,7 +106,6 @@ const App = () => {
       waitingTime: event.waitingTime,
       hasVisits: event.visits.length ? true : false,
       locked: event.locked,
-      group: event.group
     }
     delete details.availableTimes
     delete details.visits
@@ -115,14 +114,16 @@ const App = () => {
       start: new Date(timeSlot.startTime),
       end: new Date(timeSlot.endTime),
       booked: event.booked,
-      disabled: event.disabled
+      disabled: event.disabled,
+      group: event.group
     }))
     events = events.concat(event.visits.map(visit => Object({
       ...details,
       start: new Date(visit.startTime),
       end: new Date(visit.endTime),
       booked: true,
-      disabled: false
+      disabled: false,
+      group: null
     })))
 
     return events
@@ -275,8 +276,8 @@ const App = () => {
           {!(currentUser && currentUser.isAdmin) && <p>{t('not-logged-in')}</p>}
         </Route>
         <Route path='/events'>
-          {currentUser && currentUser.isAdmin && result.data &&
-            <EventList events={result.data.getEvents} sendMessage={notify} />
+          {currentUser && result.data &&
+            <EventList events={result.data.getEvents} sendMessage={notify} currentUser={currentUser} />
           }
         </Route>
         <Route path='/extras'>

@@ -43,6 +43,15 @@ const resolvers = {
             .populate('extras')
             .populate('group')
         }
+        if (!currentUser) {
+          return events
+            .filter(event => event.group ?
+              (event.group.publishDate ?
+                new Date().getTime() >= event.group.publishDate.getTime()
+                : !event.group.disabled)
+              : true)
+            .map(event => Object.assign(event.toJSON(), { locked: event.reserved ? true : false }))
+        }
         return events.map(event => Object.assign(event.toJSON(), { locked: event.reserved ? true : false }))
       } catch (error) {
         throw new UserInputError('Error occured when fetching events')
@@ -562,7 +571,10 @@ const resolvers = {
     cancelVisit: async (root, args) => {
       const visit = await Visit.findById(args.id)
       if (!visit || visit.status === false) throw new UserInputError('Varausta ei löydy')
-      const event = await Event.findById(visit.event).populate('visits', { startTime: 1, endTime: 1 })
+      const event = await Event.findById(visit.event)
+        .populate('extras', { name: 1 })
+        .populate('visits', { startTime: 1, endTime: 1 })
+        .populate('tags', { name: 1 })
       if (!event) throw new UserInputError('Event could not be found')
       const oldAvailableTimes = event.availableTimes.map(time => ({
         startTime: new Date(time.startTime),
@@ -573,10 +585,12 @@ const resolvers = {
       if (event.group) {
         group = await Group.findById(event.group)
         if (group.disabled) {
+          const mongoTags = await addNewTags(event.tags.map(tag => tag.name))
+          const extras = await Extra.find({ _id: { $in: event.extras } })
           newEvent = new Event({
             title: event.title,
             desc: event.desc,
-            resourceids: event.scienceClass,
+            resourceids: event.resourceids,
             grades: event.grades,
             remotePlatforms: event.remotePlatforms,
             otherRemotePlatformOption: event.otherRemotePlatformOption,
@@ -586,13 +600,15 @@ const resolvers = {
             duration: event.duration,
             customForm: event.customForm,
             disabled: false,
-            start: visit.startTime.toISOString(),
-            end: visit.endTime.toISOString(),
+            start: new Date(visit.startTime),
+            end: new Date(visit.endTime),
             availableTimes: [{
               startTime: visit.startTime.toISOString(),
               endTime: visit.endTime.toISOString()
             }],
           })
+          newEvent.extras = extras
+          newEvent.tags = mongoTags
         }
         group.visitCount = group.visitCount - 1
       }

@@ -18,7 +18,7 @@ const GroupList = () => {
     onError: error => console.log(error)
   })
   const [modifyGroup] = useMutation(UPDATE_GROUP, {
-    refetchQueries: [{ query: GET_GROUPS }],
+    refetchQueries: [{ query: GET_GROUPS }, { query: EVENTS }],
     onError: error => console.log(error)
   })
   const [deleteGroup] = useMutation(DELETE_GROUP, {
@@ -100,7 +100,7 @@ const GroupList = () => {
             <th>{t('name')}</th>
             <th>{t('max-number-of-visits')}</th>
             <th>{t('number-of-booked-visits')}</th>
-            <th>{t('publish-date')}</th>
+            <th>{t('publish')}</th>
             <th>{t('number-of-events')}</th>
             <th>{t('disabled')}</th>
             <th></th>

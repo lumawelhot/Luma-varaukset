@@ -68,7 +68,7 @@ const GroupModal = ({ setModalState, checkedEvents, events }) => {
   )
 }
 
-const EventList = ({ events, sendMessage }) => {
+const EventList = ({ events, sendMessage, currentUser }) => {
   const { t } = useTranslation('event')
   const history = useHistory()
   const [modalState, setModalState] = useState(null)
@@ -255,7 +255,9 @@ const EventList = ({ events, sendMessage }) => {
         </table>
         <div className="field is-grouped">
           <button className="button luma primary" onClick={openGroupModal} >{t('assign-to-group')}</button>
-          <button className="button luma primary" onClick={openDeleteModal} >{t('delete-choosen-events')}</button>
+          {currentUser.isAdmin &&
+            <button className="button luma primary" onClick={openDeleteModal} >{t('delete-choosen-events')}</button>
+          }
           <div className="control">
             <button className="button luma" onClick={showAll} >{t('show-all')}</button>
           </div>

@@ -1141,3 +1141,7 @@ form.luma hr,
 .select, .select select{ 
   width: 100%;
 }
+
+option {
+  font-size: 25px;
+}

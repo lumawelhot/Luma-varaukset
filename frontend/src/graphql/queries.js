@@ -74,6 +74,7 @@ export const EVENTS = gql`
       group {
         id
         name
+        disabled
       }
     }
   }

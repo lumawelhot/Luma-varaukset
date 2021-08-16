@@ -66,19 +66,19 @@ const UserPage = ({ currentUser, setShowEventForm }) => {
         <div className="control">
           <button className="button luma" onClick={groups}>{t('groups')}</button>
         </div>
+        <div className="control">
+          <button className="button luma" onClick={eventList}>{t('event-list')}</button>
+        </div>
       </div>
       <div className="field is-grouped">
         {currentUser.isAdmin &&
         <>
-          <p className="control">
+          <div className="control">
             <button className="button luma" onClick={listUsers}>{t('user-list')}</button>
-          </p>
-          <p className="control">
-            <button className="button luma" onClick={eventList}>{t('event-list')}</button>
-          </p>
-          <p className="control">
+          </div>
+          <div className="control">
             <button className="button luma" onClick={emailConfig}>{t('email-config')}</button>
-          </p>
+          </div>
         </>
         }
       </div>

@@ -50,20 +50,7 @@ exports[`Renders without error with admin user 1`] = `
         Ryhmät
       </button>
     </div>
-  </div>
-  <div
-    class="field is-grouped"
-  >
-    <p
-      class="control"
-    >
-      <button
-        class="button luma"
-      >
-        Käyttäjälista
-      </button>
-    </p>
-    <p
+    <div
       class="control"
     >
       <button
@@ -71,8 +58,21 @@ exports[`Renders without error with admin user 1`] = `
       >
         Vierailulista
       </button>
-    </p>
-    <p
+    </div>
+  </div>
+  <div
+    class="field is-grouped"
+  >
+    <div
+      class="control"
+    >
+      <button
+        class="button luma"
+      >
+        Käyttäjälista
+      </button>
+    </div>
+    <div
       class="control"
     >
       <button
@@ -80,7 +80,7 @@ exports[`Renders without error with admin user 1`] = `
       >
         Sähköpostit
       </button>
-    </p>
+    </div>
   </div>
 </div>
 `;
@@ -139,6 +139,15 @@ exports[`Renders without error with user 1`] = `
         class="button luma"
       >
         Ryhmät
+      </button>
+    </div>
+    <div
+      class="control"
+    >
+      <button
+        class="button luma"
+      >
+        Vierailulista
       </button>
     </div>
   </div>

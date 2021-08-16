@@ -267,7 +267,7 @@ const MyCalendar = ({
           agenda: true
         }}
         showMultiDayTimes
-        events={localEvents.filter(event => filterFunction(event))}
+        events={localEvents.filter(event => event.group ? !event.group.disabled : true).filter(event => filterFunction(event))}
         startAccessor='start'
         endAccessor='end'
         min={set(new Date(), { hours: 8, minutes: 0, seconds:0, milliseconds: 0 })}
