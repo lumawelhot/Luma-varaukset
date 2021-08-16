@@ -149,7 +149,7 @@ const resolvers = {
       const group = await Group.findById(args.id)
       group.name = args.name ? args.name : group.name
       group.maxCount = group.visitCount <= args.maxCount ? args.maxCount : group.maxCount
-      group.publishDate = args.publishDate ? new Date(args.publishDate) : group.publishDate
+      group.publishDate = args.publishDate ? new Date(args.publishDate) : undefined
       group.disabled = args.disabled || group.maxCount <= group.visitCount
       await group.save()
       return group
@@ -314,7 +314,6 @@ const resolvers = {
       }
       await event.save()
       await event.populate('group').execPopulate()
-      console.log(event)
       pubsub.publish('EVENT_CREATED', {
         eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
       })
@@ -391,20 +390,23 @@ const resolvers = {
       let oldGroup
       if (event && (!event.group || event.group.toString() !== args.group.toString())) {
         oldGroup = await Group.findById(event.group)
-        console.log(oldGroup)
         if (oldGroup) {
           oldGroup.events = oldGroup.events.filter(e => e.toString() !== event.id)
           event.group = null
+          oldGroup.visitCount = oldGroup.visitCount - event.visits.length
         }
         if (args.group) {
           group = await Group.findById(args.group)
           if (group) {
             event.group = group.id
             group.events = group.events.concat(event.id)
+            group.visitCount = group.visitCount + event.visits.length
+          }
+          if (group.visitCount > group.maxCount) {
+            throw new UserInputError('max number of visits exceeded')
           }
         }
       }
-      console.log('here')
 
       title !== undefined ? event.title = title : null
       desc !== undefined ? event.desc = desc : null
@@ -445,7 +447,6 @@ const resolvers = {
       }
       await event.save()
       await event.populate('group').execPopulate()
-      console.log(event)
       if (group) await group.save()
       if (oldGroup) await oldGroup.save()
       pubsub.publish('EVENT_MODIFIED', {
@@ -617,7 +618,7 @@ const resolvers = {
             })
           })
         }
-        await group.save()
+        if (group) await group.save()
         return visit
       } catch (error) {
         event.visits = event.visits.concat(visit._id)

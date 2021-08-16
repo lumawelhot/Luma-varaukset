@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client'
 import { format } from 'date-fns'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { EVENTS, UPDATE_EVENT } from '../../graphql/queries'
+import { EVENTS, GET_GROUPS, UPDATE_EVENT } from '../../graphql/queries'
 import Form from './Form'
 
 export const ModifyEvent = ({ event, close, setEvent, sendMessage, tags }) => {
@@ -62,7 +62,7 @@ export const ModifyEvent = ({ event, close, setEvent, sendMessage, tags }) => {
   }
 
   const [create] = useMutation(UPDATE_EVENT, {
-    refetchQueries: [{ query: EVENTS }],
+    refetchQueries: [{ query: EVENTS }, { query: GET_GROUPS }],
     onCompleted: ({ modifyEvent }) => {
       const start = new Date(modifyEvent.start)
       const end = new Date(modifyEvent.end)
