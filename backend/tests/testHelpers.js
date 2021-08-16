@@ -322,6 +322,8 @@ const UPDATE_EVENT = gql`
     $tags:[String]
     $start:String
     $end:String
+    $customForm: ID
+    $group: ID
   ) {
     modifyEvent(
       event: $event
@@ -337,6 +339,8 @@ const UPDATE_EVENT = gql`
       tags: $tags
       start: $start
       end: $end
+      customForm: $customForm
+      group: $group
     ) {
       id
       title
@@ -362,6 +366,12 @@ const UPDATE_EVENT = gql`
       tags {
         name,
         id
+      }
+      customForm
+      disabled
+      group {
+        id
+        name
       }
     }
   }

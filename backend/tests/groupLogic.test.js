@@ -6,7 +6,7 @@ const User = require('../models/user')
 const Event = require('../models/event')
 const Visit = require('../models/visit')
 const Group = require('../models/group')
-const { CREATE_VISIT, CANCEL_VISIT, CREATE_GROUP, UPDATE_GROUP, ASSIGN_EVENTS_TO_GROUP, DELETE_GROUP, createDate } = require('./testHelpers')
+const { CREATE_VISIT, CANCEL_VISIT, CREATE_GROUP, UPDATE_GROUP, ASSIGN_EVENTS_TO_GROUP, DELETE_GROUP, createDate, UPDATE_EVENT } = require('./testHelpers')
 const { details, eventData1 : eventDetails } = require('./testData')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
@@ -83,6 +83,18 @@ const deleteGroup = async (group) => {
   })
 }
 
+const modifyEvent = async (event, group) => {
+  const { mutate } = createTestClient(server)
+  return await mutate({
+    mutation: UPDATE_EVENT,
+    variables: {
+      event,
+      group,
+      tags: []
+    }
+  })
+}
+
 beforeAll(async () => {
   await User.deleteMany({})
 
@@ -122,7 +134,7 @@ beforeEach(async () => {
 
   const data1 = new Group({
     name: 'group1',
-    maxCount: 3,
+    maxCount: 4,
     visitCount: 0,
     publishDate: new Date().toISOString(),
     disabled: false
@@ -137,9 +149,9 @@ beforeEach(async () => {
     maxCount: 1,
     ...groupDetails
   })
-  const eventData1 = new Event({ ...eventDetails })
-  const eventData2 = new Event({ ...eventDetails })
-  const eventData3 = new Event({ ...eventDetails })
+  const eventData1 = new Event({ ...eventDetails, reserved: null })
+  const eventData2 = new Event({ ...eventDetails, reserved: null })
+  const eventData3 = new Event({ ...eventDetails, reserved: null })
   group1 = await data1.save()
   group2 = await data2.save()
   group3 = await data3.save()
@@ -211,9 +223,73 @@ describe('A group', () => {
     expect(data.visitCount).toBe(1)
   })
 
+  it('can be assigned by modifying an event', async () => {
+    await modifyEvent(event1.id, group2.id)
+    const group = await Group.findById(group2.id)
+    const event = await Event.findById(event1.id)
+    expect(group.events.length).toBe(1)
+    expect(event.group.toString()).toBe(group.id.toString())
+  })
+
 })
 
-describe('Visit', () => {
+describe('Visit count calculation works properly', () => {
+
+  it('if event is booked', async () => {
+    await assignEventsToGroup(group1.id, [event1.id, event2.id])
+    await visitResponse(event1.id, createDate(11, 0), createDate(12, 0))
+    const data = await Group.findById(group1.id)
+    expect(data.visitCount).toBe(1)
+    expect(data.disabled).toBe(false)
+  })
+
+  it('if multiple events are booked', async () => {
+    await assignEventsToGroup(group1.id, [event1.id, event2.id])
+    await visitResponse(event1.id, createDate(11, 0), createDate(11, 15))
+    await visitResponse(event1.id, createDate(11, 45), createDate(12, 0))
+    await visitResponse(event2.id, createDate(11, 0), createDate(12, 0))
+    await visitResponse(event3.id, createDate(11, 0), createDate(12, 0))
+    const data = await Group.findById(group1.id)
+    expect(data.visitCount).toBe(3)
+    expect(data.disabled).toBe(false)
+  })
+
+  it('if event\'s group is changed', async () => {
+    await assignEventsToGroup(group1.id, [event1.id])
+    await assignEventsToGroup(group2.id, [event2.id])
+    await visitResponse(event1.id, createDate(11, 0), createDate(12, 0))
+    await visitResponse(event2.id, createDate(11, 0), createDate(12, 0))
+    let data1 = await Group.findById(group1.id)
+    let data2 = await Group.findById(group2.id)
+    expect(data1.visitCount).toBe(1)
+    expect(data2.visitCount).toBe(1)
+    await assignEventsToGroup(group2.id, [event1.id])
+    data1 = await Group.findById(group1.id)
+    data2 = await Group.findById(group2.id)
+    expect(data1.visitCount).toBe(0)
+    expect(data2.visitCount).toBe(2)
+    expect(data2.disabled).toBe(true)
+  })
+
+  it('if event\'s group changing fails', async () => {
+    await assignEventsToGroup(group1.id, [event1.id])
+    await assignEventsToGroup(group3.id, [event2.id])
+    await visitResponse(event1.id, createDate(11, 0), createDate(12, 0))
+    await visitResponse(event2.id, createDate(11, 0), createDate(12, 0))
+    let data1 = await Group.findById(group1.id)
+    let data2 = await Group.findById(group3.id)
+    expect(data1.visitCount).toBe(1)
+    expect(data2.visitCount).toBe(1)
+    await assignEventsToGroup(group3.id, [event1.id])
+    data1 = await Group.findById(group1.id)
+    data2 = await Group.findById(group3.id)
+    expect(data1.visitCount).toBe(1)
+    expect(data2.visitCount).toBe(1)
+  })
+
+})
+
+describe('An event', () => {
 
   it('cannot be booked if maximum number of visits in the group is exceeded', async () => {
     await assignEventsToGroup(group3.id, [event1.id, event2.id])
@@ -221,6 +297,27 @@ describe('Visit', () => {
     const response = await visitResponse(event2.id, createDate(11, 0), createDate(12, 0))
     expect(response.errors[0].message).toBe('this group is disabled')
     expect(response.data.createVisit).toBe(null)
+  })
+
+  it('is created with correct details if event\'s visit in the disabled group is cancelled', async () => {
+    await assignEventsToGroup(group3.id, [event1.id, event2.id])
+    const visit = await visitResponse(event1.id, createDate(11, 0), createDate(12, 0))
+    await cancelVisit(visit.data.createVisit.id)
+    const group = await Group.findById(group3.id)
+    const events = await Event.find({})
+    const event = events.filter(event => ![event1.id, event2.id, event3.id].includes(event.id))[0]
+    expect(group.name).toBe('group3')
+    expect(group.disabled).toBe(true)
+    expect(group.visitCount).toBe(0)
+    expect(event.name).toBe(event1.name)
+    expect(event.id).not.toBe(event1.id)
+    expect(event.group).toBeUndefined()
+    expect(event.start.toISOString()).toBe(createDate(11, 0).toISOString())
+    expect(event.end.toISOString()).toBe(createDate(12, 0).toISOString())
+    expect(event.availableTimes[0].startTime).toBe(createDate(11, 0).toISOString())
+    expect(event.availableTimes[0].endTime).toBe(createDate(12, 0).toISOString())
+    expect(event.availableTimes.length).toBe(1)
+    expect(event.visits.length).toBe(0)
   })
 
 })

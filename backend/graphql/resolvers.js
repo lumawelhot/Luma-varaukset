@@ -190,6 +190,9 @@ const resolvers = {
             if (group.visitCount > group.maxCount) {
               throw new UserInputError('max number of visits exceeded')
             }
+            if (group.visitCount === group.maxCount) {
+              group.disabled = true
+            }
           }
           await event.save()
           if (group) await group.save()
@@ -566,14 +569,32 @@ const resolvers = {
         endTime: new Date(time.endTime)
       }))
       let group
+      let newEvent
       if (event.group) {
         group = await Group.findById(event.group)
         if (group.disabled) {
-          console.log('event should be created')
-          throw new UserInputError('event should be created')
-        } else {
-          group.visitCount = group.visitCount - 1
+          newEvent = new Event({
+            title: event.title,
+            desc: event.desc,
+            resourceids: event.scienceClass,
+            grades: event.grades,
+            remotePlatforms: event.remotePlatforms,
+            otherRemotePlatformOption: event.otherRemotePlatformOption,
+            remoteVisit: event.remoteVisit,
+            inPersonVisit: event.inPersonVisit,
+            waitingTime: event.waitingTime,
+            duration: event.duration,
+            customForm: event.customForm,
+            disabled: false,
+            start: visit.startTime.toISOString(),
+            end: visit.endTime.toISOString(),
+            availableTimes: [{
+              startTime: visit.startTime.toISOString(),
+              endTime: visit.endTime.toISOString()
+            }],
+          })
         }
+        group.visitCount = group.visitCount - 1
       }
       const visitTimes = event.visits.filter(v => v.id !== visit.id)
 
@@ -619,6 +640,12 @@ const resolvers = {
           })
         }
         if (group) await group.save()
+        if (newEvent) {
+          await newEvent.save()
+          pubsub.publish('EVENT_CREATED', {
+            eventModified: Object.assign(newEvent.toJSON(), { locked: event.reserved ? true : false })
+          })
+        }
         return visit
       } catch (error) {
         event.visits = event.visits.concat(visit._id)
