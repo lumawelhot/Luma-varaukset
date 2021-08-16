@@ -60,5 +60,6 @@
   "text": "Tekstikenttä",
   "checkbox": "Rastiruutu",
   "radio": "Radio-valinta",
-  "email-config": "Sähköpostit"
+  "email-config": "Sähköpostit",
+  "groups": "Ryhmät"
 }

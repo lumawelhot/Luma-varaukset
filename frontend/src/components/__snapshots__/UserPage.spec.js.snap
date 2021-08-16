@@ -5,7 +5,7 @@ exports[`Renders without error with admin user 1`] = `
   <div
     class="field is-grouped"
   >
-    <p
+    <div
       class="control"
     >
       <button
@@ -13,8 +13,8 @@ exports[`Renders without error with admin user 1`] = `
       >
         Luo uusi vierailu
       </button>
-    </p>
-    <p
+    </div>
+    <div
       class="control"
     >
       <button
@@ -22,8 +22,8 @@ exports[`Renders without error with admin user 1`] = `
       >
         Varaukset
       </button>
-    </p>
-    <p
+    </div>
+    <div
       class="control"
     >
       <button
@@ -31,8 +31,8 @@ exports[`Renders without error with admin user 1`] = `
       >
         Lisäpalvelut
       </button>
-    </p>
-    <p
+    </div>
+    <div
       class="control"
     >
       <button
@@ -40,7 +40,20 @@ exports[`Renders without error with admin user 1`] = `
       >
         Lomakkeet
       </button>
-    </p>
+    </div>
+    <div
+      class="control"
+    >
+      <button
+        class="button luma"
+      >
+        Ryhmät
+      </button>
+    </div>
+  </div>
+  <div
+    class="field is-grouped"
+  >
     <p
       class="control"
     >
@@ -83,7 +96,7 @@ exports[`Renders without error with user 1`] = `
   <div
     class="field is-grouped"
   >
-    <p
+    <div
       class="control"
     >
       <button
@@ -91,8 +104,8 @@ exports[`Renders without error with user 1`] = `
       >
         Luo uusi vierailu
       </button>
-    </p>
-    <p
+    </div>
+    <div
       class="control"
     >
       <button
@@ -100,8 +113,8 @@ exports[`Renders without error with user 1`] = `
       >
         Varaukset
       </button>
-    </p>
-    <p
+    </div>
+    <div
       class="control"
     >
       <button
@@ -109,8 +122,8 @@ exports[`Renders without error with user 1`] = `
       >
         Lisäpalvelut
       </button>
-    </p>
-    <p
+    </div>
+    <div
       class="control"
     >
       <button
@@ -118,7 +131,19 @@ exports[`Renders without error with user 1`] = `
       >
         Lomakkeet
       </button>
-    </p>
+    </div>
+    <div
+      class="control"
+    >
+      <button
+        class="button luma"
+      >
+        Ryhmät
+      </button>
+    </div>
   </div>
+  <div
+    class="field is-grouped"
+  />
 </div>
 `;

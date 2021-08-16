@@ -95,6 +95,6 @@ test('History should be set to /users', async () => {
   )
   await waitFor(() => new Promise((res) => setTimeout(res, 0))) // Allow component time to render
   const buttons = container.querySelectorAll('.button.luma')
-  fireEvent.click(buttons[4])
+  fireEvent.click(buttons[5])
   expect(history.location.pathname).toBe('/users')
 })
