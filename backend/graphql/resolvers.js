@@ -16,6 +16,7 @@ const Email = require('../models/email')
 const Group = require('../models/group')
 const { addNewTags, fillStringWithValues } = require('../utils/helpers')
 const { set, sub } = require('date-fns')
+const { utcToZonedTime } = require('date-fns-tz')
 
 const { PubSub } = require('graphql-subscriptions')
 const pubsub = new PubSub()
@@ -289,8 +290,10 @@ const resolvers = {
       if (!currentUser) throw new AuthenticationError('not authenticated')
       if (args.grades.length < 1) throw new UserInputError('At least one grade must be selected!')
       if (args.title.length < 5)  throw new UserInputError('title too short')
-      if (new Date(args.start).getTime() < set(new Date(args.start), { hours: 8, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid start time')
-      if (new Date(args.end).getTime() > set(new Date(args.end), { hours: 17, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid end time')
+      const start = utcToZonedTime(args.start, 'Europe/Helsinki')
+      const end = utcToZonedTime(args.end, 'Europe/Helsinki')
+      if (start.getHours() < 8) throw new UserInputError('invalid start time')
+      if (end.getHours() > 17 || (end.getHours() === 17 && end.getMinutes() !== 0)) throw new UserInputError('invalid end time')
       const group = await Group.findById(args.group)
       const mongoTags = await addNewTags(args.tags)
 
@@ -395,8 +398,10 @@ const resolvers = {
       const event = await Event.findById(args.event).populate('visits')
       if (!event) throw new UserInputError('Event could not be found')
       if (!currentUser) throw new AuthenticationError('not authenticated')
-      if (new Date(args.start).getTime() < set(new Date(args.start), { hours: 8, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid start time')
-      if (new Date(args.end).getTime() > set(new Date(args.end), { hours: 17, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid end time')
+      const start = utcToZonedTime(args.start, 'Europe/Helsinki')
+      const end = utcToZonedTime(args.end, 'Europe/Helsinki')
+      if (start.getHours() < 8) throw new UserInputError('invalid start time')
+      if (end.getHours() > 17 || (end.getHours() === 17 && end.getMinutes() !== 0)) throw new UserInputError('invalid end time')
       if (event.reserved) throw new UserInputError('Event cannot be modified because booking form is open')
       let group
       let oldGroup
