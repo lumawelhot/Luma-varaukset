@@ -50,7 +50,7 @@ Then('I should see limited amount of buttons', () => {
   cy.contains('Lisäpalvelut')
   cy.contains('Lomakkeet')
   cy.contains('Käyttäjälista').should('not.exist')
-  cy.contains('Vierailulista').should('not.exist')
+  cy.contains('Vierailulista')
 })
 
 Then('I should not see admin or employee related buttons', () => {

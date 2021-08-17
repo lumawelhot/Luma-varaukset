@@ -111,5 +111,10 @@
   "deselect": "Poista valinnat",
   "hide-events-to-be-removed": "Piilota poistettavien vierailujen nimet",
   "show-events-to-be-removed": "Näytä poistettavien vierailujen nimet",
-  "no-events-chosen": "Ei vierailuja valittu"
+  "no-events-chosen": "Ei vierailuja valittu",
+  "assign-to-group": "Lisää ryhmään",
+  "show-all": "Näytä kaikki",
+  "group": "Ryhmä",
+  "has-visits": "Varausten määrä",
+  "assign-events-to-group": "Lisää vierailut ryhmään"
 }

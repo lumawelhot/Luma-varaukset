@@ -105,7 +105,8 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
         waitingTime: values.waitingTime,
         extras: values.extras,
         duration: values.duration,
-        customForm: values.customForm
+        customForm: values.customForm,
+        group: values.group ? values.group : null
       },
     })
   }

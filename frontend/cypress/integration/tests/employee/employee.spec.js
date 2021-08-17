@@ -85,10 +85,10 @@ When('I navigate to the event form', () => {
 And('I enter all necessary information', () => {
   cy.get('#title').type('Created event')
   cy.get('#duration').clear().type(80)
-  cy.get(':nth-child(3) > .taginput.control > .taginput-container > .autocomplete > .control > .input').type('Uusi tagi').type('{enter}')
-  cy.get(':nth-child(3) > .taginput.control > .taginput-container > .autocomplete > .dropdown-menu > .dropdown-content > :nth-child(2) > :nth-child(1)').click()
-  cy.get(':nth-child(13) > .checkbox2 > input').click()
-  cy.get(':nth-child(19) > label > input').click()
+  cy.get(':nth-child(4) > .taginput.control > .taginput-container > .autocomplete > .control > .input').type('Uusi tagi').type('{enter}')
+  cy.get(':nth-child(4) > .taginput.control > .taginput-container > .autocomplete > .dropdown-menu > .dropdown-content > :nth-child(2)').click()
+  cy.get(':nth-child(14) > .checkbox2 > input').click()
+  cy.get(':nth-child(20) > label > input').click()
   const eventDate = addDays(startOfWeek(new Date()), 16).toISOString().slice(0,10)
   cy.get(':nth-child(1) > .control > .ant-picker > .ant-picker-input > input').click()
   cy.get(`td[title="${eventDate}"]`).click()
@@ -150,8 +150,8 @@ And('I click modify event button', () => {
 
 And('I modify desired fields', () => {
   cy.get('#desc').clear().type('New description')
-  cy.get(':nth-child(19) > label > input').click()
   cy.get(':nth-child(20) > label > input').click()
+  cy.get(':nth-child(21) > label > input').click()
   cy.get('.modal-card-foot > .luma').click()
 })
 

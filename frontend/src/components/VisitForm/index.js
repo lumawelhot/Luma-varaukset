@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@apollo/client'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
-import { CREATE_VISIT, EVENTS, GET_FORM } from '../../graphql/queries'
+import { CREATE_VISIT, EVENTS, GET_FORM, GET_GROUPS } from '../../graphql/queries'
 import Form from './Form'
 
 const calculateVisitEndTime = (startTimeAsDate, values, selectedEvent, extras) => {
@@ -43,7 +43,7 @@ export const VisitForm = ({ sendMessage, event, token }) => {
     : { loading: null, error: null, data: null }
 
   const [create, result] = useMutation(CREATE_VISIT, {
-    refetchQueries: [{ query: EVENTS }],
+    refetchQueries: [{ query: EVENTS }, { query: GET_GROUPS }],
     onError: (error) => {
       console.log(error)
       if (error.message === 'File not found') {

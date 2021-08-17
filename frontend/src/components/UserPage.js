@@ -41,36 +41,48 @@ const UserPage = ({ currentUser, setShowEventForm }) => {
     history.push('/email-config')
   }
 
+  const groups = (event) => {
+    event.preventDefault()
+    history.push('/group-list')
+  }
+
   if (!currentUser) return <div></div>
 
   return (
-    <div className="field is-grouped">
-      <p className="control">
-        <button className="button luma" onClick={createEvent}>{t('create-visit')}</button>
-      </p>
-      <p className="control">
-        <button className="button luma" onClick={listVisits}>{t('reservations')}</button>
-      </p>
-      <p className="control">
-        <button className="button luma" onClick={extras}>{t('extras')}</button>
-      </p>
-      <p className="control">
-        <button className="button luma" onClick={forms}>{t('forms')}</button>
-      </p>
-      {currentUser.isAdmin &&
+    <>
+      <div className="field is-grouped">
+        <div className="control">
+          <button className="button luma" onClick={createEvent}>{t('create-visit')}</button>
+        </div>
+        <div className="control">
+          <button className="button luma" onClick={listVisits}>{t('reservations')}</button>
+        </div>
+        <div className="control">
+          <button className="button luma" onClick={extras}>{t('extras')}</button>
+        </div>
+        <div className="control">
+          <button className="button luma" onClick={forms}>{t('forms')}</button>
+        </div>
+        <div className="control">
+          <button className="button luma" onClick={groups}>{t('groups')}</button>
+        </div>
+        <div className="control">
+          <button className="button luma" onClick={eventList}>{t('event-list')}</button>
+        </div>
+      </div>
+      <div className="field is-grouped">
+        {currentUser.isAdmin &&
         <>
-          <p className="control">
+          <div className="control">
             <button className="button luma" onClick={listUsers}>{t('user-list')}</button>
-          </p>
-          <p className="control">
-            <button className="button luma" onClick={eventList}>{t('event-list')}</button>
-          </p>
-          <p className="control">
+          </div>
+          <div className="control">
             <button className="button luma" onClick={emailConfig}>{t('email-config')}</button>
-          </p>
+          </div>
         </>
-      }
-    </div>
+        }
+      </div>
+    </>
   )
 }
 

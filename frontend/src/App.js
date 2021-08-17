@@ -25,6 +25,7 @@ import { useTranslation } from 'react-i18next'
 import EventList from './components/EventList'
 import EmailConfig from './components/EmailConfig'
 import { FaLock } from 'react-icons/fa'
+import GroupList from './components/GroupList'
 
 const App = () => {
   const { t } = useTranslation('common')
@@ -104,7 +105,7 @@ const App = () => {
       customForm: event.customForm,
       waitingTime: event.waitingTime,
       hasVisits: event.visits.length ? true : false,
-      locked: event.locked
+      locked: event.locked,
     }
     delete details.availableTimes
     delete details.visits
@@ -113,14 +114,16 @@ const App = () => {
       start: new Date(timeSlot.startTime),
       end: new Date(timeSlot.endTime),
       booked: event.booked,
-      disabled: event.disabled
+      disabled: event.disabled,
+      group: event.group
     }))
     events = events.concat(event.visits.map(visit => Object({
       ...details,
       start: new Date(visit.startTime),
       end: new Date(visit.endTime),
       booked: true,
-      disabled: false
+      disabled: false,
+      group: null
     })))
 
     return events
@@ -250,6 +253,11 @@ const App = () => {
             tags={tags}
           />
         </Route>
+        <Route path='/group-list'>
+          {currentUser &&
+            <GroupList />
+          }
+        </Route>
         <Route path='/book'>
           <VisitForm currentUser={currentUser} event={clickedEvent} sendMessage={notify} token={sessionToken} />
         </Route>
@@ -268,8 +276,8 @@ const App = () => {
           {!(currentUser && currentUser.isAdmin) && <p>{t('not-logged-in')}</p>}
         </Route>
         <Route path='/events'>
-          {currentUser && currentUser.isAdmin && result.data &&
-            <EventList events={result.data.getEvents} sendMessage={notify} />
+          {currentUser && result.data &&
+            <EventList events={result.data.getEvents} sendMessage={notify} currentUser={currentUser} />
           }
         </Route>
         <Route path='/extras'>

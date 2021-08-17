@@ -13,6 +13,7 @@ const Extra = require('../models/extra')
 const Tag = require('../models/tag')
 const Form = require('../models/forms')
 const Email = require('../models/email')
+const Group = require('../models/group')
 const { addNewTags, fillStringWithValues } = require('../utils/helpers')
 const { set, sub } = require('date-fns')
 
@@ -33,12 +34,23 @@ const resolvers = {
             .populate('tags', { name: 1, id: 1 })
             .populate('visits')
             .populate('extras')
+            .populate('group')
         } else {
           const date = sub(new Date(), { days: 90 })
           events = await Event.find({ end: { $gt: date } })
             .populate('tags', { name: 1, id: 1 })
             .populate('visits')
             .populate('extras')
+            .populate('group')
+        }
+        if (!currentUser) {
+          return events
+            .filter(event => event.group ?
+              (event.group.publishDate ?
+                new Date().getTime() >= event.group.publishDate.getTime()
+                : !event.group.disabled)
+              : true)
+            .map(event => Object.assign(event.toJSON(), { locked: event.reserved ? true : false }))
         }
         return events.map(event => Object.assign(event.toJSON(), { locked: event.reserved ? true : false }))
       } catch (error) {
@@ -73,6 +85,13 @@ const resolvers = {
       const emails = await Email.find({})
       return emails
     },
+    getGroups: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('Not authenticated')
+      }
+      const groups = await Group.find({}).populate('events')
+      return groups.map(group => group.toJSON())
+    },
     findVisit: async (root, args) => {
       try {
         const visit = await Visit.findById(args.id).populate('extras')
@@ -105,7 +124,7 @@ const resolvers = {
     event: async (root) => {
       const event = await Event.findById(root.event).populate('tags', { name: 1, id: 1 }).populate('extras')
       if (!event) return null
-      return Object.assign(event, { locked: event.reserved ? true : false })
+      return Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
     },
     startTime: (data) => new Date(data.startTime).toISOString(),
     endTime: (data) => new Date(data.endTime).toISOString()
@@ -113,7 +132,85 @@ const resolvers = {
   Form: {
     fields: (form) => JSON.stringify(form.fields)
   },
+  Group: {
+    publishDate: (group) => group.publishDate ? new Date(group.publishDate).toISOString() : null
+  },
   Mutation: {
+    createGroup: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+      const group = new Group({
+        name: args.name,
+        maxCount: args.maxCount,
+        visitCount: 0,
+        publishDate: args.publishDate ? new Date(args.publishDate) : undefined,
+        events: [],
+        disabled: false
+      })
+      await group.save()
+      return group
+    },
+    modifyGroup: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+      const group = await Group.findById(args.id)
+      group.name = args.name ? args.name : group.name
+      group.maxCount = group.visitCount <= args.maxCount ? args.maxCount : group.maxCount
+      group.publishDate = args.publishDate ? new Date(args.publishDate) : undefined
+      group.disabled = args.disabled || group.maxCount <= group.visitCount
+      await group.save()
+      return group
+    },
+    deleteGroup: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+      try {
+        await Group.deleteOne({ _id: args.group })
+        return 'Deleted Group with ID ' + args.group
+      } catch (error) {
+        throw new UserInputError('Backend problem')
+      }
+    },
+    assignEventsToGroup: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+      let returnedEvents = []
+      for (let e of args.events) {
+        const event = await Event.findById(e)
+        if (event && (!event.group || event.group.toString() !== args.group.toString())) {
+          let group
+          const oldGroup = await Group.findById(event.group)
+          if (oldGroup) {
+            oldGroup.events = oldGroup.events.filter(e => e.toString() !== event.id)
+            event.group = null
+            oldGroup.visitCount = oldGroup.visitCount - event.visits.length
+          }
+          if (args.group) {
+            group = await Group.findById(args.group)
+            if (group) {
+              event.group = group.id
+              group.events = group.events.concat(event.id)
+              group.visitCount = group.visitCount + event.visits.length
+            }
+            if (group.visitCount > group.maxCount) {
+              throw new UserInputError('max number of visits exceeded')
+            }
+            if (group.visitCount === group.maxCount) {
+              group.disabled = true
+            }
+          }
+          await event.save()
+          if (group) await group.save()
+          if (oldGroup) await oldGroup.save()
+          returnedEvents.push(event)
+        }
+      }
+      return returnedEvents
+    },
     updateEmail: async (root, args, { currentUser }) => {
       if (!currentUser || !currentUser.isAdmin) {
         throw new AuthenticationError('not authenticated or no credentials')
@@ -194,7 +291,7 @@ const resolvers = {
       if (args.title.length < 5)  throw new UserInputError('title too short')
       if (new Date(args.start).getTime() < set(new Date(args.start), { hours: 8, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid start time')
       if (new Date(args.end).getTime() > set(new Date(args.end), { hours: 17, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid end time')
-
+      const group = await Group.findById(args.group)
       const mongoTags = await addNewTags(args.tags)
 
       const extras = await Extra.find({ _id: { $in: args.extras } })
@@ -222,7 +319,13 @@ const resolvers = {
 
       event.extras = extras
       event.tags = mongoTags
+      if (group) {
+        group.events = group.events.concat(event.id)
+        event.group = group.id
+        await group.save()
+      }
       await event.save()
+      await event.populate('group').execPopulate()
       pubsub.publish('EVENT_CREATED', {
         eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
       })
@@ -295,6 +398,27 @@ const resolvers = {
       if (new Date(args.start).getTime() < set(new Date(args.start), { hours: 8, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid start time')
       if (new Date(args.end).getTime() > set(new Date(args.end), { hours: 17, minutes: 0, seconds: 0 }).getTime()) throw new UserInputError('invalid end time')
       if (event.reserved) throw new UserInputError('Event cannot be modified because booking form is open')
+      let group
+      let oldGroup
+      if (event && (!event.group || event.group.toString() !== args.group.toString())) {
+        oldGroup = await Group.findById(event.group)
+        if (oldGroup) {
+          oldGroup.events = oldGroup.events.filter(e => e.toString() !== event.id)
+          event.group = null
+          oldGroup.visitCount = oldGroup.visitCount - event.visits.length
+        }
+        if (args.group) {
+          group = await Group.findById(args.group)
+          if (group) {
+            event.group = group.id
+            group.events = group.events.concat(event.id)
+            group.visitCount = group.visitCount + event.visits.length
+          }
+          if (group.visitCount > group.maxCount) {
+            throw new UserInputError('max number of visits exceeded')
+          }
+        }
+      }
 
       title !== undefined ? event.title = title : null
       desc !== undefined ? event.desc = desc : null
@@ -334,6 +458,9 @@ const resolvers = {
         }]
       }
       await event.save()
+      await event.populate('group').execPopulate()
+      if (group) await group.save()
+      if (oldGroup) await oldGroup.save()
       pubsub.publish('EVENT_MODIFIED', {
         eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
       })
@@ -344,6 +471,21 @@ const resolvers = {
       if (!event) throw new UserInputError('Event could not be found')
       if (event.reserved && event.reserved !== args.token) throw new UserInputError('Invalid session')
       if (event.disabled) throw new UserInputError('This event is disabled')
+      let group
+      if (event.group) {
+        group = await Group.findById(event.group)
+        if (group) {
+          if (group.disabled) {
+            throw new UserInputError('this group is disabled')
+          }
+          group.visitCount = group.visitCount + 1
+          if (group.visitCount === group.maxCount) {
+            group.disabled = true
+          } else if (group.visitCount > group.maxCount) {
+            throw new UserInputError('this group has maximum amount of visits')
+          }
+        }
+      }
 
       const visitTime = {
         startTime: new Date(args.startTime),
@@ -409,6 +551,7 @@ const resolvers = {
           }
           event.visits = event.visits.concat(savedVisit._id)
           event.reserved = null
+          if (group) await group.save()
           await event.save()
           pubsub.publish('EVENT_BOOKED', {
             eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
@@ -428,12 +571,47 @@ const resolvers = {
     cancelVisit: async (root, args) => {
       const visit = await Visit.findById(args.id)
       if (!visit || visit.status === false) throw new UserInputError('Varausta ei löydy')
-      const event = await Event.findById(visit.event).populate('visits', { startTime: 1, endTime: 1 })
+      const event = await Event.findById(visit.event)
+        .populate('extras', { name: 1 })
+        .populate('visits', { startTime: 1, endTime: 1 })
+        .populate('tags', { name: 1 })
       if (!event) throw new UserInputError('Event could not be found')
       const oldAvailableTimes = event.availableTimes.map(time => ({
         startTime: new Date(time.startTime),
         endTime: new Date(time.endTime)
       }))
+      let group
+      let newEvent
+      if (event.group) {
+        group = await Group.findById(event.group)
+        if (group.disabled) {
+          const mongoTags = await addNewTags(event.tags.map(tag => tag.name))
+          const extras = await Extra.find({ _id: { $in: event.extras } })
+          newEvent = new Event({
+            title: event.title,
+            desc: event.desc,
+            resourceids: event.resourceids,
+            grades: event.grades,
+            remotePlatforms: event.remotePlatforms,
+            otherRemotePlatformOption: event.otherRemotePlatformOption,
+            remoteVisit: event.remoteVisit,
+            inPersonVisit: event.inPersonVisit,
+            waitingTime: event.waitingTime,
+            duration: event.duration,
+            customForm: event.customForm,
+            disabled: false,
+            start: new Date(visit.startTime),
+            end: new Date(visit.endTime),
+            availableTimes: [{
+              startTime: visit.startTime.toISOString(),
+              endTime: visit.endTime.toISOString()
+            }],
+          })
+          newEvent.extras = extras
+          newEvent.tags = mongoTags
+        }
+        group.visitCount = group.visitCount - 1
+      }
       const visitTimes = event.visits.filter(v => v.id !== visit.id)
 
       const eventTime = {
@@ -475,6 +653,13 @@ const resolvers = {
               subject: mail.adSubject,
               text: fillStringWithValues(mail.adText)
             })
+          })
+        }
+        if (group) await group.save()
+        if (newEvent) {
+          await newEvent.save()
+          pubsub.publish('EVENT_CREATED', {
+            eventModified: Object.assign(newEvent.toJSON(), { locked: event.reserved ? true : false })
           })
         }
         return visit
@@ -540,7 +725,7 @@ const resolvers = {
         }
         await Event.deleteOne({ _id:args.id })
         pubsub.publish('EVENT_DELETED', {
-          eventModified: Object.assign(event, { locked: event.reserved ? true : false })
+          eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
         })
         return 'Deleted Event with ID ' + args.id
       } catch (error) {

@@ -1,17 +1,74 @@
-/* eslint-disable no-unused-vars */
-import { useMutation } from '@apollo/client'
-import { format } from 'date-fns'
+import { useMutation, useQuery } from '@apollo/client'
+import { addYears, format } from 'date-fns'
 import { Field, Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
-import { EVENTS, FORCE_DELETE_EVENTS } from '../graphql/queries'
+import { ASSIGN_EVENTS_TO_GROUP, EVENTS, FORCE_DELETE_EVENTS, GET_GROUPS } from '../graphql/queries'
 import { classes } from '../helpers/classes'
 import { resourceColorsLUMA } from '../helpers/styles'
 import DatePicker from './Pickers/DatePicker'
 import { TextField } from './VisitForm/FormFields'
 
-const EventList = ({ events, sendMessage }) => {
+const GroupModal = ({ setModalState, checkedEvents, events }) => {
+  const { t } = useTranslation('event')
+  const groups = useQuery(GET_GROUPS)
+  const [selectedGroup, setSelectedGroup] = useState('')
+  const [assignEventsToGroup] = useMutation(ASSIGN_EVENTS_TO_GROUP, {
+    refetchQueries: [{ query: EVENTS }, { query: GET_GROUPS }],
+    onError: (error) => console.log(error),
+    onCompleted: () => setModalState(null)
+  })
+  if (!groups.data) return <></>
+
+  const assignToGroup = () => {
+    console.log(selectedGroup)
+    assignEventsToGroup({
+      variables: {
+        group: selectedGroup,
+        events: checkedEvents
+      }
+    })
+  }
+
+  return (
+    <div className="modal-card">
+      <header className="modal-card-head">
+        <p className="modal-card-title">{t('assign-events-to-group')}</p>
+      </header>
+      <section className="modal-card-body">
+        <div className="label">{t('events')}:</div>
+        <ul>
+          {events.filter(event => checkedEvents.includes(event.id)).map(event =>
+            <li key={event.id}>{event.title}</li>
+          )}
+        </ul>
+        <div className="field">
+          <label className="label" htmlFor="fieldName">{t('group')}</label>
+          <div className="control">
+            <div className="select">
+              <select
+                value={selectedGroup}
+                onChange={event => setSelectedGroup(event.target.value)}>
+                <option></option>
+                {groups.data.getGroups.map(o => <option
+                  key={o.id}
+                  value={o.id}
+                >{o.name}</option>)}
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+      <footer className="modal-card-foot">
+        <button className="button luma" type='submit' onClick={assignToGroup}>{t('assign-to-group')}</button>
+        <button className="button" onClick={() => setModalState(null)}>{t('close')}</button>
+      </footer>
+    </div>
+  )
+}
+
+const EventList = ({ events, sendMessage, currentUser }) => {
   const { t } = useTranslation('event')
   const history = useHistory()
   const [modalState, setModalState] = useState(null)
@@ -32,7 +89,7 @@ const EventList = ({ events, sendMessage }) => {
   }, [startDate, endDate, events])
 
   const [forceDeleteEvents] = useMutation(FORCE_DELETE_EVENTS, {
-    refetchQueries: EVENTS,
+    refetchQueries: [{ query: EVENTS }],
     onError: () => sendMessage(t('failed-to-remove-events'), 'danger'),
     onCompleted: () => {
       setModalState(null)
@@ -56,6 +113,10 @@ const EventList = ({ events, sendMessage }) => {
     setModalState('delete')
   }
 
+  const openGroupModal = () => {
+    setModalState('group')
+  }
+
   const handleDeleteEvents = (values) => {
     forceDeleteEvents({
       variables: {
@@ -64,6 +125,10 @@ const EventList = ({ events, sendMessage }) => {
       }
     })
     values.password = ''
+  }
+
+  const showAll = () => {
+    setEndDate(addYears(new Date(), 10))
   }
 
   const handleChooseAll = () => {
@@ -77,6 +142,14 @@ const EventList = ({ events, sendMessage }) => {
 
   return (
     <>
+      <div className={`modal ${modalState === 'group' ? 'is-active':''}`}>
+        <div className="modal-background"></div>
+        <GroupModal
+          setModalState={setModalState}
+          checkedEvents={checkedEvents}
+          events={events}
+        />
+      </div>
       {modalState === 'delete' &&
         <div className={`modal ${modalState ? 'is-active': ''}`}>
           <div className="modal-background"></div>
@@ -150,7 +223,8 @@ const EventList = ({ events, sendMessage }) => {
               <th>{t('resource')}</th>
               <th>{t('date')}</th>
               <th>{t('time')}</th>
-              <th></th>
+              <th>{t('group')}</th>
+              <th>{t('has-visits')}</th>
             </tr>
           </thead>
           <tbody>
@@ -172,13 +246,21 @@ const EventList = ({ events, sendMessage }) => {
                   </td>
                   <td>{`${format(new Date(event.start), 'dd.MM.yyyy')}`}</td>
                   <td>{`${format(new Date(event.start), 'HH:mm')} - ${format(new Date(event.end), 'HH:mm')}`}</td>
+                  <td>{event.group ? event.group.name : ''}</td>
+                  <td>{event.visits.length}</td>
                 </tr>
               )
             })}
           </tbody>
         </table>
         <div className="field is-grouped">
-          <button className="button luma primary" onClick={openDeleteModal} >{t('delete-choosen-events')}</button>
+          <button className="button luma primary" onClick={openGroupModal} >{t('assign-to-group')}</button>
+          {currentUser.isAdmin &&
+            <button className="button luma primary" onClick={openDeleteModal} >{t('delete-choosen-events')}</button>
+          }
+          <div className="control">
+            <button className="button luma" onClick={showAll} >{t('show-all')}</button>
+          </div>
           <div className="control">
             <button className="button luma" onClick={handleChooseAll} >{checkedEvents.length !== tableEvents.length ? t('choose-all') : t('deselect')}</button>
           </div>

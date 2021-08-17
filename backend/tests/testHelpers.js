@@ -322,6 +322,8 @@ const UPDATE_EVENT = gql`
     $tags:[String]
     $start:String
     $end:String
+    $customForm: ID
+    $group: ID
   ) {
     modifyEvent(
       event: $event
@@ -337,6 +339,8 @@ const UPDATE_EVENT = gql`
       tags: $tags
       start: $start
       end: $end
+      customForm: $customForm
+      group: $group
     ) {
       id
       title
@@ -362,6 +366,12 @@ const UPDATE_EVENT = gql`
       tags {
         name,
         id
+      }
+      customForm
+      disabled
+      group {
+        id
+        name
       }
     }
   }
@@ -476,6 +486,94 @@ const FORCE_DELETE_EVENTS = gql`
   }
 `
 
+const GET_GROUPS = gql`
+  query getGroups {
+    getGroups {
+      id
+      name
+      events {
+        id
+        title
+        resourceids
+        grades
+        remotePlatforms
+        otherRemotePlatformOption
+        start
+        end
+      }
+      maxCount
+      visitCount
+      publishDate
+      disabled
+    }
+  }
+`
+
+const CREATE_GROUP = gql`
+  mutation createGroup (
+    $name: String!
+    $maxCount: Int!
+    $publishDate: String
+  ) {
+    createGroup(
+      name: $name
+      maxCount: $maxCount
+      publishDate: $publishDate
+    ) {
+      id
+      name
+    }
+  }
+`
+
+const DELETE_GROUP = gql`
+  mutation deleteGroup(
+    $group: ID!
+  ) {
+    deleteGroup(
+      group: $group
+    )
+  }
+`
+
+const ASSIGN_EVENTS_TO_GROUP = gql`
+  mutation assignEventsToGroup(
+    $events: [ID]
+    $group: ID!
+  ) {
+    assignEventsToGroup(
+      group: $group
+      events: $events
+    ) {
+      id
+      title
+    }
+  }
+`
+
+const UPDATE_GROUP = gql`
+  mutation modifyGroup(
+    $id: ID!
+    $name: String
+    $maxCount: Int
+    $publishDate: String
+    $disabled: Boolean
+  ) {
+    modifyGroup(
+      id: $id
+      name: $name
+      maxCount: $maxCount
+      publishDate: $publishDate
+      disabled: $disabled
+    ) {
+      id
+      name
+      publishDate
+      maxCount
+    }
+  }
+`
+
 module.exports = {
   LOGIN,
   GET_ALL_VISITS,
@@ -500,6 +598,11 @@ module.exports = {
   LOCK_EVENT,
   UNLOCK_EVENT,
   FORCE_DELETE_EVENTS,
+  GET_GROUPS,
+  ASSIGN_EVENTS_TO_GROUP,
+  DELETE_GROUP,
+  UPDATE_GROUP,
+  CREATE_GROUP,
   createTimeList,
   createAvailableList,
   createDate,

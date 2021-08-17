@@ -48,6 +48,7 @@ const typeDefs = gql`
     customForm: ID
     disabled: Boolean!
     locked: Boolean!
+    group: Group
   }
   type Visit {
     id: ID!
@@ -77,6 +78,15 @@ const typeDefs = gql`
     name: String!
     fields: String!
   }
+  type Group {
+    id: ID!
+    name: String!
+    maxCount: Int!
+    visitCount: Int!
+    events: [Event]
+    publishDate: String
+    disabled: Boolean
+  }
   type EmailTemplate {
     html: String!
     text: String!
@@ -97,8 +107,28 @@ const typeDefs = gql`
     getForm(id: ID): Form
     getForms: [Form]
     getEmailTemplates: [EmailTemplate]
+    getGroups: [Group]
   }
   type Mutation {
+    createGroup(
+      name: String!
+      maxCount: Int!
+      publishDate: String
+    ): Group
+    modifyGroup(
+      id: ID!
+      name: String
+      maxCount: Int
+      publishDate: String
+      disabled: Boolean
+    ): Group
+    deleteGroup(
+      group: ID!
+    ): String
+    assignEventsToGroup(
+      events: [ID]
+      group: ID!
+    ): [Event]
     updateEmail(
       name: String!
       html: String!
@@ -148,6 +178,7 @@ const typeDefs = gql`
       extras: [ID]
       duration: Int!
       customForm: ID
+      group: ID
     ): Event
     modifyEvent(
       event: ID!
@@ -166,6 +197,7 @@ const typeDefs = gql`
       #waitingTime: Int!
       #duration: Int!
       customForm: ID
+      group: ID
     ): Event
     createVisit(
       event: ID!
