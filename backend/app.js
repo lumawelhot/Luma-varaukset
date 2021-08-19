@@ -139,7 +139,7 @@ const createTags = async () => {
 
 const { importStaticEvents }  = require('./utils/importStaticData')
 
-if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV === 'test') {
   const { MongoMemoryServer } = require('mongodb-memory-server')
   const mongoServer = new MongoMemoryServer()
   mongoose.set('useFindAndModify', false)
@@ -177,10 +177,12 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   mongoose.set('useFindAndModify', false)
   mongoose.set('useCreateIndex', true)
   mongoose.connect('mongodb://localhost:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
+    .then(async () => {
       console.log('connected to MongoDB, initializing database')
-      createAdmin()
-      //createEvents()
+      await createAdmin()
+      await createEmployee()
+      await createTags()
+      await importStaticEvents()
     })
   const db = mongoose.connection
   db.on('error', console.error.bind(console, 'MongoDB connection error:'))
