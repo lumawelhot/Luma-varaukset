@@ -1,6 +1,5 @@
 const Tag = require('../models/tag')
 const Email = require('../models/email')
-const { utcToZonedTime } = require('date-fns-tz')
 
 const addNewTags = async tags => {
   const mongoTags = await Tag.find({ name: { $in: tags } })
