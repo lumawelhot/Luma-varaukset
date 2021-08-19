@@ -147,7 +147,7 @@ if (process.env.NODE_ENV === 'test') {
   mongoServer.getUri().then(uri => {
     mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
       .then(async () => {
-        console.log('connected to MongoDB, initializing database')
+        console.log('connected to MongoDB memory server, initializing database')
         await createAdmin()
         await createEmployee()
         await createTags()
