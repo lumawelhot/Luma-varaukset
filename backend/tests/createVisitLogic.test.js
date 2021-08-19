@@ -1,7 +1,7 @@
 const { createTestClient } = require('apollo-server-testing')
 const { ApolloServer } = require('apollo-server-express')
 
-const { CREATE_VISIT, createTimeList, createAvailableList, createDate: time } = require('./testHelpers.js')
+const { CREATE_VISIT, createTimeList, createAvailableList, createDate16DaysInFuture: time } = require('./testHelpers.js')
 
 const Event = require('../models/event')
 const Visit = require('../models/visit')
@@ -51,7 +51,7 @@ describe('Visit cannot be created', () => {
   it('if its starting time is too early', async () => {
     const event = availableEvent.id
 
-    const response = await visitResponse(event, time(8, 59), time(10, 1))
+    const response = await visitResponse(event, time('08:59'), time('10:01'))
     expect(response.errors[0].message).toBe('Given timeslot is invalid')
     const modifiedEvent = await Event.findById(event)
 
@@ -62,7 +62,7 @@ describe('Visit cannot be created', () => {
   it('if its ending time is too late', async () => {
     const event = availableEvent.id
 
-    const response = await visitResponse(event, time(12, 0), time(15, 1))
+    const response = await visitResponse(event, time('12:00'), time('15:01'))
     expect(response.errors[0].message).toBe('Given timeslot is invalid')
     const modifiedEvent = await Event.findById(event)
 
@@ -73,7 +73,7 @@ describe('Visit cannot be created', () => {
   it('if there is two time slots and visit is tried to create over them', async () => {
     const event = availableEvent2.id
 
-    const response = await visitResponse(event, time(10, 59), time(13, 1))
+    const response = await visitResponse(event, time('10:59'), time('13:01'))
     expect(response.errors[0].message).toBe('Given timeslot is invalid')
     const modifiedEvent = await Event.findById(event)
 
@@ -86,7 +86,7 @@ describe('Visit can be created', () => {
   it('if its timeslot is among with one of events available times', async () => {
     const event = availableEvent.id
 
-    const response = await visitResponse(event, time(12, 0), time(12, 30))
+    const response = await visitResponse(event, time('12:00'), time('12:00'))
     expect(response.errors).toBeUndefined()
     const modifiedEvent = await Event.findById(event)
     expect(modifiedEvent.availableTimes.length).toBe(2)
@@ -102,7 +102,7 @@ describe('Visit can be created', () => {
   it('if visit\'s starting time is same as event\'s starting time', async () => {
     const event = availableEvent.id
 
-    const response = await visitResponse(event, time(9, 0), time(12, 30))
+    const response = await visitResponse(event, time('09:00'), time('12:30'))
     expect(response.errors).toBeUndefined()
     const modifiedEvent = await Event.findById(event)
     expect(modifiedEvent.availableTimes.length).toBe(1)
@@ -118,7 +118,7 @@ describe('Visit can be created', () => {
   it('if visit\'s ending time is same as event\'s ending time', async () => {
     const event = availableEvent.id
 
-    const response = await visitResponse(event, time(12, 0), time(15, 0))
+    const response = await visitResponse(event, time('12:00'), time('15:00'))
     expect(response.errors).toBeUndefined()
     const modifiedEvent = await Event.findById(event)
     expect(modifiedEvent.availableTimes.length).toBe(1)
@@ -134,7 +134,7 @@ describe('Visit can be created', () => {
   it('if there is a free time slot before another visit', async () => {
     const event = availableEvent2.id
 
-    const response = await visitResponse(event, time(10, 30), time(10, 59))
+    const response = await visitResponse(event, time('10:30'), time('10:59'))
     expect(response.errors).toBeUndefined()
     const modifiedEvent = await Event.findById(event)
     expect(modifiedEvent.availableTimes.length).toBe(2)
@@ -150,7 +150,7 @@ describe('Visit can be created', () => {
   it('if there is a free time slot after another visit', async () => {
     const event = availableEvent2.id
 
-    const response = await visitResponse(event, time(13, 1), time(13, 30))
+    const response = await visitResponse(event, time('13:01'), time('13:30'))
     expect(response.errors).toBeUndefined()
     const modifiedEvent = await Event.findById(event)
     expect(modifiedEvent.availableTimes.length).toBe(2)

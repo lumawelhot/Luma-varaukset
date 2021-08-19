@@ -19,7 +19,7 @@ beforeAll(async () => {
       useFindAndModify: false,
     })
     .then(() => {
-      console.log('connected to test-mongodb')
+      console.log('connected to test-mongodb at ' + process.env.MONGO_URL)
     })
     .catch((error) => {
       console.log('connection error: ', error.message)

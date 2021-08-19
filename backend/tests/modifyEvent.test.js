@@ -10,9 +10,9 @@ const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
 
 const { createTestClient } = require('apollo-server-testing')
-const { CREATE_VISIT, CREATE_EVENT, UPDATE_EVENT, createDate } = require('./testHelpers')
+const { CREATE_VISIT, CREATE_EVENT, UPDATE_EVENT, createDate16DaysInFuture, setToHelsinkiTime } = require('./testHelpers')
 const { details } = require('./testData')
-const { set, addDays, add, sub } = require('date-fns')
+const { add, sub } = require('date-fns')
 
 let server = null
 let extra1
@@ -25,8 +25,8 @@ const testData = {
   scienceClass: [1],
   grades: [1, 2],
   desc: 'Algebra is one of the broad areas of mathematics, together with number theory, geometry and analysis.',
-  start: addDays(set(new Date(), { hours: 9, minutes: 0, seconds: 0, milliseconds: 0 }), 16).toISOString(),
-  end: addDays(set(new Date(), { hours: 15, minutes: 0, seconds: 0, milliseconds: 0 }), 16).toISOString(),
+  start: createDate16DaysInFuture('09:00').toISOString(),
+  end: createDate16DaysInFuture('15:00').toISOString(),
   tags: ['Matematiikka', 'Fysiikka'],
   booked: false,
   inPersonVisit: true,
@@ -206,41 +206,41 @@ describe('The event has no visits, then', () => {
 describe('Event has one visit, then', () => {
   it('the timeslot changes correctly', async () => {
     const { mutate } = createTestClient(server)
-    await visitResponse(event.id, createDate(11, 0), createDate(12, 0))
+    await visitResponse(event.id, createDate16DaysInFuture('11:00'), createDate16DaysInFuture('12:00'))
     const response = await mutate({
       mutation: UPDATE_EVENT,
       variables: {
         event: event.id,
-        start: set(new Date(testData.start), { hours: 9, minutes: 13 }).toISOString(),
-        end: set(new Date(testData.end), { hours: 14, minutes: 31 }).toISOString(),
+        start: setToHelsinkiTime(testData.start, '09:13' ).toISOString(),
+        end: setToHelsinkiTime(testData.end, '14:31' ).toISOString(),
         tags: []
       }
     })
     const modifyEvent = response.data.modifyEvent
 
     const expectedAvailableTimes = [{
-      startTime: createDate(9, 13).toISOString(),
-      endTime: createDate(10, 50).toISOString()
+      startTime: createDate16DaysInFuture('09:13').toISOString(),
+      endTime: createDate16DaysInFuture('10:50').toISOString()
     }, {
-      startTime: createDate(12, 10).toISOString(),
-      endTime: createDate(14, 31).toISOString(),
+      startTime: createDate16DaysInFuture('12:10').toISOString(),
+      endTime: createDate16DaysInFuture('14:31').toISOString(),
     }]
 
-    expect(modifyEvent.start).toEqual(createDate(9, 13).toISOString())
-    expect(modifyEvent.end).toEqual(createDate(14, 31).toISOString())
+    expect(modifyEvent.start).toEqual(createDate16DaysInFuture('09:13').toISOString())
+    expect(modifyEvent.end).toEqual(createDate16DaysInFuture('14:31').toISOString())
     expect(modifyEvent.availableTimes).toEqual(expectedAvailableTimes)
     expect(response.errors).toBeUndefined()
   })
 
   it('error is shown if start time is invalid', async () => {
     const { mutate } = createTestClient(server)
-    await visitResponse(event.id, createDate(11, 0), createDate(12, 0))
+    await visitResponse(event.id, createDate16DaysInFuture('11:00'), createDate16DaysInFuture('12:00'))
     const response = await mutate({
       mutation: UPDATE_EVENT,
       variables: {
         event: event.id,
-        start: set(new Date(testData.start), { hours: 11, minutes: 1 }).toISOString(),
-        end: set(new Date(testData.end), { hours: 14, minutes: 31 }).toISOString(),
+        start: setToHelsinkiTime(testData.start, '11:01').toISOString(),
+        end: setToHelsinkiTime(testData.end, '14:31' ).toISOString(),
         tags: []
       }
     })
@@ -249,13 +249,13 @@ describe('Event has one visit, then', () => {
 
   it('error is shown if end time is invalid', async () => {
     const { mutate } = createTestClient(server)
-    await visitResponse(event.id, createDate(11, 0), createDate(12, 0))
+    await visitResponse(event.id, createDate16DaysInFuture('11:00'), createDate16DaysInFuture('12:00'))
     const response = await mutate({
       mutation: UPDATE_EVENT,
       variables: {
         event: event.id,
-        start: set(new Date(testData.start), { hours: 9, minutes: 13 }).toISOString(),
-        end: set(new Date(testData.end), { hours: 11, minutes: 59 }).toISOString(),
+        start: setToHelsinkiTime(testData.start, '09:13' ).toISOString(),
+        end: setToHelsinkiTime(testData.end, '11:59' ).toISOString(),
         tags: []
       }
     })
@@ -264,19 +264,19 @@ describe('Event has one visit, then', () => {
 
   it('if events\' timeslot is visits\' timeslot then there are no available times', async () => {
     const { mutate } = createTestClient(server)
-    await visitResponse(event.id, createDate(11, 0), createDate(12, 0))
+    await visitResponse(event.id, createDate16DaysInFuture('11:00'), createDate16DaysInFuture('12:00'))
     const response = await mutate({
       mutation: UPDATE_EVENT,
       variables: {
         event: event.id,
-        start: set(new Date(testData.start), { hours: 11, minutes: 0 }).toISOString(),
-        end: set(new Date(testData.end), { hours: 12, minutes: 0 }).toISOString(),
+        start: setToHelsinkiTime(testData.start, '11:00').toISOString(),
+        end: setToHelsinkiTime(testData.end, '12:00').toISOString(),
         tags: []
       }
     })
     const modifyEvent = response.data.modifyEvent
-    expect(modifyEvent.start).toEqual(createDate(11, 0).toISOString())
-    expect(modifyEvent.end).toEqual(createDate(12, 0).toISOString())
+    expect(modifyEvent.start).toEqual(createDate16DaysInFuture('11:00').toISOString())
+    expect(modifyEvent.end).toEqual(createDate16DaysInFuture('12:00').toISOString())
     expect(modifyEvent.availableTimes).toEqual([])
   })
 })

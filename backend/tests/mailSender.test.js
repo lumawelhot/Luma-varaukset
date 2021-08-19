@@ -69,13 +69,13 @@ beforeEach(async () => {
 })
 
 describe('Visit reminders', () => {
-  it('without cancellation are send properly', async () => {
+  it('without cancellation are sent properly', async () => {
     const { success } = await sendReminder()
     expect(success.length).toBe(1)
     expect(success[0]._id).toEqual(dayAfterVisit._id)
   })
 
-  it('with cancellation aren\'t send', async () => {
+  it('with cancellation are not sent', async () => {
     const { failed } = await sendReminder()
     expect(failed.length).toBe(1)
     expect(failed[0]._id).toEqual(cancelledDayAfterVisit._id)
@@ -83,13 +83,13 @@ describe('Visit reminders', () => {
 })
 
 describe('Visit thank you message', () => {
-  it('without cancellation are send properly', async () => {
+  it('without cancellation are sent properly', async () => {
     const { success } = await sendThanks()
     expect(success.length).toBe(1)
     expect(success[0]._id).toEqual(eventTodayVisit._id)
   })
 
-  it('with cancellation aren\'t send', async () => {
+  it('with cancellation are not sent', async () => {
     const { failed } = await sendThanks()
     expect(failed.length).toBe(1)
     expect(failed[0]._id).toEqual(cancelledEventTodayVisit._id)
