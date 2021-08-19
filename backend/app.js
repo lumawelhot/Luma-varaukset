@@ -139,7 +139,7 @@ const createTags = async () => {
 
 const { importStaticEvents }  = require('./utils/importStaticData')
 
-if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV === 'test') {
   const { MongoMemoryServer } = require('mongodb-memory-server')
   const mongoServer = new MongoMemoryServer()
   mongoose.set('useFindAndModify', false)
@@ -147,7 +147,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   mongoServer.getUri().then(uri => {
     mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
       .then(async () => {
-        console.log('connected to MongoDB, initializing database')
+        console.log('connected to MongoDB memory server, initializing database')
         await createAdmin()
         await createEmployee()
         await createTags()
@@ -178,12 +178,19 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   mongoose.set('useCreateIndex', true)
   mongoose.connect('mongodb://localhost:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
-      console.log('connected to MongoDB, initializing database')
-      createAdmin()
-      //createEvents()
+      console.log('connected to MongoDB')
     })
   const db = mongoose.connection
   db.on('error', console.error.bind(console, 'MongoDB connection error:'))
+  const { resetDbForE2E } = require('./utils/mongoinit')
+  app.get('/reset', async (req, res) => {
+    await resetDbForE2E()
+    await createAdmin()
+    await createEmployee()
+    await createTags()
+    await importStaticEvents()
+    res.json({ message: 'Database reset for E2E tests' })
+  })
 }
 
 app.use(logger('dev'))

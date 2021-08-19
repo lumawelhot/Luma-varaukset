@@ -70,4 +70,12 @@ const initEmailMessages = async () => {
   await cancellation.save()
 }
 
-module.exports = { addNewTags, fillStringWithValues, initEmailMessages }
+const checkTimeslot = (argsStart, argsEnd) => {
+  const start = new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', options: { timeZone: 'Europe/Helsinki' } }).format(new Date(argsStart)).split('.')
+  const end =  Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', options: { timeZone: 'Europe/Helsinki' } }).format(new Date(argsEnd)).split('.')
+  if (Number(start[0]) < 8) return true
+  if (Number(end[0]) > 17 || (Number(end[0]) === 17 && Number(end[1]) !== 0)) return true
+  return false
+}
+
+module.exports = { addNewTags, fillStringWithValues, initEmailMessages, checkTimeslot }
