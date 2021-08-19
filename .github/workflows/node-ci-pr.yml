@@ -34,7 +34,7 @@ jobs:
           flags: frontend # optional
           name: codecov-umbrella # optional
       - name: Start backend for Cypress
-        run: cd ../backend && nohup npm run dev &
+        run: cd ../backend && nohup npm run cypress &
         env:
           EMAILHOST: smtp.ethereal.email
           EMAILUSER: clarabelle.terry@ethereal.email
