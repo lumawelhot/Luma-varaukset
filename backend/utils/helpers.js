@@ -70,4 +70,13 @@ const initEmailMessages = async () => {
   await cancellation.save()
 }
 
-module.exports = { addNewTags, fillStringWithValues, initEmailMessages }
+const checkTimeslot = (argsStart, argsEnd) => {
+  // eslint-disable-next-line no-unused-vars
+  const [startHours, startMinutes] = new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', timeZone: 'Europe/Helsinki' }).format(new Date(argsStart)).split('.')
+  const [endHours, endMinutes]  =  new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', timeZone: 'Europe/Helsinki' }).format(new Date(argsEnd)).split('.')
+  if (Number(startHours) < 8) return true
+  if (Number(endHours) > 17 || (Number(endHours) === 17 && Number(endMinutes) !== 0)) return true
+  return false
+}
+
+module.exports = { addNewTags, fillStringWithValues, initEmailMessages, checkTimeslot }
