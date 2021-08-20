@@ -9,7 +9,8 @@ RUN cd ../frontend && \
 COPY ./backend/ .
 COPY ./config/ ../config/
 
-ENV PUBLIC_URL=/luma-varaukset
+ARG PUBLIC_URL
+ENV PUBLIC_URL=$PUBLIC_URL
 
 RUN npm ci --production  && \
   npm run build:ui && \
