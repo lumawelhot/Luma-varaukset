@@ -18,7 +18,7 @@ import './index.css'
 import App from './App'
 import './i18n'
 
-const BASE_URL = process.env.PUBLIC_URL || 'http://localhost:3001'
+const BASE_URL = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3001'
 const WS_URL = window.location.href.replace(/^http/,'ws') + '/graphql/ws'
 
 const authLink = setContext((_, { headers }) => {
