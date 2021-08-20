@@ -1,11 +1,17 @@
 /* eslint-disable no-undef */
 import { And, Given, Then, When } from 'cypress-cucumber-preprocessor/steps'
-import { addBusinessDays, addDays, set, startOfWeek } from 'date-fns'
+import { addBusinessDays, addDays, startOfWeek } from 'date-fns'
+import { zonedTimeToUtc } from 'date-fns-tz'
 
-const eventDate1 = addBusinessDays(set(new Date(), { hours: 10, minutes: 0, seconds: 0, milliseconds: 0 }), 14)
-const eventDate2 = addBusinessDays(set(new Date(), { hours: 10, minutes: 0, seconds: 0, milliseconds: 0 }), 16)
-const eventDate3 = addBusinessDays(set(new Date(), { hours: 10, minutes: 0, seconds: 0, milliseconds: 0 }), 15)
-const eventDate4 = addBusinessDays(set(new Date(), { hours: 10, minutes: 0, seconds: 0, milliseconds: 0 }), 17)
+const setToHelsinkiTime = (dateString, timeString) => {
+  const dateTimeString = dateString.slice(0,11) + timeString
+  return zonedTimeToUtc(dateTimeString, 'Europe/Helsinki')
+}
+
+const eventDate1 = setToHelsinkiTime(addBusinessDays(new Date(), 14).toISOString(),'10:00')
+const eventDate2 = setToHelsinkiTime(addBusinessDays(new Date(), 15).toISOString(),'10:00')
+const eventDate3 = setToHelsinkiTime(addBusinessDays(new Date(), 16).toISOString(),'10:00')
+const eventDate4 = setToHelsinkiTime(addBusinessDays(new Date(), 17).toISOString(),'10:00')
 const bookedEvent1 = 'BOOKED1'
 const bookedEvent2 = 'BOOKED2'
 const bookedEvent3 = 'BOOKED3'
@@ -17,23 +23,23 @@ it('Initialize tests', () => {
   cy.createUser({ username: 'employeeUser', password: 'emp', isAdmin: false })
   cy.createEventWithVisit({
     title: bookedEvent1,
-    start: new Date(eventDate1.setHours(10, 0)),
-    end: new Date(eventDate1.setHours(12, 0)),
+    start: setToHelsinkiTime(eventDate1.toISOString(),'11:00'),
+    end: setToHelsinkiTime(eventDate1.toISOString(),'12:00'),
   })
   cy.createEventWithVisit({
     title: bookedEvent2,
-    start: new Date(eventDate2.setHours(11, 30)),
-    end: new Date(eventDate2.setHours(15, 0)),
+    start: setToHelsinkiTime(eventDate2.toISOString(),'11:30'),
+    end: setToHelsinkiTime(eventDate2.toISOString(),'15:00'),
   })
   cy.createEventWithVisit({
     title: bookedEvent3,
-    start: new Date(eventDate3.setHours(13, 0)),
-    end: new Date(eventDate3.setHours(16, 0)),
+    start: setToHelsinkiTime(eventDate3.toISOString(),'13:00'),
+    end: setToHelsinkiTime(eventDate3.toISOString(),'16:00'),
   })
   cy.createEvent({
     title: availableEvent,
-    start: new Date(eventDate4.setHours(10,0)),
-    end: new Date(eventDate4.setHours(15,0)),
+    start: setToHelsinkiTime(eventDate4.toISOString(),'11:00'),
+    end: setToHelsinkiTime(eventDate4.toISOString(),'15:00'),
     scienceClass: [1,3],
     remoteVisit: true,
     inPersonVisit: true,
@@ -190,7 +196,7 @@ And('I design new custom fields', () => {
   cy.get('.input').clear().type('New custom form')
   cy.get('.level-left > .button').click()
   cy.get('.level-left > :nth-child(3)').click()
-  cy.get(':nth-child(1) > .field-body > .input').clear().type('Is now summer?')
+  cy.get(':nth-child(1) > .field-body > .input').clear().type('Is it summer now?')
   cy.get(':nth-child(3) > .field-body > :nth-child(2) > .input').clear().type('Yes')
   cy.get(':nth-child(4) > .field-body > :nth-child(2) > .input').clear().type('No')
   cy.get('[style="width: 35px;"]').click()
@@ -198,7 +204,7 @@ And('I design new custom fields', () => {
   cy.get('.box > .button').click()
   cy.get('.level-left > .button').click()
   cy.get('.level-left > :nth-child(2)').click()
-  cy.get('.box > :nth-child(1) > .control > .input').clear().type('Is this question')
+  cy.get('.box > :nth-child(1) > .control > .input').clear().type('Is this a question?')
   cy.get('.box > .button').click()
   cy.get(':nth-child(5) > .primary').click()
 })
@@ -207,6 +213,6 @@ Then('the custom form is succesfully created', () => {
   cy.get('.toast').should('have.class', 'is-success')
   cy.get('tbody > tr > :nth-child(1)', { timeout: 6000 }).contains('New custom form')
   cy.get('[style="margin-right: 10px;"]').click()
-  cy.get(':nth-child(1) > :nth-child(1) > .media > .field > label').contains('Is now summer?')
-  cy.get(':nth-child(2) > :nth-child(1) > .media > .field > label').contains('Is this question')
+  cy.get(':nth-child(1) > :nth-child(1) > .media > .field > label').contains('Is it summer now?')
+  cy.get(':nth-child(2) > :nth-child(1) > .media > .field > label').contains('Is this a question?')
 })
