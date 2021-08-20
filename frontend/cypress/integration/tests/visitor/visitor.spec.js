@@ -1,13 +1,14 @@
 /* eslint-disable no-undef */
 import { And, Given, Then, When } from 'cypress-cucumber-preprocessor/steps'
-import { set, addBusinessDays } from 'date-fns'
+import { addBusinessDays } from 'date-fns'
+import { zonedTimeToUtc } from 'date-fns-tz'
 
-const filterEventDate1 = addBusinessDays(set(new Date(), { hours: 10, minutes: 0, seconds: 0, milliseconds: 0 }), 14)
-const filterEventDate2 = addBusinessDays(set(new Date(), { hours: 10, minutes: 0, seconds: 0, milliseconds: 0 }), 14)
-const filterEventDate3 = addBusinessDays(set(new Date(), { hours: 10, minutes: 0, seconds: 0, milliseconds: 0 }), 14)
-const filterEventDate4 = addBusinessDays(set(new Date(), { hours: 10, minutes: 0, seconds: 0, milliseconds: 0 }), 14)
-const filterEventDate5 = addBusinessDays(set(new Date(), { hours: 10, minutes: 0, seconds: 0, milliseconds: 0 }), 14)
-const eventDate = addBusinessDays(set(new Date(), { hours: 10, minutes: 0, seconds: 0, milliseconds: 0 }), 14)
+const setToHelsinkiTime = (dateString, timeString) => {
+  const dateTimeString = dateString.slice(0,11) + timeString
+  return zonedTimeToUtc(dateTimeString, 'Europe/Helsinki')
+}
+
+const eventDate = setToHelsinkiTime(addBusinessDays(new Date(), 14).toISOString(),'11:00')
 const availableEvent = 'BOOKABLE'
 let id = null
 
@@ -16,8 +17,8 @@ it('Initialize tests', () => {
   cy.login({ username: 'Admin', password: 'salainen' })
   cy.createEvent({
     title: 'FILTER1',
-    start: new Date(filterEventDate1.setHours(9,0)),
-    end: new Date(filterEventDate1.setHours(15,0)),
+    start: setToHelsinkiTime(eventDate.toISOString(), '09:00'),
+    end: setToHelsinkiTime(eventDate.toISOString(), '15:00'),
     scienceClass: [1],
     remoteVisit: true,
     inPersonVisit: true,
@@ -27,8 +28,8 @@ it('Initialize tests', () => {
   }),
   cy.createEvent({
     title: 'FILTER2',
-    start: new Date(filterEventDate2.setHours(9,0)),
-    end: new Date(filterEventDate2.setHours(15,0)),
+    start: setToHelsinkiTime(eventDate.toISOString(), '09:00'),
+    end: setToHelsinkiTime(eventDate.toISOString(), '15:00'),
     scienceClass: [2],
     remoteVisit: true,
     inPersonVisit: false,
@@ -38,8 +39,8 @@ it('Initialize tests', () => {
   })
   cy.createEvent({
     title: 'FILTER3',
-    start: new Date(filterEventDate3.setHours(9,0)),
-    end: new Date(filterEventDate3.setHours(15,0)),
+    start: setToHelsinkiTime(eventDate.toISOString(), '09:00'),
+    end: setToHelsinkiTime(eventDate.toISOString(), '15:00'),
     scienceClass: [2],
     remoteVisit: true,
     inPersonVisit: true,
@@ -49,8 +50,8 @@ it('Initialize tests', () => {
   })
   cy.createEvent({
     title: 'FILTER4',
-    start: new Date(filterEventDate4.setHours(9,0)),
-    end: new Date(filterEventDate4.setHours(15,0)),
+    start: setToHelsinkiTime(eventDate.toISOString(), '09:00'),
+    end: setToHelsinkiTime(eventDate.toISOString(), '15:00'),
     scienceClass: [2],
     remoteVisit: false,
     inPersonVisit: true,
@@ -60,8 +61,8 @@ it('Initialize tests', () => {
   })
   cy.createEvent({
     title: 'FILTER5',
-    start: new Date(filterEventDate5.setHours(9,0)),
-    end: new Date(filterEventDate5.setHours(15,0)),
+    start: setToHelsinkiTime(eventDate.toISOString(), '09:00'),
+    end: setToHelsinkiTime(eventDate.toISOString(), '15:00'),
     scienceClass: [1, 3, 5],
     remoteVisit: true,
     inPersonVisit: true,
@@ -71,8 +72,8 @@ it('Initialize tests', () => {
   })
   cy.createEvent({
     title: availableEvent,
-    start: new Date(eventDate.setHours(9,0)),
-    end: new Date(eventDate.setHours(15,0)),
+    start: setToHelsinkiTime(eventDate.toISOString(), '09:00'),
+    end: setToHelsinkiTime(eventDate.toISOString(), '15:00'),
     scienceClass: [1],
     remoteVisit: true,
     inPersonVisit: true,
@@ -81,8 +82,8 @@ it('Initialize tests', () => {
   })
   cy.createEventWithVisit({
     title: 'Booked',
-    start: new Date(eventDate.setHours(10, 0)),
-    end: new Date(eventDate.setHours(12, 0)),
+    start: setToHelsinkiTime(eventDate.toISOString(), '10:00'),
+    end: setToHelsinkiTime(eventDate.toISOString(), '12:00'),
   }).then(value => id = value)
 })
 

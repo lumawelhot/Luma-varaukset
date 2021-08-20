@@ -71,10 +71,11 @@ const initEmailMessages = async () => {
 }
 
 const checkTimeslot = (argsStart, argsEnd) => {
-  const start = new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', options: { timeZone: 'Europe/Helsinki' } }).format(new Date(argsStart)).split('.')
-  const end =  Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', options: { timeZone: 'Europe/Helsinki' } }).format(new Date(argsEnd)).split('.')
-  if (Number(start[0]) < 8) return true
-  if (Number(end[0]) > 17 || (Number(end[0]) === 17 && Number(end[1]) !== 0)) return true
+  // eslint-disable-next-line no-unused-vars
+  const [startHours, startMinutes] = new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', timeZone: 'Europe/Helsinki' }).format(new Date(argsStart)).split('.')
+  const [endHours, endMinutes]  =  new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', timeZone: 'Europe/Helsinki' }).format(new Date(argsEnd)).split('.')
+  if (Number(startHours) < 8) return true
+  if (Number(endHours) > 17 || (Number(endHours) === 17 && Number(endMinutes) !== 0)) return true
   return false
 }
 

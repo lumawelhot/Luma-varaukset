@@ -286,10 +286,10 @@ const resolvers = {
       return { value: jwt.sign(userForToken, config.SECRET, { expiresIn: '12h' }) }
     },
     createEvent: async (root, args, { currentUser }) => {
-      if (!currentUser) throw new AuthenticationError('not authenticated')
+      if (!currentUser) throw new AuthenticationError('Not authenticated')
       if (args.grades.length < 1) throw new UserInputError('At least one grade must be selected!')
-      if (args.title.length < 5)  throw new UserInputError('title too short')
-      if (checkTimeslot(args.start, args.end)) throw new UserInputError('ivalid start or end')
+      if (args.title.length < 5)  throw new UserInputError('Title too short')
+      if (checkTimeslot(args.start, args.end)) throw new UserInputError('Invalid start or end time')
       const group = await Group.findById(args.group)
       const mongoTags = await addNewTags(args.tags)
 

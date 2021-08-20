@@ -1,5 +1,5 @@
-const { set, subDays, setHours, add, sub, addDays } = require('date-fns')
-const { createDate } = require('./testHelpers')
+const { subDays, add, sub } = require('date-fns')
+const { createDate16DaysInFuture, setToHelsinkiTime } = require('./testHelpers')
 
 const details = {
   clientName: 'Teacher',
@@ -19,8 +19,8 @@ const eventDetails1 = {
   resourceids: [1],
   grades: [1, 2],
   desc: 'Algebra is one of the broad areas of mathematics, together with number theory, geometry and analysis.',
-  start: addDays(set(new Date(), { hours: 9, minutes: 0, seconds: 0, milliseconds: 0 }), 16).toISOString(),
-  end: addDays(set(new Date(), { hours: 15, minutes: 0, seconds: 0, milliseconds: 0 }), 16).toISOString(),
+  start: createDate16DaysInFuture('09:00').toISOString(),
+  end: createDate16DaysInFuture('15:00').toISOString(),
   booked: false,
   inPersonVisit: true,
   remoteVisit: false,
@@ -34,8 +34,8 @@ const eventDetails2 = {
   resourceids: [2],
   grades: [4],
   desc: 'Atom is a programming text editor developed by GitHub.',
-  start: set(new Date(), { hours: 9, minutes: 30, seconds: 0, milliseconds: 0 }).toISOString(),
-  end: set(new Date(), { hours: 11, minutes: 0, seconds: 0, milliseconds: 0 }).toISOString(),
+  start: setToHelsinkiTime(new Date().toISOString(), '09:00').toISOString(),
+  end: setToHelsinkiTime(new Date().toISOString(), '11:00').toISOString(),
   booked: false,
   inPersonVisit: false,
   remoteVisit: true,
@@ -105,11 +105,11 @@ const invalidEventFieldDetails = {
   disabled: false
 }
 
-const availableDate = set(add(new Date(), { days: 16 }), { milliseconds: 0, seconds: 0, minutes: 0, hours: 9 })
-const fiveHoursAdded = set(add(new Date(), { days: 16 }), { milliseconds: 0, seconds: 0, minutes: 0, hours: 14 })
+const availableDate = createDate16DaysInFuture('09:00')
+const fiveHoursAdded = createDate16DaysInFuture('14:00')
 
-const availableForLoggedInDate = set(add(new Date(), { days: 1 }), { milliseconds: 0, seconds: 0, minutes: 0, hours: 9 })
-const twoHoursAddedForLoggedIn = set(add(new Date(), { days: 1 }), { milliseconds: 0, seconds: 0, minutes: 0, hours: 11 })
+const availableForLoggedInDate = setToHelsinkiTime(add(new Date(), { days: 1 }).toISOString(), '09:00')
+const twoHoursAddedForLoggedIn = setToHelsinkiTime(add(new Date(), { days: 1 }).toISOString(), '11:00')
 
 const unavailableForLoggedInDate = new Date()
 unavailableForLoggedInDate.setDate(new Date().getDate() - 2)
@@ -173,20 +173,20 @@ const mailSenderTestDetails = {
 }
 
 const eventDayAfter = {
-  start: setHours(add(new Date(), { days: 1 }), 9).toISOString(),
-  end: setHours(add(new Date(), { days: 1 }), 15).toISOString(),
+  start: setToHelsinkiTime(add(new Date(), { days: 1 }).toISOString(), '09:00').toISOString(),
+  end: setToHelsinkiTime(add(new Date(), { days: 1 }).toISOString(), '15:00').toISOString(),
   ...mailSenderTestDetails
 }
 
 const eventDayBefore = {
-  start: setHours(sub(new Date(), { days: 1 }), 9).toISOString(),
-  end: setHours(sub(new Date(), { days: 1 }), 15).toISOString(),
+  start: setToHelsinkiTime(sub(new Date(), { days: 1 }).toISOString(), '09:00').toISOString(),
+  end: setToHelsinkiTime(sub(new Date(), { days: 1 }).toISOString(), '15:00').toISOString(),
   ...mailSenderTestDetails
 }
 
 const eventNow = {
-  start: setHours(new Date(), 9).toISOString(),
-  end: setHours(new Date(), 15).toISOString(),
+  start: setToHelsinkiTime(new Date().toISOString(), '09:00').toISOString(),
+  end: setToHelsinkiTime(new Date().toISOString(), '15:00').toISOString(),
   ...mailSenderTestDetails
 }
 
@@ -202,24 +202,24 @@ const eventDataDetails = {
 }
 
 const eventData1 = {
-  start: createDate(9, 0),
-  end: createDate(15, 0),
-  availableTimes: [{ startTime: createDate(9, 0), endTime: createDate(15, 0) }],
+  start: createDate16DaysInFuture('09:00'),
+  end: createDate16DaysInFuture('15:00'),
+  availableTimes: [{ startTime: createDate16DaysInFuture('09:00'), endTime: createDate16DaysInFuture('15:00') }],
   waitingTime: 20,
   duration: 60,
   ...eventDataDetails
 }
 
 const eventData2 = {
-  start: createDate(9, 0),
-  end: createDate(15, 0),
+  start: createDate16DaysInFuture('09:00'),
+  end: createDate16DaysInFuture('15:00'),
   availableTimes: [{
-    startTime: createDate(9, 0),
-    endTime: createDate(11, 0)
+    startTime: createDate16DaysInFuture('09:00'),
+    endTime: createDate16DaysInFuture('11:00')
   },
   {
-    startTime: createDate(13, 0),
-    endTime: createDate(15, 0)
+    startTime: createDate16DaysInFuture('13:00'),
+    endTime: createDate16DaysInFuture('15:00')
   }],
   waitingTime: 15,
   duration: 60,
@@ -227,18 +227,18 @@ const eventData2 = {
 }
 
 const eventData3 = {
-  start: createDate(9, 0),
-  end: createDate(15, 0),
-  availableTimes: [{ startTime: createDate(9, 0), endTime: createDate(15, 0) }],
+  start: createDate16DaysInFuture('09:00'),
+  end: createDate16DaysInFuture('15:00'),
+  availableTimes: [{ startTime: createDate16DaysInFuture('09:00'), endTime: createDate16DaysInFuture('15:00') }],
   waitingTime: 10,
   duration: 30,
   ...eventDataDetails
 }
 
 const eventData4 = {
-  start: createDate(9, 0),
-  end: createDate(15, 0),
-  availableTimes: [{ startTime: createDate(9, 0), endTime: createDate(15, 0) }],
+  start: createDate16DaysInFuture('09:00'),
+  end: createDate16DaysInFuture('15:00'),
+  availableTimes: [{ startTime: createDate16DaysInFuture('09:00'), endTime: createDate16DaysInFuture('15:00') }],
   waitingTime: 15,
   duration: 60,
   ...eventDataDetails

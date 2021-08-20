@@ -1,12 +1,39 @@
 const { gql } = require('apollo-server-express')
-const setHours = require('date-fns/setHours')
-const setMinutes = require('date-fns/setMinutes')
-const setSeconds = require('date-fns/setSeconds')
-const setMilliseconds = require('date-fns/setMilliseconds')
 const add = require('date-fns/add')
 const { getUnixTime } = require('date-fns')
+const { zonedTimeToUtc } = require('date-fns-tz')
 
-const createDate = (hours, minutes) => setMilliseconds(setSeconds(setMinutes(setHours(add(new Date(), { days: 16 }), hours), minutes), 0), 0)
+const createDate16DaysInFuture = (timeString) => {
+  const dayString = add(new Date(), { days: 16 }).toISOString()
+  const dateTimeString = dayString.slice(0,11) + timeString
+  return zonedTimeToUtc(dateTimeString, 'Europe/Helsinki')
+}
+
+const setToHelsinkiTime = (dateString, timeString) => {
+  const dateTimeString = dateString.slice(0,11) + timeString
+  return zonedTimeToUtc(dateTimeString, 'Europe/Helsinki')
+}
+
+const createTimeList = (startList, endList) => {
+  const timeList = []
+  startList.forEach((start, index) => {
+    timeList.push({
+      start: getUnixTime(createDate16DaysInFuture(start)),
+      end: getUnixTime(createDate16DaysInFuture(endList[index]))
+    })
+  })
+  return timeList
+}
+
+const createAvailableList = (timeList) => {
+  const newList = timeList.map(time => {
+    return {
+      start: getUnixTime(new Date(time.startTime)),
+      end: getUnixTime(new Date(time.endTime))
+    }
+  })
+  return newList
+}
 
 const CANCEL_VISIT = gql `
   mutation cancelVisit($id: ID!) {
@@ -285,27 +312,6 @@ const USERS = gql`
     }
   }
 `
-
-const createTimeList = (startList, endList) => {
-  const timeList = []
-  startList.forEach((start, index) => {
-    timeList.push({
-      start: getUnixTime(createDate(start[0], start[1])),
-      end: getUnixTime(createDate(endList[index][0], endList[index][1]))
-    })
-  })
-  return timeList
-}
-
-const createAvailableList = (timeList) => {
-  const newList = timeList.map(time => {
-    return {
-      start: getUnixTime(new Date(time.startTime)),
-      end: getUnixTime(new Date(time.endTime))
-    }
-  })
-  return newList
-}
 
 const UPDATE_EVENT = gql`
   mutation modifyEvent(
@@ -605,5 +611,6 @@ module.exports = {
   CREATE_GROUP,
   createTimeList,
   createAvailableList,
-  createDate,
+  createDate16DaysInFuture,
+  setToHelsinkiTime
 }
