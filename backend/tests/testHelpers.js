@@ -14,6 +14,27 @@ const setToHelsinkiTime = (dateString, timeString) => {
   return zonedTimeToUtc(dateTimeString, 'Europe/Helsinki')
 }
 
+const createTimeList = (startList, endList) => {
+  const timeList = []
+  startList.forEach((start, index) => {
+    timeList.push({
+      start: getUnixTime(createDate16DaysInFuture(start)),
+      end: getUnixTime(createDate16DaysInFuture(endList[index]))
+    })
+  })
+  return timeList
+}
+
+const createAvailableList = (timeList) => {
+  const newList = timeList.map(time => {
+    return {
+      start: getUnixTime(new Date(time.startTime)),
+      end: getUnixTime(new Date(time.endTime))
+    }
+  })
+  return newList
+}
+
 const CANCEL_VISIT = gql `
   mutation cancelVisit($id: ID!) {
     cancelVisit(id: $id) {
@@ -291,27 +312,6 @@ const USERS = gql`
     }
   }
 `
-
-const createTimeList = (startList, endList) => {
-  const timeList = []
-  startList.forEach((start, index) => {
-    timeList.push({
-      start: getUnixTime(createDate16DaysInFuture(start[0], start[1])),
-      end: getUnixTime(createDate16DaysInFuture(endList[index][0], endList[index][1]))
-    })
-  })
-  return timeList
-}
-
-const createAvailableList = (timeList) => {
-  const newList = timeList.map(time => {
-    return {
-      start: getUnixTime(new Date(time.startTime)),
-      end: getUnixTime(new Date(time.endTime))
-    }
-  })
-  return newList
-}
 
 const UPDATE_EVENT = gql`
   mutation modifyEvent(

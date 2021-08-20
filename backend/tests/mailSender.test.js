@@ -25,15 +25,15 @@ beforeEach(async () => {
     ...details,
     event: dayBefore,
     status: true,
-    startTime: new Date(dayBefore.start).toISOString(),
-    endTime: new Date(dayBefore.end).toISOString()
+    startTime: dayBefore.start,
+    endTime: dayBefore.end
   })
 
   dayAfterVisit = new Visit({
     ...details,
     event: dayAfter,
     status: true,
-    startTime: new Date(dayAfter.start).toISOString(),
+    startTime: dayAfter.start,
     endTime: sub(new Date(dayAfter.end), { hours: 3 }).toISOString()
   })
 
@@ -42,14 +42,14 @@ beforeEach(async () => {
     event: eventToday,
     status: true,
     startTime: sub(new Date(eventToday.start), { hours: 3 }).toISOString(),
-    endTime: new Date(eventToday.end).toISOString()
+    endTime: eventToday.end
   })
 
   cancelledEventTodayVisit = new Visit({
     ...details,
     event: eventToday,
     status: false,
-    startTime: new Date(eventToday.start).toISOString(),
+    startTime: eventToday.start,
     endTime: sub(new Date(eventToday.end), { hours: 3 }).toISOString()
   })
 
@@ -58,7 +58,7 @@ beforeEach(async () => {
     event: dayAfter,
     status: false,
     startTime: sub(new Date(dayAfter.end), { hours: 3 }).toISOString(),
-    endTime: new Date(dayAfter.end).toISOString()
+    endTime: dayAfter.end
   })
 
   await cancelledEventTodayVisit.save()

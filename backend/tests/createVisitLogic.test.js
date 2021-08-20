@@ -86,12 +86,12 @@ describe('Visit can be created', () => {
   it('if its timeslot is among with one of events available times', async () => {
     const event = availableEvent.id
 
-    const response = await visitResponse(event, time('12:00'), time('12:00'))
+    const response = await visitResponse(event, time('12:00'), time('12:30'))
     expect(response.errors).toBeUndefined()
     const modifiedEvent = await Event.findById(event)
     expect(modifiedEvent.availableTimes.length).toBe(2)
 
-    const timeList = createTimeList([[9, 0], [12, 50]], [[11, 40], [15, 0]])
+    const timeList = createTimeList(['09:00', '12:50'], ['11:40', '15:00'])
     const availableList = createAvailableList(modifiedEvent.availableTimes)
 
     expect(timeList).toEqual(expect.arrayContaining(availableList))
@@ -107,7 +107,7 @@ describe('Visit can be created', () => {
     const modifiedEvent = await Event.findById(event)
     expect(modifiedEvent.availableTimes.length).toBe(1)
 
-    const timeList = createTimeList([[12, 50]], [[15, 0]])
+    const timeList = createTimeList(['12:50'], ['15:00'])
     const availableList = createAvailableList(modifiedEvent.availableTimes)
 
     expect(timeList).toEqual(expect.arrayContaining(availableList))
@@ -123,7 +123,7 @@ describe('Visit can be created', () => {
     const modifiedEvent = await Event.findById(event)
     expect(modifiedEvent.availableTimes.length).toBe(1)
 
-    const timeList = createTimeList([[9, 0]], [[11, 40]])
+    const timeList = createTimeList(['09:00'], ['11:40'])
     const availableList = createAvailableList(modifiedEvent.availableTimes)
 
     expect(timeList).toEqual(expect.arrayContaining(availableList))
@@ -139,7 +139,7 @@ describe('Visit can be created', () => {
     const modifiedEvent = await Event.findById(event)
     expect(modifiedEvent.availableTimes.length).toBe(2)
 
-    const timeList = createTimeList([[9, 0], [11, 14]], [[10, 15], [15, 0]])
+    const timeList = createTimeList(['09:00', '11:14'], ['10:15', '15:00'])
     const availableList = createAvailableList(modifiedEvent.availableTimes)
 
     expect(timeList).toEqual(expect.arrayContaining(availableList))
@@ -155,7 +155,7 @@ describe('Visit can be created', () => {
     const modifiedEvent = await Event.findById(event)
     expect(modifiedEvent.availableTimes.length).toBe(2)
 
-    const timeList = createTimeList([[9, 0], [13, 45]], [[12, 46], [15, 0]])
+    const timeList = createTimeList(['09:00', '13:45'], ['12:46', '15:00'])
     const availableList = createAvailableList(modifiedEvent.availableTimes)
 
     expect(timeList).toEqual(expect.arrayContaining(availableList))

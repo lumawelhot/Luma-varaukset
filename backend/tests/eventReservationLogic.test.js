@@ -7,8 +7,7 @@ const User = require('../models/user')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
 const { availableEventData, details } = require('./testData')
-const { set, add } = require('date-fns')
-const { CREATE_VISIT, UPDATE_EVENT, LOCK_EVENT, UNLOCK_EVENT } = require('./testHelpers')
+const { CREATE_VISIT, UPDATE_EVENT, LOCK_EVENT, UNLOCK_EVENT, createDate16DaysInFuture:time } = require('./testHelpers')
 
 let server
 let eventWithReservation
@@ -21,8 +20,8 @@ const visitResponse = async (event, token) => {
     variables: {
       event,
       ...details,
-      startTime: set(add(new Date(), { days: 16 }), { milliseconds: 0, seconds: 0, minutes: 0, hours: 9 }).toISOString(),
-      endTime: set(add(new Date(), { days: 16 }), { milliseconds: 0, seconds: 0, minutes: 0, hours: 14 }).toISOString(),
+      startTime: time('09:00').toISOString(),
+      endTime: time('14:00').toISOString(),
       token
     },
   })

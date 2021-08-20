@@ -6,7 +6,7 @@ const User = require('../models/user')
 const Event = require('../models/event')
 const Visit = require('../models/visit')
 const Group = require('../models/group')
-const { CREATE_VISIT, CANCEL_VISIT, CREATE_GROUP, UPDATE_GROUP, ASSIGN_EVENTS_TO_GROUP, DELETE_GROUP, createDate, UPDATE_EVENT } = require('./testHelpers')
+const { CREATE_VISIT, CANCEL_VISIT, CREATE_GROUP, UPDATE_GROUP, ASSIGN_EVENTS_TO_GROUP, DELETE_GROUP, createDate16DaysInFuture:time, UPDATE_EVENT } = require('./testHelpers')
 const { details, eventData1 : eventDetails } = require('./testData')
 const typeDefs = require('../graphql/typeDefs')
 const resolvers = require('../graphql/resolvers')
@@ -207,7 +207,7 @@ describe('A group', () => {
 
   it('is disabled if it reaches maximum number of visits', async () => {
     await assignEventsToGroup(group3.id, [event1.id])
-    await visitResponse(event1.id, createDate(11, 0), createDate(12, 0))
+    await visitResponse(event1.id, time('11:00'), time('12:00'))
     const data = await Group.findById(group3.id)
     expect(data.name).toBe('group3')
     expect(data.disabled).toBe(true)
@@ -216,7 +216,7 @@ describe('A group', () => {
 
   it('is not disabled if maximum number of visits is not exceeded', async () => {
     await assignEventsToGroup(group2.id, [event1.id])
-    await visitResponse(event1.id, createDate(11, 0), createDate(12, 0))
+    await visitResponse(event1.id, time('11:00'), time('12:00'))
     const data = await Group.findById(group2.id)
     expect(data.name).toBe('group2')
     expect(data.disabled).toBe(false)
@@ -237,7 +237,7 @@ describe('Visit count calculation works properly', () => {
 
   it('if event is booked', async () => {
     await assignEventsToGroup(group1.id, [event1.id, event2.id])
-    await visitResponse(event1.id, createDate(11, 0), createDate(12, 0))
+    await visitResponse(event1.id, time('11:00'), time('12:00'))
     const data = await Group.findById(group1.id)
     expect(data.visitCount).toBe(1)
     expect(data.disabled).toBe(false)
@@ -245,10 +245,10 @@ describe('Visit count calculation works properly', () => {
 
   it('if multiple events are booked', async () => {
     await assignEventsToGroup(group1.id, [event1.id, event2.id])
-    await visitResponse(event1.id, createDate(11, 0), createDate(11, 15))
-    await visitResponse(event1.id, createDate(11, 45), createDate(12, 0))
-    await visitResponse(event2.id, createDate(11, 0), createDate(12, 0))
-    await visitResponse(event3.id, createDate(11, 0), createDate(12, 0))
+    await visitResponse(event1.id, time('11:00'), time('11:15'))
+    await visitResponse(event1.id, time('11:45'), time('12:00'))
+    await visitResponse(event2.id, time('11:00'), time('12:00'))
+    await visitResponse(event3.id, time('11:00'), time('12:00'))
     const data = await Group.findById(group1.id)
     expect(data.visitCount).toBe(3)
     expect(data.disabled).toBe(false)
@@ -257,8 +257,8 @@ describe('Visit count calculation works properly', () => {
   it('if event\'s group is changed', async () => {
     await assignEventsToGroup(group1.id, [event1.id])
     await assignEventsToGroup(group2.id, [event2.id])
-    await visitResponse(event1.id, createDate(11, 0), createDate(12, 0))
-    await visitResponse(event2.id, createDate(11, 0), createDate(12, 0))
+    await visitResponse(event1.id, time('11:00'), time('12:00'))
+    await visitResponse(event2.id, time('11:00'), time('12:00'))
     let data1 = await Group.findById(group1.id)
     let data2 = await Group.findById(group2.id)
     expect(data1.visitCount).toBe(1)
@@ -274,8 +274,8 @@ describe('Visit count calculation works properly', () => {
   it('if event\'s group changing fails', async () => {
     await assignEventsToGroup(group1.id, [event1.id])
     await assignEventsToGroup(group3.id, [event2.id])
-    await visitResponse(event1.id, createDate(11, 0), createDate(12, 0))
-    await visitResponse(event2.id, createDate(11, 0), createDate(12, 0))
+    await visitResponse(event1.id, time('11:00'), time('12:00'))
+    await visitResponse(event2.id, time('11:00'), time('12:00'))
     let data1 = await Group.findById(group1.id)
     let data2 = await Group.findById(group3.id)
     expect(data1.visitCount).toBe(1)
@@ -293,15 +293,15 @@ describe('An event', () => {
 
   it('cannot be booked if maximum number of visits in the group is exceeded', async () => {
     await assignEventsToGroup(group3.id, [event1.id, event2.id])
-    await visitResponse(event1.id, createDate(11, 0), createDate(12, 0))
-    const response = await visitResponse(event2.id, createDate(11, 0), createDate(12, 0))
+    await visitResponse(event1.id, time('11:00'), time('12:00'))
+    const response = await visitResponse(event2.id, time('11:00'), time('12:00'))
     expect(response.errors[0].message).toBe('this group is disabled')
     expect(response.data.createVisit).toBe(null)
   })
 
   it('is created with correct details if event\'s visit in the disabled group is cancelled', async () => {
     await assignEventsToGroup(group3.id, [event1.id, event2.id])
-    const visit = await visitResponse(event1.id, createDate(11, 0), createDate(12, 0))
+    const visit = await visitResponse(event1.id, time('11:00'), time('12:00'))
     await cancelVisit(visit.data.createVisit.id)
     const group = await Group.findById(group3.id)
     const events = await Event.find({})
@@ -312,10 +312,10 @@ describe('An event', () => {
     expect(event.name).toBe(event1.name)
     expect(event.id).not.toBe(event1.id)
     expect(event.group).toBeUndefined()
-    expect(event.start.toISOString()).toBe(createDate(11, 0).toISOString())
-    expect(event.end.toISOString()).toBe(createDate(12, 0).toISOString())
-    expect(event.availableTimes[0].startTime).toBe(createDate(11, 0).toISOString())
-    expect(event.availableTimes[0].endTime).toBe(createDate(12, 0).toISOString())
+    expect(event.start.toISOString()).toBe(time('11:00').toISOString())
+    expect(event.end.toISOString()).toBe(time('12:00').toISOString())
+    expect(event.availableTimes[0].startTime).toBe(time('11:00').toISOString())
+    expect(event.availableTimes[0].endTime).toBe(time('12:00').toISOString())
     expect(event.availableTimes.length).toBe(1)
     expect(event.visits.length).toBe(0)
   })
