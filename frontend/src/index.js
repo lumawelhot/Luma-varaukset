@@ -18,8 +18,8 @@ import './index.css'
 import App from './App'
 import './i18n'
 
-const BASE_URL = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3001'
-const WS_URL = window.location.href.replace(/^http/,'ws') + '/graphql/ws'
+const BASE_URL = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3001/'
+const WS_URL = window.location.href.replace(/^http/,'ws') + 'graphql/ws'
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('app-token')
@@ -32,7 +32,7 @@ const authLink = setContext((_, { headers }) => {
   }
 })
 
-const httpLink = new HttpLink({ uri: BASE_URL + '/graphql' })
+const httpLink = new HttpLink({ uri: BASE_URL + 'graphql' })
 
 const wsLink = new WebSocketLink({
   uri: WS_URL,
