@@ -137,9 +137,8 @@ const createTags = async () => {
 //   })
 // }
 
-const { importStaticEvents }  = require('./utils/importStaticData')
-
 if (process.env.NODE_ENV === 'test') {
+  const { importStaticEvents }  = require('./utils/importStaticData')
   const { MongoMemoryServer } = require('mongodb-memory-server')
   const mongoServer = new MongoMemoryServer()
   mongoose.set('useFindAndModify', false)
@@ -174,6 +173,7 @@ if (process.env.NODE_ENV === 'test') {
       console.log('Error connecting to MongoDB: ', error.message)
     })
 } else {
+  const { importStaticEvents }  = require('./utils/importStaticData')
   mongoose.set('useFindAndModify', false)
   mongoose.set('useCreateIndex', true)
   mongoose.connect('mongodb://localhost:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
