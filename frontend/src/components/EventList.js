@@ -83,7 +83,7 @@ const EventList = ({ events, sendMessage, currentUser }) => {
   useEffect(() => {
     setTableEvents(events.filter(event => {
       const date = new Date(event.start)
-      return (startDate <= date && date <= endDate) ? true : false
+      return (startDate <= date && date <= (endDate ? endDate : addYears(new Date(), 100))) ? true : false
     }).sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime()))
     setCheckedEvents([])
   }, [startDate, endDate, events])
@@ -125,10 +125,6 @@ const EventList = ({ events, sendMessage, currentUser }) => {
       }
     })
     values.password = ''
-  }
-
-  const showAll = () => {
-    setEndDate(addYears(new Date(), 10))
   }
 
   const handleChooseAll = () => {
@@ -258,9 +254,6 @@ const EventList = ({ events, sendMessage, currentUser }) => {
           {currentUser.isAdmin &&
             <button className="button luma primary" onClick={openDeleteModal} >{t('delete-choosen-events')}</button>
           }
-          <div className="control">
-            <button className="button luma" onClick={showAll} >{t('show-all')}</button>
-          </div>
           <div className="control">
             <button className="button luma" onClick={handleChooseAll} >{checkedEvents.length !== tableEvents.length ? t('choose-all') : t('deselect')}</button>
           </div>

@@ -134,7 +134,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
     const startsAfter14Days = differenceInDays(event.start, new Date()) >= 14
     const startsAfter1Hour = differenceInMinutes(event.start, new Date()) >= 60
     const description = event.desc ? event.desc : null
-
+    console.log(event)
     return (
       <>
         <div className={`modal ${showModal ? 'is-active':''}`}>
@@ -186,10 +186,10 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
                     <p><strong>{t('event-start')}:</strong> {format(event.start, 'HH:mm')}</p>
                     <p><strong>{t('event-end')}:</strong> {format(event.end, 'HH:mm')}</p>
                     <p><strong>{t('length')}:</strong> {event.duration} {t('minutes')} </p>
-                    {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days) ?
+                    {event.locked || event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days) ?
                       <p className="subtitle unfortunately"><b>{t('cannot-be-booked')}</b></p> : null}
                     <div className="field is-grouped is-grouped-multiline">
-                      {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days)
+                      {event.locked || event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days)
                         ? null :
                         !event.disabled &&
                         <div className="control">
