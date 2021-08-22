@@ -368,7 +368,7 @@ const resolvers = {
         pubsub.publish('EVENT_UNLOCKED', {
           eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
         })
-      }, 305000)
+      }, 610000)
 
       await event.save()
       pubsub.publish('EVENT_LOCKED', {
@@ -414,6 +414,9 @@ const resolvers = {
           }
           if (group.visitCount > group.maxCount) {
             throw new UserInputError('max number of visits exceeded')
+          }
+          if (group.visitCount === group.maxCount) {
+            group.disabled = true
           }
         }
       }

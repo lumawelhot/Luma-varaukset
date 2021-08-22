@@ -92,5 +92,6 @@
   "events-with-full-group": "Näytä rajoitetut ryhmät",
   "group-creation-failed": "Ryhmän luonti epäonnistui",
   "group-modify-failed": "Ryhmän muokkaaminen epäonnistui",
-  "group-deletion-failed": "Ryhmän poisto epäonnistui"
+  "group-deletion-failed": "Ryhmän poisto epäonnistui",
+  "restricted": "Rajoitettu"
 }

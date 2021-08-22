@@ -5,7 +5,7 @@ import Toasts from './Toasts'
 
 const CountDown = () => {
   const { t } = useTranslation('common')
-  const [minutes, setMinutes] = useState(5)
+  const [minutes, setMinutes] = useState(10)
   const [seconds, setSeconds] = useState(0)
 
   useEffect(() => {

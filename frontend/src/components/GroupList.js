@@ -102,7 +102,7 @@ const GroupList = ({ sendMessage }) => {
             <th>{t('number-of-booked-visits')}</th>
             <th>{t('publish')}</th>
             <th>{t('number-of-events')}</th>
-            <th>{t('disabled')}</th>
+            <th>{t('restricted')}</th>
             <th></th>
             <th></th>
           </tr>

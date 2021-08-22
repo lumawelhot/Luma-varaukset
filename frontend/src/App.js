@@ -82,17 +82,18 @@ const App = () => {
     }
 
     const createTitle = () => {
+      const unAvailable = <>
+        <label style={{ color: 'black', margin: 5 }}>
+          <FaEyeSlash />
+        </label>
+        {event.title}
+      </>
+
+      if (event.group && event.group.disabled) return unAvailable
       if (event.group && event.group.publishDate) {
         const publish = new Date(event.group.publishDate)
         if (new Date() < publish) {
-          return (
-            <>
-              <label style={{ color: `${event.resourceids.length <= 1 ? 'black' : 'white'}`, margin: 5 }}>
-                <FaEyeSlash />
-              </label>
-              {event.title}
-            </>
-          )
+          return unAvailable
         }
       }
       return (
