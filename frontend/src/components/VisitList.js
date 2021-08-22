@@ -10,7 +10,7 @@ const VisitList = ({ notify }) => {
   const { t } = useTranslation('visit')
 
   const result = useQuery(VISITS)
-  const [filters, setFilters] = useState([])
+  const [filters, setFilters] = useState([1, 2, 3, 4, 5])
 
   const history = useHistory()
 
