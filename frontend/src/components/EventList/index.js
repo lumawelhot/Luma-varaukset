@@ -18,16 +18,25 @@ const EventList = ({ events, sendMessage, currentUser }) => {
   const [endDate, setEndDate] = useState(new Date())
 
   const [tableEvents, setTableEvents] = useState(
-    events.slice().sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime())
+    events
+      .filter(event => {
+        return event.resourceids.some(r => filters.includes(r))
+      })
+      .slice()
+      .sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime())
   )
 
   useEffect(() => {
-    setTableEvents(events.filter(event => {
-      const date = new Date(event.start)
-      return (startDate <= date && date <= (endDate ? endDate : addYears(new Date(), 100))) ? true : false
-    }).sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime()))
+    setTableEvents(events
+      .filter(event => {
+        return event.resourceids.some(r => filters.includes(r))
+      })
+      .filter(event => {
+        const date = new Date(event.start)
+        return (startDate <= date && date <= (endDate ? endDate : addYears(new Date(), 100))) ? true : false
+      }).sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime()))
     setCheckedEvents([])
-  }, [startDate, endDate, events])
+  }, [startDate, endDate, events, filters])
 
   const handleCheckEvent = (event, id) => {
     if (event.target.checked) {

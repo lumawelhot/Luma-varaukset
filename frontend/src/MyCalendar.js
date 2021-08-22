@@ -61,6 +61,7 @@ const MyCalendar = ({
   const { t } = useTranslation('common')
   const [localEvents, setEvents] = useState([])
   const [filterFunction, setFilterFunction] = useState(() => () => { return true })
+  const [showFull, setShowFull] = useState(false)
   const resourceMap = [
     { resourceids: 1, resourceTitle: 'Summamutikka', description: t('mathematics') },
     { resourceids: 2, resourceTitle: 'Fotoni', description: t('physics') },
@@ -255,6 +256,15 @@ const MyCalendar = ({
           tags={tags}
         />
       </Wrapper>
+      <Wrapper elementId="filterspan">
+        {currentUser &&
+          <button
+            style={{ marginLeft: 10 }}
+            className={`button luma ${showFull ? 'active' : ''}`}
+            onClick={() => setShowFull(!showFull)}
+          >{t('events-with-full-group')}</button>
+        }
+      </Wrapper>
       <DragAndDropCalendar
         culture='fi'
         localizer={localizer}
@@ -267,7 +277,9 @@ const MyCalendar = ({
           agenda: true
         }}
         showMultiDayTimes
-        events={localEvents.filter(event => event.group ? !event.group.disabled : true).filter(event => filterFunction(event))}
+        events={localEvents
+          .filter(event => event.group ? (!event.group.disabled || showFull) : true)
+          .filter(event => filterFunction(event))}
         startAccessor='start'
         endAccessor='end'
         min={set(new Date(), { hours: 8, minutes: 0, seconds:0, milliseconds: 0 })}

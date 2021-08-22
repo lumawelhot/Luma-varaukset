@@ -15,7 +15,6 @@ const GroupModal = ({ setModalState, checkedEvents, events }) => {
   if (!groups.data) return <></>
 
   const assignToGroup = () => {
-    console.log(selectedGroup)
     assignEventsToGroup({
       variables: {
         group: selectedGroup,

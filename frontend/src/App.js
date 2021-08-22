@@ -68,6 +68,8 @@ const App = () => {
 
   const [currentUser, setUser] = useState(null)
 
+  useEffect(() => { result.refetch() }, [currentUser])
+
   const parseEvent = (event) => {
     const sortedVisitTimes = event.visits.slice().sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
     let invalidTimeSlot

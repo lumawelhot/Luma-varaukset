@@ -88,5 +88,6 @@
   "yes": "Kyllä",
   "change-details": "Muuta tietoja",
   "update": "Päivitä",
-  "groups": "Ryhmät"
+  "groups": "Ryhmät",
+  "events-with-full-group": "Näytä rajoitetut ryhmät"
 }

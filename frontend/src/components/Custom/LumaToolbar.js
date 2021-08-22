@@ -78,6 +78,7 @@ const LumaToolbar = (props) => {
         <div className="box">
           <div id="filterdiv"></div>
           <button className="button luma is-small" onClick={() => setShowFilterOptions(!showFilterOptions)}>OK</button>
+          <span id="filterspan" ></span>
         </div>
       </div>
     </div>
