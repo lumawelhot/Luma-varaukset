@@ -75,6 +75,7 @@ export const EVENTS = gql`
         id
         name
         disabled
+        publishDate
       }
     }
   }

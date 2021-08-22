@@ -7,7 +7,7 @@ import { CREATE_GROUP, DELETE_GROUP, EVENTS, GET_GROUPS, UPDATE_GROUP } from '..
 import DatePicker from './Pickers/DatePicker'
 import TimePicker from './Pickers/TimePicker'
 
-const GroupList = () => {
+const GroupList = ({ sendMessage }) => {
   const { t } = useTranslation('common')
   const history = useHistory()
   const [name, setName] = useState('')
@@ -15,15 +15,15 @@ const GroupList = () => {
   const groups = useQuery(GET_GROUPS)
   const [createGroup] = useMutation(CREATE_GROUP, {
     refetchQueries: [{ query: GET_GROUPS }],
-    onError: error => console.log(error)
+    onError: () => sendMessage(t('group-creation-failed'), 'danger')
   })
   const [modifyGroup] = useMutation(UPDATE_GROUP, {
     refetchQueries: [{ query: GET_GROUPS }, { query: EVENTS }],
-    onError: error => console.log(error)
+    onError: () => sendMessage(t('group-modify-failed'), 'danger')
   })
   const [deleteGroup] = useMutation(DELETE_GROUP, {
     refetchQueries: [{ query: GET_GROUPS }, { query: EVENTS }],
-    onError: error => console.log(error),
+    onError: () => sendMessage(t('group-deletion-failed'), 'danger'),
   })
   const [selectedGroup, setSelectedGroup] = useState(null)
   const [publishDay, setPublishDay] = useState(null)

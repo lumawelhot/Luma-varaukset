@@ -134,7 +134,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
     const startsAfter14Days = differenceInDays(event.start, new Date()) >= 14
     const startsAfter1Hour = differenceInMinutes(event.start, new Date()) >= 60
     const description = event.desc ? event.desc : null
-    console.log(event)
+
     return (
       <>
         <div className={`modal ${showModal ? 'is-active':''}`}>
@@ -152,7 +152,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
             <div className="section">
               <div className="box">
                 <div className="content">
-                  <div className="title" style={event.disabled ? { color: 'red' } : null}>{event.title}{event.disabled ? ` - ${t('disabled')}` : null}</div>
+                  <div className="title" style={event.disabled ? { color: 'red' } : null}>{event.titleText}{event.disabled ? ` - ${t('disabled')}` : null}</div>
                   <div className="tags eventpage">
                     {event.tags.map(t => <span key={t.id} className="tag is-small luma">{t.name}</span>)}
                   </div>

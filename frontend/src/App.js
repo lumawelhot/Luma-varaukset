@@ -24,7 +24,7 @@ import FormList from './components/FormEditor/FormList'
 import { useTranslation } from 'react-i18next'
 import EventList from './components/EventList'
 import EmailConfig from './components/EmailConfig'
-import { FaLock } from 'react-icons/fa'
+import { FaLock, FaEyeSlash } from 'react-icons/fa'
 import GroupList from './components/GroupList'
 
 const App = () => {
@@ -39,6 +39,7 @@ const App = () => {
   const result = useQuery(EVENTS)
   const [showEventForm, setShowEventForm] = useState(false)
   const [newEventTimeRange, setNewEventTimeRange] = useState(undefined)
+  const [showFull, setShowFull] = useState(false)
   const [getUser, { loading, data }] = useLazyQuery(CURRENT_USER, {
     fetchPolicy: 'cache-and-network'
   })
@@ -80,16 +81,35 @@ const App = () => {
       }
     }
 
+    const createTitle = () => {
+      if (event.group && event.group.publishDate) {
+        const publish = new Date(event.group.publishDate)
+        if (new Date() < publish) {
+          return (
+            <>
+              <label style={{ color: `${event.resourceids.length <= 1 ? 'black' : 'white'}`, margin: 5 }}>
+                <FaEyeSlash />
+              </label>
+              {event.title}
+            </>
+          )
+        }
+      }
+      return (
+        <>
+          {!event.booked && event.locked &&
+            <label style={{ color: `${event.resourceids.includes(1) ? 'yellow' : 'red'}`, margin: 5 }}>
+              <FaLock />
+            </label>
+          }
+          {event.title}
+        </>
+      )
+    }
+
     const details = {
       id: event.id,
-      title: <>
-        {!event.booked && event.locked &&
-          <label style={{ color: 'red', margin: 5 }}>
-            <FaLock />
-          </label>
-        }
-        {event.title}
-      </>,
+      title: createTitle(),
       titleText: event.title,
       resourceids: event.resourceids,
       grades: event.grades,
@@ -257,7 +277,7 @@ const App = () => {
         </Route>
         <Route path='/group-list'>
           {currentUser &&
-            <GroupList />
+            <GroupList sendMessage={notify} />
           }
         </Route>
         <Route path='/book'>
@@ -351,6 +371,8 @@ const App = () => {
             setCurrentView={setCurrentView}
             addEvent={addEvent}
             tags={tags}
+            showFull={showFull}
+            setShowFull={setShowFull}
           />
           <UserPage currentUser={currentUser} setShowEventForm={setShowEventForm} />
           {!currentUser &&

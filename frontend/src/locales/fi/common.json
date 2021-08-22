@@ -89,5 +89,8 @@
   "change-details": "Muuta tietoja",
   "update": "Päivitä",
   "groups": "Ryhmät",
-  "events-with-full-group": "Näytä rajoitetut ryhmät"
+  "events-with-full-group": "Näytä rajoitetut ryhmät",
+  "group-creation-failed": "Ryhmän luonti epäonnistui",
+  "group-modify-failed": "Ryhmän muokkaaminen epäonnistui",
+  "group-deletion-failed": "Ryhmän poisto epäonnistui"
 }

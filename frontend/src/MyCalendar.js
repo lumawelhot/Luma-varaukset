@@ -52,7 +52,9 @@ const MyCalendar = ({
   setCurrentView,
   sendMessage,
   addEvent,
-  tags
+  tags,
+  showFull,
+  setShowFull
 }) => {
   const [showModifyModal, setShowModifyModal] = useState(false)
   const [showCopyModal, setShowCopyModal] = useState(false)
@@ -61,7 +63,6 @@ const MyCalendar = ({
   const { t } = useTranslation('common')
   const [localEvents, setEvents] = useState([])
   const [filterFunction, setFilterFunction] = useState(() => () => { return true })
-  const [showFull, setShowFull] = useState(false)
   const resourceMap = [
     { resourceids: 1, resourceTitle: 'Summamutikka', description: t('mathematics') },
     { resourceids: 2, resourceTitle: 'Fotoni', description: t('physics') },
