@@ -3,6 +3,7 @@ import { format } from 'date-fns'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { EVENTS, GET_GROUPS, UPDATE_EVENT } from '../../graphql/queries'
+import { getPublishDate } from '../../helpers/form'
 import Form from './Form'
 
 export const ModifyEvent = ({ event, close, setEvent, sendMessage, tags }) => {
@@ -91,7 +92,9 @@ export const ModifyEvent = ({ event, close, setEvent, sendMessage, tags }) => {
     startTime,
     endTime,
     customForm,
-    group
+    group,
+    publishDay,
+    publishTime
   }) => {
     const gradeList = []
     grades.forEach((element, index) => element ? gradeList.push(index + 1) : null)
@@ -118,7 +121,8 @@ export const ModifyEvent = ({ event, close, setEvent, sendMessage, tags }) => {
         start: startTime.toISOString(),
         end: endTime.toISOString(),
         customForm: customForm.length ? customForm : null,
-        group: group.length ? group : ''
+        group: group.length ? group : '',
+        publishDate: getPublishDate(publishDay, publishTime)
       }
     })
   }

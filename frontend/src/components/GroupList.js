@@ -1,11 +1,9 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { format, parseISO, set } from 'date-fns'
+import { set } from 'date-fns'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { CREATE_GROUP, DELETE_GROUP, EVENTS, GET_GROUPS, UPDATE_GROUP } from '../graphql/queries'
-import DatePicker from './Pickers/DatePicker'
-import TimePicker from './Pickers/TimePicker'
 
 const GroupList = ({ sendMessage }) => {
   const { t } = useTranslation('common')
@@ -100,7 +98,7 @@ const GroupList = ({ sendMessage }) => {
             <th>{t('name')}</th>
             <th>{t('max-number-of-visits')}</th>
             <th>{t('number-of-booked-visits')}</th>
-            <th>{t('publish')}</th>
+            {/* <th>{t('publish')}</th> */}
             <th>{t('number-of-events')}</th>
             <th>{t('restricted')}</th>
             <th></th>
@@ -113,7 +111,7 @@ const GroupList = ({ sendMessage }) => {
               <td>{group.name}</td>
               <td>{group.maxCount}</td>
               <td>{group.visitCount}</td>
-              <td>{group.publishDate ? format(parseISO(group.publishDate), 'd.M.yyyy, HH:mm') : ''}</td>
+              {/* <td>{group.publishDate ? format(parseISO(group.publishDate), 'd.M.yyyy, HH:mm') : ''}</td> */}
               <td>{group.events.length}</td>
               <td>{group.disabled ? t('yes') : t('no')}</td>
               <td>
@@ -142,7 +140,7 @@ const GroupList = ({ sendMessage }) => {
           style={{ width: 150, marginRight: 10 }}
           onChange={(event) => setMaxCount(Number(event.target.value) > 0 ? Number(event.target.value) : '')}
         />
-        <DatePicker
+        {/* <DatePicker
           format={'d.M.yyyy'}
           value={publishDay}
           placeholder={t('publish-date')}
@@ -154,7 +152,7 @@ const GroupList = ({ sendMessage }) => {
           placeholder={t('publish-time')}
           style={{ width: 150, marginRight: 10 }}
           onChange={value => setPublishTime(value)}
-        />
+        /> */}
         {!selectedGroup &&
           <button className="button luma primary" onClick={addGroup} >{t('add-group')}</button>
         }

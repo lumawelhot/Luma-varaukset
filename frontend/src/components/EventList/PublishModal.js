@@ -1,8 +1,8 @@
 import { useMutation } from '@apollo/client'
-import set from 'date-fns/set'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ASSIGN_PUBLISH_DATE_TO_EVENTS, EVENTS, GET_GROUPS } from '../../graphql/queries'
+import { getPublishDate } from '../../helpers/form'
 import DatePicker from '../Pickers/DatePicker'
 import TimePicker from '../Pickers/TimePicker'
 
@@ -16,20 +16,11 @@ const PublishModal = ({ setModalState, checkedEvents, events }) => {
     onCompleted: () => handleModalClose()
   })
 
-  const getPublishDate = () => {
-    let publishDate = null
-    if (publishDay && publishTime) {
-      const time = new Date(publishTime)
-      publishDate = set(new Date(publishDay), { hours: time.getHours(), minutes: time.getMinutes(), seconds: 0 })
-      return (publishTime && publishDay) ? publishDate.toISOString() : null
-    }
-    return null
-  }
 
   const assignPublishDate = () => {
     assignPublishDateToEvents({
       variables: {
-        publishDate: getPublishDate(),
+        publishDate: getPublishDate(publishDay, publishTime),
         events: checkedEvents
       }
     })

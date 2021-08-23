@@ -128,6 +128,7 @@ const App = () => {
       waitingTime: event.waitingTime,
       hasVisits: event.visits.length ? true : false,
       locked: event.locked,
+      publishDate: event.publishDate
     }
     delete details.availableTimes
     delete details.visits

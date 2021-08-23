@@ -7,6 +7,8 @@ import { TextArea, TextField } from '../VisitForm/FormFields'
 import { AdditionalServices, DatePick, EventType, Grades, Platforms, ScienceClasses, TimePick, SelectField } from './FormComponents'
 import { useTranslation } from 'react-i18next'
 import { eventInitialValues, createGradeList, createPlatformList, createResourceList } from '../../helpers/form'
+import DatePicker from '../Pickers/DatePicker'
+import TimePicker from '../Pickers/TimePicker'
 
 const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmit, event, tags }) => {
   const { t } = useTranslation('event')
@@ -47,7 +49,9 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
         duration: event.duration,
         waitingTime: event.waitingTime,
         date: new Date(event.eventStart),
-        group: event.group ? event.group.id : ''
+        group: event.group ? event.group.id : '',
+        publishTime: event.publishDate ? new Date(event.publishDate) : '',
+        publishDay: event.publishDate ? new Date(event.publishDate) : ''
       } : eventInitialValues(newEventTimeRange)}
       validate={validate}
       onSubmit={onSubmit}
@@ -181,6 +185,24 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
                 options={suggestedForms}
                 component={SelectField}
               />
+              <div className="label">{t('publish-date')}</div>
+              <div className="field is-grouped luma">
+                <DatePicker
+                  format={'d.M.yyyy'}
+                  value={values.publishDay}
+                  className="input"
+                  placeholder={t('publish-date')}
+                  onChange={value => setFieldValue('publishDay', value)}
+                />
+
+                <TimePicker
+                  className="input"
+                  value={values.publishTime}
+                  style={{ marginLeft: 10 }}
+                  placeholder={t('publish-time')}
+                  onChange={value => setFieldValue('publishTime', value)}
+                />
+              </div>
             </section>
             <footer className="modal-card-foot">
               <button className="button luma" type='submit' onClick={handleSubmit}>{t('create')}</button>

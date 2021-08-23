@@ -148,6 +148,7 @@ export const CREATE_EVENT = gql`
     $duration: Int!,
     $customForm: ID,
     $group: ID,
+    $publishDate: String
     ) {
     createEvent (
       title: $title,
@@ -166,6 +167,7 @@ export const CREATE_EVENT = gql`
       duration: $duration
       customForm: $customForm
       group: $group
+      publishDate: $publishDate
     ) {
       id
       title
@@ -205,6 +207,7 @@ export const CREATE_EVENT = gql`
         id
         name
       }
+      publishDate
     }
   }
 `
@@ -413,6 +416,7 @@ export const UPDATE_EVENT = gql`
     $end:String
     $customForm: ID
     $group: ID
+    $publishDate: String
   ) {
     modifyEvent(
       event: $event
@@ -430,6 +434,7 @@ export const UPDATE_EVENT = gql`
       end: $end
       customForm: $customForm
       group: $group
+      publishDate: $publishDate
     ) {
       id
       title
@@ -462,6 +467,7 @@ export const UPDATE_EVENT = gql`
         id
         name
       }
+      publishDate
     }
   }
 `

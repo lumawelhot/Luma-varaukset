@@ -6,6 +6,8 @@ import { EXTRAS, GET_ALL_FORMS, GET_GROUPS } from '../../graphql/queries'
 import { createGradeList, createPlatformList, createResourceList } from '../../helpers/form'
 import { AdditionalServices, EventType, Grades, Platforms, ScienceClasses, TimePick, SelectField } from '../EventForm/FormComponents'
 import LumaTagInput from '../LumaTagInput/LumaTagInput'
+import DatePicker from '../Pickers/DatePicker'
+import TimePicker from '../Pickers/TimePicker'
 import { TextArea, TextField } from '../VisitForm/FormFields'
 
 const Form = ({ event, close, save, validate, tags }) => {
@@ -45,7 +47,9 @@ const Form = ({ event, close, save, validate, tags }) => {
         startTime: new Date(event.eventStart),
         endTime: new Date(event.eventEnd),
         customForm: event.customForm ? event.customForm : '',
-        group: event.group ? event.group.id : ''
+        group: event.group ? event.group.id : '',
+        publishTime: event.publishDate ? new Date(event.publishDate) : '',
+        publishDay: event.publishDate ? new Date(event.publishDate) : ''
       }}
       validate={validate}
       onSubmit={save}
@@ -133,6 +137,24 @@ const Form = ({ event, close, save, validate, tags }) => {
                 options={suggestedForms}
                 component={SelectField}
               />
+              <div className="label">{t('publish-date')}</div>
+              <div className="field is-grouped luma">
+                <DatePicker
+                  format={'d.M.yyyy'}
+                  value={values.publishDay}
+                  className="input"
+                  placeholder={t('publish-date')}
+                  onChange={value => setFieldValue('publishDay', value)}
+                />
+
+                <TimePicker
+                  className="input"
+                  value={values.publishTime}
+                  style={{ marginLeft: 10 }}
+                  placeholder={t('publish-time')}
+                  onChange={value => setFieldValue('publishTime', value)}
+                />
+              </div>
 
             </section>
             <footer className="modal-card-foot">

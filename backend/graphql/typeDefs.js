@@ -185,6 +185,7 @@ const typeDefs = gql`
       duration: Int!
       customForm: ID
       group: ID
+      publishDate: String
     ): Event
     modifyEvent(
       event: ID!
@@ -204,6 +205,7 @@ const typeDefs = gql`
       #duration: Int!
       customForm: ID
       group: ID
+      publishDate: String
     ): Event
     createVisit(
       event: ID!
