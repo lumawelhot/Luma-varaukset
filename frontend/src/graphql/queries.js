@@ -77,6 +77,7 @@ export const EVENTS = gql`
         disabled
         publishDate
       }
+      publishDate
     }
   }
 `
@@ -743,6 +744,22 @@ export const ASSIGN_EVENTS_TO_GROUP = gql`
     ) {
       id
       title
+    }
+  }
+`
+
+export const ASSIGN_PUBLISH_DATE_TO_EVENTS = gql `
+  mutation assignPublishDateToEvents(
+    $events: [ID]
+    $publishDate: String
+  ) {
+    assignPublishDateToEvents(
+      publishDate: $publishDate
+      events: $events
+    ) {
+      id
+      title
+      publishDate
     }
   }
 `

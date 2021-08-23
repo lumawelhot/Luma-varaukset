@@ -49,6 +49,8 @@ const typeDefs = gql`
     disabled: Boolean!
     locked: Boolean!
     group: Group
+    publishDate: String
+
   }
   type Visit {
     id: ID!
@@ -110,6 +112,10 @@ const typeDefs = gql`
     getGroups: [Group]
   }
   type Mutation {
+    assignPublishDateToEvents(
+      events: [ID]
+      publishDate: String
+    ): [Event]
     createGroup(
       name: String!
       maxCount: Int!
