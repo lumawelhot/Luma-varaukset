@@ -33,7 +33,7 @@
   "remove-confirm": "Haluatko varmasti poistaa vierailun?",
   "available-extras": "Valittavissa olevat lisävalinnat",
   "available-to-grades": "Tarjolla seuraaville luokka-asteille",
-  "length": "Toiminnan kesto",
+  "length": "Kesto ilman lisävalintoja",
   "minutes": "minuuttia",
   "cannot-be-booked": "Valitettavasti tämä vierailu ei ole varattavissa.",
   "change-info": "Muokkaa tietoja",

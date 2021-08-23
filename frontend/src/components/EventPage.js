@@ -183,8 +183,8 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
                       {event.remoteVisit && !event.inPersonVisit? t('in-remote') : <></>}
                     </p>
                     <p><strong>{t('event-date')}:</strong> {format(event.start, 'd.M.yyyy')}</p>
-                    <p><strong>{t('event-start')}:</strong> {format(event.start, 'HH:mm')}</p>
-                    <p><strong>{t('event-end')}:</strong> {format(event.end, 'HH:mm')}</p>
+                    <p><strong>{t('earliest-start')}:</strong> {format(event.start, 'HH:mm')}</p>
+                    <p><strong>{t('latest-end')}:</strong> {format(event.end, 'HH:mm')}</p>
                     <p><strong>{t('length')}:</strong> {event.duration} {t('minutes')} </p>
                     {event.locked || event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days) ?
                       <p className="subtitle unfortunately"><b>{t('cannot-be-booked')}</b></p> : null}
