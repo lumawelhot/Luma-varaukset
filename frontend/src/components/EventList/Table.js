@@ -18,6 +18,7 @@ const Table = ({ tableEvents, checkedEvents, handleCheckEvent }) => {
           <th>{t('time')}</th>
           <th>{t('group')}</th>
           <th>{t('has-visits')}</th>
+          <th>{t('publish-date')}</th>
         </tr>
       </thead>
       <tbody>
@@ -41,6 +42,7 @@ const Table = ({ tableEvents, checkedEvents, handleCheckEvent }) => {
               <td>{`${format(new Date(event.start), 'HH:mm')} - ${format(new Date(event.end), 'HH:mm')}`}</td>
               <td>{event.group ? event.group.name : ''}</td>
               <td>{event.visits.length}</td>
+              <td>{event.publishDate ? `${format(new Date(event.publishDate), 'dd.MM.yyyy')}, ${format(new Date(event.publishDate), 'HH:mm')}` : ''}</td>
             </tr>
           )
         })}

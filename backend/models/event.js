@@ -90,6 +90,10 @@ const eventSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Group',
     required: false
+  },
+  publishDate: {
+    type: Date,
+    required: false
   }
 })
 

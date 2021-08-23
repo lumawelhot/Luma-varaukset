@@ -3,6 +3,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { CREATE_EVENT, TAGS } from '../../graphql/queries'
+import { getPublishDate } from '../../helpers/form'
 import Form from './Form'
 
 export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeRange, event, tags }) => {
@@ -106,7 +107,8 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
         extras: values.extras,
         duration: values.duration,
         customForm: values.customForm,
-        group: values.group ? values.group : null
+        group: values.group ? values.group : null,
+        publishDate: (values.publishDay && values.publishTime) ? getPublishDate(values.publishDay, values.publishTime) : null
       },
     })
   }

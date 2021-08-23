@@ -37,3 +37,13 @@ export const createResourceList = event => {
   event.resourceids.forEach(resource => resources[resource - 1] = true)
   return resources
 }
+
+export const getPublishDate = (publishDay, publishTime) => {
+  let publishDate = null
+  if (publishDay && publishTime) {
+    const time = new Date(publishTime)
+    publishDate = set(new Date(publishDay), { hours: time.getHours(), minutes: time.getMinutes(), seconds: 0 })
+    return (publishTime && publishDay) ? publishDate.toISOString() : null
+  }
+  return null
+}

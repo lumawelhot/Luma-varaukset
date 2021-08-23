@@ -46,7 +46,7 @@ const resolvers = {
         if (!currentUser) {
           return events
             .filter(event => {
-              if (event.group && event.group.publishDate && new Date() < event.group.publishDate) {
+              if (event.publishDate && new Date() < event.publishDate) {
                 return false
               }
               return true
@@ -151,6 +151,9 @@ const resolvers = {
   Group: {
     publishDate: (group) => group.publishDate ? new Date(group.publishDate).toISOString() : null
   },
+  Event: {
+    publishDate: (event) => event.publishDate ? new Date(event.publishDate).toISOString() : null
+  },
   Mutation: {
     createGroup: async (root, args, { currentUser }) => {
       if (!currentUser) {
@@ -192,6 +195,23 @@ const resolvers = {
         }
         await Group.findByIdAndRemove(args.group)
         return 'Deleted Group with ID ' + args.group
+      } catch (error) {
+        throw new UserInputError('Backend problem')
+      }
+    },
+    assignPublishDateToEvents: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+      try {
+        let returnedEvents = []
+        const events = await Event.find({ _id: { $in: args.events } })
+        for (let event of events) {
+          event.publishDate = args.publishDate ? new Date(args.publishDate) : undefined
+          await event.save()
+          returnedEvents.push(event)
+        }
+        return returnedEvents.map(event => Object.assign(event.toJSON(), { locked: event.reserved ? true : false }))
       } catch (error) {
         throw new UserInputError('Backend problem')
       }
@@ -335,7 +355,8 @@ const resolvers = {
         }],
         duration: args.duration,
         customForm: args.customForm,
-        disabled: false
+        disabled: false,
+        publishDate: args.publishDate ? new Date(args.publishDate) : null
       })
 
       event.extras = extras
@@ -412,7 +433,7 @@ const resolvers = {
     },
     modifyEvent: async (root, args, { currentUser }) => {
       const extras = await Extra.find({ _id: { $in: args.extras } })
-      const { title, desc, resourceids, grades, remotePlatforms, otherRemotePlatformOption, remoteVisit, inPersonVisit, customForm } = args
+      const { title, desc, resourceids, grades, remotePlatforms, otherRemotePlatformOption, remoteVisit, inPersonVisit, customForm, publishDate } = args
       const event = await Event.findById(args.event).populate('visits')
       if (!event) throw new UserInputError('Event could not be found')
       if (!currentUser) throw new AuthenticationError('not authenticated')
@@ -452,6 +473,7 @@ const resolvers = {
       remoteVisit !== undefined ? event.remoteVisit = remoteVisit : null
       inPersonVisit !== undefined ? event.inPersonVisit = inPersonVisit : null
       customForm !== undefined ? event.customForm = customForm : null
+      publishDate ? event.publishDate = new Date(publishDate) : null
       event.extras = extras
       event.tags = await addNewTags(args.tags)
       if (event.visits.length) {

@@ -7,6 +7,7 @@ import DatePicker from '../Pickers/DatePicker'
 import Form from '../EventList/Form'
 import Table from './Table'
 import GroupModal from './GroupModal'
+import PublishModal from './PublishModal'
 
 const EventList = ({ events, sendMessage, currentUser }) => {
   const { t } = useTranslation('event')
@@ -58,6 +59,10 @@ const EventList = ({ events, sendMessage, currentUser }) => {
     setModalState('group')
   }
 
+  const openPublishModal = () => {
+    setModalState('publish')
+  }
+
   const handleChooseAll = () => {
     if (checkedEvents.length === tableEvents.length) {
       setCheckedEvents([])
@@ -69,6 +74,14 @@ const EventList = ({ events, sendMessage, currentUser }) => {
 
   return (
     <>
+      <div className={`modal ${modalState === 'publish' ? 'is-active':''}`}>
+        <div className="modal-background"></div>
+        <PublishModal
+          setModalState={setModalState}
+          checkedEvents={checkedEvents}
+          events={events}
+        />
+      </div>
       <div className={`modal ${modalState === 'group' ? 'is-active':''}`}>
         <div className="modal-background"></div>
         <GroupModal
@@ -104,6 +117,7 @@ const EventList = ({ events, sendMessage, currentUser }) => {
         <Table handleCheckEvent={handleCheckEvent} tableEvents={tableEvents} checkedEvents={checkedEvents} />
         <div className="field is-grouped">
           <button className="button luma primary" onClick={openGroupModal} >{t('assign-to-group')}</button>
+          <button className="button luma primary" onClick={openPublishModal} >{t('set-publish-date')}</button>
           {currentUser.isAdmin &&
             <button className="button luma primary" onClick={openDeleteModal} >{t('delete-choosen-events')}</button>
           }
