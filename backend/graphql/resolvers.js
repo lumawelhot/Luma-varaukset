@@ -45,13 +45,29 @@ const resolvers = {
         }
         if (!currentUser) {
           return events
+            .filter(event => {
+              if (event.group && event.group.publishDate && new Date() < event.group.publishDate) {
+                return false
+              }
+              return true
+            })
+            .map(event => {
+              if (event.group && event.group.disabled) {
+                event.availableTimes = []
+              }
+              return event
+            })
+            .map(event => Object.assign(event.toJSON(), { locked: event.reserved ? true : false }))
+        }
+        /* if (!currentUser) {
+          return events
             .filter(event => event.group ?
               (event.group.publishDate ?
                 new Date().getTime() >= event.group.publishDate.getTime()
                 : !event.group.disabled)
               : true)
             .map(event => Object.assign(event.toJSON(), { locked: event.reserved ? true : false }))
-        }
+        } */
         return events.map(event => Object.assign(event.toJSON(), { locked: event.reserved ? true : false }))
       } catch (error) {
         throw new UserInputError('Error occured when fetching events')
@@ -168,7 +184,13 @@ const resolvers = {
         throw new AuthenticationError('not authenticated')
       }
       try {
-        await Group.deleteOne({ _id: args.group })
+        const group = await Group.findById(args.group)
+        for (let id of group.events) {
+          const event = await Event.findById(id)
+          event.disabled = true
+          await event.save()
+        }
+        await Group.findByIdAndRemove(args.group)
         return 'Deleted Group with ID ' + args.group
       } catch (error) {
         throw new UserInputError('Backend problem')
@@ -368,7 +390,7 @@ const resolvers = {
         pubsub.publish('EVENT_UNLOCKED', {
           eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
         })
-      }, 305000)
+      }, 610000)
 
       await event.save()
       pubsub.publish('EVENT_LOCKED', {
@@ -414,6 +436,9 @@ const resolvers = {
           }
           if (group.visitCount > group.maxCount) {
             throw new UserInputError('max number of visits exceeded')
+          }
+          if (group.visitCount === group.maxCount) {
+            group.disabled = true
           }
         }
       }
@@ -691,6 +716,15 @@ const resolvers = {
         })
         const savedExtra = await newExtra.save()
         return savedExtra
+      } catch (error) {
+        throw new UserInputError(error.message, { invalidArgs: args })
+      }
+    },
+    modifyExtra: async (root, args, { currentUser }) => {
+      if (!currentUser) throw new AuthenticationError('not authenticated or no credentials')
+      try {
+        const extra = await Extra.findByIdAndUpdate(args.id, { ...args })
+        return extra
       } catch (error) {
         throw new UserInputError(error.message, { invalidArgs: args })
       }

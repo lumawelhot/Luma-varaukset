@@ -10,7 +10,7 @@ const VisitList = ({ notify }) => {
   const { t } = useTranslation('visit')
 
   const result = useQuery(VISITS)
-  const [filters, setFilters] = useState([])
+  const [filters, setFilters] = useState([1, 2, 3, 4, 5])
 
   const history = useHistory()
 
@@ -30,7 +30,7 @@ const VisitList = ({ notify }) => {
   }
 
   const renderedVisits = result.data.getVisits.filter(visit => {
-    return filters.length ? visit.event.resourceids.some(r => filters.includes(r)) : true
+    return visit.event.resourceids.some(r => filters.includes(r))
   })
 
   return (

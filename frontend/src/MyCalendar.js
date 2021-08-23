@@ -52,7 +52,9 @@ const MyCalendar = ({
   setCurrentView,
   sendMessage,
   addEvent,
-  tags
+  tags,
+  showFull,
+  setShowFull
 }) => {
   const [showModifyModal, setShowModifyModal] = useState(false)
   const [showCopyModal, setShowCopyModal] = useState(false)
@@ -255,6 +257,15 @@ const MyCalendar = ({
           tags={tags}
         />
       </Wrapper>
+      <Wrapper elementId="filterspan">
+        {currentUser &&
+          <button
+            style={{ marginLeft: 10 }}
+            className={`button luma ${showFull ? 'active' : ''}`}
+            onClick={() => setShowFull(!showFull)}
+          >{t('events-with-full-group')}</button>
+        }
+      </Wrapper>
       <DragAndDropCalendar
         culture='fi'
         localizer={localizer}
@@ -267,7 +278,9 @@ const MyCalendar = ({
           agenda: true
         }}
         showMultiDayTimes
-        events={localEvents.filter(event => event.group ? !event.group.disabled : true).filter(event => filterFunction(event))}
+        events={localEvents
+          .filter(event => event.group ? (!event.group.disabled || showFull) : true)
+          .filter(event => filterFunction(event))}
         startAccessor='start'
         endAccessor='end'
         min={set(new Date(), { hours: 8, minutes: 0, seconds:0, milliseconds: 0 })}

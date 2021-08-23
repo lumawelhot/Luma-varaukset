@@ -11,7 +11,7 @@ const cors = require('cors')
 const jwt = require('jsonwebtoken')
 
 const User = require('./models/user')
-// const Event = require('./models/event')
+const Event = require('./models/event')
 const Tag = require('./models/tag')
 //const Extra = require('./models/tag')
 const config = require('./utils/config')
@@ -137,6 +137,15 @@ const createTags = async () => {
 //   })
 // }
 
+const unlockEvents = async () => {
+  const events = await Event.find({})
+  for (let event of events) {
+    event.reserved = null
+    await event.save()
+  }
+  console.log('event reservations unlocked')
+}
+
 if (process.env.NODE_ENV === 'test') {
   const { importStaticEvents }  = require('./utils/importStaticData')
   const { MongoMemoryServer } = require('mongodb-memory-server')
@@ -168,6 +177,7 @@ if (process.env.NODE_ENV === 'test') {
   mongoose.connect('mongodb://luma-varaukset-db:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
       console.log('Connected to MongoDB')
+      unlockEvents()
     })
     .catch((error) => {
       console.log('Error connecting to MongoDB: ', error.message)
@@ -179,6 +189,7 @@ if (process.env.NODE_ENV === 'test') {
   mongoose.connect('mongodb://localhost:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
       console.log('connected to MongoDB')
+      unlockEvents()
     })
   const db = mongoose.connection
   db.on('error', console.error.bind(console, 'MongoDB connection error:'))

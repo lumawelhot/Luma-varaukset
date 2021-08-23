@@ -24,7 +24,7 @@ import FormList from './components/FormEditor/FormList'
 import { useTranslation } from 'react-i18next'
 import EventList from './components/EventList'
 import EmailConfig from './components/EmailConfig'
-import { FaLock } from 'react-icons/fa'
+import { FaLock, FaEyeSlash } from 'react-icons/fa'
 import GroupList from './components/GroupList'
 
 const App = () => {
@@ -39,6 +39,7 @@ const App = () => {
   const result = useQuery(EVENTS)
   const [showEventForm, setShowEventForm] = useState(false)
   const [newEventTimeRange, setNewEventTimeRange] = useState(undefined)
+  const [showFull, setShowFull] = useState(false)
   const [getUser, { loading, data }] = useLazyQuery(CURRENT_USER, {
     fetchPolicy: 'cache-and-network'
   })
@@ -68,6 +69,8 @@ const App = () => {
 
   const [currentUser, setUser] = useState(null)
 
+  useEffect(() => { result.refetch() }, [currentUser])
+
   const parseEvent = (event) => {
     const sortedVisitTimes = event.visits.slice().sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
     let invalidTimeSlot
@@ -78,16 +81,35 @@ const App = () => {
       }
     }
 
+    const createTitle = () => {
+      const unAvailable = <>
+        <label style={{ color: 'black', margin: 5 }}>
+          <FaEyeSlash />
+        </label>
+        {event.title}
+      </>
+
+      if (event.group && event.group.disabled) return unAvailable
+      if (event.group && event.group.publishDate) {
+        const publish = new Date(event.group.publishDate)
+        if (new Date() < publish) {
+          return unAvailable
+        }
+      }
+      return (
+        <>
+          {!event.booked && event.locked &&
+            <label style={{ color: `${event.resourceids.includes(1) ? 'yellow' : 'red'}`, margin: 5 }}>
+              <FaLock />
+            </label>
+          }
+          {event.title}
+        </>
+      )
+    }
+
     const details = {
       id: event.id,
-      title: <>
-        {!event.booked && event.locked &&
-          <label style={{ color: 'red', margin: 5 }}>
-            <FaLock />
-          </label>
-        }
-        {event.title}
-      </>,
       titleText: event.title,
       resourceids: event.resourceids,
       grades: event.grades,
@@ -111,6 +133,7 @@ const App = () => {
     delete details.visits
     let events = event.availableTimes.map(timeSlot => Object({
       ...details,
+      title: createTitle(),
       start: new Date(timeSlot.startTime),
       end: new Date(timeSlot.endTime),
       booked: event.booked,
@@ -119,6 +142,7 @@ const App = () => {
     }))
     events = events.concat(event.visits.map(visit => Object({
       ...details,
+      title: event.title,
       start: new Date(visit.startTime),
       end: new Date(visit.endTime),
       booked: true,
@@ -255,7 +279,7 @@ const App = () => {
         </Route>
         <Route path='/group-list'>
           {currentUser &&
-            <GroupList />
+            <GroupList sendMessage={notify} />
           }
         </Route>
         <Route path='/book'>
@@ -349,6 +373,8 @@ const App = () => {
             setCurrentView={setCurrentView}
             addEvent={addEvent}
             tags={tags}
+            showFull={showFull}
+            setShowFull={setShowFull}
           />
           <UserPage currentUser={currentUser} setShowEventForm={setShowEventForm} />
           {!currentUser &&

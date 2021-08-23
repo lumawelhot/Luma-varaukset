@@ -152,7 +152,7 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
             <div className="section">
               <div className="box">
                 <div className="content">
-                  <div className="title" style={event.disabled ? { color: 'red' } : null}>{event.title}{event.disabled ? ` - ${t('disabled')}` : null}</div>
+                  <div className="title" style={event.disabled ? { color: 'red' } : null}>{event.titleText}{event.disabled ? ` - ${t('disabled')}` : null}</div>
                   <div className="tags eventpage">
                     {event.tags.map(t => <span key={t.id} className="tag is-small luma">{t.name}</span>)}
                   </div>
@@ -186,10 +186,10 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
                     <p><strong>{t('event-start')}:</strong> {format(event.start, 'HH:mm')}</p>
                     <p><strong>{t('event-end')}:</strong> {format(event.end, 'HH:mm')}</p>
                     <p><strong>{t('length')}:</strong> {event.duration} {t('minutes')} </p>
-                    {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days) ?
+                    {event.locked || event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days) ?
                       <p className="subtitle unfortunately"><b>{t('cannot-be-booked')}</b></p> : null}
                     <div className="field is-grouped is-grouped-multiline">
-                      {event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days)
+                      {event.locked || event.booked || (currentUser && !startsAfter1Hour) || (!currentUser && !startsAfter14Days)
                         ? null :
                         !event.disabled &&
                         <div className="control">
