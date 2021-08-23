@@ -29,7 +29,7 @@ exports[`Renders without error with admin user 1`] = `
       <button
         class="button luma"
       >
-        Lisäpalvelut
+        Lisävalinnat
       </button>
     </div>
     <div
@@ -120,7 +120,7 @@ exports[`Renders without error with user 1`] = `
       <button
         class="button luma"
       >
-        Lisäpalvelut
+        Lisävalinnat
       </button>
     </div>
     <div

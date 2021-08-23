@@ -327,10 +327,34 @@ export const CREATE_EXTRA = gql`
       $inPersonLength: Int!
     ) {
     createExtra (
-    name: $name
-    classes: $classes
-    remoteLength: $remoteLength
-    inPersonLength: $inPersonLength
+      name: $name
+      classes: $classes
+      remoteLength: $remoteLength
+      inPersonLength: $inPersonLength
+    ) {
+      id
+      name
+      classes
+      remoteLength
+      inPersonLength
+    }
+  }
+`
+
+export const MODIFY_EXTRA = gql`
+  mutation moidfyExtra(
+      $id: ID!
+      $name: String!
+      $classes: [Int]!
+      $remoteLength: Int!
+      $inPersonLength: Int!
+    ) {
+    modifyExtra (
+      id: $id  
+      name: $name
+      classes: $classes
+      remoteLength: $remoteLength
+      inPersonLength: $inPersonLength
     ) {
       id
       name

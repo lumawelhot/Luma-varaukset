@@ -110,7 +110,6 @@ const App = () => {
 
     const details = {
       id: event.id,
-      title: createTitle(),
       titleText: event.title,
       resourceids: event.resourceids,
       grades: event.grades,
@@ -134,6 +133,7 @@ const App = () => {
     delete details.visits
     let events = event.availableTimes.map(timeSlot => Object({
       ...details,
+      title: createTitle(),
       start: new Date(timeSlot.startTime),
       end: new Date(timeSlot.endTime),
       booked: event.booked,
@@ -142,6 +142,7 @@ const App = () => {
     }))
     events = events.concat(event.visits.map(visit => Object({
       ...details,
+      title: event.title,
       start: new Date(visit.startTime),
       end: new Date(visit.endTime),
       booked: true,
