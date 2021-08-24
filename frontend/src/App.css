@@ -1151,7 +1151,8 @@ option {
 .fc-dayGridMonth-button.fc-button.fc-button-primary,
 .fc-next-button.fc-button.fc-button-primary,
 .fc-prev-button.fc-button.fc-button-primary,
-.fc-today-button.fc-button.fc-button-primary {
+.fc-today-button.fc-button.fc-button-primary,
+.fc-filterButton-button.fc-button.fc-button-primary {
   display: inline-block;
   margin: 0;
   text-align: center;

@@ -222,9 +222,16 @@ const App = () => {
     history.push('/')
   }
 
-  const handleEventClick = (event) => {
-    //const selectedEvent = events.find(e => e.id === event.id)
-    setClickedEvent(event) // <- event tulee suoraan klikatusta, ei tarvitse hakea eventseistä
+  const handleEventClick = ({ event }) => {
+    const id = event._def.publicId
+    const details = event._def.extendedProps
+    setClickedEvent({
+      ...details,
+      id,
+      duration: details.len,
+      start: details.slotStart,
+      end: details.slotEnd
+    })
     history.push('/event-page')
   }
 
