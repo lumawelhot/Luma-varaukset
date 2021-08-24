@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
@@ -18,6 +19,10 @@ import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import { ModifyEvent } from './components/ModifyEventModal'
 import { useTranslation } from 'react-i18next'
 import { EventForm } from './components/EventForm'
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
 
 const DragAndDropCalendar = withDragAndDrop(Calendar)
 
@@ -106,8 +111,8 @@ const MyCalendar = ({
     if (date) setCurrentDate(date)
   }
 
-  const handleView = (view) => {
-    if (view) setCurrentView(view)
+  const handleView = (item) => {
+    setCurrentView(item.view.type)
   }
 
   const handleSelect = ({ start, end }) => {
@@ -266,6 +271,30 @@ const MyCalendar = ({
           >{t('events-with-full-group')}</button>
         }
       </Wrapper>
+      <FullCalendar
+        plugins={[ timeGridPlugin, dayGridPlugin, interactionPlugin ]}
+        initialView={currentView}
+        height={600}
+        headerToolbar={{
+          left: 'today prev,next',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        }}
+        datesSet={handleView}
+        weekends={false}
+        selectable={true}
+        dayMaxEvents={true}
+        slotMinTime="08:00:00"
+        slotMaxTime="18:00:00"
+        events={localEvents
+          .map(event => {
+            event.title = event.titleText
+            event.color = event.resourceids.length > 1 ? 'black' : resourceColorsLUMA[event.resourceids[0]]
+            return event
+          })
+          .filter(event => event.group ? (!event.group.disabled || showFull) : true)
+          .filter(event => filterFunction(event))}
+      />
       <DragAndDropCalendar
         culture='fi'
         localizer={localizer}
@@ -298,9 +327,9 @@ const MyCalendar = ({
         dayPropGetter={customDayPropGetter}
         eventPropGetter={customEventPropGetter}
         onNavigate={handleNavigate}
-        onView={handleView}
+        //onView={handleView}
         date={currentDate}
-        view={currentView}
+        //view={currentView}
         tooltipAccessor={null}
         draggableAccessor={() => currentUser ? true : false}
         onEventDrop={handleDrop}

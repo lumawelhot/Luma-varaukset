@@ -32,7 +32,7 @@ const App = () => {
   const history = useHistory()
   const allTags = useQuery(TAGS)
   const [currentDate, setCurrentDate] = useState(null)
-  const [currentView, setCurrentView] = useState('work_week')
+  const [currentView, setCurrentView] = useState('timeGridWeek')
   const [events, setEvents] = useState([])
   const [tags, setTags] = useState([])
   const client = useApolloClient()
