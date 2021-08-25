@@ -980,12 +980,6 @@ button.button.luma {
   margin-right: 10px;
 }
 
-.button.luma.active {
-  background-color: #0479a5;
-  border-color: #0479a5;
-  color: #fff;
-}
-
 .button.luma.primary {
   background-color: #0479a5;
   border-color: #0479a5;
@@ -1005,7 +999,8 @@ button.button.luma {
   color: #fff;
 }
 
-.title {
+.title,
+.fc-toolbar-title {
   font-size: 1.45rem;
   font-weight: 700;
   letter-spacing: normal;
@@ -1135,10 +1130,11 @@ form.luma hr,
 .tag-count {
   margin-left: 165px;
   position: absolute;
-  left: 0px
+  left: 0px;
 }
 
-.select, .select select{ 
+.select,
+.select select {
   width: 100%;
 }
 
@@ -1149,6 +1145,7 @@ option {
 .fc-timeGridDay-button.fc-button.fc-button-primary,
 .fc-timeGridWeek-button.fc-button.fc-button-primary,
 .fc-dayGridMonth-button.fc-button.fc-button-primary,
+.fc-listMonth-button.fc-button.fc-button-primary,
 .fc-next-button.fc-button.fc-button-primary,
 .fc-prev-button.fc-button.fc-button-primary,
 .fc-today-button.fc-button.fc-button-primary,
@@ -1174,4 +1171,19 @@ option {
 .fc-next-button.fc-button.fc-button-primary,
 .fc-prev-button.fc-button.fc-button-primary {
   font-size: 80%;
+}
+
+.button.luma.active,
+.fc-button-active,
+.fc-timeGridDay-button.fc-button.fc-button-primary.fc-button-active,
+.fc-timeGridWeek-button.fc-button.fc-button-primary.fc-button-active,
+.fc-dayGridMonth-button.fc-button.fc-button-primary.fc-button-active,
+.fc-listMonth-button.fc-button.fc-button-primary.fc-button-active,
+.fc-next-button.fc-button.fc-button-primary.fc-button-active,
+.fc-prev-button.fc-button.fc-button-primary.fc-button-active,
+.fc-today-button.fc-button.fc-button-primary.fc-button-active,
+.fc-filterButton-button.fc-button.fc-button-primary.fc-button-active {
+  background-color: #0479a5 !important;
+  border-color: #0479a5 !important;
+  color: #fff;
 }

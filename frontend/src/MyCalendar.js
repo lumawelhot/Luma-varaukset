@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import { resourceColorsLUMA } from './helpers/styles'
 import CalendarFilter from './components/Filter/CalendarFilter'
@@ -8,8 +8,13 @@ import { useTranslation } from 'react-i18next'
 import { EventForm } from './components/EventForm'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import listPlugin from '@fullcalendar/list'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import fiLocale from '@fullcalendar/core/locales/fi'
+import svLocale from '@fullcalendar/core/locales/sv'
+import enLocale from '@fullcalendar/core/locales/en-gb'
+import LumaEvent from './components/Custom/LumaEvent'
 
 const Wrapper = (props) => {
   const domNode = document.getElementById(props.elementId)
@@ -41,10 +46,11 @@ const MyCalendar = ({
   const [showCopyModal, setShowCopyModal] = useState(false)
   const [actionSelection, setActionSelection] = useState(false)
   const [event, setEvent] = useState(null)
-  const { t } = useTranslation('common')
+  const { t, i18n } = useTranslation('common')
   const [localEvents, setEvents] = useState([])
   const [filterFunction, setFilterFunction] = useState(() => () => { return true })
   const [showFilterOptions, setShowFilterOptions] = useState(false)
+  const calendarRef = useRef()
 
   useEffect(() => {
     if (!currentUser) setEvents(events.filter(event => event.disabled === false))
@@ -106,6 +112,44 @@ const MyCalendar = ({
     )
   }
 
+  const getLocale = () => {
+    if (i18n.language.startsWith('fi')) {
+      return fiLocale
+    } else if (i18n.language.startsWith('sv')) {
+      return svLocale
+    }
+    return enLocale
+  }
+
+  /*   const renderEventContent = (eventInfo) => {
+    let timeText
+    if (!eventInfo.event.allDay) {
+      const startText = eventInfo.event?.start?.toISOString() || ''
+      const endText = eventInfo.event?.end?.toISOString() || null
+      timeText = startText.substr(11,5) + (endText ? '-' + endText.substr(11,5) : '')
+    }
+    const isRecurring = eventInfo.event._def.recurringDef !== null
+    const viewIsMonth = eventInfo.view.type === 'dayGridMonth'
+    return (
+      <>
+        {viewIsMonth && <span className="fc-list-event-dot" style={{ borderColor: eventInfo.event.backgroundColor }}></span>}
+        <b>{timeText}</b>{isRecurring && <span className='icon is-small'><i className="fas fa-sync"></i></span>}
+        <span className='luma-calendar-event'> {eventInfo.event.title}</span>
+      </>
+    )
+  } */
+
+  const handleDateSelect = (selectInfo) => {
+    console.log(selectInfo)
+    const calApi = calendarRef.current.getApi()
+
+    if (selectInfo.jsEvent.path[0].className.includes('number')) {
+      calApi.changeView('timeGridDay', selectInfo.startStr)
+      return
+    }
+    calApi.unselect() // clear date selection
+  }
+
   return (
     <>
       <div className={`modal ${actionSelection ? 'is-active':''}`}>
@@ -160,14 +204,16 @@ const MyCalendar = ({
         </div>
       </div>
       <FullCalendar
+        ref={calendarRef}
         editable={currentUser ? true : false}
-        plugins={[ timeGridPlugin, dayGridPlugin, interactionPlugin ]}
+        plugins={[ timeGridPlugin, dayGridPlugin, interactionPlugin, listPlugin ]}
         initialView={currentView}
+        locale={getLocale()}
         height={600}
         headerToolbar={{
           left: 'today prev,next',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay filterButton'
+          right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth filterButton'
         }}
         customButtons={{
           filterButton: {
@@ -175,13 +221,19 @@ const MyCalendar = ({
             click: () => setShowFilterOptions(!showFilterOptions)
           }
         }}
+        buttonText={{
+          list: 'Agenda'
+        }}
         datesSet={handleView}
         weekends={false}
+        weekNumbers={true}
+        nowIndicator={true}
         initialDate={currentDate}
         selectable={true}
         dayMaxEvents={true}
         slotMinTime="08:00:00"
         slotMaxTime="18:00:00"
+        snapDuration='00:15:00'
         events={localEvents
           .map(event => {
             event.title = event.titleText
@@ -198,6 +250,9 @@ const MyCalendar = ({
           .filter(event => filterFunction(event))}
         eventDrop={handleDrop}
         eventClick={handleEventClick}
+        eventContent={(eventInfo) => <LumaEvent eventInfo={eventInfo}/>}
+        select={(e) => handleDateSelect(e)}
+        timeZone='Europe/Helsinki'
       />
     </>)
 }
