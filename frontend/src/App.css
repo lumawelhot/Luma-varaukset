@@ -1148,8 +1148,7 @@ option {
 .fc-listMonth-button.fc-button.fc-button-primary,
 .fc-next-button.fc-button.fc-button-primary,
 .fc-prev-button.fc-button.fc-button-primary,
-.fc-today-button.fc-button.fc-button-primary,
-.fc-filterButton-button.fc-button.fc-button-primary {
+.fc-today-button.fc-button.fc-button-primary {
   display: inline-block;
   margin: 0;
   text-align: center;
@@ -1190,4 +1189,9 @@ option {
 
 .fc-daygrid-more-link.fc-more-link {
   font-size: 120%;
+}
+
+.fc-filterButton-button.fc-button.fc-button-primary {
+  visibility: hidden;
+  width: 0;
 }

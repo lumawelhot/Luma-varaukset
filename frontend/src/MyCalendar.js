@@ -17,8 +17,16 @@ import fiLocale from '@fullcalendar/core/locales/fi'
 import svLocale from '@fullcalendar/core/locales/sv'
 import enLocale from '@fullcalendar/core/locales/en-gb'
 import LumaEvent from './components/Custom/LumaEvent'
+import { FaFilter } from 'react-icons/fa'
 
 const Wrapper = (props) => {
+  const domClassNodes = document.getElementsByClassName(props.elementClass)
+  if (domClassNodes.length) {
+    return ReactDOM.createPortal(
+      props.children,
+      domClassNodes[0].parentElement
+    )
+  }
   const domNode = document.getElementById(props.elementId)
   if (domNode) {
     return ReactDOM.createPortal(
@@ -121,7 +129,7 @@ const MyCalendar = ({
     return enLocale
   }
 
-  const renderEventContent = (eventInfo) => {
+  /* const renderEventContent = (eventInfo) => {
     let timeText
     if (!eventInfo.event.allDay) {
       const startText = eventInfo.event?.start?.toISOString() || ''
@@ -137,9 +145,10 @@ const MyCalendar = ({
         <span className='luma-calendar-event'> {eventInfo.event.title}</span>
       </>
     )
-  }
+  } */
 
   const handleDateSelect = (selectInfo) => {
+    if (!currentUser) return
     showNewEventForm(selectInfo.start, selectInfo.end)
     const calApi = calendarRef.current.getApi()
 
@@ -167,7 +176,7 @@ const MyCalendar = ({
           tags={tags}
         />}
       </div>
-      <div className={`modal ${showCopyModal ? 'is-active':''}`}>
+      <div className={`modal ${showCopyModal ? 'is-active': ''}`}>
         <div className="modal-background"></div>
         {event && <EventForm
           event={event}
@@ -181,29 +190,30 @@ const MyCalendar = ({
           tags={tags}
         />}
       </div>
-      <Wrapper elementId='filterdiv'>
-        <CalendarFilter
-          filterFunction={filterFunction}
-          setFilterFunction={setFilterFunction}
-          tags={tags}
-        />
-      </Wrapper>
-      <Wrapper elementId="filterspan">
-        {currentUser &&
-          <button
-            style={{ marginLeft: 10 }}
-            className={`button luma ${showFull ? 'active' : ''}`}
-            onClick={() => setShowFull(!showFull)}
-          >{t('events-with-full-group')}</button>
-        }
-      </Wrapper>
       <div className="filterbox" style={{ display: showFilterOptions ? 'block' : 'none' }}>
         <div className="box">
-          <div id="filterdiv"></div>
+          <CalendarFilter
+            filterFunction={filterFunction}
+            setFilterFunction={setFilterFunction}
+            tags={tags}
+          />
           <button className="button luma is-small" onClick={() => setShowFilterOptions(!showFilterOptions)}>OK</button>
-          <span id="filterspan" ></span>
+          {currentUser &&
+            <button
+              style={{ marginLeft: 10 }}
+              className={`button luma ${showFull ? 'active' : ''}`}
+              onClick={() => setShowFull(!showFull)}
+            >{t('events-with-full-group')}</button>
+          }
         </div>
       </div>
+      <Wrapper elementClass="fc-filterButton-button fc-button fc-button-primary">
+        <button id="filterButton" type="button" className="button luma fc-button fc-button-primary" style={{ marginLeft: -10, paddingTop: 3 }} onClick={() => setShowFilterOptions(!showFilterOptions)}>
+          <span className="icon is-small" style={{ position: 'relative', top: 2 }}><FaFilter/></span>
+          <span>{t('filter')}</span>
+          <span id="filterCount"></span>
+        </button>
+      </Wrapper>
       <FullCalendar
         ref={calendarRef}
         editable={currentUser ? true : false}
@@ -240,7 +250,7 @@ const MyCalendar = ({
             const after14Days = differenceInDays(event.start, new Date()) >= 14
             const after1Hour = differenceInMinutes(event.start, new Date()) >= 60
             const booked = (!currentUser && !after14Days) || (currentUser && !after1Hour) || event.booked
-            event.color = booked ? '#8a8a8a' : (event.resourceids.length > 1 ? 'black' : resourceColorsLUMA[event.resourceids[0] - 1])
+            event.color = (booked || event.disabled) ? '#8a8a8a' : (event.resourceids.length > 1 ? 'black' : resourceColorsLUMA[event.resourceids[0] - 1])
             const details = {
               ...event
             }

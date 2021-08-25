@@ -90,6 +90,7 @@ const App = () => {
       </>
 
       if (event.group && event.group.disabled) return unAvailable
+      if (event.disabled) return unAvailable
       if (event.publishDate) {
         const publish = new Date(event.publishDate)
         if (new Date() < publish) {

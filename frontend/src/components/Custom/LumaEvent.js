@@ -1,10 +1,8 @@
 import React from 'react'
 import { Popover } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { resourceColorsLUMA } from '../../helpers/styles'
-import { differenceInDays, differenceInMinutes } from 'date-fns'
 
-const LumaEvent = ({ eventInfo, currentUser }) => {
+const LumaEvent = ({ eventInfo }) => {
   const { t } = useTranslation('common')
   const event = eventInfo.event
   const details = event.extendedProps.details
@@ -35,9 +33,6 @@ const LumaEvent = ({ eventInfo, currentUser }) => {
       </>
     )
   }
-  const after14Days = differenceInDays(details.start, new Date()) >= 14
-  const after1Hour = differenceInMinutes(details.start, new Date()) >= 60
-  const booked = (!currentUser && !after14Days) || (currentUser && !after1Hour) || details.booked
 
   let agenda = eventInfo.view.type === 'listMonth' ? true : false
 
@@ -49,18 +44,18 @@ const LumaEvent = ({ eventInfo, currentUser }) => {
         mouseEnterDelay={1}
       >
         <span style={{
-          backgroundColor: agenda ? undefined : (booked ? '#8a8a8a' : (details.resourceids.length > 1 ? 'black' : resourceColorsLUMA[details.resourceids[0] - 1])),
+          backgroundColor: agenda ? undefined : details.color,
           fontSize: '120%',
           width: '100%',
-          color: agenda ? 'black' : 'white',
+          color: agenda ? (details.disabled ? 'red' : 'black') : 'white',
           paddingLeft: 3,
           borderStyle: agenda ? undefined : 'solid',
           borderRadius: 7,
           position: agenda ? undefined : 'absolute',
-          borderColor: booked ? '#8a8a8a' : (details.resourceids.length > 1 ? 'black' : resourceColorsLUMA[details.resourceids[0] - 1]),
+          borderColor: agenda ? undefined : details.color,
           height: '100%'
         }}
-        >{details.title}</span>
+        >{details.title}{`${details.disabled ? ` - ${t('disabled')}` : ''}`}</span>
       </Popover>
     </div>
   )
