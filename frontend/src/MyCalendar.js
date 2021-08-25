@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import { resourceColorsLUMA } from './helpers/styles'
@@ -41,7 +42,8 @@ const MyCalendar = ({
   addEvent,
   tags,
   showFull,
-  setShowFull
+  setShowFull,
+  showNewEventForm
 }) => {
   const [showModifyModal, setShowModifyModal] = useState(false)
   const [showCopyModal, setShowCopyModal] = useState(false)
@@ -71,15 +73,12 @@ const MyCalendar = ({
   }
 
   const handleDrop = (item) => {
-    const details = item.event._def.extendedProps
+    const details = item.event._def.extendedProps.details
     const delta = item.delta.milliseconds + 86400000 * item.delta.days
-    const id = item.event._def.publicId
     const event = {
       ...details,
-      id,
       eventStart: new Date(details.eventStart.getTime() + delta),
       eventEnd: new Date(details.eventEnd.getTime() + delta),
-      duration: details.len
     }
     setEvent(event)
     setActionSelection(true)
@@ -122,7 +121,7 @@ const MyCalendar = ({
     return enLocale
   }
 
-  /*   const renderEventContent = (eventInfo) => {
+  const renderEventContent = (eventInfo) => {
     let timeText
     if (!eventInfo.event.allDay) {
       const startText = eventInfo.event?.start?.toISOString() || ''
@@ -138,10 +137,10 @@ const MyCalendar = ({
         <span className='luma-calendar-event'> {eventInfo.event.title}</span>
       </>
     )
-  } */
+  }
 
   const handleDateSelect = (selectInfo) => {
-    console.log(selectInfo)
+    showNewEventForm(selectInfo.start, selectInfo.end)
     const calApi = calendarRef.current.getApi()
 
     if (selectInfo.jsEvent.path[0].className.includes('number')) {
@@ -153,6 +152,7 @@ const MyCalendar = ({
 
   return (
     <>
+      <div id="eventPopover"></div>
       <div className={`modal ${actionSelection ? 'is-active':''}`}>
         <div className="modal-background"></div>
         <ActionSelection />
@@ -210,7 +210,7 @@ const MyCalendar = ({
         plugins={[ timeGridPlugin, dayGridPlugin, interactionPlugin, listPlugin, luxonPlugin ]}
         initialView={currentView}
         locale={getLocale()}
-        height={600}
+        height={620}
         headerToolbar={{
           left: 'today prev,next',
           center: 'title',
@@ -234,24 +234,30 @@ const MyCalendar = ({
         dayMaxEvents={true}
         slotMinTime="08:00:00"
         slotMaxTime="18:00:00"
-        snapDuration='00:15:00'
+        snapDuration='00:30:00'
         events={localEvents
           .map(event => {
-            event.title = event.titleText
             const after14Days = differenceInDays(event.start, new Date()) >= 14
             const after1Hour = differenceInMinutes(event.start, new Date()) >= 60
             const booked = (!currentUser && !after14Days) || (currentUser && !after1Hour) || event.booked
             event.color = booked ? '#8a8a8a' : (event.resourceids.length > 1 ? 'black' : resourceColorsLUMA[event.resourceids[0] - 1])
-            event.len = event.duration
-            event.slotStart = event.start
-            event.slotEnd = event.end
-            return event
+            const details = {
+              ...event
+            }
+            return {
+              details,
+              id: event.id,
+              color: event.color,
+              start: event.start,
+              end: event.end,
+              title: event.titleText
+            }
           })
-          .filter(event => event.group ? (!event.group.disabled || showFull) : true)
+          .filter(event => event.details.group ? (!event.details.group.disabled || showFull) : true)
           .filter(event => filterFunction(event))}
         eventDrop={handleDrop}
         eventClick={handleEventClick}
-        eventContent={(eventInfo) => <LumaEvent eventInfo={eventInfo}/>}
+        eventContent={(eventInfo) => <LumaEvent eventInfo={eventInfo} currentUser={currentUser} />}
         select={(e) => handleDateSelect(e)}
         timeZone='Europe/Helsinki'
       />

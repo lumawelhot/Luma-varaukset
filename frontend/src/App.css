@@ -1187,3 +1187,7 @@ option {
   border-color: #0479a5 !important;
   color: #fff;
 }
+
+.fc-daygrid-more-link.fc-more-link {
+  font-size: 120%;
+}

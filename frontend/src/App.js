@@ -223,14 +223,9 @@ const App = () => {
   }
 
   const handleEventClick = ({ event }) => {
-    const id = event._def.publicId
-    const details = event._def.extendedProps
+    console.log(event._def.extendedProps.details)
     setClickedEvent({
-      ...details,
-      id,
-      duration: details.len,
-      start: details.slotStart,
-      end: details.slotEnd
+      ...event._def.extendedProps.details
     })
     history.push('/event-page')
   }
