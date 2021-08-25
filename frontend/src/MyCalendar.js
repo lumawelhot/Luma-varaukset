@@ -9,6 +9,7 @@ import { EventForm } from './components/EventForm'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import listPlugin from '@fullcalendar/list'
+import luxonPlugin from '@fullcalendar/luxon'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import fiLocale from '@fullcalendar/core/locales/fi'
@@ -206,7 +207,7 @@ const MyCalendar = ({
       <FullCalendar
         ref={calendarRef}
         editable={currentUser ? true : false}
-        plugins={[ timeGridPlugin, dayGridPlugin, interactionPlugin, listPlugin ]}
+        plugins={[ timeGridPlugin, dayGridPlugin, interactionPlugin, listPlugin, luxonPlugin ]}
         initialView={currentView}
         locale={getLocale()}
         height={600}
