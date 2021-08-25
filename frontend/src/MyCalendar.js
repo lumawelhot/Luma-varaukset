@@ -254,7 +254,7 @@ const MyCalendar = ({
             }
           })
           .filter(event => event.details.group ? (!event.details.group.disabled || showFull) : true)
-          .filter(event => filterFunction(event))}
+          .filter(event => filterFunction(event.details))}
         eventDrop={handleDrop}
         eventClick={handleEventClick}
         eventContent={(eventInfo) => <LumaEvent eventInfo={eventInfo} currentUser={currentUser} />}
