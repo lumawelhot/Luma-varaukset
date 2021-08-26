@@ -68,6 +68,28 @@ const MyCalendar = ({
     else setEvents(events)
   }, [events, currentUser])
 
+  const handleView = (item) => {
+    setCurrentDate(new Date((item.start.getTime() + item.end.getTime()) / 2))
+    setCurrentView(item.view.type)
+
+    /* const type = item.view.type
+    console.log(item)
+    const calendar = calendarRef.current ? calendarRef.current.getApi() : null
+    if (type === 'listMonth' && calendar) {
+      const start = new Date()
+      const end = new Date()
+      start.setDate(start.getDate() + 14)
+      end.setDate(end.getDate() + 44)
+      calendar.setOption('visibleRange', {
+        start, end
+      })
+      calendar.unselect()
+    } else {
+      setCurrentDate(new Date((item.start.getTime() + item.end.getTime()) / 2))
+      setCurrentView(item.view.type)
+    } */
+  }
+
   const handleClose = () => {
     setShowModifyModal(false)
     setShowCopyModal(false)
@@ -75,18 +97,13 @@ const MyCalendar = ({
     setEvent(null)
   }
 
-  const handleView = (item) => {
-    setCurrentDate(new Date((item.start.getTime() + item.end.getTime()) / 2))
-    setCurrentView(item.view.type)
-  }
-
   const handleDrop = (item) => {
     const details = item.event._def.extendedProps.details
     const delta = item.delta.milliseconds + 86400000 * item.delta.days
     const event = {
       ...details,
-      eventStart: new Date(details.eventStart.getTime() + delta),
-      eventEnd: new Date(details.eventEnd.getTime() + delta),
+      eventStart: new Date(details.start.getTime() + delta),
+      eventEnd: new Date(details.end.getTime() + delta),
     }
     setEvent(event)
     setActionSelection(true)
@@ -159,6 +176,15 @@ const MyCalendar = ({
     calApi.unselect() // clear date selection
   }
 
+  /* const getVisibleRange = currentDate => {
+    console.log('here')
+    const start = new Date(currentDate.valueOf())
+    const end = new Date(currentDate.valueOf())
+    start.setDate(start.getDate() + 14)
+    end.setDate(end.getDate() + 44)
+    return { start, end }
+  } */
+
   return (
     <>
       <div id="eventPopover"></div>
@@ -220,7 +246,7 @@ const MyCalendar = ({
         plugins={[ timeGridPlugin, dayGridPlugin, interactionPlugin, listPlugin, luxonPlugin ]}
         initialView={currentView}
         locale={getLocale()}
-        height={620}
+        height={548}
         headerToolbar={{
           left: 'today prev,next',
           center: 'title',
@@ -242,6 +268,11 @@ const MyCalendar = ({
         initialDate={currentDate}
         selectable={true}
         dayMaxEvents={true}
+        businessHours={{
+          daysOfWeek : [1, 2, 3, 4, 5],
+          startTime: '8:00',
+          endTime: '17:00'
+        }}
         slotMinTime="08:00:00"
         slotMaxTime="18:00:00"
         snapDuration='00:30:00'
@@ -260,15 +291,20 @@ const MyCalendar = ({
               color: event.color,
               start: event.start,
               end: event.end,
-              title: event.titleText
+              title: event.titleText,
+              constraint: 'businessHours'
             }
           })
           .filter(event => event.details.group ? (!event.details.group.disabled || showFull) : true)
           .filter(event => filterFunction(event.details))}
         eventDrop={handleDrop}
         eventClick={handleEventClick}
+        eventColor='#8a8a8a'
+        selectConstraint='businessHours'
         eventContent={(eventInfo) => <LumaEvent eventInfo={eventInfo} currentUser={currentUser} />}
         select={(e) => handleDateSelect(e)}
+        selectMirror={true}
+        allDaySlot={false}
         timeZone='Europe/Helsinki'
       />
     </>)

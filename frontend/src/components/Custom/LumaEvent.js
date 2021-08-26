@@ -1,5 +1,5 @@
 import React from 'react'
-import { Popover } from 'antd'
+import { Popover, Space, Tag } from 'antd'
 import { useTranslation } from 'react-i18next'
 
 const LumaEvent = ({ eventInfo }) => {
@@ -7,6 +7,14 @@ const LumaEvent = ({ eventInfo }) => {
   const event = eventInfo.event
   const details = event.extendedProps.details
   // view Type löytyy eventInfo.view.type, esim 'dayGridMonth'
+
+  const getTimeRange = () => {
+    const start = new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', timeZone: 'Europe/Helsinki' }).format(event.start)
+    const end = new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', timeZone: 'Europe/Helsinki' }).format(event.end)
+    return `${start} - ${end}`
+  }
+
+  if (!details) return <div>{getTimeRange()}</div>
 
   const resourceMap = [
     { resourceids: 1, resourceTitle: 'Summamutikka', description: t('mathematics') },
@@ -21,25 +29,33 @@ const LumaEvent = ({ eventInfo }) => {
   const popoverContent = () => {
 
     return (
-      <>
+      <Space direction='vertical'>
         {details.locked ? <div style={{ color: 'red', margin: 5 }}>
           {t('this-event-is-locked')}
         </div> : null}
-        <div className="tags">
-          {details.tags.map(t => <span key={t.id} className="tag" style={{ color: 'geekblue' }}>{t.name}</span> )}
-        </div>
-        {resourceNames.map(r => <p key={r.name}>{r.name +' (' + r.description + ')'}</p>)}
+        <Space direction='horizontal'>
+          {details.tags.map(t => <Tag key={t.id} color='geekblue'>{t.name}</Tag> )}
+        </Space>
+        {resourceNames.map(r => <span key={r.name}>{r.name +' (' + r.description + ')'}</span>)}
         <i>{details.desc}</i>
-      </>
+      </Space>
     )
   }
 
   let agenda = eventInfo.view.type === 'listMonth' ? true : false
 
+  const popoverTitle = () => {
+
+    return <Space size='middle'>
+      {getTimeRange()}
+      {details.titleText}
+    </Space>
+  }
+
   return (
     <div style={{ height: 22 }} >
       <Popover
-        title={details.title}
+        title={popoverTitle()}
         content={popoverContent()}
         mouseEnterDelay={1}
       >

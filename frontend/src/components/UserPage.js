@@ -49,7 +49,7 @@ const UserPage = ({ currentUser, setShowEventForm }) => {
   if (!currentUser) return <div></div>
 
   return (
-    <>
+    <div style={{ marginTop: 12 }}>
       <div className="field is-grouped">
         <div className="control">
           <button className="button luma" onClick={createEvent}>{t('create-visit')}</button>
@@ -82,7 +82,7 @@ const UserPage = ({ currentUser, setShowEventForm }) => {
         </>
         }
       </div>
-    </>
+    </div>
   )
 }
 
