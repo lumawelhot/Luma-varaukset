@@ -134,6 +134,18 @@ button.rbc-input::-moz-focus-inner {
   text-transform: uppercase;
 }
 
+button.button.luma:hover {
+  background-color: rgb(27, 28, 41);
+  color: white;
+  border-color: rgb(27, 28, 41);
+}
+
+button.button.luma.active:hover {
+  background-color: rgb(27, 28, 41) !important;
+  color: white !important;
+  border-color: rgb(27, 28, 41) !important;
+}
+
 .rbc-toolbar button,
 button.button.luma {
   display: inline-block;
