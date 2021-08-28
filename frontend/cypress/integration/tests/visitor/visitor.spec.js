@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import { And, Given, Then, When } from 'cypress-cucumber-preprocessor/steps'
-import { addBusinessDays } from 'date-fns'
+import { set, addMonths } from 'date-fns'
 import { zonedTimeToUtc } from 'date-fns-tz'
 
 const setToHelsinkiTime = (dateString, timeString) => {
@@ -8,7 +8,7 @@ const setToHelsinkiTime = (dateString, timeString) => {
   return zonedTimeToUtc(dateTimeString, 'Europe/Helsinki')
 }
 
-const eventDate = setToHelsinkiTime(addBusinessDays(new Date(), 14).toISOString(),'11:00')
+const eventDate = setToHelsinkiTime(set(addMonths(new Date(), 1), { hours: 9, minutes: 0, seconds: 0 }).toISOString(),'10:00')
 const availableEvent = 'BOOKABLE'
 let id = null
 
@@ -92,7 +92,8 @@ Given('Customer is on the main page', () => {
 })
 
 When('I navigate to desired events\' booking form', () => {
-  cy.get('.rbc-toolbar > :nth-child(3) > :nth-child(4)').click()
+  cy.get('.fc-listMonth-button').click()
+  cy.get('.fc-next-button').click()
   cy.contains('BOOKABLE').click()
   cy.get('#booking-button').click()
 })
@@ -152,13 +153,14 @@ And('I change filter options', () => {
   cy.get(':nth-child(2) > .is-grouped > :nth-child(1) > .button').click()
   cy.get(':nth-child(2) > .is-grouped > :nth-child(3) > .button').click()
   cy.get(':nth-child(2) > .is-grouped > :nth-child(5) > .button').click()
-  cy.get('#filterdiv > :nth-child(4) > :nth-child(2)').click()
-  cy.get('#filterdiv > :nth-child(6) > :nth-child(1) > .button').click()
+  cy.get('.box > :nth-child(4) > :nth-child(2)').click()
+  cy.get(':nth-child(6) > :nth-child(1) > .button').click()
 })
 
 And('I enter to agenda view', () => {
   cy.get('#filterButton > :nth-child(2)').click()
-  cy.get('.rbc-toolbar > :nth-child(3) > :nth-child(4)').click()
+  cy.get('.fc-listMonth-button').click()
+  cy.get('.fc-next-button').click()
 })
 
 Then('correct events are shown', () => {
