@@ -39,7 +39,7 @@ const VisitList = ({ notify }) => {
       <Filterform values={filters} setValues={setFilters} />
       <VisitListSortable visits={renderedVisits} copyURL={copyURL}/>
       <div className="section">
-        <button className="button luma primary" onClick={(e) => cancel(e)}>{t('back')}</button>
+        <button className="button luma" onClick={(e) => cancel(e)}>{t('back')}</button>
       </div>
     </div>
   )

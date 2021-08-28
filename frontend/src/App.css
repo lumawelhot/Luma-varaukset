@@ -141,9 +141,9 @@ button.button.luma:hover {
 }
 
 button.button.luma.active:hover {
-  background-color: rgb(27, 28, 41) !important;
+  background-color: rgb(19, 50, 117) !important;
   color: white !important;
-  border-color: rgb(27, 28, 41) !important;
+  border-color: rgb(19, 50, 117) !important;
 }
 
 .rbc-toolbar button,
@@ -1208,4 +1208,10 @@ option {
 .fc-filterButton-button.fc-button.fc-button-primary {
   visibility: hidden;
   width: 0;
+}
+
+.fc-list-event-title,
+.fc-list-event-time,
+.fc-list-event-graphic {
+  cursor: pointer;
 }
