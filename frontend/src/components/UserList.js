@@ -143,7 +143,6 @@ const UserList = ({ sendMessage, currentUser }) => {
             onSubmit={(values) => handleUsernameChange(values.username, values.isAdmin)}
           >
             {({ handleSubmit, values, setFieldValue }) => {
-              console.log(!values.isAdmin, values.isAdmin)
               return (
                 <div className="modal-card">
                   <header className="modal-card-head">

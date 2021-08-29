@@ -71,23 +71,6 @@ const MyCalendar = ({
   const handleView = (item) => {
     setCurrentDate(new Date((item.start.getTime() + item.end.getTime()) / 2))
     setCurrentView(item.view.type)
-
-    /* const type = item.view.type
-    console.log(item)
-    const calendar = calendarRef.current ? calendarRef.current.getApi() : null
-    if (type === 'listMonth' && calendar) {
-      const start = new Date()
-      const end = new Date()
-      start.setDate(start.getDate() + 14)
-      end.setDate(end.getDate() + 44)
-      calendar.setOption('visibleRange', {
-        start, end
-      })
-      calendar.unselect()
-    } else {
-      setCurrentDate(new Date((item.start.getTime() + item.end.getTime()) / 2))
-      setCurrentView(item.view.type)
-    } */
   }
 
   const handleClose = () => {
@@ -146,44 +129,22 @@ const MyCalendar = ({
     return enLocale
   }
 
-  /* const renderEventContent = (eventInfo) => {
-    let timeText
-    if (!eventInfo.event.allDay) {
-      const startText = eventInfo.event?.start?.toISOString() || ''
-      const endText = eventInfo.event?.end?.toISOString() || null
-      timeText = startText.substr(11,5) + (endText ? '-' + endText.substr(11,5) : '')
-    }
-    const isRecurring = eventInfo.event._def.recurringDef !== null
-    const viewIsMonth = eventInfo.view.type === 'dayGridMonth'
-    return (
-      <>
-        {viewIsMonth && <span className="fc-list-event-dot" style={{ borderColor: eventInfo.event.backgroundColor }}></span>}
-        <b>{timeText}</b>{isRecurring && <span className='icon is-small'><i className="fas fa-sync"></i></span>}
-        <span className='luma-calendar-event'> {eventInfo.event.title}</span>
-      </>
-    )
-  } */
-
   const handleDateSelect = (selectInfo) => {
     if (!currentUser) return
     showNewEventForm(selectInfo.start, selectInfo.end)
     const calApi = calendarRef.current.getApi()
-
     if (selectInfo.jsEvent.path[0].className.includes('number')) {
       calApi.changeView('timeGridDay', selectInfo.startStr)
       return
     }
-    calApi.unselect() // clear date selection
+    calApi.unselect()
   }
 
-  /* const getVisibleRange = currentDate => {
-    console.log('here')
-    const start = new Date(currentDate.valueOf())
-    const end = new Date(currentDate.valueOf())
-    start.setDate(start.getDate() + 14)
-    end.setDate(end.getDate() + 44)
-    return { start, end }
-  } */
+  const handleDateClick = (info) => {
+    setCurrentDate(info.date)
+    const calApi = calendarRef.current.getApi()
+    calApi.changeView('timeGridDay', info.date)
+  }
 
   return (
     <>
@@ -261,12 +222,12 @@ const MyCalendar = ({
         buttonText={{
           list: 'Agenda'
         }}
-        datesSet={handleView}
+        datesSet={(e) => handleView(e)}
         weekends={false}
         weekNumbers={true}
         nowIndicator={true}
         initialDate={currentDate}
-        selectable={true}
+        selectable={currentUser}
         dayMaxEvents={true}
         businessHours={{
           daysOfWeek : [1, 2, 3, 4, 5],
@@ -274,7 +235,7 @@ const MyCalendar = ({
           endTime: '17:00'
         }}
         slotMinTime="08:00:00"
-        slotMaxTime="18:00:00"
+        slotMaxTime="17:01:00"
         snapDuration='00:30:00'
         events={localEvents
           .map(event => {
@@ -303,6 +264,7 @@ const MyCalendar = ({
         selectConstraint='businessHours'
         eventContent={(eventInfo) => <LumaEvent eventInfo={eventInfo} currentUser={currentUser} />}
         select={(e) => handleDateSelect(e)}
+        dateClick={(e) => handleDateClick(e)}
         selectMirror={true}
         allDaySlot={false}
         timeZone='Europe/Helsinki'

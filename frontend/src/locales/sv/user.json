@@ -60,5 +60,6 @@
   "text": "Textfält",
   "checkbox": "Checkbox-urval",
   "radio": "Radio-urval",
-  "email-config": "e-poster"
+  "groups": "Grupper",
+  "email-config": "Emails"
 }

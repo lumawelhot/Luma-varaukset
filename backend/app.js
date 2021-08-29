@@ -98,45 +98,6 @@ const createTags = async () => {
   await tag3.save()
 }
 
-/* const createExtras = async () => {
-  await Extra.deleteMany({})
-  const extra1 = new Extra({
-    name: 'Kierros Kumpulan yliopistokampuksella',
-    classes: [1, 2],
-    remoteLength: 5,
-    inPersonLength: 15
-  })
-  const extra2 = new Extra({
-    name: 'Opiskeljan elämää - tyypillinen päivä',
-    classes: [1, 2, 3, 4, 5],
-    remoteLength: 5,
-    inPersonLength: 15,
-  })
-  const extra3 = new Extra({
-    name: 'Tieteenalan esittely',
-    classes: [3, 4],
-    remoteLength: 10,
-    inPersonLength: 20
-  })
-
-  console.log(extra1)
-  console.log(extra2)
-  console.log(extra3)
-  await extra1.save()
-  await extra2.save()
-  await extra3.save()
-} */
-
-// const staticEvents = require('./events.json')
-// const createEvents = async () => {
-//   await Event.deleteMany({})
-//   const exampleTag = await Tag.findOne({ name: 'Maantiede' })
-//   staticEvents.forEach(event => {
-//     const newEvent = new Event({ ...event, tags: [exampleTag] })
-//     newEvent.save()
-//   })
-// }
-
 const unlockEvents = async () => {
   const events = await Event.find({})
   for (let event of events) {
