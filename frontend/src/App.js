@@ -32,7 +32,7 @@ const App = () => {
   const history = useHistory()
   const allTags = useQuery(TAGS)
   const [currentDate, setCurrentDate] = useState(null)
-  const [currentView, setCurrentView] = useState('work_week')
+  const [currentView, setCurrentView] = useState('timeGridWeek')
   const [events, setEvents] = useState([])
   const [tags, setTags] = useState([])
   const client = useApolloClient()
@@ -90,6 +90,7 @@ const App = () => {
       </>
 
       if (event.group && event.group.disabled) return unAvailable
+      if (event.disabled) return unAvailable
       if (event.publishDate) {
         const publish = new Date(event.publishDate)
         if (new Date() < publish) {
@@ -222,9 +223,11 @@ const App = () => {
     history.push('/')
   }
 
-  const handleEventClick = (event) => {
-    //const selectedEvent = events.find(e => e.id === event.id)
-    setClickedEvent(event) // <- event tulee suoraan klikatusta, ei tarvitse hakea eventseistä
+  const handleEventClick = ({ event }) => {
+    console.log(event._def.extendedProps.details)
+    setClickedEvent({
+      ...event._def.extendedProps.details
+    })
     history.push('/event-page')
   }
 

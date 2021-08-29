@@ -1,35 +1,32 @@
-import React, { useEffect, useState } from 'react'
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState, useRef } from 'react'
 import ReactDOM from 'react-dom'
-import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
-import { bookedEventColor, resourceColorsLUMA } from './helpers/styles'
-import LumaWorkWeek from './components/Custom/LumaWorkWeek'
-import LumaToolbar from './components/Custom/LumaToolbar'
-import LumaEvent from './components/Custom/LumaEvent'
+import { resourceColorsLUMA } from './helpers/styles'
 import CalendarFilter from './components/Filter/CalendarFilter'
-import format from 'date-fns/format'
-import parse from 'date-fns/parse'
-import startOfWeek from 'date-fns/startOfWeek'
-import getDay from 'date-fns/getDay'
-import set from 'date-fns/set'
-import { fi } from 'date-fns/locale'
 import { differenceInDays, differenceInMinutes }  from 'date-fns'
-import { Tooltip } from 'antd'
-import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import { ModifyEvent } from './components/ModifyEventModal'
 import { useTranslation } from 'react-i18next'
 import { EventForm } from './components/EventForm'
-
-const DragAndDropCalendar = withDragAndDrop(Calendar)
-
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek,
-  getDay,
-  locales: { fi },
-})
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import listPlugin from '@fullcalendar/list'
+import luxonPlugin from '@fullcalendar/luxon'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
+import fiLocale from '@fullcalendar/core/locales/fi'
+import svLocale from '@fullcalendar/core/locales/sv'
+import enLocale from '@fullcalendar/core/locales/en-gb'
+import LumaEvent from './components/Custom/LumaEvent'
+import { FaFilter } from 'react-icons/fa'
 
 const Wrapper = (props) => {
+  const domClassNodes = document.getElementsByClassName(props.elementClass)
+  if (domClassNodes.length) {
+    return ReactDOM.createPortal(
+      props.children,
+      domClassNodes[0].parentElement
+    )
+  }
   const domNode = document.getElementById(props.elementId)
   if (domNode) {
     return ReactDOM.createPortal(
@@ -44,7 +41,6 @@ const Wrapper = (props) => {
 const MyCalendar = ({
   events,
   currentUser,
-  showNewEventForm,
   handleEventClick,
   currentDate,
   setCurrentDate,
@@ -54,46 +50,45 @@ const MyCalendar = ({
   addEvent,
   tags,
   showFull,
-  setShowFull
+  setShowFull,
+  showNewEventForm
 }) => {
   const [showModifyModal, setShowModifyModal] = useState(false)
   const [showCopyModal, setShowCopyModal] = useState(false)
   const [actionSelection, setActionSelection] = useState(false)
   const [event, setEvent] = useState(null)
-  const { t } = useTranslation('common')
+  const { t, i18n } = useTranslation('common')
   const [localEvents, setEvents] = useState([])
   const [filterFunction, setFilterFunction] = useState(() => () => { return true })
-  const resourceMap = [
-    { resourceids: 1, resourceTitle: 'Summamutikka', description: t('mathematics') },
-    { resourceids: 2, resourceTitle: 'Fotoni', description: t('physics') },
-    { resourceids: 3, resourceTitle: 'Linkki', description: t('computer-science') },
-    { resourceids: 4, resourceTitle: 'Geopiste', description: t('geography') },
-    { resourceids: 5, resourceTitle: 'Gadolin', description: t('chemistry') },
-  ]
-
-  const messages = {
-    allDay: 'Koko päivä',
-    previous: '<',
-    next: '>',
-    today: t('today'),
-    month: t('month'),
-    week: t('week'),
-    day: t('day'),
-    agenda: 'Agenda',
-    date: t('date'),
-    time: t('time'),
-    event: t('event'),
-    noEventsInRange: t('no-events-in-range'),
-    showMore: (total) => `+ Näytä lisää (${total})`,
-    work_week: t('week'),
-    yesterday: t('yesterday'),
-    tomorrow: t('tomorrow'),
-  }
+  const [showFilterOptions, setShowFilterOptions] = useState(false)
+  const calendarRef = useRef()
 
   useEffect(() => {
     if (!currentUser) setEvents(events.filter(event => event.disabled === false))
     else setEvents(events)
   }, [events, currentUser])
+
+  const handleView = (item) => {
+    setCurrentDate(new Date((item.start.getTime() + item.end.getTime()) / 2))
+    setCurrentView(item.view.type)
+
+    /* const type = item.view.type
+    console.log(item)
+    const calendar = calendarRef.current ? calendarRef.current.getApi() : null
+    if (type === 'listMonth' && calendar) {
+      const start = new Date()
+      const end = new Date()
+      start.setDate(start.getDate() + 14)
+      end.setDate(end.getDate() + 44)
+      calendar.setOption('visibleRange', {
+        start, end
+      })
+      calendar.unselect()
+    } else {
+      setCurrentDate(new Date((item.start.getTime() + item.end.getTime()) / 2))
+      setCurrentView(item.view.type)
+    } */
+  }
 
   const handleClose = () => {
     setShowModifyModal(false)
@@ -102,23 +97,13 @@ const MyCalendar = ({
     setEvent(null)
   }
 
-  const handleNavigate = (date) => {
-    if (date) setCurrentDate(date)
-  }
-
-  const handleView = (view) => {
-    if (view) setCurrentView(view)
-  }
-
-  const handleSelect = ({ start, end }) => {
-    showNewEventForm(start, end)
-  }
-
   const handleDrop = (item) => {
+    const details = item.event._def.extendedProps.details
+    const delta = item.delta.milliseconds + 86400000 * item.delta.days
     const event = {
-      ...item.event,
-      eventStart: item.start,
-      eventEnd: item.end
+      ...details,
+      eventStart: new Date(details.start.getTime() + delta),
+      eventEnd: new Date(details.end.getTime() + delta),
     }
     setEvent(event)
     setActionSelection(true)
@@ -134,80 +119,12 @@ const MyCalendar = ({
     setShowModifyModal(true)
   }
 
-  const customDayPropGetter = date => {
-    if (date.getDay() === 0 || date.getDay() === 6)
-      return {
-        className: 'weekend',
-        style: {
-          backgroundColor: '#e6e6e6'
-        },
-      }
-    else return {}
-  }
-
-  const customEventPropGetter = event => {
-    const startsAfter14Days = differenceInDays(event.start, new Date()) >= 14
-    const startsAfter1Hour = differenceInMinutes(event.start, new Date()) >= 60
-    const booked = (!currentUser && !startsAfter14Days) || (currentUser && !startsAfter1Hour) || event.booked
-    const disabled = event.disabled
-    if (booked) {
-      return { className: 'booked' , }
-    }
-    if (disabled) {
-      return { className: 'disabled' }
-    }
-    return { className: event.resourceids.length > 1 ? 'multiple' : resourceMap[event.resourceids[0]-1]?.resourceTitle.toLowerCase() || '' }
-  }
-
-  const AgendaEvent = ({ event }) => {
-
-    const resourceNames = event.resourceids.map(id => { return { name: resourceMap[id-1]?.resourceTitle || null, color: resourceColorsLUMA[id - 1], description: resourceMap[id-1]?.description }})
-    if(event.disabled) {
-      return (
-        <>
-          <div className="media luma-agenda" style={{ paddingLeft: 117 }} onClick={() => handleEventClick(event)}>
-            <div className="media-content">
-              <strong style={{ color: 'red' }}>{event.title} - {t('disabled')}!</strong>
-            </div>
-          </div>
-        </>
-      )
-    }
-
-
-    return (
-      <div className="media luma-agenda" onClick={() => handleEventClick(event)}>
-        {!!resourceNames.length && <div className="media-left" style={{ width: 100 }}><div className="tags">
-          {resourceNames.map(r =>
-            <Tooltip key={r.name} color={'geekblue'} title={r.description} placement={'right'}>
-              <span className='tag is-small is-link' style={{
-                backgroundColor: event.booked ? bookedEventColor : r.color }}
-              >{r.name}</span>
-            </Tooltip>)}
-        </div></div>}
-        <div className="media-content">
-          <strong>{event.title}</strong>
-          <p>{event.desc}</p>
-        </div>
-      </div>
-    )
-  }
-
-  let formats = {
-    monthHeaderFormat: (date, culture, localizer) =>
-      localizer.format(date, 'LLLL yyyy', culture),
-    dayHeaderFormat: (date, culture, localizer) =>
-      localizer.format(date, 'cccc, d. MMMM yyyy', culture),
-    dayFormat: (date, culture, localizer) =>
-      localizer.format(date, 'cccccc d.M.', culture)
-  }
-
   const ActionSelection = () => {
     if (!event) return <></>
     return (
       <div className="modal-card">
         <header className="modal-card-head">
-          <p className="modal-card-title">{event.title}</p>
+          <p className="modal-card-title">{event.titleText}</p>
         </header>
         <footer className="modal-card-foot">
           <button className="button luma" type='submit' onClick={handleCopy}>{t('copy')}</button>
@@ -220,8 +137,57 @@ const MyCalendar = ({
     )
   }
 
+  const getLocale = () => {
+    if (i18n.language.startsWith('fi')) {
+      return fiLocale
+    } else if (i18n.language.startsWith('sv')) {
+      return svLocale
+    }
+    return enLocale
+  }
+
+  /* const renderEventContent = (eventInfo) => {
+    let timeText
+    if (!eventInfo.event.allDay) {
+      const startText = eventInfo.event?.start?.toISOString() || ''
+      const endText = eventInfo.event?.end?.toISOString() || null
+      timeText = startText.substr(11,5) + (endText ? '-' + endText.substr(11,5) : '')
+    }
+    const isRecurring = eventInfo.event._def.recurringDef !== null
+    const viewIsMonth = eventInfo.view.type === 'dayGridMonth'
+    return (
+      <>
+        {viewIsMonth && <span className="fc-list-event-dot" style={{ borderColor: eventInfo.event.backgroundColor }}></span>}
+        <b>{timeText}</b>{isRecurring && <span className='icon is-small'><i className="fas fa-sync"></i></span>}
+        <span className='luma-calendar-event'> {eventInfo.event.title}</span>
+      </>
+    )
+  } */
+
+  const handleDateSelect = (selectInfo) => {
+    if (!currentUser) return
+    showNewEventForm(selectInfo.start, selectInfo.end)
+    const calApi = calendarRef.current.getApi()
+
+    if (selectInfo.jsEvent.path[0].className.includes('number')) {
+      calApi.changeView('timeGridDay', selectInfo.startStr)
+      return
+    }
+    calApi.unselect() // clear date selection
+  }
+
+  /* const getVisibleRange = currentDate => {
+    console.log('here')
+    const start = new Date(currentDate.valueOf())
+    const end = new Date(currentDate.valueOf())
+    start.setDate(start.getDate() + 14)
+    end.setDate(end.getDate() + 44)
+    return { start, end }
+  } */
+
   return (
     <>
+      <div id="eventPopover"></div>
       <div className={`modal ${actionSelection ? 'is-active':''}`}>
         <div className="modal-background"></div>
         <ActionSelection />
@@ -236,7 +202,7 @@ const MyCalendar = ({
           tags={tags}
         />}
       </div>
-      <div className={`modal ${showCopyModal ? 'is-active':''}`}>
+      <div className={`modal ${showCopyModal ? 'is-active': ''}`}>
         <div className="modal-background"></div>
         {event && <EventForm
           event={event}
@@ -250,60 +216,96 @@ const MyCalendar = ({
           tags={tags}
         />}
       </div>
-      <Wrapper elementId='filterdiv'>
-        <CalendarFilter
-          filterFunction={filterFunction}
-          setFilterFunction={setFilterFunction}
-          tags={tags}
-        />
+      <div className="filterbox" style={{ display: showFilterOptions ? 'block' : 'none' }}>
+        <div className="box">
+          <CalendarFilter
+            filterFunction={filterFunction}
+            setFilterFunction={setFilterFunction}
+            tags={tags}
+          />
+          <button className="button luma is-small" onClick={() => setShowFilterOptions(!showFilterOptions)}>OK</button>
+          {currentUser &&
+            <button
+              style={{ marginLeft: 10 }}
+              className={`button luma ${showFull ? 'active' : ''}`}
+              onClick={() => setShowFull(!showFull)}
+            >{t('events-with-full-group')}</button>
+          }
+        </div>
+      </div>
+      <Wrapper elementClass="fc-filterButton-button fc-button fc-button-primary">
+        <button id="filterButton" type="button" className="button luma fc-button fc-button-primary" style={{ marginLeft: -10, paddingTop: 3 }} onClick={() => setShowFilterOptions(!showFilterOptions)}>
+          <span className="icon is-small" style={{ position: 'relative', top: 2 }}><FaFilter/></span>
+          <span>{t('filter')}</span>
+          <span id="filterCount"></span>
+        </button>
       </Wrapper>
-      <Wrapper elementId="filterspan">
-        {currentUser &&
-          <button
-            style={{ marginLeft: 10 }}
-            className={`button luma ${showFull ? 'active' : ''}`}
-            onClick={() => setShowFull(!showFull)}
-          >{t('events-with-full-group')}</button>
-        }
-      </Wrapper>
-      <DragAndDropCalendar
-        culture='fi'
-        localizer={localizer}
-        formats={formats}
-        messages={messages}
-        views={{
-          month: true,
-          work_week: LumaWorkWeek,
-          day: true,
-          agenda: true
+      <FullCalendar
+        ref={calendarRef}
+        editable={currentUser ? true : false}
+        plugins={[ timeGridPlugin, dayGridPlugin, interactionPlugin, listPlugin, luxonPlugin ]}
+        initialView={currentView}
+        locale={getLocale()}
+        height={548}
+        headerToolbar={{
+          left: 'today prev,next',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth filterButton'
         }}
-        showMultiDayTimes
-        events={localEvents
-          .filter(event => event.group ? (!event.group.disabled || showFull) : true)
-          .filter(event => filterFunction(event))}
-        startAccessor='start'
-        endAccessor='end'
-        min={set(new Date(), { hours: 8, minutes: 0, seconds:0, milliseconds: 0 })}
-        max={set(new Date(), { hours: 17, minutes: 0, seconds:0, milliseconds: 0 })}
-        selectable={!!currentUser}
-        onSelectEvent={(event) => handleEventClick(event)}
-        onSelectSlot={handleSelect}
-        components={{
-          event: LumaEvent,
-          toolbar: LumaToolbar,
-          agenda: {
-            event: AgendaEvent
+        customButtons={{
+          filterButton: {
+            text: t('filter'),
+            click: () => setShowFilterOptions(!showFilterOptions)
           }
         }}
-        dayPropGetter={customDayPropGetter}
-        eventPropGetter={customEventPropGetter}
-        onNavigate={handleNavigate}
-        onView={handleView}
-        date={currentDate}
-        view={currentView}
-        tooltipAccessor={null}
-        draggableAccessor={() => currentUser ? true : false}
-        onEventDrop={handleDrop}
+        buttonText={{
+          list: 'Agenda'
+        }}
+        datesSet={handleView}
+        weekends={false}
+        weekNumbers={true}
+        nowIndicator={true}
+        initialDate={currentDate}
+        selectable={true}
+        dayMaxEvents={true}
+        businessHours={{
+          daysOfWeek : [1, 2, 3, 4, 5],
+          startTime: '8:00',
+          endTime: '17:00'
+        }}
+        slotMinTime="08:00:00"
+        slotMaxTime="18:00:00"
+        snapDuration='00:30:00'
+        events={localEvents
+          .map(event => {
+            const after14Days = differenceInDays(event.start, new Date()) >= 14
+            const after1Hour = differenceInMinutes(event.start, new Date()) >= 60
+            const booked = (!currentUser && !after14Days) || (currentUser && !after1Hour) || event.booked
+            event.color = (booked || event.disabled) ? '#8a8a8a' : (event.resourceids.length > 1 ? 'black' : resourceColorsLUMA[event.resourceids[0] - 1])
+            const details = {
+              ...event
+            }
+            return {
+              details,
+              id: event.id,
+              color: event.color,
+              start: event.start,
+              end: event.end,
+              title: event.titleText,
+              constraint: 'businessHours'
+            }
+          })
+          .filter(event => event.details.group ? (!event.details.group.disabled || showFull) : true)
+          .filter(event => filterFunction(event.details))}
+        eventDrop={handleDrop}
+        eventClick={handleEventClick}
+        eventColor='#8a8a8a'
+        selectConstraint='businessHours'
+        eventContent={(eventInfo) => <LumaEvent eventInfo={eventInfo} currentUser={currentUser} />}
+        select={(e) => handleDateSelect(e)}
+        selectMirror={true}
+        allDaySlot={false}
+        timeZone='Europe/Helsinki'
       />
     </>)
 }

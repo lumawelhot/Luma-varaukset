@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import { And, Given, Then, When } from 'cypress-cucumber-preprocessor/steps'
-import { addBusinessDays, addDays, startOfWeek } from 'date-fns'
+import { set, addMonths } from 'date-fns'
 import { zonedTimeToUtc } from 'date-fns-tz'
 
 const setToHelsinkiTime = (dateString, timeString) => {
@@ -8,10 +8,10 @@ const setToHelsinkiTime = (dateString, timeString) => {
   return zonedTimeToUtc(dateTimeString, 'Europe/Helsinki')
 }
 
-const eventDate1 = setToHelsinkiTime(addBusinessDays(new Date(), 14).toISOString(),'10:00')
-const eventDate2 = setToHelsinkiTime(addBusinessDays(new Date(), 15).toISOString(),'10:00')
-const eventDate3 = setToHelsinkiTime(addBusinessDays(new Date(), 16).toISOString(),'10:00')
-const eventDate4 = setToHelsinkiTime(addBusinessDays(new Date(), 17).toISOString(),'10:00')
+const eventDate1 = setToHelsinkiTime(set(addMonths(new Date(), 1), { hours: 9, minutes: 0, seconds: 0 }).toISOString(),'10:00')
+const eventDate2 = setToHelsinkiTime(set(addMonths(new Date(), 1), { hours: 10, minutes: 0, seconds: 0 }).toISOString(),'10:00')
+const eventDate3 = setToHelsinkiTime(set(addMonths(new Date(), 1), { hours: 11, minutes: 0, seconds: 0 }).toISOString(),'10:00')
+const eventDate4 = setToHelsinkiTime(set(addMonths(new Date(), 1), { hours: 12, minutes: 0, seconds: 0 }).toISOString(),'10:00')
 const bookedEvent1 = 'BOOKED1'
 const bookedEvent2 = 'BOOKED2'
 const bookedEvent3 = 'BOOKED3'
@@ -85,7 +85,7 @@ And('employee is on the main page', () => {
 })
 
 When('I navigate to the event form', () => {
-  cy.get(':nth-child(8) > :nth-child(1) > .button').click()
+  cy.get(':nth-child(1) > :nth-child(1) > .button').click()
 })
 
 And('I enter all necessary information', () => {
@@ -95,7 +95,7 @@ And('I enter all necessary information', () => {
   cy.get(':nth-child(4) > .taginput.control > .taginput-container > .autocomplete > .dropdown-menu > .dropdown-content > :nth-child(2)').click()
   cy.get(':nth-child(14) > .checkbox2 > input').click()
   cy.get(':nth-child(20) > label > input').click()
-  const eventDate = addDays(startOfWeek(new Date()), 16).toISOString().slice(0,10)
+  const eventDate = set(addMonths(new Date(), 1), { hours: 9, minutes: 0, seconds: 0 }).toISOString().slice(0,10)
   cy.get(':nth-child(1) > .control > .ant-picker > .ant-picker-input > input').click()
   cy.get(`td[title="${eventDate}"]`).click()
   cy.get(':nth-child(2) > .control > .ant-picker > .ant-picker-input > input').as('startTime').click()
@@ -119,12 +119,14 @@ And('I enter all necessary information', () => {
 
 Then('event is successfully created', () => {
   cy.get('.toast').should('have.class', 'is-success')
-  cy.get('.rbc-toolbar > :nth-child(3) > :nth-child(4)').click()
+  cy.get('.fc-listMonth-button').click()
+  cy.get('.fc-next-button').click()
   cy.contains('Created event')
 })
 
 When('I am looking at the agenda view', () => {
-  cy.get('.rbc-toolbar > :nth-child(3) > :nth-child(4)').click()
+  cy.get('.fc-listMonth-button').click()
+  cy.get('.fc-next-button').click()
 })
 
 Then('events are shown', () => {
@@ -135,7 +137,7 @@ Then('events are shown', () => {
 })
 
 When('I navigate to visit list', () => {
-  cy.get(':nth-child(8) > :nth-child(2) > .button').click()
+  cy.get('[style="margin-top: 12px;"] > :nth-child(1) > :nth-child(2) > .button').click()
 })
 
 Then('visits are shown on the page', () => {
@@ -146,7 +148,8 @@ Then('visits are shown on the page', () => {
 })
 
 When('I navigate to desired events\' page', () => {
-  cy.get('.rbc-toolbar > :nth-child(3) > :nth-child(4)').click()
+  cy.get('.fc-listMonth-button').click()
+  cy.get('.fc-next-button').click()
   cy.contains('NONBOOKED').click()
 })
 
@@ -178,7 +181,8 @@ Then('event is removed successfully', () => {
 })
 
 When('I navigate to booked events\' page', () => {
-  cy.get('.rbc-toolbar > :nth-child(3) > :nth-child(4)').click()
+  cy.get('.fc-listMonth-button').click()
+  cy.get('.fc-next-button').click()
   cy.contains('BOOKED1').click()
 })
 
@@ -188,7 +192,7 @@ Then('event is not removed', () => {
 })
 
 And('I navigate to form field creation page', () => {
-  cy.get(':nth-child(8) > :nth-child(4) > .button').click()
+  cy.get('[style="margin-top: 12px;"] > :nth-child(1) > :nth-child(4) > .button').click()
   cy.get(':nth-child(1) > .button').click()
 })
 

@@ -104,7 +104,7 @@ test('Return on clicking "Poistu"', async () => {
     </MockedProvider>
   )
   await waitFor(() => new Promise((res) => setTimeout(res, 0))) // Allow component time to render
-  const element = container.querySelector('.button.luma.primary')
+  const element = container.querySelector('.button.luma')
   fireEvent.click(element)
   expect(history.location.pathname).toBe('/')
 })

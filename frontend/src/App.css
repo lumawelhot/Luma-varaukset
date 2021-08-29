@@ -134,6 +134,18 @@ button.rbc-input::-moz-focus-inner {
   text-transform: uppercase;
 }
 
+button.button.luma:hover {
+  background-color: rgb(27, 28, 41);
+  color: white;
+  border-color: rgb(27, 28, 41);
+}
+
+button.button.luma.active:hover {
+  background-color: rgb(19, 50, 117) !important;
+  color: white !important;
+  border-color: rgb(19, 50, 117) !important;
+}
+
 .rbc-toolbar button,
 button.button.luma {
   display: inline-block;
@@ -980,12 +992,6 @@ button.button.luma {
   margin-right: 10px;
 }
 
-.button.luma.active {
-  background-color: #0479a5;
-  border-color: #0479a5;
-  color: #fff;
-}
-
 .button.luma.primary {
   background-color: #0479a5;
   border-color: #0479a5;
@@ -1005,7 +1011,8 @@ button.button.luma {
   color: #fff;
 }
 
-.title {
+.title,
+.fc-toolbar-title {
   font-size: 1.45rem;
   font-weight: 700;
   letter-spacing: normal;
@@ -1135,13 +1142,76 @@ form.luma hr,
 .tag-count {
   margin-left: 165px;
   position: absolute;
-  left: 0px
+  left: 0px;
 }
 
-.select, .select select{ 
+.select,
+.select select {
   width: 100%;
 }
 
 option {
   font-size: 25px;
+}
+
+.fc-timeGridDay-button.fc-button.fc-button-primary,
+.fc-timeGridWeek-button.fc-button.fc-button-primary,
+.fc-dayGridMonth-button.fc-button.fc-button-primary,
+.fc-listMonth-button.fc-button.fc-button-primary,
+.fc-next-button.fc-button.fc-button-primary,
+.fc-prev-button.fc-button.fc-button-primary,
+.fc-today-button.fc-button.fc-button-primary {
+  display: inline-block;
+  margin: 0;
+  text-align: center;
+  vertical-align: middle;
+  background: none;
+  background-image: none;
+  border: 1px solid #ccc;
+  padding: 0.375rem 1rem;
+  line-height: normal;
+  white-space: nowrap;
+  border-color: #0479a5;
+  color: #0479a5;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-radius: 0;
+}
+
+.fc-next-button.fc-button.fc-button-primary,
+.fc-prev-button.fc-button.fc-button-primary {
+  font-size: 80%;
+}
+
+.button.luma.active,
+.fc-button-active,
+.fc-timeGridDay-button.fc-button.fc-button-primary.fc-button-active,
+.fc-timeGridWeek-button.fc-button.fc-button-primary.fc-button-active,
+.fc-dayGridMonth-button.fc-button.fc-button-primary.fc-button-active,
+.fc-listMonth-button.fc-button.fc-button-primary.fc-button-active,
+.fc-next-button.fc-button.fc-button-primary.fc-button-active,
+.fc-prev-button.fc-button.fc-button-primary.fc-button-active,
+.fc-today-button.fc-button.fc-button-primary.fc-button-active,
+.fc-filterButton-button.fc-button.fc-button-primary.fc-button-active {
+  background-color: #0479a5 !important;
+  border-color: #0479a5 !important;
+  color: #fff;
+}
+
+.fc-daygrid-more-link.fc-more-link {
+  font-size: 120%;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.fc-filterButton-button.fc-button.fc-button-primary {
+  visibility: hidden;
+  width: 0;
+}
+
+.fc-list-event-title,
+.fc-list-event-time,
+.fc-list-event-graphic {
+  cursor: pointer;
 }

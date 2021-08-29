@@ -116,5 +116,10 @@
   "show-all": "Näytä kaikki",
   "group": "Ryhmä",
   "has-visits": "Varausten määrä",
-  "assign-events-to-group": "Lisää vierailut ryhmään"
+  "assign-events-to-group": "Lisää vierailut ryhmään",
+  "publish-date": "Julkaisupäivä",
+  "set-publish-date": "Aseta julkaisupäivä",
+  "publish-time": "Julkaisuaika",
+  "assign-to-events": "Aseta julkaisupäivä",
+  "assign-publish-date": "Aseta julkaisupäivä"
 }
