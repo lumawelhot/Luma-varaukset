@@ -18,8 +18,11 @@ import './index.css'
 import App from './App'
 import './i18n'
 
-const BASE_URL = process.env.NODE_ENV === 'production' ? process.env.PUBLIC_URL : 'http://localhost:3001/'
-const WS_URL = BASE_URL.replace(/^http/,'ws') + 'graphql/ws'
+const BASE_URL = process.env.NODE_ENV === 'production' ? 'https://luma-varaukset.cs.helsinki.fi/' : 'http://localhost:3001/'
+const WS_URL = process.env.NODE_ENV === 'production' ?
+  'wss://luma-varaukset.cs.helsinki.fi/graphql/ws'
+  :
+  BASE_URL.replace(/^http/,'ws') + 'graphql/ws'
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('app-token')
