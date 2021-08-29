@@ -98,4 +98,4 @@ jobs:
           push: true
           tags: lumawelhot/luma-varaukset:staging
           build-args: |
-            PUBLIC_URL=https://ohtup-staging.cs.helsinki.fi/
+            PUBLIC_URL=https://ohtup-staging.cs.helsinki.fi/luma-varaukset/
