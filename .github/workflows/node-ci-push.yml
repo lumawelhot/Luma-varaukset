@@ -72,7 +72,7 @@ jobs:
           EMAILPASSWORD: ${{secrets.EMAILPASSWORD}}
           EMAILPORT: 587
           SECRET: ${{secrets.SECRET}}
-          
+
   build:
     name: 'Publish to dockerhub'
     needs: [frontend, backend]
@@ -91,4 +91,4 @@ jobs:
           push: true
           tags: lumawelhot/luma-varaukset:latest
           build-args: |
-            PUBLIC_URL=
+            PUBLIC_URL=https://luma-varaukset.cs.helsinki.fi/
