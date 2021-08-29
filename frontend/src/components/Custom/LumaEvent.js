@@ -58,6 +58,7 @@ const LumaEvent = ({ eventInfo }) => {
         title={popoverTitle()}
         content={popoverContent()}
         mouseEnterDelay={1}
+        placement='topLeft'
       >
         <span style={{
           backgroundColor: agenda ? undefined : details.color,
