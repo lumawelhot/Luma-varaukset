@@ -24,8 +24,6 @@ const LumaEventWrapper = (props) => {
     slotEnd,
   } = props
 
-  console.log(props.components)
-
   const resourceStyle={ backgroundColor: resourceColors[event.resourceids-1] }
 
   let title = accessors.title(event)

@@ -51,7 +51,6 @@ const RadioField = ({ add, item, cancel, save }) => {
       .forEach(option => newOptions.push(
         { value: newOptions.length + 1, text: option.text }
       ))
-    console.log(newOptions)
     setOptions(newOptions)
   }
 

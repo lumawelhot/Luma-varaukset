@@ -45,7 +45,6 @@ export const VisitForm = ({ sendMessage, event, token }) => {
   const [create, result] = useMutation(CREATE_VISIT, {
     refetchQueries: [{ query: EVENTS }, { query: GET_GROUPS }],
     onError: (error) => {
-      console.log(error)
       if (error.message === 'File not found') {
         sendMessage(t('failed-to-book-visit'), 'danger')
       } else {
