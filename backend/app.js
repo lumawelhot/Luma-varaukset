@@ -27,7 +27,7 @@ const resolvers = require('./graphql/resolvers')
 const typeDefs = require('./graphql/typeDefs')
 const schema = makeExecutableSchema({ typeDefs, resolvers })
 
-const graphQLEndpoint = '/graphql'
+const graphQLEndpoint = process.env.PUBLIC_URL?.includes('staging') ? '/luma-varaukset/graphql' : '/graphql'
 const server = new ApolloServer({
   schema,
   introspection: true,

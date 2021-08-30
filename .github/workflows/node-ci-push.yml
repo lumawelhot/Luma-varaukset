@@ -91,11 +91,11 @@ jobs:
           push: true
           tags: lumawelhot/luma-varaukset:latest
           build-args: |
-            PUBLIC_URL=https://luma-varaukset.cs.helsinki.fi/
+            PUBLIC_URL=https://luma-varaukset.cs.helsinki.fi
       - name: Publish staging version to Dockerhub
         uses: docker/build-push-action@v2
         with:
           push: true
           tags: lumawelhot/luma-varaukset:staging
           build-args: |
-            PUBLIC_URL=https://ohtup-staging.cs.helsinki.fi/luma-varaukset/
+            PUBLIC_URL=https://ohtup-staging.cs.helsinki.fi/luma-varaukset

@@ -8,8 +8,22 @@ services:
     restart: unless-stopped
     container_name: luma-varaukset-db
 
+  luma-varaukset-mongo-admin:
+    image: mongo-express:latest
+    restart: unless-stopped
+    depends_on:
+      - luma-varaukset-db
+    container_name: luma-varaukset-mongo-admin
+    ports:
+      - '8081:8081'
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=luma-varaukset-db
+
   luma-varaukset-app:
-    image: lumawelhot/luma-varaukset:latest
+    build:
+      context: .
+      args:
+        - PUBLIC_URL=http://localhost
     restart: unless-stopped
     volumes:
       - ./config:/app/config
@@ -19,14 +33,20 @@ services:
       - luma-varaukset-db
     container_name: luma-varaukset-app
 
-  proxy:
-    depends_on:
-      - luma-varaukset-db
-      - luma-varaukset-app
-    image: jwilder/nginx-proxy
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./nginx.conf:/etc/nginx/nginx.conf
+  caddy:
+    image: caddy:latest
+    container_name: luma-varaukset-caddy
+    restart: unless-stopped
     ports:
-      - 80:80
-    container_name: nginx
+      - '80:80'
+      - '443:443'
+    volumes:
+      - $PWD/Caddyfile:/etc/caddy/Caddyfile
+      - $PWD/site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+    external: true
+  caddy_config:

@@ -1,0 +1,8 @@
+{
+  auto_https off
+}
+localhost:80 {
+  handle {
+    reverse_proxy luma-varaukset-app:3001
+  }
+}
