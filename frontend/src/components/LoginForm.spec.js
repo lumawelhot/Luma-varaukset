@@ -91,7 +91,7 @@ test('Login not successful', async () => {
       </Router>
     </MockedProvider>
   )
-  const usernameInput = container.querySelector('#username')
+  const usernameInput = await container.querySelector('#username')
 
   fireEvent.change(usernameInput, {
     target: { value: 'Test' }
