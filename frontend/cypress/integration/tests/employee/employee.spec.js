@@ -119,14 +119,14 @@ And('I enter all necessary information', () => {
 
 Then('event is successfully created', () => {
   cy.get('.toast').should('have.class', 'is-success')
-  cy.get('.fc-listMonth-button').click()
-  cy.get('.fc-next-button').click()
+  cy.contains('Vierailulista').click()
+  cy.get('.ant-picker-clear').click()
   cy.contains('Created event')
 })
 
-When('I am looking at the agenda view', () => {
-  cy.get('.fc-listMonth-button').click()
-  cy.get('.fc-next-button').click()
+When('I am looking at the events list', () => {
+  cy.contains('Vierailulista').click()
+  cy.get('.ant-picker-clear').click()
 })
 
 Then('events are shown', () => {
@@ -148,8 +148,8 @@ Then('visits are shown on the page', () => {
 })
 
 When('I navigate to desired events\' page', () => {
-  cy.get('.fc-listMonth-button').click()
-  cy.get('.fc-next-button').click()
+  cy.contains('Vierailulista').click()
+  cy.get('.ant-picker-clear').click()
   cy.contains('NONBOOKED').click()
 })
 
@@ -181,8 +181,8 @@ Then('event is removed successfully', () => {
 })
 
 When('I navigate to booked events\' page', () => {
-  cy.get('.fc-listMonth-button').click()
-  cy.get('.fc-next-button').click()
+  cy.contains('Vierailulista').click()
+  cy.get('.ant-picker-clear').click()
   cy.contains('BOOKED1').click()
 })
 
