@@ -27,6 +27,7 @@ echo "Done writing file: .env"
 # Start the application, mongodb and nginx
 echo "Starting up using the following parameters:"
 cat .env
+docker volume create --name=caddy_data
 docker-compose up -d
 echo "Step 2 - Set up Admin user"
 read -p "Username for administrator [Admin]: " ADMIN_USERNAME
@@ -35,3 +36,4 @@ read -p "Password for administrator [salainen]: " ADMIN_PASSWORD
 ADMIN_PASSWORD=${ADMIN_PASSWORD:-salainen}
 docker exec luma-varaukset-app /bin/sh -c "cd /app/backend && node utils/mongoinit.js $ADMIN_USERNAME $ADMIN_PASSWORD"
 echo "If docker-compose started up without errors, you can now browse to http://localhost/luma-varaukset"
+echo "MongoDB Admin is available here: http://localhost:8081"

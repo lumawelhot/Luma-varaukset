@@ -70,7 +70,8 @@ const LumaEvent = ({ eventInfo }) => {
           borderRadius: 7,
           position: agenda ? undefined : 'absolute',
           borderColor: agenda ? undefined : details.color,
-          height: '100%'
+          height: '100%',
+          overflowX: 'hidden'
         }}
         >{details.title}{`${details.disabled ? ` - ${t('disabled')}` : ''}`}</span>
       </Popover>
