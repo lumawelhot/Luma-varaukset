@@ -1,10 +1,18 @@
-import React from 'react'
+import { useLazyQuery } from '@apollo/client'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router'
+import { VISITS } from '../graphql/queries'
+import { getCSV } from '../helpers/csv'
 
 const UserPage = ({ currentUser, setShowEventForm }) => {
+  const [getVisits, { data }] = useLazyQuery(VISITS)
   const { t } = useTranslation('user')
   const history = useHistory()
+
+  useEffect(() => {
+    if (data) getCSV(data.getVisits)
+  }, [data])
 
   const createEvent = (event) => {
     event.preventDefault()
@@ -46,6 +54,12 @@ const UserPage = ({ currentUser, setShowEventForm }) => {
     history.push('/group-list')
   }
 
+  const handleCSV = (event) => {
+    event.preventDefault()
+    if (data) getCSV(data.getVisits)
+    getVisits()
+  }
+
   if (!currentUser) return <div></div>
 
   return (
@@ -68,6 +82,9 @@ const UserPage = ({ currentUser, setShowEventForm }) => {
         </div>
         <div className="control">
           <button className="button luma" onClick={eventList}>{t('event-list')}</button>
+        </div>
+        <div>
+          <button className="button luma" onClick={handleCSV}>{t('csv')}</button>
         </div>
       </div>
       <div className="field is-grouped">

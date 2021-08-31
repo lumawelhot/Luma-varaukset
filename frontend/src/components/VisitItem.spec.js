@@ -20,7 +20,8 @@ const testItem = {
   clientEmail: 'test@example.com',
   clientPhone: '040-04004000',
   schoolName: 'Test School',
-  schoolLocation: 'Test Location'
+  schoolLocation: 'Test Location',
+  dataUseAgreement: true
 }
 
 test('Renders without error with empty visit', () => {

@@ -224,7 +224,6 @@ const App = () => {
   }
 
   const handleEventClick = ({ event }) => {
-    console.log(event._def.extendedProps.details)
     setClickedEvent({
       ...event._def.extendedProps.details
     })

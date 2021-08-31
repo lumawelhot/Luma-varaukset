@@ -62,6 +62,13 @@ exports[`Renders without error with admin user 1`] = `
           Vierailulista
         </button>
       </div>
+      <div>
+        <button
+          class="button luma"
+        >
+          csv
+        </button>
+      </div>
     </div>
     <div
       class="field is-grouped"
@@ -155,6 +162,13 @@ exports[`Renders without error with user 1`] = `
           class="button luma"
         >
           Vierailulista
+        </button>
+      </div>
+      <div>
+        <button
+          class="button luma"
+        >
+          csv
         </button>
       </div>
     </div>
