@@ -26,6 +26,12 @@ const LumaEvent = ({ eventInfo }) => {
 
   const resourceNames = details.resourceids.map(id => { return { name: resourceMap[id-1]?.resourceTitle || null, description: resourceMap[id-1]?.description }})
 
+  const parseDescription = (text) => {
+    return (
+      <span dangerouslySetInnerHTML={{ __html: text }}></span>
+    )
+  }
+
   const popoverContent = () => {
 
     return (
@@ -37,7 +43,7 @@ const LumaEvent = ({ eventInfo }) => {
           {details.tags.map(t => <Tag key={t.id} color='geekblue'>{t.name}</Tag> )}
         </Space>
         {resourceNames.map(r => <span key={r.name}>{r.name +' (' + r.description + ')'}</span>)}
-        <i>{details.desc}</i>
+        <i>{details.desc ? parseDescription(details.desc) : null}</i>
       </Space>
     )
   }

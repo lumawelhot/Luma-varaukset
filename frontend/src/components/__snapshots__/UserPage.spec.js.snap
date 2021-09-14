@@ -6,10 +6,12 @@ exports[`Renders without error with admin user 1`] = `
     style="margin-top: 12px;"
   >
     <div
-      class="field is-grouped"
+      class="ant-space ant-space-horizontal ant-space-align-center"
+      style="flex-wrap: wrap; margin-bottom: -8px;"
     >
       <div
-        class="control"
+        class="ant-space-item"
+        style="margin-right: 8px; padding-bottom: 8px;"
       >
         <button
           class="button luma"
@@ -18,7 +20,8 @@ exports[`Renders without error with admin user 1`] = `
         </button>
       </div>
       <div
-        class="control"
+        class="ant-space-item"
+        style="margin-right: 8px; padding-bottom: 8px;"
       >
         <button
           class="button luma"
@@ -27,7 +30,8 @@ exports[`Renders without error with admin user 1`] = `
         </button>
       </div>
       <div
-        class="control"
+        class="ant-space-item"
+        style="margin-right: 8px; padding-bottom: 8px;"
       >
         <button
           class="button luma"
@@ -36,7 +40,8 @@ exports[`Renders without error with admin user 1`] = `
         </button>
       </div>
       <div
-        class="control"
+        class="ant-space-item"
+        style="margin-right: 8px; padding-bottom: 8px;"
       >
         <button
           class="button luma"
@@ -45,7 +50,8 @@ exports[`Renders without error with admin user 1`] = `
         </button>
       </div>
       <div
-        class="control"
+        class="ant-space-item"
+        style="margin-right: 8px; padding-bottom: 8px;"
       >
         <button
           class="button luma"
@@ -54,7 +60,8 @@ exports[`Renders without error with admin user 1`] = `
         </button>
       </div>
       <div
-        class="control"
+        class="ant-space-item"
+        style="margin-right: 8px; padding-bottom: 8px;"
       >
         <button
           class="button luma"
@@ -62,34 +69,43 @@ exports[`Renders without error with admin user 1`] = `
           Vierailulista
         </button>
       </div>
-      <div>
+      <div
+        class="ant-space-item"
+        style="margin-right: 8px; padding-bottom: 8px;"
+      >
         <button
           class="button luma"
         >
           csv
         </button>
       </div>
-    </div>
-    <div
-      class="field is-grouped"
-    >
       <div
-        class="control"
+        class="ant-space-item"
+        style="margin-right: 8px; padding-bottom: 8px;"
       >
-        <button
-          class="button luma"
+        <div
+          class="control"
         >
-          Käyttäjälista
-        </button>
+          <button
+            class="button luma"
+          >
+            Käyttäjälista
+          </button>
+        </div>
       </div>
       <div
-        class="control"
+        class="ant-space-item"
+        style="padding-bottom: 8px;"
       >
-        <button
-          class="button luma"
+        <div
+          class="control"
         >
-          Sähköpostit
-        </button>
+          <button
+            class="button luma"
+          >
+            Sähköpostit
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -108,10 +124,12 @@ exports[`Renders without error with user 1`] = `
     style="margin-top: 12px;"
   >
     <div
-      class="field is-grouped"
+      class="ant-space ant-space-horizontal ant-space-align-center"
+      style="flex-wrap: wrap; margin-bottom: -8px;"
     >
       <div
-        class="control"
+        class="ant-space-item"
+        style="margin-right: 8px; padding-bottom: 8px;"
       >
         <button
           class="button luma"
@@ -120,7 +138,8 @@ exports[`Renders without error with user 1`] = `
         </button>
       </div>
       <div
-        class="control"
+        class="ant-space-item"
+        style="margin-right: 8px; padding-bottom: 8px;"
       >
         <button
           class="button luma"
@@ -129,7 +148,8 @@ exports[`Renders without error with user 1`] = `
         </button>
       </div>
       <div
-        class="control"
+        class="ant-space-item"
+        style="margin-right: 8px; padding-bottom: 8px;"
       >
         <button
           class="button luma"
@@ -138,7 +158,8 @@ exports[`Renders without error with user 1`] = `
         </button>
       </div>
       <div
-        class="control"
+        class="ant-space-item"
+        style="margin-right: 8px; padding-bottom: 8px;"
       >
         <button
           class="button luma"
@@ -147,7 +168,8 @@ exports[`Renders without error with user 1`] = `
         </button>
       </div>
       <div
-        class="control"
+        class="ant-space-item"
+        style="margin-right: 8px; padding-bottom: 8px;"
       >
         <button
           class="button luma"
@@ -156,7 +178,8 @@ exports[`Renders without error with user 1`] = `
         </button>
       </div>
       <div
-        class="control"
+        class="ant-space-item"
+        style="margin-right: 8px; padding-bottom: 8px;"
       >
         <button
           class="button luma"
@@ -164,7 +187,10 @@ exports[`Renders without error with user 1`] = `
           Vierailulista
         </button>
       </div>
-      <div>
+      <div
+        class="ant-space-item"
+        style="padding-bottom: 8px;"
+      >
         <button
           class="button luma"
         >
@@ -172,9 +198,6 @@ exports[`Renders without error with user 1`] = `
         </button>
       </div>
     </div>
-    <div
-      class="field is-grouped"
-    />
   </div>
 </div>
 `;

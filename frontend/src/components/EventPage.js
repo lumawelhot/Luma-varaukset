@@ -127,13 +127,19 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
     })
   }
 
+  const parseDescription = (text) => {
+    return (
+      <span dangerouslySetInnerHTML={{ __html: text }}></span>
+    )
+  }
+
   if (event) {
     const eventClass = filterEventClass(event.resourceids)
     const eventGrades = filterEventGrades(event.grades)
 
     const startsAfter14Days = differenceInDays(event.start, new Date()) >= 14
     const startsAfter1Hour = differenceInMinutes(event.start, new Date()) >= 60
-    const description = event.desc ? event.desc : null
+    const description = event.desc ? parseDescription(event.desc) : null
 
     return (
       <>

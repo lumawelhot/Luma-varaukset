@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router'
 import { VISITS } from '../graphql/queries'
 import { getCSV } from '../helpers/csv'
+import { Space } from 'antd'
 
 const UserPage = ({ currentUser, setShowEventForm }) => {
   const [getVisits, { data }] = useLazyQuery(VISITS)
@@ -64,30 +65,14 @@ const UserPage = ({ currentUser, setShowEventForm }) => {
 
   return (
     <div style={{ marginTop: 12 }}>
-      <div className="field is-grouped">
-        <div className="control">
-          <button className="button luma" onClick={createEvent}>{t('create-visit')}</button>
-        </div>
-        <div className="control">
-          <button className="button luma" onClick={listVisits}>{t('reservations')}</button>
-        </div>
-        <div className="control">
-          <button className="button luma" onClick={extras}>{t('extras')}</button>
-        </div>
-        <div className="control">
-          <button className="button luma" onClick={forms}>{t('forms')}</button>
-        </div>
-        <div className="control">
-          <button className="button luma" onClick={groups}>{t('groups')}</button>
-        </div>
-        <div className="control">
-          <button className="button luma" onClick={eventList}>{t('event-list')}</button>
-        </div>
-        <div>
-          <button className="button luma" onClick={handleCSV}>{t('csv')}</button>
-        </div>
-      </div>
-      <div className="field is-grouped">
+      <Space wrap>
+        <button className="button luma" onClick={createEvent}>{t('create-visit')}</button>
+        <button className="button luma" onClick={listVisits}>{t('reservations')}</button>
+        <button className="button luma" onClick={extras}>{t('extras')}</button>
+        <button className="button luma" onClick={forms}>{t('forms')}</button>
+        <button className="button luma" onClick={groups}>{t('groups')}</button>
+        <button className="button luma" onClick={eventList}>{t('event-list')}</button>
+        <button className="button luma" onClick={handleCSV}>{t('csv')}</button>
         {currentUser.isAdmin &&
         <>
           <div className="control">
@@ -98,7 +83,7 @@ const UserPage = ({ currentUser, setShowEventForm }) => {
           </div>
         </>
         }
-      </div>
+      </Space>
     </div>
   )
 }

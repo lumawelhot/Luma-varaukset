@@ -79,21 +79,6 @@ test('Renders without error with 1 item', async () => {
   expect(element.innerHTML).toContain('Maanjäristysten alueellisuus ja niiden vaikutukset')
 })
 
-test('URL is copied', async () => {
-  document.execCommand = jest.fn()
-  const notify = jest.fn()
-  const { container } = render(
-    <MockedProvider mocks={singleItem} addTypename={false}>
-      <VisitList notify={notify}/>
-    </MockedProvider>
-  )
-  await waitFor(() => new Promise((res) => setTimeout(res, 0))) // Allow component time to render
-  const element = container.querySelector('tbody > tr button.luma')
-  fireEvent.click(element)
-  expect(document.execCommand.mock.calls).toHaveLength(1)
-  expect(document.execCommand.mock.calls[0][0]).toBe('copy')
-})
-
 test('Return on clicking "Poistu"', async () => {
   const history = createMemoryHistory()
 

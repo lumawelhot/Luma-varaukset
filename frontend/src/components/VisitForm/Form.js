@@ -1,7 +1,8 @@
 import React from 'react'
 import { Formik, Field } from 'formik'
 import format from 'date-fns/format'
-import { Tooltip } from 'antd'
+import { Space, Tooltip } from 'antd'
+import { InfoCircleOutlined } from '@ant-design/icons'
 import TimePicker from '../Pickers/TimePicker'
 import { add } from 'date-fns'
 import { CheckBox, RadioButton, TextField } from './FormFields'
@@ -248,7 +249,12 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit, customFormFiel
                           }}
                           onBlur={handleBlur}/>
                       </div>
-                      <span>- {format(new Date(values.finalEndTime), 'HH:mm')}</span>
+                      <Space direction="horizontal">
+                        <span>- {format(new Date(values.finalEndTime), 'HH:mm')}</span>
+                        <Tooltip title={t('endtime-calculation-info')}>
+                          <InfoCircleOutlined />
+                        </Tooltip>
+                      </Space>
                     </div>
                     {touched.startTime && errors.startTime ? (
                       <p className="help is-danger">{errors.startTime}</p>

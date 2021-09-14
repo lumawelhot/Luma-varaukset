@@ -13,6 +13,7 @@ import { EventForm } from './components/EventForm'
 import { VisitForm } from './components/VisitForm'
 import { FcKey } from 'react-icons/fc'
 import Banner from './components/Banner'
+import MobileBanner from './components/MobileBanner'
 import UserPage from './components/UserPage'
 import EventPage from './components/EventPage'
 import Toasts from './components/Toasts'
@@ -26,8 +27,11 @@ import EventList from './components/EventList'
 import EmailConfig from './components/EmailConfig'
 import { FaLock, FaEyeSlash } from 'react-icons/fa'
 import GroupList from './components/GroupList'
+import { useViewport } from '.'
+
 
 const App = () => {
+  const { width } = useViewport()
   const { t } = useTranslation('common')
   const history = useHistory()
   const allTags = useQuery(TAGS)
@@ -262,7 +266,7 @@ const App = () => {
   return (
     <div className="App container">
       {!toasts.length && <div id="timer"></div>}
-      <Banner/>
+      { width < 1000 ? <MobileBanner/> : <Banner/>}
       <Toasts toasts={toasts} />
       <Switch>
         <Route path='/email-config'>
@@ -336,7 +340,7 @@ const App = () => {
         </Route>
         <Route path='/visits'>
           {currentUser &&
-            <VisitList notify={notify} />
+            <VisitList/>
           }
           {!currentUser && <p>{t('not-logged-in')}</p>}
         </Route>
