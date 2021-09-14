@@ -38,7 +38,7 @@ Given('Admin is logged in', () => {
 })
 
 When('I navigate to the user creation form', () => {
-  cy.get('[style="margin-top: 12px;"] > :nth-child(2) > :nth-child(1) > .button').click()
+  cy.get(':nth-child(8) > .control > .button').click()
   cy.get(':nth-child(1) > .button').click()
 })
 
@@ -51,12 +51,12 @@ And('I enter new user credentials', () => {
 
 Then('the user is created', () => {
   cy.get('.toast').should('have.class', 'is-success')
-  cy.get('[style="margin-top: 12px;"] > :nth-child(2) > :nth-child(1) > .button').click()
+  cy.get(':nth-child(8) > .control > .button').click()
   cy.contains('User123')
 })
 
 When('I navigate to the user list page', () => {
-  cy.get('[style="margin-top: 12px;"] > :nth-child(2) > :nth-child(1) > .button').click()
+  cy.get(':nth-child(8) > .control > .button').click()
 })
 
 And('I click user deletion button', () => {

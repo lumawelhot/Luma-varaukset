@@ -97,6 +97,7 @@ And('I enter all necessary information', () => {
   cy.get(':nth-child(20) > label > input').click()
   const eventDate = set(addMonths(new Date(), 1), { hours: 9, minutes: 0, seconds: 0 }).toISOString().slice(0,10)
   cy.get(':nth-child(1) > .control > .ant-picker > .ant-picker-input > input').click()
+  cy.get('.ant-picker-header-next-btn').click()
   cy.get(`td[title="${eventDate}"]`).click()
   cy.get(':nth-child(2) > .control > .ant-picker > .ant-picker-input > input').as('startTime').click()
   cy.get('.ant-picker-content').within(() => {
