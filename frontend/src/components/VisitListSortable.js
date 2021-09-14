@@ -4,6 +4,9 @@ import { resourceColorsLUMA } from '../helpers/styles'
 import VisitItem from './VisitItem'
 import { format, parseISO }  from 'date-fns'
 import { useTranslation } from 'react-i18next'
+import { Typography } from 'antd'
+
+const { Text } = Typography
 
 const useSortableData = (items, config = null) => {
   const [sortConfig, setSortConfig] = useState(config)
@@ -39,7 +42,7 @@ const useSortableData = (items, config = null) => {
   return { items: sortedItems, requestSort, sortConfig }
 }
 
-const VisitListSortable = ({ visits, copyURL }) => {
+const VisitListSortable = ({ visits }) => {
   const { t } = useTranslation('visit')
   const [showModal, setShowModal] = useState(false)
   const [selectedItem, setSelectedItem] = useState(null)
@@ -111,7 +114,7 @@ const VisitListSortable = ({ visits, copyURL }) => {
                 <td>{`${format(parseISO(visit.startTime), 'd.M.yyyy')}`}</td>
                 <td>{visit.status ? t('booked') : t('cancelled')}</td>
                 <td>
-                  <button className="button luma" onClick={() => copyURL(visit)}>{t('url-copy')}</button>
+                  <Text copyable={{ text:copiedURL, tooltips: [t('url-copy'), t('url-copied')] }}>{t('url-copy')}</Text>
                   <input readOnly className="hidden" type="text" id={'value-' + visit.id} value={copiedURL} />
                 </td>
               </tr>

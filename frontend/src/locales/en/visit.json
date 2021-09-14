@@ -46,5 +46,6 @@
   "choose-remote-or-inperson": "Choose between on-premises or remote teaching",
   "choose-event-extras": "Choose applicable extra services",
   "booked": "BOOKED",
-  "cancelled": "CANCELLED"
+  "cancelled": "CANCELLED",
+  "endtime-calculation-info": "The end time is calculated from the start time and additional services."
 }
