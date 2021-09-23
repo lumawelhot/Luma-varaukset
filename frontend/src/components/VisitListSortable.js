@@ -7,7 +7,7 @@ import { Typography } from 'antd'
 
 const { Text } = Typography
 
-const useSortableData = (items, config = null) => {
+export const useSortableData = (items, config = null) => {
   const [sortConfig, setSortConfig] = useState(config)
 
   const sortedItems = useMemo(() => {
