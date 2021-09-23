@@ -44,6 +44,39 @@ export const EventType = () => {
   )
 }
 
+export const Languages = ({ touched, errors }) => {
+  const { t } = useTranslation('event')
+  return (
+    <>
+      <label className="label" id="language-group">
+        {t('choose-languages')}
+        <span style={{ color: 'red' }}> *</span>
+      </label>
+      <div className="control">
+        <label>
+          <Field type="checkbox" name="languages" value="fi" />
+          {t('finnish')}
+        </label>
+      </div>
+      <div className="control">
+        <label>
+          <Field type="checkbox" name="languages" value="sv" />
+          {t('swedish')}
+        </label>
+      </div>
+      <div className="control">
+        <label>
+          <Field type="checkbox" name="languages" value="en" />
+          {t('english')}
+        </label>
+      </div>
+      {touched.languages && errors.languages ?
+        <p className="help is-danger">{errors.languages}</p> : null
+      }
+    </>
+  )
+}
+
 export const Platforms = ({ values, touched, errors, setFieldValue }) => {
   const { t } = useTranslation('event')
   return (

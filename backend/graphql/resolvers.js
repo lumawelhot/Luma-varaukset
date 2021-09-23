@@ -356,7 +356,8 @@ const resolvers = {
         duration: args.duration,
         customForm: args.customForm,
         disabled: false,
-        publishDate: args.publishDate ? new Date(args.publishDate) : null
+        publishDate: args.publishDate ? new Date(args.publishDate) : null,
+        languages: args.languages
       })
 
       event.extras = extras
@@ -433,7 +434,7 @@ const resolvers = {
     },
     modifyEvent: async (root, args, { currentUser }) => {
       const extras = await Extra.find({ _id: { $in: args.extras } })
-      const { title, desc, resourceids, grades, remotePlatforms, otherRemotePlatformOption, remoteVisit, inPersonVisit, customForm, publishDate } = args
+      const { title, desc, resourceids, grades, remotePlatforms, otherRemotePlatformOption, remoteVisit, inPersonVisit, customForm, publishDate, languages } = args
       const event = await Event.findById(args.event).populate('visits')
       if (!event) throw new UserInputError('Event could not be found')
       if (!currentUser) throw new AuthenticationError('not authenticated')
@@ -474,6 +475,7 @@ const resolvers = {
       inPersonVisit !== undefined ? event.inPersonVisit = inPersonVisit : null
       customForm !== undefined ? event.customForm = customForm : null
       publishDate ? event.publishDate = new Date(publishDate) : null
+      languages !== undefined ? event.languages = languages : null
       event.extras = extras
       event.tags = await addNewTags(args.tags)
       if (event.visits.length) {

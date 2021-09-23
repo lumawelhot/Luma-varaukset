@@ -94,7 +94,8 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit, customFormFiel
         extras: [],
         remotePlatform: '0',
         otherRemotePlatformOption: '',
-        finalEndTime: new Date(add(event.start, { minutes: event.duration }))
+        finalEndTime: new Date(add(event.start, { minutes: event.duration })),
+        language: event.languages[0]
       }}
       validate={(values) => validate(values, selectedEvent, eventPlatforms)}
       onSubmit={(values) => {
@@ -114,6 +115,22 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit, customFormFiel
                   <h1 className="title">{t('give-info')}</h1>
 
                   <form onSubmit={handleSubmit} className="box luma">
+
+                    {event.languages.length > 1 && (
+                      <>
+                        <label className="label">{t('choose-language')}</label>
+                        {event.languages.map(lang =>
+                          <Field
+                            key={lang}
+                            id='language'
+                            label={t(lang)}
+                            onChange={() => setFieldValue('language', lang)}
+                            checked={values.language === lang}
+                            component={RadioButton}
+                          />
+                        )}
+                      </>
+                    )}
 
                     {event.inPersonVisit && event.remoteVisit ? (
                       <>

@@ -8,6 +8,8 @@ import { DELETE_EVENT, DISABLE_EVENT, ENABLE_EVENT, EVENTS } from '../graphql/qu
 import { ModifyEvent } from './ModifyEventModal'
 import { useTranslation } from 'react-i18next'
 import { classes } from '../helpers/classes'
+import { Space } from 'antd'
+import ReactCountryFlag from 'react-country-flag'
 
 const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, setEvent, tags }) => {
   const { t } = useTranslation('event')
@@ -151,7 +153,19 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
             <div className="section">
               <div className="box">
                 <div className="content">
-                  <div className="title" style={event.disabled ? { color: 'red' } : null}>{event.titleText}{event.disabled ? ` - ${t('disabled')}` : null}</div>
+                  <div className="title" style={event.disabled ? { color: 'red' } : null}>
+                    <Space wrap>
+                      {event.titleText}
+                      {event.languages?.map(lang => {
+                        if (lang === 'en')
+                          return <ReactCountryFlag key={lang} countryCode='GB'/>
+                        if (lang === 'sv')
+                          return <ReactCountryFlag key={lang} countryCode='SE'/>
+                        return <ReactCountryFlag key={lang} countryCode='FI'/>
+                      })}
+                      {event.disabled ? ` - ${t('disabled')}` : null}
+                    </Space>
+                  </div>
                   <div className="tags eventpage">
                     {event.tags.map(t => <span key={t.id} className="tag is-small luma">{t.name}</span>)}
                   </div>

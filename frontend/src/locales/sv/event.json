@@ -121,5 +121,10 @@
   "show-events-to-be-removed": "Visa evenemang som skall raderas",
   "no-events-chosen": "Inga valda evenemang",
   "custom-form": "Lägg till fält från extra formulär",
-  "no-custom-form": "Ingenting"
+  "no-custom-form": "Ingenting",
+  "choose-one-language": "Välj minst ett språkalternativ",
+  "choose-languages": "Språkalternativ",
+  "finnish": "Finska",
+  "swedish": "Svenska",
+  "english": "Engelska"
 }

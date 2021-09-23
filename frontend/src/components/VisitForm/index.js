@@ -169,7 +169,8 @@ export const VisitForm = ({ sendMessage, event, token }) => {
           extras: values.extras,
           remotePlatform: remotePlatform,
           token,
-          customFormData: customFormData
+          customFormData: customFormData,
+          language: values.language
         }
       })
     } catch (error) {

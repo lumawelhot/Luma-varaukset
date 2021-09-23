@@ -50,6 +50,7 @@ const typeDefs = gql`
     locked: Boolean!
     group: Group
     publishDate: String
+    languages: [String]
 
   }
   type Visit {
@@ -71,6 +72,7 @@ const typeDefs = gql`
     dataUseAgreement: Boolean!
     remotePlatform: String
     customFormData: String
+    language: String
   }
   type Token {
     value: String!
@@ -186,6 +188,7 @@ const typeDefs = gql`
       customForm: ID
       group: ID
       publishDate: String
+      languages: [String]
     ): Event
     modifyEvent(
       event: ID!
@@ -206,6 +209,7 @@ const typeDefs = gql`
       customForm: ID
       group: ID
       publishDate: String
+      languages: [String]
     ): Event
     createVisit(
       event: ID!
@@ -225,6 +229,7 @@ const typeDefs = gql`
       remotePlatform: String
       token: String!
       customFormData: String
+      language: String
     ): Visit
     disableEvent(
       event: ID!

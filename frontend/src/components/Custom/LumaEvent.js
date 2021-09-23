@@ -2,6 +2,7 @@ import React from 'react'
 import { Popover, Space, Tag } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { classes } from '../../helpers/classes'
+import ReactCountryFlag from 'react-country-flag'
 
 const LumaEvent = ({ eventInfo }) => {
   const { t } = useTranslation('common')
@@ -48,6 +49,13 @@ const LumaEvent = ({ eventInfo }) => {
     return <Space size='middle'>
       {getTimeRange()}
       {details.titleText}
+      {details.languages?.map(lang => {
+        if (lang === 'en')
+          return <ReactCountryFlag key={lang} countryCode='GB'/>
+        if (lang === 'sv')
+          return <ReactCountryFlag key={lang} countryCode='SE'/>
+        return <ReactCountryFlag key={lang} countryCode='FI'/>
+      })}
     </Space>
   }
 

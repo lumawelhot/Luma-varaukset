@@ -47,5 +47,10 @@
   "choose-event-extras": "Valitse vierailulle sopivat lisävalinnat",
   "booked": "VOIMASSA",
   "cancelled": "PERUTTU",
-  "endtime-calculation-info": "Lopetusaika määräytyy valitsemasi aloitusajankohdan ja lisävalintojen perusteella"
+  "endtime-calculation-info": "Lopetusaika määräytyy valitsemasi aloitusajankohdan ja lisävalintojen perusteella",
+  "choose-language": "Valitse opetuskieli",
+  "fi": "Suomi",
+  "sv": "Ruotsi",
+  "en": "Englanti",
+  "language": "Opetuskieli"
 }

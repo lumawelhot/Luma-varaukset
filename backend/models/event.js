@@ -94,6 +94,11 @@ const eventSchema = mongoose.Schema({
   publishDate: {
     type: Date,
     required: false
+  },
+  languages: {
+    type: [String],
+    required: false,
+    default: ['fi']
   }
 })
 

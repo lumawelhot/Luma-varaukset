@@ -63,7 +63,7 @@ export const TextArea = (field) => {
 }
 
 export const RadioButton = (field) => {
-  const { form, label, onChange, className, style, id } = field
+  const { form, label, onChange, className, style, id, checked } = field
   const { handleChange } = form
   return (
     <div className="control" style={style}>
@@ -72,6 +72,7 @@ export const RadioButton = (field) => {
           name={id}
           type="radio"
           onChange={onChange ? onChange : handleChange}
+          checked={checked}
         /> {label}
       </label>
     </div>

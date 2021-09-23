@@ -74,6 +74,10 @@ const visitSchema = mongoose.Schema({
   customFormData: {
     type: mongoose.Schema.Types.Mixed,
     required: false,
+  },
+  language: {
+    type: String,
+    required: false
   }
 })
 
