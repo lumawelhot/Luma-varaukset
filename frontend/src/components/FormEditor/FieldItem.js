@@ -4,6 +4,7 @@ import RadioField from './Fields/RadioField'
 import CheckboxField from './Fields/CheckboxField'
 import { useTranslation } from 'react-i18next'
 import { Popconfirm } from 'antd'
+import { EditOutlined } from '@ant-design/icons'
 
 const FieldItem = ({ item, update, remove, down, up }) => {
   const { t } = useTranslation('user')
@@ -42,7 +43,7 @@ const FieldItem = ({ item, update, remove, down, up }) => {
         <td>
           <div className="media">
             <div className="field formeditor" onClick={() => setEditMode(true)}>
-              <label style={{ cursor: 'pointer' }}>{item.name}</label>
+              <label style={{ cursor: 'pointer' }}><EditOutlined /> {item.name}</label>
             </div>
           </div>
         </td>

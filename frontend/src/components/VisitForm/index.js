@@ -122,12 +122,20 @@ export const VisitForm = ({ sendMessage, event, token }) => {
 
   const parseCustomFormData = (values) => {
     if (!customFormFields) return null
-    return JSON.stringify(customFormFields.map((f,index) => {
+    const mappedFields = customFormFields.map((f,index) => {
+      const parsedValue = f.type === 'text' ?
+        values['custom-' + index]
+        :
+        f.type === 'radio' ?
+          f.options.find(o => o.value === Number(values['custom-' + index]))?.text
+          :
+          values['custom-' + index].map(val => f.options.find(o => o.value === Number(val))?.text)
       return {
         name: f.name,
-        value: values['custom-' + index]
+        value: parsedValue
       }
-    }))
+    })
+    return JSON.stringify(mappedFields)
   }
 
   const onSubmit = (values, eventPlatforms) => {
