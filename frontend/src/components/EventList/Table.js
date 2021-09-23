@@ -2,10 +2,11 @@ import { format } from 'date-fns'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { classes } from '../../helpers/classes'
-import { resourceColorsLUMA } from '../../helpers/styles'
 
 const Table = ({ tableEvents, checkedEvents, handleCheckEvent }) => {
   const { t } = useTranslation('event')
+
+  const resourceColors = classes.map(c => c.color)
 
   return (
     <table className="table" style={{ marginTop: 10 }}>
@@ -23,7 +24,7 @@ const Table = ({ tableEvents, checkedEvents, handleCheckEvent }) => {
       </thead>
       <tbody>
         {tableEvents.map(event => {
-          const resourceNames = event.resourceids.map(id => { return { name: classes[id-1]?.label || null, color: resourceColorsLUMA[id - 1] }})
+          const resourceNames = event.resourceids.map(id => { return { name: classes[id-1]?.label || null, color: resourceColors[id - 1] }})
           return (
             <tr key={event.id}>
               <td>

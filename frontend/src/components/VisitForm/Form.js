@@ -13,6 +13,7 @@ import CustomForm from './CustomForm'
 import CountDown from '../CountDown'
 import { useMutation } from '@apollo/client'
 import { UNLOCK_EVENT } from '../../graphql/queries'
+//import { classes } from '../../helpers/classes'
 
 let selectedEvent
 let eventPlatforms
@@ -39,7 +40,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit, customFormFiel
   }
 
   const classes = [
-    { value: 1, label: 'SUMMAMUTIKKA', description: t('common:mathematic') },
+    { value: 1, label: 'SUMMAMUTIKKA', description: t('common:mathematics') },
     { value: 2, label: 'FOTONI', description: t('common:physics') },
     { value: 3, label: 'LINKKI', description: t('common:computer-science') },
     { value: 4, label: 'GEOPISTE', description: t('common:geography') },

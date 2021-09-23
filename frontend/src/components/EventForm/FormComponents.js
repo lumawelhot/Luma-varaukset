@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import DatePicker from '../Pickers/DatePicker'
 import TimePicker from '../Pickers/TimePicker'
 import { CheckBox, TextField } from '../VisitForm/FormFields'
+import { classes } from '../../helpers/classes'
 
 const platformList = [
   { id: 0, label: 'Zoom' },
@@ -15,18 +16,10 @@ const platformList = [
 
 const gradesList = [
   { id: 0, label: 'Varhaiskasvatus' },
-  { id: 1, label: '1.-2. luokka' },
-  { id: 2, label: '3.-6. luokka' },
-  { id: 3, label: '7.-9. luokka' },
-  { id: 4, label: 'toinen aste' }
-]
-
-const resourceList = [
-  { id: 0, label: 'SUMMAMUTIKKA' },
-  { id: 1, label: 'FOTONI' },
-  { id: 2, label: 'LINKKI' },
-  { id: 3, label: 'GEOPISTE' },
-  { id: 4, label: 'GADOLIN' }
+  { id: 1, label: '1. - 2. luokka' },
+  { id: 2, label: '3. - 6. luokka' },
+  { id: 3, label: '7. - 9. luokka' },
+  { id: 4, label: 'Toinen aste' }
 ]
 
 export const EventType = () => {
@@ -129,7 +122,7 @@ export const ScienceClasses = ({ values, touched, errors, setFieldValue, label }
         <span style={{ color: 'red' }}> *</span>
       </label>
 
-      {resourceList.map(resource => (
+      {classes.map(resource => (
         <Field
           key={resource.label}
           label={resource.label}

@@ -7,6 +7,7 @@ import { useMutation } from '@apollo/client'
 import { DELETE_EVENT, DISABLE_EVENT, ENABLE_EVENT, EVENTS } from '../graphql/queries'
 import { ModifyEvent } from './ModifyEventModal'
 import { useTranslation } from 'react-i18next'
+import { classes } from '../helpers/classes'
 
 const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, setEvent, tags }) => {
   const { t } = useTranslation('event')
@@ -55,14 +56,6 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
     history.push('/')
   }
 
-  const classes = [
-    { value: 1, label: 'SUMMAMUTIKKA' },
-    { value: 2, label: 'FOTONI' },
-    { value: 3, label: 'LINKKI' },
-    { value: 4, label: 'GEOPISTE' },
-    { value: 5, label: 'GADOLIN' }
-  ]
-
   const filterEventClass = (eventClasses) => {
     const classesArray = eventClasses.map(c => classes[c-1].label)
     return classesArray.join(', ')
@@ -91,11 +84,11 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
   }
 
   const grades = [
-    { value: 1, label: 'varhaiskasvatus' },
-    { value: 2, label: '1.-2. luokka' },
-    { value: 3, label: '3.-6. luokka' },
-    { value: 4, label: '7.-9 luokka' },
-    { value: 5, label: 'toinen aste' }
+    { value: 1, label: 'Varhaiskasvatus' },
+    { value: 2, label: '1. - 2. luokka' },
+    { value: 3, label: '3. - 6. luokka' },
+    { value: 4, label: '7. - 9. luokka' },
+    { value: 5, label: 'Toinen aste' }
   ]
 
   const cancel = (event) => {

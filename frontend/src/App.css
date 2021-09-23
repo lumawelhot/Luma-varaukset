@@ -400,3 +400,14 @@ button.button.luma {
 .examEvent {
   background-color: #d14600;
 }
+
+.fc-col-header a,
+.fc-col-header a:hover {
+  color: #000;
+  text-transform: capitalize;
+  cursor: default;
+}
+
+#banner a {
+  text-decoration: underline;
+}

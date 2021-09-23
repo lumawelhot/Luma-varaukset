@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './App.css'
 import 'antd/dist/antd.css'
 import LoginForm from './components/LoginForm'
-import MyCalendar from './MyCalendar'
+import LumaCalendar from './LumaCalendar'
 import { Switch, Route, useHistory } from 'react-router-dom'
 import { EVENTS, EVENTS_DELETED, EVENT_STATUS, LOCK_EVENT, TAGS } from './graphql/queries'
 import { useApolloClient, useLazyQuery, useMutation, useQuery, useSubscription } from '@apollo/client'
@@ -368,7 +368,7 @@ const App = () => {
               />
             </div>
           }
-          <MyCalendar
+          <LumaCalendar
             sendMessage={notify}
             events={events}
             currentUser={currentUser}

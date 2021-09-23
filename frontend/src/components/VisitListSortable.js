@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react'
 import { classes } from '../helpers/classes'
-import { resourceColorsLUMA } from '../helpers/styles'
 import VisitItem from './VisitItem'
 import { format, parseISO }  from 'date-fns'
 import { useTranslation } from 'react-i18next'
@@ -47,6 +46,8 @@ const VisitListSortable = ({ visits }) => {
   const [showModal, setShowModal] = useState(false)
   const [selectedItem, setSelectedItem] = useState(null)
   const { items, requestSort, sortConfig } = useSortableData(visits)
+
+  const resourceColors = classes.map(c => c.color)
 
   const getClassNamesFor = (name) => {
     if (!sortConfig) {
@@ -101,7 +102,7 @@ const VisitListSortable = ({ visits }) => {
           {items.map(visit => {
             if (!visit.event) return null
             const copiedURL = process.env.PUBLIC_URL || 'http://localhost:3000' + '/' + visit.id
-            const resourceNames = visit.event.resourceids.map(id => { return { name: classes[id-1]?.label || null, color: resourceColorsLUMA[id - 1] }})
+            const resourceNames = visit.event.resourceids.map(id => { return { name: classes[id-1]?.label || null, color: resourceColors[id - 1] }})
             return (
               <tr key={visit.id}>
                 <td onClick={() => handleSelect(visit)} style={{ cursor: 'pointer' }}>{visit.event.title}</td>

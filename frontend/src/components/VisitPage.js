@@ -5,14 +5,7 @@ import { useParams } from 'react-router'
 import { format, parseISO }  from 'date-fns'
 import { useHistory } from 'react-router'
 import { useTranslation } from 'react-i18next'
-
-const classes = [
-  { value: 1, label: 'SUMMAMUTIKKA' },
-  { value: 2, label: 'FOTONI' },
-  { value: 3, label: 'LINKKI' },
-  { value: 4, label: 'GEOPISTE' },
-  { value: 5, label: 'GADOLIN' }
-]
+import { classes } from '../helpers/classes'
 
 const filterEventClass = (eventClasses) => {
   const classesArray = eventClasses.map(c => classes[c-1].label)
