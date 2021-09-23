@@ -104,13 +104,13 @@ export const CheckBox = (field) => {
 }
 
 export const CustomFormRadioButton = (field) => {
-  const { form, label, onChange, className, style, id, value } = field
+  const { form, label, fieldName, onChange, className, style, value } = field
   const { handleChange } = form
   return (
     <div className="control" style={style}>
       <label className={className}>
         <input
-          name={id}
+          name={fieldName}
           type="radio"
           value={value}
           onChange={onChange ? onChange : handleChange}
@@ -122,7 +122,7 @@ export const CustomFormRadioButton = (field) => {
 
 export const CustomFormCheckBox = (field) => {
   const { form, label, fieldName, onChange, className, style, value } = field
-  const { handleChange, touched, errors } = form
+  const { handleChange } = form
   return (
     <>
       <div className="control" style={style}>
@@ -135,9 +135,6 @@ export const CustomFormCheckBox = (field) => {
           /> {label}
         </label>
       </div>
-      {touched[fieldName] && errors[fieldName] ? (
-        <p className="help is-danger">{errors[fieldName]}</p>
-      ) : null}
     </>
   )
 }

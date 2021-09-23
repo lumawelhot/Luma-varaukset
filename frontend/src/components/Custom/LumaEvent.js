@@ -1,6 +1,7 @@
 import React from 'react'
 import { Popover, Space, Tag } from 'antd'
 import { useTranslation } from 'react-i18next'
+import { classes } from '../../helpers/classes'
 
 const LumaEvent = ({ eventInfo }) => {
   const { t } = useTranslation('common')
@@ -16,15 +17,7 @@ const LumaEvent = ({ eventInfo }) => {
 
   if (!details) return <div>{getTimeRange()}</div>
 
-  const resourceMap = [
-    { resourceids: 1, resourceTitle: 'Summamutikka', description: t('mathematics') },
-    { resourceids: 2, resourceTitle: 'Fotoni', description: t('physics') },
-    { resourceids: 3, resourceTitle: 'Linkki', description: t('computer-science') },
-    { resourceids: 4, resourceTitle: 'Geopiste', description: t('geography') },
-    { resourceids: 5, resourceTitle: 'Gadolin', description: t('chemistry') },
-  ]
-
-  const resourceNames = details.resourceids.map(id => { return { name: resourceMap[id-1]?.resourceTitle || null, description: resourceMap[id-1]?.description }})
+  const resourceNames = details.resourceids.map(id => { return { name: classes[id-1]?.label || null, description: t(classes[id-1].i18n) }})
 
   const parseDescription = (text) => {
     return (
