@@ -97,6 +97,6 @@
   "modify": "Muokkaa",
   "modify-extra": "Muokkaa lisävalintaa",
   "create-extra": "Lisää lisävalinta",
-  "do-you-want-to-remove": "Haluatko poistaa valitun lisävalinnan",
+  "do-you-want-to-remove": "Haluatko varmasti poistaa valitun lisävalinnan?",
   "failed-to-modify-extra": "Lisävalinnan muokkaaminen epäonnistui"
 }

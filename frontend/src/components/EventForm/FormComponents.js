@@ -122,15 +122,15 @@ export const ScienceClasses = ({ values, touched, errors, setFieldValue, label }
         <span style={{ color: 'red' }}> *</span>
       </label>
 
-      {classes.map(resource => (
+      {classes.map((resource, i) => (
         <Field
-          key={resource.label}
+          key={i}
           label={resource.label}
           fieldName='scienceClass'
-          index={resource.id}
+          index={i}
           onChange={() => {
             touched.scienceClass = true
-            values.scienceClass[resource.id] = !values.scienceClass[resource.id]
+            values.scienceClass[i] = !values.scienceClass[i]
             setFieldValue('scienceClass', values.scienceClass)
           }}
           component={CheckBox}

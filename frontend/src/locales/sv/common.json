@@ -97,6 +97,6 @@
   "modify": "Ändra",
   "modify-extra": "Ändra tillägstjänst",
   "create-extra": "Skapa tillägstjänst",
-  "do-you-want-to-remove": "Vill du säkert ta bort tillägstjänsten",
+  "do-you-want-to-remove": "Vill du säkert ta bort tillägstjänsten?",
   "failed-to-modify-extra": "Uppdatering av tillägstjänsten misslyckades"
 }
