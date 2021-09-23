@@ -30,12 +30,12 @@ const initEmailMessages = async () => {
   await Email.deleteMany({})
   const cancellation = new Email({
     name: 'cancellation',
-    text: 'text',
-    html: '<h1>html</h1>',
-    subject: 'Cancellation',
-    adSubject: 'Cancellation',
+    text: 'Olet perunut opintokäynnin: /visit/r',
+    html: '<h1>Olet perunut opintokäynnin: /visit/r</h1>',
+    subject: 'LUMA-tiedeluokan opintokäynnin peruutusvahvistus',
+    adSubject: 'Peruutus',
     ad: ['tester@jest.com', 'jester@second.com'],
-    adText: 'text'
+    adText: '/visit/r'
   })
   const thanks = new Email({
     name: 'thanks',
@@ -48,21 +48,23 @@ const initEmailMessages = async () => {
   })
   const reminder = new Email({
     name: 'reminder',
-    text: 'text',
-    html: '<h1>html</h1>',
-    subject: 'Reminder',
-    adSubject: 'New visit',
+    text: 'Älä vastaa tähän viestiin, tämä on automaattinen muistutus huomisesta varauksestasi LUMA-tiedeluokkaan. Tervetuloa opintokäynnille!',
+    html: '<p>Älä vastaa tähän viestiin, tämä on automaattinen muistutus huomisesta varauksestasi LUMA-tiedeluokkaan. Tervetuloa opintokäynnille!</p>',
+    subject: 'Muistutus',
+    adSubject: 'Muistutus',
     ad: ['tester@jest.com'],
     adText: 'text'
   })
   const welcome = new Email({
     name: 'welcome',
-    text: 'text/link/r',
+    text: `Kiitos varauksestasi! Älä vastaa tähän viestiin, tämä on automaattinen viesti varauksestasi LUMA-tiedeluokkaan.
+    Opintokäynnin ohjaaja on sinuun yhteydessä viimeistään 1–2 viikkoa ennen varaamaasi opintokäyntiä. Voit olla meihin yhteydessä halutessasi jo ennen sitä sähköpostitse osoitteeseen tiedekasvatus@helsinki.fi.
+    Linkki varaukseen: /link/r`,
     html: '<h1>html/link/r</h1>',
-    subject: 'Welcome',
-    adSubject: 'New visit',
+    subject: 'LUMA-tiedeluokan opintokäyntivahvistus',
+    adSubject: 'Uusi varaus',
     ad: ['tester@jest.com', 'jester@second.com'],
-    adText: 'text'
+    adText: '/visit/r'
   })
   await thanks.save()
   await reminder.save()
