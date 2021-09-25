@@ -270,6 +270,11 @@ const LumaCalendar = ({
         selectMirror={true}
         allDaySlot={false}
         timeZone='Europe/Helsinki'
+        views={{
+          week: {
+            titleFormat: 'd. MMMM',
+          }
+        }}
       />
     </>)
 }
