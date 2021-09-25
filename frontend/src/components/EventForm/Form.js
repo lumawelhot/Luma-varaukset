@@ -145,6 +145,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
                   label={t('start-time')}
                   fieldName='startTime'
                   component={TimePick}
+                  disabledHours={() => [0,1,2,3,4,5,6,7,18,19,20,21,22,23]}
                 />
 
                 <Field

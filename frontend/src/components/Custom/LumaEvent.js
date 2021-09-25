@@ -71,7 +71,7 @@ const LumaEvent = ({ eventInfo }) => {
           backgroundColor: agenda ? undefined : details.color,
           fontSize: '120%',
           width: '100%',
-          color: agenda ? (details.disabled ? 'red' : 'black') : 'white',
+          color: agenda ? (details.disabled ? 'red' : 'black') : 'black',
           paddingLeft: 3,
           borderStyle: agenda ? undefined : 'solid',
           borderRadius: 7,
