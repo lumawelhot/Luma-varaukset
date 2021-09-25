@@ -4,22 +4,23 @@ import TextField from './Fields/TextField'
 import RadioField from './Fields/RadioField'
 import CheckboxField from './Fields/CheckboxField'
 
-const AddField = ({ add }) => {
+const AddField = ({ add, setEditing }) => {
   const { t } = useTranslation('user')
   const [showOptions, setShowOptions] = useState(false)
   const [component, setComponent] = useState(null)
 
   const renderComponent = () => {
     if (!showOptions) return null
-    if (component === 'text') return <TextField add={handleAdd}/>
-    if (component === 'radio') return <RadioField add={handleAdd}/>
-    if (component === 'checkbox') return <CheckboxField add={handleAdd}/>
+    if (component === 'text') return <TextField add={handleAdd} />
+    if (component === 'radio') return <RadioField add={handleAdd} />
+    if (component === 'checkbox') return <CheckboxField add={handleAdd} />
     return null
   }
 
   const handleAdd = (data) => {
     setShowOptions(false)
     add(data)
+    setEditing(true)
   }
 
   return (
