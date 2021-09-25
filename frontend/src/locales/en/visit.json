@@ -47,5 +47,10 @@
   "choose-event-extras": "Choose applicable extra services",
   "booked": "BOOKED",
   "cancelled": "CANCELLED",
-  "endtime-calculation-info": "The end time is calculated from the start time and additional services."
+  "endtime-calculation-info": "The end time is calculated from the start time and additional services.",
+  "choose-language": "Choose preferred language",
+  "fi": "Finnish",
+  "sv": "Swedish",
+  "en": "English",
+  "language": "Language"
 }

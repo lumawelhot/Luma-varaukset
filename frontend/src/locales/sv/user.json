@@ -61,5 +61,6 @@
   "checkbox": "Checkbox-urval",
   "radio": "Radio-urval",
   "groups": "Grupper",
-  "email-config": "Emails"
+  "email-config": "Emails",
+  "form-field-remove-confirm": "Är du säker?"
 }

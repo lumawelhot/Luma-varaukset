@@ -15,7 +15,7 @@ const sendReminder = async () => {
       $gte: start.toISOString(),
       $lt: end.toISOString()
     }
-  })
+  }).populate('event')
   const report = {
     success: [],
     failed: []
@@ -24,12 +24,18 @@ const sendReminder = async () => {
   for (let visit of visits) {
     try {
       if (visit.status) {
+        const details = [
+          {
+            name: 'visit',
+            value: `${visit.event.title} ${visit.startTime}-${visit.endTime}`
+          }
+        ]
         await mailer.sendMail({
           from: 'Luma-Varaukset <noreply@helsinki.fi>',
           to: visit.clientEmail,
           subject: mail.subject,
-          text: fillStringWithValues(mail.text),
-          html: fillStringWithValues(mail.html)
+          text: fillStringWithValues(mail.text, details),
+          html: fillStringWithValues(mail.html, details)
         })
         report.success.push(visit)
       } else {

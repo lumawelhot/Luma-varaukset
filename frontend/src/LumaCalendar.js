@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef } from 'react'
 import ReactDOM from 'react-dom'
-import { resourceColorsLUMA } from './helpers/styles'
+import { classes } from './helpers/classes'
 import CalendarFilter from './components/Filter/CalendarFilter'
 import { differenceInDays, differenceInMinutes }  from 'date-fns'
 import { ModifyEvent } from './components/ModifyEventModal'
@@ -38,7 +38,7 @@ const Wrapper = (props) => {
   }
 }
 
-const MyCalendar = ({
+const LumaCalendar = ({
   events,
   currentUser,
   handleEventClick,
@@ -62,6 +62,8 @@ const MyCalendar = ({
   const [filterFunction, setFilterFunction] = useState(() => () => { return true })
   const [showFilterOptions, setShowFilterOptions] = useState(false)
   const calendarRef = useRef()
+
+  const resourceColors = classes.map(c => c.color)
 
   useEffect(() => {
     if (!currentUser) setEvents(events.filter(event => event.disabled === false))
@@ -242,7 +244,7 @@ const MyCalendar = ({
             const after14Days = differenceInDays(event.start, new Date()) >= 14
             const after1Hour = differenceInMinutes(event.start, new Date()) >= 60
             const booked = (!currentUser && !after14Days) || (currentUser && !after1Hour) || event.booked
-            event.color = (booked || event.disabled) ? '#8a8a8a' : (event.resourceids.length > 1 ? 'black' : resourceColorsLUMA[event.resourceids[0] - 1])
+            event.color = (booked || event.disabled) ? '#8a8a8a' : (event.resourceids.length > 1 ? 'black' : resourceColors[event.resourceids[0] - 1])
             const details = {
               ...event
             }
@@ -272,4 +274,4 @@ const MyCalendar = ({
     </>)
 }
 
-export default MyCalendar
+export default LumaCalendar

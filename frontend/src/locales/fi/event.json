@@ -121,5 +121,10 @@
   "set-publish-date": "Aseta julkaisupäivä",
   "publish-time": "Julkaisuaika",
   "assign-to-events": "Aseta julkaisupäivä",
-  "assign-publish-date": "Aseta julkaisupäivä"
+  "assign-publish-date": "Aseta julkaisupäivä",
+  "choose-one-language": "Valitse vähintään yksi kielivaihtoehto",
+  "choose-languages": "Kielivaihtoehdot",
+  "finnish": "Suomi",
+  "swedish": "Ruotsi",
+  "english": "Englanti"
 }

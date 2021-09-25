@@ -17,7 +17,8 @@ export const eventInitialValues = newEventTimeRange => ({
   tags: [],
   waitingTime: 15,
   extras: [],
-  duration: 60
+  duration: 60,
+  languages: ['fi']
 })
 
 export const createPlatformList = event => {

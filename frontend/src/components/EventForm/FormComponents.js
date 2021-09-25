@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import DatePicker from '../Pickers/DatePicker'
 import TimePicker from '../Pickers/TimePicker'
 import { CheckBox, TextField } from '../VisitForm/FormFields'
+import { classes } from '../../helpers/classes'
 
 const platformList = [
   { id: 0, label: 'Zoom' },
@@ -15,18 +16,10 @@ const platformList = [
 
 const gradesList = [
   { id: 0, label: 'Varhaiskasvatus' },
-  { id: 1, label: '1.-2. luokka' },
-  { id: 2, label: '3.-6. luokka' },
-  { id: 3, label: '7.-9. luokka' },
-  { id: 4, label: 'toinen aste' }
-]
-
-const resourceList = [
-  { id: 0, label: 'SUMMAMUTIKKA' },
-  { id: 1, label: 'FOTONI' },
-  { id: 2, label: 'LINKKI' },
-  { id: 3, label: 'GEOPISTE' },
-  { id: 4, label: 'GADOLIN' }
+  { id: 1, label: '1. - 2. luokka' },
+  { id: 2, label: '3. - 6. luokka' },
+  { id: 3, label: '7. - 9. luokka' },
+  { id: 4, label: 'Toinen aste' }
 ]
 
 export const EventType = () => {
@@ -47,6 +40,39 @@ export const EventType = () => {
         fieldName='inPersonVisit'
         component={CheckBox}
       />
+    </>
+  )
+}
+
+export const Languages = ({ touched, errors }) => {
+  const { t } = useTranslation('event')
+  return (
+    <>
+      <label className="label" id="language-group">
+        {t('choose-languages')}
+        <span style={{ color: 'red' }}> *</span>
+      </label>
+      <div className="control">
+        <label>
+          <Field type="checkbox" name="languages" value="fi" />
+          {t('finnish')}
+        </label>
+      </div>
+      <div className="control">
+        <label>
+          <Field type="checkbox" name="languages" value="sv" />
+          {t('swedish')}
+        </label>
+      </div>
+      <div className="control">
+        <label>
+          <Field type="checkbox" name="languages" value="en" />
+          {t('english')}
+        </label>
+      </div>
+      {touched.languages && errors.languages ?
+        <p className="help is-danger">{errors.languages}</p> : null
+      }
     </>
   )
 }
@@ -129,15 +155,15 @@ export const ScienceClasses = ({ values, touched, errors, setFieldValue, label }
         <span style={{ color: 'red' }}> *</span>
       </label>
 
-      {resourceList.map(resource => (
+      {classes.map((resource, i) => (
         <Field
-          key={resource.label}
+          key={i}
           label={resource.label}
           fieldName='scienceClass'
-          index={resource.id}
+          index={i}
           onChange={() => {
             touched.scienceClass = true
-            values.scienceClass[resource.id] = !values.scienceClass[resource.id]
+            values.scienceClass[i] = !values.scienceClass[i]
             setFieldValue('scienceClass', values.scienceClass)
           }}
           component={CheckBox}

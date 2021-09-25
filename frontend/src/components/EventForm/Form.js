@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client'
 import { EXTRAS, GET_ALL_FORMS, GET_GROUPS } from '../../graphql/queries'
 import LumaTagInput from '../LumaTagInput/LumaTagInput'
 import { TextArea, TextField } from '../VisitForm/FormFields'
-import { AdditionalServices, DatePick, EventType, Grades, Platforms, ScienceClasses, TimePick, SelectField } from './FormComponents'
+import { AdditionalServices, DatePick, EventType, Grades, Platforms, ScienceClasses, TimePick, SelectField, Languages } from './FormComponents'
 import { useTranslation } from 'react-i18next'
 import { eventInitialValues, createGradeList, createPlatformList, createResourceList } from '../../helpers/form'
 import DatePicker from '../Pickers/DatePicker'
@@ -51,7 +51,8 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
         date: new Date(event.eventStart),
         group: event.group ? event.group.id : '',
         publishTime: event.publishDate ? new Date(event.publishDate) : '',
-        publishDay: event.publishDate ? new Date(event.publishDate) : ''
+        publishDay: event.publishDate ? new Date(event.publishDate) : '',
+        languages: event.languages
       } : eventInitialValues(newEventTimeRange)}
       validate={validate}
       onSubmit={onSubmit}
@@ -117,6 +118,13 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
               />
 
               <ScienceClasses
+                values={values}
+                setFieldValue={setFieldValue}
+                touched={touched}
+                errors={errors}
+              />
+
+              <Languages
                 values={values}
                 setFieldValue={setFieldValue}
                 touched={touched}

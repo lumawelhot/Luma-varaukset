@@ -288,7 +288,7 @@ const resolvers = {
       }
       const user = await User.findById(args.user)
       if (user.username === currentUser.username && !args.isAdmin) {
-        throw new UserInputError('admin user cannot remove its rigts')
+        throw new UserInputError('admin user cannot remove own permissions')
       }
       try {
         user.username = args.username
@@ -356,7 +356,8 @@ const resolvers = {
         duration: args.duration,
         customForm: args.customForm,
         disabled: false,
-        publishDate: args.publishDate ? new Date(args.publishDate) : null
+        publishDate: args.publishDate ? new Date(args.publishDate) : null,
+        languages: args.languages
       })
 
       event.extras = extras
@@ -433,7 +434,7 @@ const resolvers = {
     },
     modifyEvent: async (root, args, { currentUser }) => {
       const extras = await Extra.find({ _id: { $in: args.extras } })
-      const { title, desc, resourceids, grades, remotePlatforms, otherRemotePlatformOption, remoteVisit, inPersonVisit, customForm, publishDate } = args
+      const { title, desc, resourceids, grades, remotePlatforms, otherRemotePlatformOption, remoteVisit, inPersonVisit, customForm, publishDate, languages } = args
       const event = await Event.findById(args.event).populate('visits')
       if (!event) throw new UserInputError('Event could not be found')
       if (!currentUser) throw new AuthenticationError('not authenticated')
@@ -474,6 +475,7 @@ const resolvers = {
       inPersonVisit !== undefined ? event.inPersonVisit = inPersonVisit : null
       customForm !== undefined ? event.customForm = customForm : null
       publishDate ? event.publishDate = new Date(publishDate) : null
+      languages !== undefined ? event.languages = languages : null
       event.extras = extras
       event.tags = await addNewTags(args.tags)
       if (event.visits.length) {
@@ -572,10 +574,16 @@ const resolvers = {
         const eventCanBeBooked = !currentUser ? startsAfter14Days : startsAfter1Hour
         if (eventCanBeBooked) {
           savedVisit = await visit.save()
-          const details = [{
-            name: 'link',
-            value: `${config.HOST_URI}/${savedVisit.id}`
-          }]
+          const details = [
+            {
+              name: 'link',
+              value: `${config.HOST_URI}/${savedVisit.id}`
+            },
+            {
+              name: 'visit',
+              value: `${event.title} ${visit.startTime}-${visit.endTime}`
+            }
+          ]
           const mail = await Email.findOne({ name: 'welcome' })
           if (process.env.NODE_ENV !== 'test') {
             await mailer.sendMail({
@@ -621,6 +629,14 @@ const resolvers = {
         .populate('visits', { startTime: 1, endTime: 1 })
         .populate('tags', { name: 1 })
       if (!event) throw new UserInputError('Event could not be found')
+
+      const detailsForMail = [
+        {
+          name: 'visit',
+          value: `${event.title} ${visit.startTime}-${visit.endTime}`
+        }
+      ]
+
       const oldAvailableTimes = event.availableTimes.map(time => ({
         startTime: new Date(time.startTime),
         endTime: new Date(time.endTime)
@@ -688,15 +704,15 @@ const resolvers = {
             from: 'Luma-Varaukset <noreply@helsinki.fi>',
             to: visit.clientEmail,
             subject: mail.subject,
-            text: fillStringWithValues(mail.text),
-            html: fillStringWithValues(mail.html)
+            text: fillStringWithValues(mail.text, detailsForMail),
+            html: fillStringWithValues(mail.html, detailsForMail)
           })
           mail.ad.forEach(recipient => {
             mailer.sendMail({
               from: 'Luma-Varaukset <noreply@helsinki.fi>',
               to: recipient,
               subject: mail.adSubject,
-              text: fillStringWithValues(mail.adText)
+              text: fillStringWithValues(mail.adText, detailsForMail)
             })
           })
         }

@@ -61,5 +61,6 @@
   "checkbox": "Rastiruutu",
   "radio": "Radio-valinta",
   "email-config": "Sähköpostit",
-  "groups": "Ryhmät"
+  "groups": "Ryhmät",
+  "form-field-remove-confirm": "Oletko varma?"
 }

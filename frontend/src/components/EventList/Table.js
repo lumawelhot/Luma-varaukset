@@ -2,19 +2,39 @@ import { format } from 'date-fns'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { classes } from '../../helpers/classes'
-import { resourceColorsLUMA } from '../../helpers/styles'
+import { useSortableData } from '../VisitListSortable'
 
 const Table = ({ tableEvents, checkedEvents, handleCheckEvent }) => {
   const { t } = useTranslation('event')
+  const { items, requestSort, sortConfig } = useSortableData(tableEvents, { key: 'start', direction: 'ascending' })
+
+  const resourceColors = classes.map(c => c.color)
+
+  const getClassNamesFor = (name) => {
+    if (!sortConfig) {
+      return
+    }
+    return sortConfig.key === name ? sortConfig.direction : undefined
+  }
 
   return (
-    <table className="table" style={{ marginTop: 10 }}>
+    <table className="table visits" style={{ marginTop: 10 }}>
       <thead>
         <tr>
           <th></th>
-          <th>{t('event')}</th>
-          <th>{t('resource')}</th>
-          <th>{t('date')}</th>
+          <th>
+            <p onClick={() => requestSort('title')} className={getClassNamesFor('title')}>
+              {t('event')}
+            </p>
+          </th>
+          <th>
+            {t('resource')}
+          </th>
+          <th>
+            <p onClick={() => requestSort('start')} className={getClassNamesFor('start')}>
+              {t('date')}
+            </p>
+          </th>
           <th>{t('time')}</th>
           <th>{t('group')}</th>
           <th>{t('has-visits')}</th>
@@ -22,8 +42,8 @@ const Table = ({ tableEvents, checkedEvents, handleCheckEvent }) => {
         </tr>
       </thead>
       <tbody>
-        {tableEvents.map(event => {
-          const resourceNames = event.resourceids.map(id => { return { name: classes[id-1]?.label || null, color: resourceColorsLUMA[id - 1] }})
+        {items.map(event => {
+          const resourceNames = event.resourceids.map(id => { return { name: classes[id-1]?.label || null, color: resourceColors[id - 1] }})
           return (
             <tr key={event.id}>
               <td>

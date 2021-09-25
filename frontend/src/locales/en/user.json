@@ -61,5 +61,6 @@
   "checkbox": "Checkbox",
   "radio": "Radio buttons",
   "email-config": "Emails",
-  "groups": "Groups"
+  "groups": "Groups",
+  "form-field-remove-confirm": "Are you sure?"
 }

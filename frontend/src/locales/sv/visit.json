@@ -47,5 +47,10 @@
   "choose-event-extras": "Välj tillämpliga tillägstjänster",
   "booked": "BOKAD",
   "cancelled": "AVBOKAD",
-  "endtime-calculation-info": "Sluttiden räknas från starttiden och valda tilläggstjänster"
+  "endtime-calculation-info": "Sluttiden räknas från starttiden och valda tilläggstjänster",
+  "choose-language": "Välj undervisningsspråk",
+  "fi": "Finska",
+  "sv": "Svenska",
+  "en": "Engelska",
+  "language": "Undervisningsspråk"
 }

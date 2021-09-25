@@ -5,11 +5,17 @@ export const getCSV = (visits) => {
     const filteredVisits = visits
       .filter(visit => visit.dataUseAgreement)
       .map(visit => {
-        return {
+        const mappedVisit = {
           ...visit,
           event: visit.event.title,
           eventId: visit.event.id
         }
+        delete mappedVisit.clientName
+        delete mappedVisit.schoolName
+        delete mappedVisit.schoolLocation
+        delete mappedVisit.clientEmail
+        delete mappedVisit.clientPhone
+        return mappedVisit
       })
     const sheet = XLSX.utils.json_to_sheet(filteredVisits)
     const book = XLSX.utils.book_new()

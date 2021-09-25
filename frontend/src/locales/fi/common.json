@@ -5,9 +5,9 @@
   "geography": "Maantiede",
   "chemistry": "Kemia",
   "early-education": "Varhaiskasvatus",
-  "1-2": "1.-2. luokka",
-  "3-6": "3.-6. luokka",
-  "7-9": "7.-9. luokka",
+  "1-2": "1. - 2. luokka",
+  "3-6": "3. - 6. luokka",
+  "7-9": "7. - 9. luokka",
   "second-degree": "Toinen aste",
   "inperson": "Lähiopetus",
   "remote": "Etäopetus",
@@ -97,6 +97,6 @@
   "modify": "Muokkaa",
   "modify-extra": "Muokkaa lisävalintaa",
   "create-extra": "Lisää lisävalinta",
-  "do-you-want-to-remove": "Haluatko poistaa valitun lisävalinnan",
+  "do-you-want-to-remove": "Haluatko varmasti poistaa valitun lisävalinnan?",
   "failed-to-modify-extra": "Lisävalinnan muokkaaminen epäonnistui"
 }

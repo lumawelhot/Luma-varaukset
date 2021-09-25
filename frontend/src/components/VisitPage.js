@@ -5,14 +5,8 @@ import { useParams } from 'react-router'
 import { format, parseISO }  from 'date-fns'
 import { useHistory } from 'react-router'
 import { useTranslation } from 'react-i18next'
-
-const classes = [
-  { value: 1, label: 'SUMMAMUTIKKA' },
-  { value: 2, label: 'FOTONI' },
-  { value: 3, label: 'LINKKI' },
-  { value: 4, label: 'GEOPISTE' },
-  { value: 5, label: 'GADOLIN' }
-]
+import { classes } from '../helpers/classes'
+import ReactCountryFlag from 'react-country-flag'
 
 const filterEventClass = (eventClasses) => {
   const classesArray = eventClasses.map(c => classes[c-1].label)
@@ -89,6 +83,14 @@ const VisitPage = ({ sendMessage }) => {
     })
   }
 
+  const getFlag = (lang) =>  {
+    if (lang === 'en')
+      return <ReactCountryFlag key={lang} countryCode='GB'/>
+    if (lang === 'sv')
+      return <ReactCountryFlag key={lang} countryCode='SE'/>
+    return <ReactCountryFlag key={lang} countryCode='FI'/>
+  }
+
   return (
     <div className="container">
       <div className="columns is-centered">
@@ -97,6 +99,7 @@ const VisitPage = ({ sendMessage }) => {
           <div className="box">
             <div className="content luma">
               <p className="title">{visit.event.title}</p>
+              <p><strong>{t('visit:language')}:</strong> {getFlag(visit.language)} {t('visit:' + visit.language)}</p>
               <p><strong>{t('description')}:</strong> {visit.event.desc}</p>
               <p><strong>{t('science-class')}:</strong> {filterEventClass(visit.event.resourceids)}</p>
               {visit.extras.length

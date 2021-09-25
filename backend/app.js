@@ -107,7 +107,7 @@ const unlockEvents = async () => {
   console.log('event reservations unlocked')
 }
 
-if (process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development' ) {
   const { importStaticEvents }  = require('./utils/importStaticData')
   const { MongoMemoryServer } = require('mongodb-memory-server')
   const mongoServer = new MongoMemoryServer()

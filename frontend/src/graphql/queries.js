@@ -78,6 +78,7 @@ export const EVENTS = gql`
         publishDate
       }
       publishDate
+      languages
     }
   }
 `
@@ -117,6 +118,7 @@ export const VISITS = gql`
       remotePlatform
       customFormData
       dataUseAgreement
+      language
     }
   }
 `
@@ -150,6 +152,7 @@ export const CREATE_EVENT = gql`
     $customForm: ID,
     $group: ID,
     $publishDate: String
+    $languages: [String]
     ) {
     createEvent (
       title: $title,
@@ -169,6 +172,7 @@ export const CREATE_EVENT = gql`
       customForm: $customForm
       group: $group
       publishDate: $publishDate
+      languages: $languages
     ) {
       id
       title
@@ -209,6 +213,7 @@ export const CREATE_EVENT = gql`
         name
       }
       publishDate
+      languages
     }
   }
 `
@@ -232,6 +237,7 @@ export const CREATE_VISIT = gql`
     $remotePlatform: String
     $token: String!
     $customFormData: String
+    $language: String
     ) {
     createVisit(
       event: $event
@@ -251,6 +257,7 @@ export const CREATE_VISIT = gql`
       remotePlatform: $remotePlatform
       token: $token
       customFormData: $customFormData
+      language: $language
     ) {
       id
       event {
@@ -269,6 +276,7 @@ export const CREATE_VISIT = gql`
       remotePlatform
       status
       customFormData
+      language
     }
   }
 `
@@ -300,6 +308,7 @@ export const FIND_VISIT = gql`
       status
       remotePlatform
       customFormData
+      language
     }
   }
 `
@@ -418,6 +427,7 @@ export const UPDATE_EVENT = gql`
     $customForm: ID
     $group: ID
     $publishDate: String
+    $languages: [String]
   ) {
     modifyEvent(
       event: $event
@@ -436,6 +446,7 @@ export const UPDATE_EVENT = gql`
       customForm: $customForm
       group: $group
       publishDate: $publishDate
+      languages: $languages
     ) {
       id
       title
@@ -469,6 +480,7 @@ export const UPDATE_EVENT = gql`
         name
       }
       publishDate
+      languages
     }
   }
 `

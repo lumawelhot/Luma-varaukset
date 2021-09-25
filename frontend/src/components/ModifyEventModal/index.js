@@ -59,6 +59,10 @@ export const ModifyEvent = ({ event, close, setEvent, sendMessage, tags }) => {
       }
     }
 
+    if (!values.languages.length) {
+      errors.languages = t('choose-one-language')
+    }
+
     return errors
   }
 
@@ -94,7 +98,8 @@ export const ModifyEvent = ({ event, close, setEvent, sendMessage, tags }) => {
     customForm,
     group,
     publishDay,
-    publishTime
+    publishTime,
+    languages
   }) => {
     const gradeList = []
     grades.forEach((element, index) => element ? gradeList.push(index + 1) : null)
@@ -122,7 +127,8 @@ export const ModifyEvent = ({ event, close, setEvent, sendMessage, tags }) => {
         end: endTime.toISOString(),
         customForm: customForm.length ? customForm : null,
         group: group.length ? group : '',
-        publishDate: getPublishDate(publishDay, publishTime)
+        publishDate: getPublishDate(publishDay, publishTime),
+        languages
       }
     })
   }

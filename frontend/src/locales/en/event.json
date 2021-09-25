@@ -121,5 +121,10 @@
   "set-publish-date": "Set publish date",
   "publish-time": "Publish time",
   "assign-to-events": "Assign to events",
-  "assign-publish-date": "Assign publish date"
+  "assign-publish-date": "Assign publish date",
+  "choose-one-language": "Choose at least one language",
+  "choose-languages": "Provided languages",
+  "finnish": "Finnish",
+  "swedish": "Swedish",
+  "english": "English"
 }

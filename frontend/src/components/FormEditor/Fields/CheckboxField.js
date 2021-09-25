@@ -30,11 +30,6 @@ const CheckboxField = ({ add, item, cancel, save }) => {
     })
   }
 
-  const setOption = (index, value) => {
-    options[index].value = value
-    setOptions([...options])
-  }
-
   const setOptionText = (index, value) => {
     options[index].text = value
     setOptions([...options])
@@ -65,9 +60,6 @@ const CheckboxField = ({ add, item, cancel, save }) => {
       {options.map((o,index) =>
         <div className="field-is-horizontal" key={index}>
           <div className="field-body is-grouped">
-            <p className="control" style={{ marginRight: 10 }}>
-              <input className="input" style={{ width: 70 }} type="text" value={o.value} onChange={(e) => setOption(index, e.target.value)}/>
-            </p>
             <p className="control" style={{ marginRight: 10 }}>
               <input className="input" type="text" value={o.text} onChange={(e) => setOptionText(index, e.target.value)}/>
             </p>

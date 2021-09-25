@@ -3,6 +3,8 @@ import TextField from './Fields/TextField'
 import RadioField from './Fields/RadioField'
 import CheckboxField from './Fields/CheckboxField'
 import { useTranslation } from 'react-i18next'
+import { Popconfirm } from 'antd'
+import { EditOutlined } from '@ant-design/icons'
 
 const FieldItem = ({ item, update, remove, down, up }) => {
   const { t } = useTranslation('user')
@@ -41,7 +43,7 @@ const FieldItem = ({ item, update, remove, down, up }) => {
         <td>
           <div className="media">
             <div className="field formeditor" onClick={() => setEditMode(true)}>
-              <label style={{ cursor: 'pointer' }}>{item.name}</label>
+              <label style={{ cursor: 'pointer' }}><EditOutlined /> {item.name}</label>
             </div>
           </div>
         </td>
@@ -52,7 +54,14 @@ const FieldItem = ({ item, update, remove, down, up }) => {
           {t(item.type)}
         </td>
         <td>
-          <button className="button is-small" onClick={() => handleAction('remove')}>{t('form-field-remove')}</button>
+          <Popconfirm
+            title={t('form-field-remove-confirm')}
+            onConfirm={() => handleAction('remove')}
+            okText={t('yes')}
+            cancelText={t('no')}
+          >
+            <button className="button is-small">{t('form-field-remove')}</button>
+          </Popconfirm>
           {down === null ?
             <button className="button is-small" disabled>{t('form-field-move-down')}</button>
             :

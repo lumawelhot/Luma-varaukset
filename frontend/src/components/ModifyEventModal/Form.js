@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EXTRAS, GET_ALL_FORMS, GET_GROUPS } from '../../graphql/queries'
 import { createGradeList, createPlatformList, createResourceList } from '../../helpers/form'
-import { AdditionalServices, EventType, Grades, Platforms, ScienceClasses, TimePick, SelectField } from '../EventForm/FormComponents'
+import { AdditionalServices, EventType, Grades, Platforms, ScienceClasses, TimePick, SelectField, Languages } from '../EventForm/FormComponents'
 import LumaTagInput from '../LumaTagInput/LumaTagInput'
 import DatePicker from '../Pickers/DatePicker'
 import TimePicker from '../Pickers/TimePicker'
@@ -49,7 +49,8 @@ const Form = ({ event, close, save, validate, tags }) => {
         customForm: event.customForm ? event.customForm : '',
         group: event.group ? event.group.id : '',
         publishTime: event.publishDate ? new Date(event.publishDate) : '',
-        publishDay: event.publishDate ? new Date(event.publishDate) : ''
+        publishDay: event.publishDate ? new Date(event.publishDate) : '',
+        languages: event.languages
       }}
       validate={validate}
       onSubmit={save}
@@ -105,6 +106,12 @@ const Form = ({ event, close, save, validate, tags }) => {
                 errors={errors}
               />
               <ScienceClasses
+                values={values}
+                setFieldValue={setFieldValue}
+                touched={touched}
+                errors={errors}
+              />
+              <Languages
                 values={values}
                 setFieldValue={setFieldValue}
                 touched={touched}

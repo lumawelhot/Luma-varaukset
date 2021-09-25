@@ -7,6 +7,9 @@ import { useMutation } from '@apollo/client'
 import { DELETE_EVENT, DISABLE_EVENT, ENABLE_EVENT, EVENTS } from '../graphql/queries'
 import { ModifyEvent } from './ModifyEventModal'
 import { useTranslation } from 'react-i18next'
+import { classes } from '../helpers/classes'
+import { Space } from 'antd'
+import ReactCountryFlag from 'react-country-flag'
 
 const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, setEvent, tags }) => {
   const { t } = useTranslation('event')
@@ -55,14 +58,6 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
     history.push('/')
   }
 
-  const classes = [
-    { value: 1, label: 'SUMMAMUTIKKA' },
-    { value: 2, label: 'FOTONI' },
-    { value: 3, label: 'LINKKI' },
-    { value: 4, label: 'GEOPISTE' },
-    { value: 5, label: 'GADOLIN' }
-  ]
-
   const filterEventClass = (eventClasses) => {
     const classesArray = eventClasses.map(c => classes[c-1].label)
     return classesArray.join(', ')
@@ -91,11 +86,11 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
   }
 
   const grades = [
-    { value: 1, label: 'varhaiskasvatus' },
-    { value: 2, label: '1.-2. luokka' },
-    { value: 3, label: '3.-6. luokka' },
-    { value: 4, label: '7.-9 luokka' },
-    { value: 5, label: 'toinen aste' }
+    { value: 1, label: 'Varhaiskasvatus' },
+    { value: 2, label: '1. - 2. luokka' },
+    { value: 3, label: '3. - 6. luokka' },
+    { value: 4, label: '7. - 9. luokka' },
+    { value: 5, label: 'Toinen aste' }
   ]
 
   const cancel = (event) => {
@@ -158,7 +153,19 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
             <div className="section">
               <div className="box">
                 <div className="content">
-                  <div className="title" style={event.disabled ? { color: 'red' } : null}>{event.titleText}{event.disabled ? ` - ${t('disabled')}` : null}</div>
+                  <div className="title" style={event.disabled ? { color: 'red' } : null}>
+                    <Space wrap>
+                      {event.titleText}
+                      {event.languages?.map(lang => {
+                        if (lang === 'en')
+                          return <ReactCountryFlag key={lang} countryCode='GB'/>
+                        if (lang === 'sv')
+                          return <ReactCountryFlag key={lang} countryCode='SE'/>
+                        return <ReactCountryFlag key={lang} countryCode='FI'/>
+                      })}
+                      {event.disabled ? ` - ${t('disabled')}` : null}
+                    </Space>
+                  </div>
                   <div className="tags eventpage">
                     {event.tags.map(t => <span key={t.id} className="tag is-small luma">{t.name}</span>)}
                   </div>

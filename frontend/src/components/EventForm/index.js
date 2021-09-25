@@ -55,6 +55,10 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
       errors.waitingTime = ' '
     }
 
+    if (!values.languages.length) {
+      errors.languages = t('choose-one-language')
+    }
+
     return errors
   }
 
@@ -108,7 +112,8 @@ export const EventForm = ({ sendMessage, addEvent, closeEventForm, newEventTimeR
         duration: values.duration,
         customForm: values.customForm,
         group: values.group ? values.group : null,
-        publishDate: (values.publishDay && values.publishTime) ? getPublishDate(values.publishDay, values.publishTime) : null
+        publishDate: (values.publishDay && values.publishTime) ? getPublishDate(values.publishDay, values.publishTime) : null,
+        languages: values.languages.length ? values.languages : ['fi']
       },
     })
   }

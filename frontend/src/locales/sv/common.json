@@ -5,9 +5,9 @@
   "geography": "Geografi",
   "chemistry": "Kemi",
   "early-education": "Förskolepedagogik",
-  "1-2": "1.-2. klass",
-  "3-6": "3.-6. klass",
-  "7-9": "7.-9. klass",
+  "1-2": "1. - 2. klass",
+  "3-6": "3. - 6. klass",
+  "7-9": "7. - 9. klass",
   "second-degree": "Andra grad",
   "inperson": "Närundervisning",
   "remote": "Distansundervisning",
@@ -97,6 +97,6 @@
   "modify": "Ändra",
   "modify-extra": "Ändra tillägstjänst",
   "create-extra": "Skapa tillägstjänst",
-  "do-you-want-to-remove": "Vill du säkert ta bort tillägstjänsten",
+  "do-you-want-to-remove": "Vill du säkert ta bort tillägstjänsten?",
   "failed-to-modify-extra": "Uppdatering av tillägstjänsten misslyckades"
 }

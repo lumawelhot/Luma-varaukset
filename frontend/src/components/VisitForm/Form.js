@@ -13,6 +13,7 @@ import CustomForm from './CustomForm'
 import CountDown from '../CountDown'
 import { useMutation } from '@apollo/client'
 import { UNLOCK_EVENT } from '../../graphql/queries'
+import { classes } from '../../helpers/classes'
 
 let selectedEvent
 let eventPlatforms
@@ -38,17 +39,9 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit, customFormFiel
     return gradesArrays.join(', ')
   }
 
-  const classes = [
-    { value: 1, label: 'SUMMAMUTIKKA', description: t('common:mathematic') },
-    { value: 2, label: 'FOTONI', description: t('common:physics') },
-    { value: 3, label: 'LINKKI', description: t('common:computer-science') },
-    { value: 4, label: 'GEOPISTE', description: t('common:geography') },
-    { value: 5, label: 'GADOLIN', description: t('common:chemistry') }
-  ]
-
   const filterEventClass = (eventClasses) => {
     return eventClasses.map(c =>
-      <Tooltip key={c} color={'geekblue'} title={classes[c-1].description}>
+      <Tooltip key={c} title={t('common:' + classes[c-1].i18n) }>
         <span className='tag is-small'>{classes[c-1].label}</span>
       </Tooltip>
     )
@@ -101,7 +94,8 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit, customFormFiel
         extras: [],
         remotePlatform: '0',
         otherRemotePlatformOption: '',
-        finalEndTime: new Date(add(event.start, { minutes: event.duration }))
+        finalEndTime: new Date(add(event.start, { minutes: event.duration })),
+        language: event.languages[0]
       }}
       validate={(values) => validate(values, selectedEvent, eventPlatforms)}
       onSubmit={(values) => {
@@ -121,6 +115,22 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit, customFormFiel
                   <h1 className="title">{t('give-info')}</h1>
 
                   <form onSubmit={handleSubmit} className="box luma">
+
+                    {event.languages.length > 1 && (
+                      <>
+                        <label className="label">{t('choose-language')}</label>
+                        {event.languages.map(lang =>
+                          <Field
+                            key={lang}
+                            id='language'
+                            label={t(lang)}
+                            onChange={() => setFieldValue('language', lang)}
+                            checked={values.language === lang}
+                            component={RadioButton}
+                          />
+                        )}
+                      </>
+                    )}
 
                     {event.inPersonVisit && event.remoteVisit ? (
                       <>

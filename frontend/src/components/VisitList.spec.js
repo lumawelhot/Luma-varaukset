@@ -49,7 +49,8 @@ const singleItem = [
             'endTime': new Date().toISOString(),
             'remotePlatform': 'Zoom',
             'customFormData': null,
-            'dataUseAgreement': true
+            'dataUseAgreement': true,
+            'language': 'fi'
           }
         ],
       },
