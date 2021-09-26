@@ -40,6 +40,18 @@ const UserForm = ({ sendMessage }) => {
     history.push('/')
   }
 
+  const validate = (values) => {
+    const errors = {}
+    if (values.password.length < 8) {
+      errors.password = t('password-atleast-eight')
+    }
+    if (values.username.length < 5) {
+      errors.username = t('username-atleast-five')
+    }
+
+    return errors
+  }
+
   return (
     <Formik
       initialValues={{
@@ -48,6 +60,7 @@ const UserForm = ({ sendMessage }) => {
         isAdmin: null,
       }}
       onSubmit={onSubmit}
+      validate={validate}
     >
       {({ handleSubmit, setFieldValue }) => {
         return (
