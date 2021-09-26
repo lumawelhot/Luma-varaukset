@@ -44,7 +44,7 @@ When('I navigate to the user creation form', () => {
 
 And('I enter new user credentials', () => {
   cy.get('#username').type('User123')
-  cy.get('#password').type('secret')
+  cy.get('#password').type('secret12')
   cy.get('[style="margin-bottom: 10px;"] > label > input').click()
   cy.get('#create').click()
 })
