@@ -62,5 +62,11 @@
   "radio": "Radio-valinta",
   "email-config": "Sähköpostit",
   "groups": "Ryhmät",
-  "form-field-remove-confirm": "Oletko varma?"
+  "form-field-remove-confirm": "Oletko varma?",
+  "cannot-save-empty-form": "Et voi tallentaa tyhjää lomaketta",
+  "do-you-want-to-exit-without-save": "Haluatko palata tallentamatta?",
+  "form-remove-confirm": "Haluatko poistaa tämän lomakkeen?",
+  "passwords-do-not-match": "Salasanat eivät täsmää!",
+  "password-atleast-eight": "Salasanan tulee sisältää vähintään 8 merkkiä",
+  "username-atleast-five": "Käyttäjänimen tulee sisältää vähintään 5 merkkiä"
 }

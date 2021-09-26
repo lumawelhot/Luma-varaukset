@@ -15,6 +15,7 @@ const FormEditor = ({ form, back, sendMessage }) => {
     refetchQueries: [{ query: GET_ALL_FORMS }],
     onError: (error) => sendMessage(error.graphQLErrors[0].message, 'danger')
   })
+  const [editing, setEditing] = useState(false)
 
   const [updateForm, resultFromUpdate] = useMutation(UPDATE_FORM, {
     refetchQueries: [{ query: GET_ALL_FORMS }],
@@ -42,6 +43,7 @@ const FormEditor = ({ form, back, sendMessage }) => {
   const handleUpdateField = (index, data) => {
     fields[index] = data
     setFields([...fields])
+    setEditing(true)
   }
 
   const handleRemove = (index) => {
@@ -66,7 +68,9 @@ const FormEditor = ({ form, back, sendMessage }) => {
   }
 
   const handleSave = () => {
-    if (editingExistingForm) {
+    if (!fields.length) {
+      sendMessage(t('cannot-save-empty-form'), 'danger')
+    } else if (editingExistingForm) {
       updateForm({
         variables: {
           id: form.id,
@@ -81,6 +85,16 @@ const FormEditor = ({ form, back, sendMessage }) => {
           fields: JSON.stringify(fields)
         }
       }).catch(() => sendMessage(t('invalid-input'), 'danger'))
+    }
+  }
+
+  const handleBack = () => {
+    if (editing) {
+      if (window.confirm(t('do-you-want-to-exit-without-save'))) {
+        back()
+      }
+    } else {
+      back()
     }
   }
 
@@ -109,6 +123,7 @@ const FormEditor = ({ form, back, sendMessage }) => {
             <FieldItem
               key={index}
               item={field}
+              index={index}
               update={handleUpdateField}
               remove={handleRemove}
               down={index === fields.length - 1 ? null : () => moveDown(index)}
@@ -118,11 +133,11 @@ const FormEditor = ({ form, back, sendMessage }) => {
         </tbody>
       </table>
       <div className="content">
-        <AddField add={handleAdd}/>
+        <AddField add={handleAdd} setEditing={setEditing}/>
       </div>
       <div className="control">
         <button className="button luma primary" onClick={() => handleSave()}>{t('save')}</button>
-        <button className="button luma " onClick={back}>{t('back')}</button>
+        <button className="button luma " onClick={handleBack}>{t('back')}</button>
       </div>
     </div>
   )

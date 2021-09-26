@@ -55,19 +55,19 @@ export const Languages = ({ touched, errors }) => {
       <div className="control">
         <label>
           <Field type="checkbox" name="languages" value="fi" />
-          {t('finnish')}
+          {` ${t('finnish')}`}
         </label>
       </div>
       <div className="control">
+        <Field type="checkbox" name="languages" value="sv" />
         <label>
-          <Field type="checkbox" name="languages" value="sv" />
-          {t('swedish')}
+          {` ${t('swedish')}`}
         </label>
       </div>
       <div className="control">
         <label>
           <Field type="checkbox" name="languages" value="en" />
-          {t('english')}
+          {` ${t('english')}`}
         </label>
       </div>
       {touched.languages && errors.languages ?

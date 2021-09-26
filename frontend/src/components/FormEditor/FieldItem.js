@@ -6,20 +6,20 @@ import { useTranslation } from 'react-i18next'
 import { Popconfirm } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 
-const FieldItem = ({ item, update, remove, down, up }) => {
+const FieldItem = ({ index, item, update, remove, down, up }) => {
   const { t } = useTranslation('user')
 
   if (!item) return null
   const [editMode, setEditMode] = useState(false)
 
-  const handleSaveField = (data) => {
+  const handleSaveField = (index, data) => {
     setEditMode(false)
-    update(data)
+    update(index, data)
   }
 
   const drawEditor = () => {
     if (!item.type) return null
-    if (item.type === 'text') return <TextField save={(data) => handleSaveField(data)} item={item} cancel={() => setEditMode(false)}/>
+    if (item.type === 'text') return <TextField save={(data) => handleSaveField(index, data)} item={item} cancel={() => setEditMode(false)}/>
     if (item.type === 'radio') return <RadioField save={(data) => handleSaveField(data)} item={item} cancel={() => setEditMode(false)}/>
     if (item.type === 'checkbox') return <CheckboxField save={(data) => handleSaveField(data)} item={item} cancel={() => setEditMode(false)}/>
   }

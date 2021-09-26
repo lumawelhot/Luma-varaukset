@@ -20,6 +20,18 @@ const UserList = ({ sendMessage, currentUser }) => {
       sendMessage(error.message, 'danger')
     }
   })
+
+  const validatePassword = (values) => {
+    const errors = {}
+    if (values.password.length < 8) {
+      errors.length = t('password-atleast-eight')
+    }
+    if (values.password !== values.confirm) {
+      errors.confirm = t('passwords-do-not-match')
+    }
+    return errors
+  }
+
   const [resetPassword] = useMutation(RESET_PASSWORD, {
     refetchQueries: [{ query: USERS }],
     onCompleted: () => {
@@ -100,9 +112,10 @@ const UserList = ({ sendMessage, currentUser }) => {
               password: '',
               confirm: '',
             }}
+            validate={validatePassword}
             onSubmit={(values) => handlePasswordChange(values.password)}
           >
-            {({ handleSubmit }) => {
+            {({ handleSubmit, errors, touched }) => {
               return (
                 <div className="modal-card">
                   <header className="modal-card-head">
@@ -121,6 +134,12 @@ const UserList = ({ sendMessage, currentUser }) => {
                       type='password'
                       component={TextField}
                     />
+                    {errors.confirm && touched.password && touched.confirm ?
+                      <p className="help is-danger">{errors.password}</p> : null
+                    }
+                    {errors.length && touched.password ?
+                      <p className="help is-danger">{errors.length}</p> : null
+                    }
                   </section>
                   <footer className="modal-card-foot">
                     <button className="button luma" onClick={handleSubmit} type='submit'>{t('change-password')}</button>

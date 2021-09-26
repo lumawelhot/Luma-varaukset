@@ -244,7 +244,7 @@ const LumaCalendar = ({
             const after14Days = differenceInDays(event.start, new Date()) >= 14
             const after1Hour = differenceInMinutes(event.start, new Date()) >= 60
             const booked = (!currentUser && !after14Days) || (currentUser && !after1Hour) || event.booked
-            event.color = (booked || event.disabled) ? '#8a8a8a' : (event.resourceids.length > 1 ? 'black' : resourceColors[event.resourceids[0] - 1])
+            event.color = (booked || event.disabled) ? '#8a8a8a' : (event.resourceids.length > 1 ? '#fca311' : resourceColors[event.resourceids[0] - 1])
             const details = {
               ...event
             }
@@ -270,6 +270,11 @@ const LumaCalendar = ({
         selectMirror={true}
         allDaySlot={false}
         timeZone='Europe/Helsinki'
+        views={{
+          week: {
+            titleFormat: 'd. MMMM',
+          }
+        }}
       />
     </>)
 }

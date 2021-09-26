@@ -57,6 +57,7 @@ const PublishModal = ({ setModalState, checkedEvents, events }) => {
           placeholder={t('publish-time')}
           style={{ width: 150, marginRight: 10 }}
           onChange={value => setPublishTime(value)}
+          disabledHours={() => []}
         />
       </section>
       <footer className="modal-card-foot">

@@ -5,6 +5,7 @@ import { useHistory } from 'react-router'
 import { GET_ALL_FORMS, DELETE_FORM } from '../../graphql/queries'
 
 import FormEditor from './FormEditor'
+import { Popconfirm } from 'antd'
 
 const FormList = ({ sendMessage }) => {
   const { t } = useTranslation('user')
@@ -67,7 +68,14 @@ const FormList = ({ sendMessage }) => {
               <td>{form.name}</td>
               <td>
                 <button className='button luma' style={{ marginRight: 10 }} onClick={() => handleEdit(form.id)}>{t('edit')}</button>
-                <button className='button luma' onClick={() => handleRemove(form.id)}>{t('remove')}</button>
+                <Popconfirm
+                  title={t('form-remove-confirm')}
+                  onConfirm={() => handleRemove(form.id)}
+                  okText={t('yes')}
+                  cancelText={t('no')}
+                >
+                  <button className='button luma'>{t('remove')}</button>
+                </Popconfirm>
               </td>
             </tr>
           ))}
