@@ -69,7 +69,7 @@ const createAdmin = async () => {
 
 if (ADMIN_USERNAME && ADMIN_PASSWORD ) {
   console.log('Initializing Luma-varaukset administrator: ' + ADMIN_USERNAME)
-  mongoose.connect('mongodb://localhost:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
+  mongoose.connect('mongodb://luma-varaukset-db:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
       createEmailTemplates().then(() => {
         createAdmin().then(() => {
