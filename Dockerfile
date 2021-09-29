@@ -1,21 +1,28 @@
-FROM node:16-alpine
-WORKDIR /app/backend
-COPY ./frontend/ ../frontend/
+FROM node:16-alpine AS build
 
-RUN cd ../frontend && \
-  npm ci --production && \
-  cd ../backend
+WORKDIR /usr/src/app
 
-COPY ./backend/ .
-COPY ./config/ ../config/
+COPY ./frontend .
 
 ARG PUBLIC_URL
 ENV PUBLIC_URL=$PUBLIC_URL
 
-RUN npm ci --production  && \
-  npm run build:ui && \
-  rm -rf /app/frontend
+RUN npm ci --production && \
+    npm run build --prod
+
+FROM node:16-alpine
+
+WORKDIR /app/backend
+
+COPY --from=build /usr/src/app/build /app/backend/build
+
+COPY ./backend .
+COPY ./config/ ../config/
+
+RUN npm ci --production
 
 EXPOSE 3001
 
-CMD npm start
+USER node
+
+CMD ["npm", "start"]
