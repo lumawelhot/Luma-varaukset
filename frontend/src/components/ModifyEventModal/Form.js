@@ -160,6 +160,7 @@ const Form = ({ event, close, save, validate, tags }) => {
                   style={{ marginLeft: 10 }}
                   placeholder={t('publish-time')}
                   onChange={value => setFieldValue('publishTime', value)}
+                  disabledHours={() => []}
                 />
               </div>
 
