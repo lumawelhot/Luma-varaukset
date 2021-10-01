@@ -9,7 +9,6 @@ import { ModifyEvent } from './ModifyEventModal'
 import { useTranslation } from 'react-i18next'
 import { classes } from '../helpers/classes'
 import { Space } from 'antd'
-import ReactCountryFlag from 'react-country-flag'
 
 const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, setEvent, tags }) => {
   const { t } = useTranslation('event')
@@ -156,13 +155,13 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
                   <div className="title" style={event.disabled ? { color: 'red' } : null}>
                     <Space wrap>
                       {event.titleText}
-                      {event.languages?.map(lang => {
+                      {`(${event.languages?.map(lang => {
                         if (lang === 'en')
-                          return <ReactCountryFlag key={lang} countryCode='GB'/>
+                          return 'EN'
                         if (lang === 'sv')
-                          return <ReactCountryFlag key={lang} countryCode='SE'/>
-                        return <ReactCountryFlag key={lang} countryCode='FI'/>
-                      })}
+                          return 'SE'
+                        return 'FI'
+                      }).join(', ')})`}
                       {event.disabled ? ` - ${t('disabled')}` : null}
                     </Space>
                   </div>
