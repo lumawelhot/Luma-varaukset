@@ -126,5 +126,6 @@
   "choose-languages": "Kielivaihtoehdot",
   "finnish": "Suomi",
   "swedish": "Ruotsi",
-  "english": "Englanti"
+  "english": "Englanti",
+  "available-languages": "Saatavilla olevat kielet"
 }

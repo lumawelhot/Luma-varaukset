@@ -172,6 +172,18 @@ const EventPage = ({ event, handleBookingButtonClick, currentUser, sendMessage, 
                     {description
                       ? <p><strong>{t('description')}:</strong> {description} </p>
                       : null}
+                    <p>
+                      <strong>{t('available-languages')}</strong>
+                    </p>
+                    <ul>
+                      {event.languages.map(lang => {
+                        if (lang === 'en')
+                          return <li key={lang}>{t('english')}</li>
+                        if (lang === 'sv')
+                          return <li key={lang}>{t('swedish')}</li>
+                        return <li key={lang}>{t('finnish')}</li>
+                      })}
+                    </ul>
                     <p><strong>{t('science-class')}:</strong> {eventClass}</p>
                     {event.extras.length
                       ? <div>
