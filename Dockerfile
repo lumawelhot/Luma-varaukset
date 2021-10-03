@@ -17,7 +17,6 @@ WORKDIR /app/backend
 COPY --from=build /usr/src/app/build /app/backend/build
 
 COPY ./backend .
-COPY ./config/ ../config/
 
 RUN npm ci --production
 
