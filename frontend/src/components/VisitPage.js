@@ -103,7 +103,13 @@ const VisitPage = ({ sendMessage }) => {
               <p><strong>{t('description')}:</strong> {visit.event.desc}</p>
               <p><strong>{t('science-class')}:</strong> {filterEventClass(visit.event.resourceids)}</p>
               {visit.extras.length
-                ? <p><strong>{t('extras')}:</strong> {visit.extras.map(extra => <span key={extra.name}>{extra.name}</span>) }</p>
+                ? <div>
+                  <strong>{t('extras')}:</strong>
+                  <ul>
+                    {visit.extras.map(extra => <li key={extra.name}>{extra.name}</li>) }
+                  </ul>
+                  <br/>
+                </div>
                 : null}
               <p><strong>{t('teaching')}:</strong>
                 {visit.inPersonVisit ? ` ${t('inperson')}` : <></>}
