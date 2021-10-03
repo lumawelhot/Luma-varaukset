@@ -17,8 +17,9 @@ Dokumentaatio on saatavilla repositorion [wikistä](https://github.com/lumawelho
 
 ## Releaset
 
-[LUMA-varaukset 1.0](https://github.com/lumawelhot/Luma-varaukset/releases/tag/v1.0)
+[LUMA-varaukset 2.0](https://github.com/lumawelhot/Luma-varaukset/releases/tag/v2.0)
 
+[LUMA-varaukset 1.0](https://github.com/lumawelhot/Luma-varaukset/releases/tag/v1.0)
 
 ## Kiitokset
 
