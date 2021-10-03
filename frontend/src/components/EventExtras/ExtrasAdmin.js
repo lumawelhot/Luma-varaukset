@@ -133,6 +133,7 @@ const ExtrasAdmin = ({ sendMessage }) => {
             setModalState={setModalState}
             modalState={modalState}
             extra={selectedExtra}
+            extraTitles={extras.data.getExtras.map(extra => extra.name)}
           />
         </div>
       }

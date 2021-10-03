@@ -98,5 +98,6 @@
   "modify-extra": "Ändra tillägstjänst",
   "create-extra": "Skapa tillägstjänst",
   "do-you-want-to-remove": "Vill du säkert ta bort tillägstjänsten?",
-  "failed-to-modify-extra": "Uppdatering av tillägstjänsten misslyckades"
+  "failed-to-modify-extra": "Uppdatering av tillägstjänsten misslyckades",
+  "extra-already-exists": "En tillägstjänst med det här namnet finns redan!"
 }

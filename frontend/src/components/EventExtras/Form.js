@@ -4,8 +4,16 @@ import { useTranslation } from 'react-i18next'
 import { ScienceClasses } from '../EventForm/FormComponents'
 import { TextField } from '../VisitForm/FormFields'
 
-const Form = ({ handleAdd, handleModify, setModalState, modalState, extra }) => {
+const Form = ({ handleAdd, handleModify, setModalState, modalState, extra, extraTitles }) => {
   const { t } = useTranslation('common')
+
+  const validate = (values) => {
+    const errors = {}
+    if (extraTitles.includes(values.name)) {
+      errors.name = t('extra-already-exists')
+    }
+    return errors
+  }
 
   const submit = ({ name, scienceClass, remoteLength, inPersonLength }) => {
     const classes = []
@@ -40,6 +48,7 @@ const Form = ({ handleAdd, handleModify, setModalState, modalState, extra }) => 
         remoteLength: 10
       }}
       onSubmit={submit}
+      validate={validate}
     >
       {({ handleSubmit, values, touched, errors, setFieldValue }) => {
         return (
@@ -78,7 +87,11 @@ const Form = ({ handleAdd, handleModify, setModalState, modalState, extra }) => 
               </>
             </section>
             <footer className="modal-card-foot">
-              <button className="button luma primary" type='submit' onClick={handleSubmit}>{t('submit')}</button>
+              {Object.entries(errors).length ?
+                <button className="button luma primary" type='submit' disabled>{t('submit')}</button>
+                :
+                <button className="button luma primary" type='submit' onClick={handleSubmit}>{t('submit')}</button>
+              }
               <button className="button" onClick={() => setModalState(null)}>{t('close')}</button>
             </footer>
           </div>

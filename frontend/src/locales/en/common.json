@@ -98,5 +98,6 @@
   "modify-extra": "Modify extra",
   "create-extra": "Create extra",
   "do-you-want-to-remove": "Do you wish to remove this extra?",
-  "failed-to-modify-extra": "Extra modification failed"
+  "failed-to-modify-extra": "Extra modification failed",
+  "extra-already-exists": "Extra with this name already exists!"
 }
