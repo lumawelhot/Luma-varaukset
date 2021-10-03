@@ -45,7 +45,8 @@ const testEvent = {
   otherRemotePlatformOption:null,
   start: addDays(set(new Date(), { hours: 9, minutes: 0, seconds: 0, milliseconds: 0 }), 5),
   end: addDays(set(new Date(), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }), 5),
-  booked:false
+  booked:false,
+  languages: ['fi']
 }
 
 const testUser = {

@@ -20,8 +20,8 @@ const FieldItem = ({ index, item, update, remove, down, up }) => {
   const drawEditor = () => {
     if (!item.type) return null
     if (item.type === 'text') return <TextField save={(data) => handleSaveField(index, data)} item={item} cancel={() => setEditMode(false)}/>
-    if (item.type === 'radio') return <RadioField save={(data) => handleSaveField(data)} item={item} cancel={() => setEditMode(false)}/>
-    if (item.type === 'checkbox') return <CheckboxField save={(data) => handleSaveField(data)} item={item} cancel={() => setEditMode(false)}/>
+    if (item.type === 'radio') return <RadioField save={(data) => handleSaveField(index, data)} item={item} cancel={() => setEditMode(false)}/>
+    if (item.type === 'checkbox') return <CheckboxField save={(data) => handleSaveField(index, data)} item={item} cancel={() => setEditMode(false)}/>
   }
 
   const handleAction = (type) => {

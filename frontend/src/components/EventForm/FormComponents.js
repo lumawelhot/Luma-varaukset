@@ -16,9 +16,9 @@ const platformList = [
 
 const gradesList = [
   { id: 0, label: 'Varhaiskasvatus' },
-  { id: 1, label: '1. - 2. luokka' },
-  { id: 2, label: '3. - 6. luokka' },
-  { id: 3, label: '7. - 9. luokka' },
+  { id: 1, label: '1. – 2. luokka' },
+  { id: 2, label: '3. – 6. luokka' },
+  { id: 3, label: '7. – 9. luokka' },
   { id: 4, label: 'Toinen aste' }
 ]
 
