@@ -613,7 +613,7 @@ const resolvers = {
           return savedVisit
         }
       } catch (error) {
-        event.availableTimes = availableTimes
+        event.availableTimes = availableTimes.map(availableTime => availableTime.toISOString())
         await event.save()
         await savedVisit.delete()
         throw new UserInputError(error.message, {
