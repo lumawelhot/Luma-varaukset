@@ -52,5 +52,6 @@
   "fi": "Finska",
   "sv": "Svenska",
   "en": "Engelska",
-  "language": "Undervisningsspråk"
+  "language": "Undervisningsspråk",
+  "data-agreement-info": "Allt utom reservatörens namn, epost och telefonnummer"
 }

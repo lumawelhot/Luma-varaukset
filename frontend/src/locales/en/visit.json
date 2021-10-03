@@ -52,5 +52,6 @@
   "fi": "Finnish",
   "sv": "Swedish",
   "en": "English",
-  "language": "Language"
+  "language": "Language",
+  "data-agreement-info": "All except client name, email and telephone"
 }
