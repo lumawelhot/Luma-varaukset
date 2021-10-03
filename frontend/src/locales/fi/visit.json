@@ -52,5 +52,6 @@
   "fi": "Suomi",
   "sv": "Ruotsi",
   "en": "Englanti",
-  "language": "Opetuskieli"
+  "language": "Opetuskieli",
+  "data-agreement-info": "Kaikki, paitsi varaajan nimi, puhelinnumero ja sähköpostiosoite"
 }

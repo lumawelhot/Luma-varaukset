@@ -210,6 +210,7 @@ const EventForm = ({ newEventTimeRange = null, closeEventForm, validate, onSubmi
                   style={{ marginLeft: 10 }}
                   placeholder={t('publish-time')}
                   onChange={value => setFieldValue('publishTime', value)}
+                  disabledHours={() => []}
                 />
               </div>
             </section>

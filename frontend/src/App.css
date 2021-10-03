@@ -218,7 +218,7 @@ input.hidden {
   top: 109px;
   z-index: 10;
   right: 10px;
-  width: 920px;
+  width: 958px;
   border: 1px solid #d9d9d9;
   border-radius: 7px;
 }
@@ -341,6 +341,18 @@ option {
   border-radius: 0;
 }
 
+.fc-timeGridDay-button.fc-button.fc-button-primary:hover,
+.fc-timeGridWeek-button.fc-button.fc-button-primary:hover,
+.fc-dayGridMonth-button.fc-button.fc-button-primary:hover,
+.fc-listMonth-button.fc-button.fc-button-primary:hover,
+.fc-next-button.fc-button.fc-button-primary:hover,
+.fc-prev-button.fc-button.fc-button-primary:hover,
+.fc-today-button.fc-button.fc-button-primary:hover {
+  background-color: rgb(27, 28, 41);
+  color: white;
+  border-color: rgb(27, 28, 41);
+}
+
 .fc-next-button.fc-button.fc-button-primary,
 .fc-prev-button.fc-button.fc-button-primary {
   font-size: 80%;
@@ -354,7 +366,6 @@ option {
 .fc-listMonth-button.fc-button.fc-button-primary.fc-button-active,
 .fc-next-button.fc-button.fc-button-primary.fc-button-active,
 .fc-prev-button.fc-button.fc-button-primary.fc-button-active,
-.fc-today-button.fc-button.fc-button-primary.fc-button-active,
 .fc-filterButton-button.fc-button.fc-button-primary.fc-button-active {
   background-color: #0479a5 !important;
   border-color: #0479a5 !important;
@@ -408,6 +419,13 @@ button.button.luma {
   cursor: default;
 }
 
-#banner a {
-  text-decoration: underline;
+.fc-timegrid-axis-cushion.fc-scrollgrid-shrink-cushion.fc-scrollgrid-sync-inner,
+.fc-col-header-cell-cushion,
+.fc-list-day-text,
+.fc-list-day-side-text {
+  text-decoration: none !important;
+}
+
+a {
+  text-decoration: underline !important;
 }

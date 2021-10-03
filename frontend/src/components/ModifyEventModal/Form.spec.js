@@ -39,8 +39,10 @@ test('Form renders correctly', async () => {
   expect(innerHTML).toContain('Maantiede')
   expect(innerHTML).toContain('14:00')
   expect(innerHTML).toContain('09:00')
-  expect(innerHTML).toContain('<label><input type="checkbox" name="scienceClass"> FOTONI</label>')
-  expect(innerHTML).toContain('<label><input type="checkbox" name="scienceClass" checked=""> LINKKI</label>')
+  // eslint-disable-next-line no-useless-escape
+  expect(innerHTML).toContain('<label><input type=\"checkbox\" name=\"scienceClass\"> FOTONI </label>')
+  // eslint-disable-next-line no-useless-escape
+  expect(innerHTML).toContain('<label><input type=\"checkbox\" name=\"scienceClass\" checked=\"\"> LINKKI </label>')
   expect(innerHTML).not.toContain('Zoom')
   expect(innerHTML).not.toContain('Valitse vierailulle sopivat lisäpalvelut')
 })

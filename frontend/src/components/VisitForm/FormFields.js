@@ -80,7 +80,7 @@ export const RadioButton = (field) => {
 }
 
 export const CheckBox = (field) => {
-  const { form, label, fieldName, onChange, className, style, index } = field
+  const { form, label, fieldName, onChange, className, style, index, inject } = field
   const { handleChange, values, touched, errors } = form
   return (
     <>
@@ -94,8 +94,11 @@ export const CheckBox = (field) => {
               : index
             }
             onChange={onChange ? onChange : handleChange}
-          /> {label}
+          /> {label}{' '}
         </label>
+        {inject &&
+          inject
+        }
       </div>
       {touched[fieldName] && errors[fieldName] ? (
         <p className="help is-danger">{errors[fieldName]}</p>

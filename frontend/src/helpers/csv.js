@@ -11,8 +11,6 @@ export const getCSV = (visits) => {
           eventId: visit.event.id
         }
         delete mappedVisit.clientName
-        delete mappedVisit.schoolName
-        delete mappedVisit.schoolLocation
         delete mappedVisit.clientEmail
         delete mappedVisit.clientPhone
         return mappedVisit
