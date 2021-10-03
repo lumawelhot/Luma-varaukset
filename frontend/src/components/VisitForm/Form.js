@@ -279,7 +279,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit, customFormFiel
                     <Field
                       label={
                         <label>
-                          {t('accept-privacy-policy1')} <a href="https://www2.helsinki.fi/fi/tiedekasvatus/tietosuojailmoitus-opintokaynnit" target="_blank" rel="noopener noreferrer">{t('privacy-policy')}</a> {t('accept-privacy-policy2')}.
+                          {t('accept-privacy-policy1')} <a href="https://www2.helsinki.fi/fi/tiedekasvatus/tietosuojailmoitus-opintokaynnit" target="_blank" rel="noreferrer">{t('privacy-policy')}</a> {t('accept-privacy-policy2')}.
                           <span style={{ color: 'red' }}> *</span>
                         </label>
                       }
@@ -293,11 +293,16 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit, customFormFiel
                       fieldName='dataUseAgreement'
                       style={{ marginBottom: 7 }}
                       component={CheckBox}
+                      inject={
+                        <Tooltip title={t('data-agreement-info')}>
+                          <InfoCircleOutlined />
+                        </Tooltip>
+                      }
                     />
                     <Field
                       label={
                         <label>
-                          {t('accept-instructions1')} <a href="https://www2.helsinki.fi/fi/tiedekasvatus/opettajille-ja-oppimisyhteisoille/varaa-opintokaynti">{t('instructions')}</a> {t('accept-instructions2')}.
+                          {t('accept-instructions1')} <a href="https://www2.helsinki.fi/fi/tiedekasvatus/opettajille-ja-oppimisyhteisoille/varaa-opintokaynti" target="_blank" rel="noreferrer">{t('instructions')}</a> {t('accept-instructions2')}.
                           <span style={{ color: 'red' }}> *</span>
                         </label>
                       }

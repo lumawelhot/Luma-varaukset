@@ -419,6 +419,13 @@ button.button.luma {
   cursor: default;
 }
 
-#banner a {
-  text-decoration: underline;
+.fc-timegrid-axis-cushion.fc-scrollgrid-shrink-cushion.fc-scrollgrid-sync-inner,
+.fc-col-header-cell-cushion,
+.fc-list-day-text,
+.fc-list-day-side-text {
+  text-decoration: none !important;
+}
+
+a {
+  text-decoration: underline !important;
 }

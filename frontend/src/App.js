@@ -104,7 +104,7 @@ const App = () => {
       return (
         <>
           {!event.booked && event.locked &&
-            <label style={{ color: `${event.resourceids.includes(1) ? 'yellow' : 'red'}`, margin: 5 }}>
+            <label style={{ color: 'black', margin: 5 }}>
               <FaLock />
             </label>
           }
