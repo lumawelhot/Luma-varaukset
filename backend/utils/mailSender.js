@@ -4,6 +4,20 @@ const Visit = require('../models/visit')
 const mailer = require('../services/mailer')
 const Email = require('../models/email')
 const { fillStringWithValues } = require('./helpers')
+const config = require('./config')
+
+const getDetails = (visit) => {
+  return ([
+    {
+      name: 'link',
+      value: `${config.HOST_URI}/${visit.id}`
+    },
+    {
+      name: 'visit',
+      value: `${visit.event.title} ${visit.startTime}-${visit.endTime}`
+    }
+  ])
+}
 
 const sendReminder = async () => {
   const mail = await Email.findOne({ name: 'reminder' })
@@ -24,18 +38,20 @@ const sendReminder = async () => {
   for (let visit of visits) {
     try {
       if (visit.status) {
-        const details = [
-          {
-            name: 'visit',
-            value: `${visit.event.title} ${visit.startTime}-${visit.endTime}`
-          }
-        ]
         await mailer.sendMail({
           from: 'Luma-Varaukset <noreply@helsinki.fi>',
           to: visit.clientEmail,
           subject: mail.subject,
-          text: fillStringWithValues(mail.text, details),
-          html: fillStringWithValues(mail.html, details)
+          text: fillStringWithValues(mail.text, getDetails(visit)),
+          html: fillStringWithValues(mail.html, getDetails(visit))
+        })
+        mail.ad.forEach(recipient => {
+          mailer.sendMail({
+            from: 'Luma-Varaukset <noreply@helsinki.fi>',
+            to: recipient,
+            subject: mail.adSubject,
+            text: fillStringWithValues(mail.adText, getDetails(visit))
+          })
         })
         report.success.push(visit)
       } else {
@@ -72,8 +88,16 @@ const sendThanks = async () => {
           from: 'Luma-Varaukset <noreply@helsinki.fi>',
           to: visit.clientEmail,
           subject: mail.subject,
-          text: fillStringWithValues(mail.text),
-          html: fillStringWithValues(mail.html)
+          text: fillStringWithValues(mail.text, getDetails(visit)),
+          html: fillStringWithValues(mail.html, getDetails(visit))
+        })
+        mail.ad.forEach(recipient => {
+          mailer.sendMail({
+            from: 'Luma-Varaukset <noreply@helsinki.fi>',
+            to: recipient,
+            subject: mail.adSubject,
+            text: fillStringWithValues(mail.adText, getDetails(visit))
+          })
         })
         report.success.push(visit)
       } else {
