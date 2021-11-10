@@ -41,7 +41,7 @@ const EmailConfig = ({ sendMessage }) => {
         subject: values.subject,
         ad: values.ad,
         adSubject: values.adSubject,
-        adText: values.adText
+        adText: values.senderText
       }
     })
     setShowModal(false)
@@ -61,7 +61,7 @@ const EmailConfig = ({ sendMessage }) => {
               address: '',
               ad: selectedTemlate.ad,
               adSubject: selectedTemlate.adSubject,
-              adText: selectedTemlate.adText
+              senderText: selectedTemlate.adText
             }}
             onSubmit={handleChangeData}
           >
@@ -112,7 +112,7 @@ const EmailConfig = ({ sendMessage }) => {
                     />
                     <Field
                       label={t('ad-text')}
-                      fieldName='adText'
+                      fieldName='senderText'
                       component={TextArea}
                     />
                   </section>

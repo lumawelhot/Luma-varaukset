@@ -598,7 +598,7 @@ const resolvers = {
                 from: 'Luma-Varaukset <noreply@helsinki.fi>',
                 to: recipient,
                 subject: mail.adSubject,
-                text: fillStringWithValues(mail.adText)
+                text: fillStringWithValues(mail.adText, details)
               })
             })
           }
