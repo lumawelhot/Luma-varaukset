@@ -12,7 +12,7 @@ const Banner = () => {
       </p>
       <p className="subtitle" style={{ fontSize: '130%' }}>
         {t('banner-text1')}
-        <a href="https://www2.helsinki.fi/fi/tiedekasvatus/opettajille-ja-oppimisyhteisoille/varaa-opintokaynti" target="_blank" rel="noreferrer">
+        <a href="https://www.helsinki.fi/fi/tiedekasvatus/opettajille-ja-opetuksen-tueksi/opintokaynnit-ja-lainattavat-tarvikkeet" target="_blank" rel="noreferrer">
           {t('banner-text2')}.
         </a>
         {t('banner-text3')}
