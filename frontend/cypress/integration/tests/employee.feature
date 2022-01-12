@@ -14,12 +14,12 @@ Feature: Employee functionality
     And I enter incorrect password
     Then I am not logged in
 
-  Scenario: As an employee I can create an event
-    Given Employee is logged in
-    And employee is on the main page
-    When I navigate to the event form
-    And I enter all necessary information
-    Then event is successfully created
+  # Scenario: As an employee I can create an event
+  #   Given Employee is logged in
+  #   And employee is on the main page
+  #   When I navigate to the event form
+  #   And I enter all necessary information
+  #   Then event is successfully created
 
   Scenario: As an employee I want that the events are shown on the calendar view
     Given Employee is logged in
