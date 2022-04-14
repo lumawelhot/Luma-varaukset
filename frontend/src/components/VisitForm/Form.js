@@ -279,7 +279,7 @@ const Form = ({ event, calculateVisitEndTime, validate, onSubmit, customFormFiel
                     <Field
                       label={
                         <label>
-                          {t('accept-privacy-policy1')} <a href="https://www2.helsinki.fi/fi/tiedekasvatus/tietosuojailmoitus-opintokaynnit" target="_blank" rel="noreferrer">{t('privacy-policy')}</a> {t('accept-privacy-policy2')}.
+                          {t('accept-privacy-policy1')} <a href="https://www.helsinki.fi/fi/tiedekasvatus/tietoa-meista" target="_blank" rel="noreferrer">{t('privacy-policy')}</a> {t('accept-privacy-policy2')}.
                           <span style={{ color: 'red' }}> *</span>
                         </label>
                       }
