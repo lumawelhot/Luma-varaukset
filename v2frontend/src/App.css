@@ -1,0 +1,137 @@
+.login-icon {
+  right: 0;
+  cursor: pointer;
+}
+
+.active {
+  background-color: #0479a5 !important;
+  border-color: #0479a5 !important;
+  color: #fff !important;
+}
+
+.active:hover {
+  background-color: rgb(27, 28, 41) !important;
+  color: white !important;
+  border-color: rgb(27, 28, 41) !important;
+}
+
+.fc-header-toolbar.fc-toolbar  {
+  visibility: hidden !important;
+  display: none !important;
+}
+
+.visible {
+  visibility: visible;
+  display: initial;
+}
+
+.hidden {
+  visibility: hidden;
+  display: none;
+}
+
+.rs-anim-fade.rs-anim-in.rs-picker-date-menu.rs-picker-menu {
+  z-index: 10000;
+}
+
+.rs-picker-toggle.rs-btn.rs-btn-default {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  --antd-wave-shadow-color: #1890ff;
+  --scroll-bar: 0;
+  --fc-daygrid-event-dot-width: 8px;
+  --fc-list-event-dot-width: 10px;
+  --fc-list-event-hover-bg-color: #f5f5f5;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'tnum', "tnum";
+  box-sizing: border-box;
+  margin: 0;
+  font-family: inherit;
+  overflow: visible;
+  -webkit-appearance: none;
+  align-items: center;
+  border: 1px solid transparent;
+  display: inline-flex;
+  font-size: 1rem;
+  height: 2.5em;
+  justify-content: flex-start;
+  line-height: 1.5;
+  padding-bottom: calc(.5em - 1px);
+  padding-left: calc(.75em - 1px);
+  padding-right: calc(.75em - 1px);
+  padding-top: calc(.5em - 1px);
+  position: relative;
+  vertical-align: top;
+  background-color: #fff;
+  border-color: #dbdbdb;
+  border-radius: 4px;
+  color: #363636;
+  box-shadow: inset 0 .0625em .125em rgba(10,10,10,.05);
+  max-width: 100% !important;
+  width: 100% !important;
+  touch-action: manipulation;
+} /* deprecated ?? */
+
+.rs-picker-toggle-value {
+  color: rgb(62, 62, 62) !important;
+}
+
+.rs-table-cell-content {
+  font-size: 15px;
+  color: #363636;
+}
+
+#root {
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+.fc-event-main {
+  cursor: pointer;
+}
+
+.fc-col-header-cell-cushion {
+  text-transform: capitalize;
+}
+
+.fc-event-main {
+  color: #363636 !important;
+  font-size: 12px;
+  font-weight: bolder;
+}
+
+.fc-daygrid-day-number {
+  cursor: pointer;
+  text-decoration: underline; 
+}
+
+.fc-daygrid-week-number {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.fc-list-event.fc-event.fc-event-start.fc-event-end.fc-event-future {
+  cursor: pointer;
+}
+
+.popover {
+  max-width: 720px !important;
+  border-radius: 2px !important;
+  z-index: 10000 !important;
+}
+
+a {
+  text-decoration: underline !important;
+}
+
+.fc-timegrid-event {
+  text-decoration: none !important;
+}
+
+a:hover {
+  color: inherit !important;
+}
+
+a.default {
+  color: #1890ff;
+}

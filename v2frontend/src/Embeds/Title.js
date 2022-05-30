@@ -1,0 +1,22 @@
+import styled from 'styled-components'
+
+const Title = styled.div`
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-font-smoothing: antialiased;
+  font-variant: tabular-nums;
+  line-height: 1.5715;
+  font-feature-settings: 'tnum', "tnum";
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+  touch-action: manipulation;
+  color: #363636;
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: .5em;
+  margin-top: .5em;
+`
+
+export default Title

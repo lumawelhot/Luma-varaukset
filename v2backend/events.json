@@ -1,0 +1,146 @@
+[
+  {
+    "title": "Maanjäristysten alueellisuus ja niiden vaikutukset",
+    "resourceids": [4],
+    "grades": [1],
+    "start": "2021-07-28T09:00:00+0300",
+    "end": "2021-07-28T15:00:00+0300",
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "availableTimes": [
+      {
+        "startTime": "2021-07-08T09:00:00+0300",
+        "endTime": "2021-07-08T15:00:00+0300"
+      }
+    ],
+    "waitingTime": 15,
+    "duration": 30,
+    "desc": "I feel the earth move under my feet, I feel the sky tumbling down, tumbling down!",
+    "disabled": false,
+    "locked": null
+  },
+  {
+    "title": "Lämpösäteily ja ilmastonmuutos",
+    "resourceids": [4],
+    "grades": [1],
+    "start": "2021-07-26T09:00:00+0300",
+    "end": "2021-07-26T14:00:00+0300",
+    "availableTimes": [
+      {
+        "startTime": "2021-07-26T09:00:00+0300",
+        "endTime": "2021-07-26T14:00:00+0300"
+      }
+    ],
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "waitingTime": 15,
+    "extras": [],
+    "duration": 30,
+    "disabled": false,
+    "locked": null
+  },
+  {
+    "title": "Kemian kokeelliset työt",
+    "resourceids": [4],
+    "grades": [1],
+    "start": "2021-07-20T09:00:00+0300",
+    "end": "2021-07-20T14:00:00+0300",
+    "availableTimes": [
+      {
+        "startTime": "2021-07-20T09:00:00+0300",
+        "endTime": "2021-07-20T14:00:00+0300"
+      }
+    ],
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "waitingTime": 15,
+    "extras": [],
+    "duration": 30,
+    "disabled": false,
+    "locked": false
+  },
+  {
+    "title": "Python-ohjelmointikieli",
+    "start": "2021-06-20T08:00:00+0300",
+    "end": "2021-06-20T14:00:00+0300",
+    "resourceids": [3],
+    "grades": [1],
+    
+    "availableTimes": [
+      {
+        "startTime": "2021-06-20T08:00:00+0300",
+        "endTime": "2021-06-20T14:00:00+0300"
+      }
+    ],
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "waitingTime": 15,
+    "extras": [],
+    "duration": 30,
+    "disabled": false,
+    "locked": false
+  },
+  {
+    "title": "Matematiikan työpaja",
+    "start": "2021-07-20T09:00:00+0300",
+    "end": "2021-07-20T14:00:00+0300",
+    "desc": "kuvaus",
+    "resourceids": [1,2],
+    "grades": [1],
+    "availableTimes": [
+      {
+        "startTime": "2021-07-20T09:00:00+0300",
+        "endTime": "2021-07-20T14:00:00+0300"
+      }
+    ],
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "waitingTime": 15,
+    "extras": [],
+    "duration": 30,
+    "disabled": false,
+    "locked": false
+  },
+  {
+    "title": "Scratch-ohjelmointikieli",
+    "start": "2021-07-14T09:00:00+0300",
+    "end": "2021-07-14T14:00:00+0300",
+    "desc": "kuvaus",
+    "resourceids": [3],
+    "grades": [1, 2],
+    "availableTimes": [
+      {
+        "startTime": "2021-07-14T09:00:00+0300",
+        "endTime": "2021-07-14T14:00:00+0300"
+      }
+    ],
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "waitingTime": 15,
+    "extras": [],
+    "duration": 30,
+    "disabled": false,
+    "locked": false
+  },
+  {
+    "title": "Lämpösäteily ja ilmastonmuutos",
+    "start": "2021-06-16T10:00:00+0300",
+    "end": "2021-06-16T16:00:00+0300",
+    "desc": "kuvaus",
+    "resourceids": [4],
+    "grades": [3, 4],
+    "availableTimes": [
+      {
+        "startTime": "2021-06-20T10:00:00+0300",
+        "endTime": "2021-06-20T16:00:00+0300"
+      }
+    ],
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "waitingTime": 15,
+    "extras": [],
+    "duration": 30,
+    "disabled": false,
+    "locked": false
+  }
+]
