@@ -21,7 +21,7 @@ const Event = ({ show, close, initialValues=eventInit, options, modify }) => {
       resourceids: resourceids.map(r => Number(r)),
       grades: grades.map(g => Number(g)),
       remotePlatforms: remotePlatforms.map(r => Number(r)),
-      group: group?.value ? group.value : '',
+      group: group?.value ? group.value : (modify ? '' : null),
       extras,
       customForm: customForm?.value ? customForm.value : null
     }

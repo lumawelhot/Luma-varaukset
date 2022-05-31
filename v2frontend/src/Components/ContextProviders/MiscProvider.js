@@ -3,6 +3,8 @@ import { useApolloClient } from '@apollo/client'
 import { MiscContext } from '../../services/contexts'
 import { EXTRAS, TAGS, DELETE_EXTRAS, CREATE_EXTRA, MODIFY_EXTRA } from '../../graphql/queries'
 import { EventContext } from '../../services/contexts'
+import { addDays, set } from 'date-fns'
+import { FIRST_EVENT_AFTER_DAYS } from '../../config'
 
 const MiscProvider = ({ children }) => {
   const client = useApolloClient()
@@ -11,7 +13,7 @@ const MiscProvider = ({ children }) => {
 
   const [calendarOptions, setCalendarOptions] = useState({
     view: 'timeGridWeek',
-    date: null,
+    date: addDays(set(new Date(), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }), FIRST_EVENT_AFTER_DAYS),
   })
 
   const eventContext = useContext(EventContext)

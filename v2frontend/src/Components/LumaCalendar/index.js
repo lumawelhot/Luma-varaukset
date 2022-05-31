@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useRef, useContext } from 'react'
+import React, { useState, useRef, useContext, useEffect } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import { UserContext, EventContext, MiscContext } from '../../services/contexts'
 import { useNavigate } from 'react-router-dom'
