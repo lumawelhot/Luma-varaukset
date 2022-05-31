@@ -15,7 +15,7 @@ const Form = require('../models/forms')
 const Email = require('../models/email')
 const Group = require('../models/group')
 const { addNewTags, fillStringWithValues, checkTimeslot } = require('../utils/helpers')
-const { sub } = require('date-fns')
+const { sub, set } = require('date-fns')
 
 const { PubSub } = require('graphql-subscriptions')
 const { authorized, isAdmin, notFound, minLenghtTest, idNotFound } = require('../utils/errors')
@@ -295,6 +295,55 @@ const resolvers = {
         eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
       })
       return Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
+    },
+    createEvents: async (root, args, { currentUser }) => {
+      authorized(currentUser)
+      minLenghtTest(args.grades, 1)
+      minLenghtTest(args.title, 5)
+      if (checkTimeslot(args.start, args.end)) throw new UserInputError('Invalid start or end time')
+
+      const group = await Group.findById(args.group)
+      const mongoTags = await addNewTags(args.tags)
+      const extras = await Extra.find({ _id: { $in: args.extras } })
+
+      const events = []
+
+      for (let d of args.dates) {
+        const date = new Date(d)
+        const startTime = new Date(args.start)
+        const endTime = new Date(args.end)
+
+        const start = set(date, { hours: startTime.getHours(), minutes: startTime.getMinutes(), seconds: 0, milliseconds: 0 }).toISOString()
+        const end = set(date, { hours: endTime.getHours(), minutes: endTime.getMinutes(), seconds: 0, milliseconds: 0 }).toISOString()
+
+        const event = new Event({
+          ...args,
+          start,
+          end,
+          availableTimes: [{
+            startTime: start,
+            endTime: end
+          }],
+          disabled: false,
+          resourceids: args.scienceClass,
+          publishDate: args.publishDate ? new Date(args.publishDate) : null,
+        })
+
+        event.extras = extras
+        event.tags = mongoTags
+        if (group) {
+          group.events = group.events.concat(event.id)
+          event.group = group.id
+          await group.save()
+        }
+        await event.save()
+        await event.populate('group').populate('customForm').execPopulate()
+        pubsub.publish('EVENT_CREATED', {
+          eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
+        })
+        events.push(Object.assign(event.toJSON(), { locked: event.reserved ? true : false }))
+      }
+      return events
     },
     disableEvent: async (root, args, { currentUser }) => {
       authorized(currentUser)

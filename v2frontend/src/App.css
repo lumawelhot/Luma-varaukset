@@ -135,3 +135,7 @@ a:hover {
 a.default {
   color: #1890ff;
 }
+
+.rs-picker-toggle-value {
+  font-weight: bold;
+}

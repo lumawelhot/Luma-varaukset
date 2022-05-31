@@ -1,9 +1,11 @@
 import i18n from '../i18n'
+import React from 'react'
 import parse from 'date-fns/parse'
 import { CLASSES } from '../config'
 const t = i18n.t
 
 const dateSort = (rowA, rowB, id) => {
+  console.log(rowA.values[id])
   let a = parse(rowA.values[id], 'd.M.y', new Date())
   let b = parse(rowB.values[id], 'd.M.y', new Date())
   if (b - a > 0) return 1
@@ -149,6 +151,21 @@ export const formFieldColumns = () => [
   {
     Header: t('field-type'),
     accessor: 'type'
+  },
+  {
+    Header: t('options'),
+    accessor: 'optionButtons'
+  }
+]
+
+export const eventDateColumns = () => [
+  {
+    Header: t('event-date'),
+    Cell: ({ cell }) => {
+      return <div style={{ fontWeight: 'bold', marginTop: 7 }}>{cell.value}</div>
+    },
+    accessor: 'date',
+    sortType: dateSort,
   },
   {
     Header: t('options'),

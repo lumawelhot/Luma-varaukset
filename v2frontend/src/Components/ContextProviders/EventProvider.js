@@ -3,7 +3,7 @@ import { useApolloClient, useSubscription } from '@apollo/client'
 import { EventContext } from '../../services/contexts'
 import {
   EVENTS,
-  CREATE_EVENT,
+  CREATE_EVENTS,
   MODIFY_EVENT,
   DELETE_EVENT,
   EVENT_STATUS,
@@ -135,12 +135,15 @@ const EventProvider = ({ children }) => {
     begin()
     try {
       const { data } = await client.mutate({
-        mutation: CREATE_EVENT, variables, fetchPolicy: 'no-cache'
+        mutation: CREATE_EVENTS, variables, fetchPolicy: 'no-cache'
       })
-      if (data?.createEvent) {
-        const e = data.createEvent
-        setParsed(parsed.concat(parseEvent(e)))
-        updateMap(e)
+      if (data?.createEvents) {
+        setParsed(parsed.concat(data.createEvents.map(e => parseEvent(e)[0])))
+        const newMap = Object.assign({}, map)
+        for (let e of data.createEvents) {
+          newMap[e.id] = formFieldParse(e)
+        }
+        setMap(newMap)
         end()
         return true
       }

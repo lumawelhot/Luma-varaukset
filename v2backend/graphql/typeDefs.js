@@ -200,6 +200,27 @@ const typeDefs = gql`
       publishDate: String
       languages: [String]
     ): Event
+    createEvents(
+      title: String!
+      scienceClass: [Int]!
+      grades: [Int]!
+      remotePlatforms: [Int]
+      otherRemotePlatformOption: String
+      start: String!
+      end: String!
+      dates: [String]!
+      desc: String
+      inPersonVisit: Boolean!
+      remoteVisit: Boolean!
+      tags: [String]
+      waitingTime: Int!
+      extras: [ID]
+      duration: Int!
+      customForm: ID
+      group: ID
+      publishDate: String
+      languages: [String]
+    ): [Event]
     modifyEvent(
       event: ID!
       title: String

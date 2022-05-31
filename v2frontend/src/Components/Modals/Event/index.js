@@ -10,6 +10,7 @@ import Form from './Form'
 const Event = ({ show, close, initialValues=eventInit, options, modify }) => {
   const [type, setType] = useState(modify ? 'modify' : 'create')
   const { add, modify : mod, current: event } = useContext(EventContext)
+  const [dates, setDates] = useState([])
   const { t } = useTranslation()
   const formRef = useRef()
 
@@ -17,6 +18,7 @@ const Event = ({ show, close, initialValues=eventInit, options, modify }) => {
     const { tags, resourceids, grades, remotePlatforms, group, extras, customForm } = formRef.current.values
     return {
       ...formRef.current.values,
+      dates: dates.map(d => new Date(d.date).toISOString()),
       tags: tags.map(t => t.label),
       resourceids: resourceids.map(r => Number(r)),
       grades: grades.map(g => Number(g)),
@@ -55,7 +57,13 @@ const Event = ({ show, close, initialValues=eventInit, options, modify }) => {
         </RadioGroup>
       </Modal.Header>}
       <Modal.Body style={{ minHeight: 400 }}>
-        <Form ref={formRef} type={type} initialValues={initialValues} />
+        <Form
+          ref={formRef}
+          type={type}
+          initialValues={initialValues}
+          dates={dates}
+          setDates={setDates}
+        />
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>
         <Button

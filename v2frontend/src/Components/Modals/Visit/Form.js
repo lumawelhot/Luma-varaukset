@@ -163,7 +163,6 @@ const Form = React.forwardRef((props, ref) => {
             </div>
           </Stack>
           <CheckboxGroup onChange={v => {
-            console.log(v)
             setFieldValue('extras', v)
             const duration = totalDuration({ ...values, extras: v })
             const endTime = add(set(new Date(values.startTime), { seconds: 0, milliseconds: 0 }), { minutes: duration })
@@ -222,14 +221,12 @@ const Form = React.forwardRef((props, ref) => {
               {type === 'text' && <Input
                 value={values?.customFormData[j].value}
                 onChange={e => {
-                  console.log(values?.customFormData.map((c, i) => j === i ? { name: c.name, value: e.target.value } : c))
                   setFieldValue('customFormData',
                     values?.customFormData.map((c, i) => j === i ? { name: c.name, value: e.target.value } : c)
                   )
                 }}
               />}
               {type === 'radio' && <RadioGroup onChange={v => {
-                console.log(values.customFormData)
                 setFieldValue('customFormData',
                   values?.customFormData.map((c, i) => j === i ? { name: c.name, value: form.fields[j].options[Number(v)].text } : c)
                 )

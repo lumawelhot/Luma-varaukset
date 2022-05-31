@@ -1,8 +1,8 @@
 /* eslint-disable react/display-name */
-import { CheckboxGroup } from '@chakra-ui/react'
-import { set } from 'date-fns'
+import { Button, CheckboxGroup } from '@chakra-ui/react'
+import { format, set } from 'date-fns'
 import { Formik } from 'formik'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useMemo } from 'react'
 import { Stack } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { CLASSES, GRADES, LANG_MAP, MAX_TAG_FILTER_TAGS, PLATFORMS } from '../../../config'
@@ -14,13 +14,34 @@ import { MiscContext, FormContext, GroupContext } from '../../../services/contex
 import _ from 'lodash'
 import { someExist } from '../../../helpers/utils'
 import { eventValidate } from '../../../helpers/validate'
+import Table from '../../Table'
+import { eventDateColumns } from '../../../helpers/columns'
+import { ButtonToolbar, IconButton } from 'rsuite'
+import { DeleteIcon } from '@chakra-ui/icons'
 
 const Form = React.forwardRef((props, ref) => {
   const { t } = useTranslation()
+  const { dates, setDates } = props
   const { extras, tags, fetchTags, fetchExtras } = useContext(MiscContext)
   const { all: forms, fetch: fetchForms } = useContext(FormContext)
   const { all: groups, fetch: fetchGroups } = useContext(GroupContext)
   useEffect(fetchExtras, [])
+
+  const eventColumns = useMemo(eventDateColumns, [])
+
+  const dateData = useMemo(() => dates
+    ?.map((f, i) => ({
+      id: i,
+      date: format(f.date, 'd.M.y'),
+      optionButtons: <ButtonToolbar style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
+        <IconButton onClick={() => {
+          setDates(dates.filter((_, j) => j !== i))
+        }} icon={<DeleteIcon color='red.500' />} />
+      </ButtonToolbar>
+    }))
+  , [dates])
+
+  console.log(dateData)
 
   return (
     <Formik
@@ -141,19 +162,36 @@ const Form = React.forwardRef((props, ref) => {
             </Stack>
           </CheckboxGroup>
           <Stack direction='horizontal'>
-            {props.type === 'create' && <div style={{ width: '100%', marginRight: 15 }}>
-              <DatePicker
-                value={values.start}
-                title={t('date')}
-                onChange={v => {
-                  const end = set(new Date(v), {
-                    hours: values.end.getHours(), minutes: values.end.getMinutes()
+            {props.type === 'create' && <>
+              <div style={{ width: '100%', marginRight: 15 }}>
+                <DatePicker
+                  value={values.start}
+                  title={t('date')}
+                  onChange={v => {
+                    const end = set(new Date(v), {
+                      hours: values.end.getHours(), minutes: values.end.getMinutes()
+                    })
+                    setFieldValue('start', v)
+                    setFieldValue('end', end)
+                  }}
+                />
+              </div>
+              <div style={{ marginTop: 40 }}>
+                <Button height={9} colorScheme='blue' variant='outline' onClick={() => {
+                  const date = set(values.start, { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 })
+                  let found = false
+                  dates.forEach(d => {
+                    if (new Date(d.date).getTime() === date.getTime()) found = true
                   })
-                  setFieldValue('start', v)
-                  setFieldValue('end', end)
-                }}
-              />
-            </div>}
+                  if (!found) setDates(dates.concat({ date }))
+                }}>
+                  {t('add-date')}
+                </Button>
+              </div>
+            </>}
+          </Stack>
+          {props.type === 'create' && <Table data={dateData} columns={eventColumns} />}
+          <Stack direction='horizontal'>
             <div style={{ width: '100%', marginRight: 15 }}>
               <TimePicker
                 value={values.start}
