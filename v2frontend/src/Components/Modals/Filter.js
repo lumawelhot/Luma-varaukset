@@ -61,6 +61,13 @@ const Filter = ({ show, close }) => {
             <Checkbox value='inperson'>{t('inperson')}</Checkbox>
           </Stack>
         </CheckboxGroup>
+        <Title>{t('another-sort-options')}</Title>
+        <Stack style={{ marginLeft: 3 }} direction='horizontal'>
+          <Checkbox isChecked={filterOptions.showUnavailable} onChange={e => {
+            const checked = e.target.checked
+            setFilterOptions({ ...filterOptions, showUnavailable: checked })
+          }} style={{ marginRight: 15 }}>{t('show-unavailable')}</Checkbox>
+        </Stack>
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={close}>{t('ok')}</Button>

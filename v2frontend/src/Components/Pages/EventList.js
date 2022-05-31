@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { EventContext } from '../../services/contexts'
 import Table from '../Table'
 import { Heading } from '@chakra-ui/react'
-import { eventColumns } from '../../helpers/columns'
+import { eventColumns, eventInitialState } from '../../helpers/columns'
 import { format } from 'date-fns'
 import { Button } from '../../Embeds/Button'
 import { Select } from '../../Embeds/Input'
@@ -109,7 +109,7 @@ const EventList = () => {
           onChange={v => setFilterOptions({ ...filterOptions, range: { start: filterOptions.range.start, end: v } })}
         />
       </Stack>
-      <Table checkboxed data={events} columns={columns} component={e => {
+      <Table checkboxed data={events} columns={columns} initialState={eventInitialState} component={e => {
         if (e?.checked.length === 0) return <></>
         return <>
           <Button onClick={() => handleAddToGroup(e)}>{t('add-event-to-group')}</Button>

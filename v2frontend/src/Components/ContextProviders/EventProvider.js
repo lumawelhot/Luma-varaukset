@@ -29,7 +29,8 @@ const EventProvider = ({ children }) => {
     tags: [],
     grades: [],
     classes: [],
-    visitTypes: ['inperson', 'remote']
+    visitTypes: ['inperson', 'remote'],
+    showUnavailable: false
   })
   const [hold, setHold] = useState(false)
   const begin = () => setHold(true)

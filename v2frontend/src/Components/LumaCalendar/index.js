@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useRef, useContext, useEffect } from 'react'
+import React, { useState, useRef, useContext } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import { UserContext, EventContext, MiscContext } from '../../services/contexts'
 import { useNavigate } from 'react-router-dom'
@@ -12,7 +11,7 @@ import { eventInit, eventInitWithValues } from '../../helpers/initialvalues'
 
 const LumaCalendar = () => {
   const { current: user } = useContext(UserContext)
-  const { set, parsed, find, current } = useContext(EventContext)
+  const { set, parsed, find, current, filterOptions } = useContext(EventContext)
   const { calendarOptions, setCalendarOptions } = useContext(MiscContext)
   const [showEvent, setShowEvent] = useState()
   const [dragValues, setDragValues] = useState()
@@ -78,7 +77,7 @@ const LumaCalendar = () => {
         initialView={calendarOptions.view}
         initialDate={calendarOptions.date}
         selectable={user}
-        events={calendarEvents(parsed, user)}
+        events={calendarEvents(parsed, user)?.filter(e => !e.unAvailable || filterOptions.showUnavailable)}
         eventClick={({ event }) => {
           const props = event._def.extendedProps
           if (!user && props.booked) return

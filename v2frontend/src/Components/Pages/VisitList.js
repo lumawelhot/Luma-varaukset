@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { VisitContext, EventContext } from '../../services/contexts'
-import { visitColumns } from '../../helpers/columns'
+import { visitColumns, visitInitialState } from '../../helpers/columns'
 import { Heading } from '@chakra-ui/react'
 import { format } from 'date-fns'
 import Table from '../Table'
@@ -62,7 +62,7 @@ const VisitList = () => {
           options={CLASSES}
         />
       </div>
-      <Table data={visits} columns={columns} />
+      <Table data={visits} columns={columns} initialState={visitInitialState} />
     </>
   )
 }

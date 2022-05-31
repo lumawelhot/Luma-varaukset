@@ -2,7 +2,6 @@ import { split, findRange, sort, diff } from './calculator'
 
 it('Sort', () => {
   const result = sort([[9, 10], [6, 8], [0, 1], [3, 5]])
-  console.log(result)
   expect(result).toEqual([[0, 1], [3, 5], [6, 8], [9, 10]])
 })
 

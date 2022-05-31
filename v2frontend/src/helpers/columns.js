@@ -155,3 +155,21 @@ export const formFieldColumns = () => [
     accessor: 'optionButtons'
   }
 ]
+
+export const eventInitialState = {
+  sortBy: [
+    {
+      id: 'date',
+      desc: false
+    }
+  ]
+}
+
+export const visitInitialState = {
+  sortBy: [
+    {
+      id: 'date',
+      desc: false
+    }
+  ]
+}

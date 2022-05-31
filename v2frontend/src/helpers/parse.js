@@ -32,7 +32,8 @@ export const calendarEvents = (events, user) => events
     const afterDays = differenceInDays(event.start, new Date()) >= BOOKING_FAILS_DAYS_REMAINING
     const afterHours = differenceInHours(event.start, new Date()) >= BOOKING_FAILS_HOURS_REMAINING
     const booked = (!user && !afterDays) || (user && !afterHours) || event.booked
-    event.color = (booked || event.disabled)
+    const unAvailable = booked || event.disabled
+    event.color = unAvailable
       ? '#8a8a8a' : (event.resourceids.length > 1 ? '#fca311'
         : resourceColors[event.resourceids[0] - 1])
     return {
@@ -47,7 +48,8 @@ export const calendarEvents = (events, user) => events
       title,
       locked,
       constraint: 'businessHours',
-      durationEditable: false
+      durationEditable: false,
+      unAvailable
     }
   })
 

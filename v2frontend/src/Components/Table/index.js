@@ -5,7 +5,7 @@ import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai'
 import { multipleExist, someExist } from '../../helpers/utils'
 import Pagination from './Pagination'
 
-const Table = ({ checkboxed, columns, data, component, nosort }) => {
+const Table = ({ checkboxed, columns, data, component, nosort, initialState }) => {
   const [checked, setChecked] = useState([])
   const [nochecked, setNochecked] = useState([])
 
@@ -31,7 +31,7 @@ const Table = ({ checkboxed, columns, data, component, nosort }) => {
     setPageSize,
     state: { pageIndex, pageSize }
   } = useTable(
-    { columns, data },
+    { columns, data, initialState },
     useSortBy,
     usePagination
   )

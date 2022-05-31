@@ -32,7 +32,6 @@ const Form = React.forwardRef((props, ref) => {
 
   if (!event) return <></>
   const form = event?.customForm
-  console.log(event)
 
   return (
     <Formik

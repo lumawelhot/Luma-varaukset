@@ -34,7 +34,7 @@
   z-index: 10000;
 }
 
-.rs-picker-toggle.rs-btn.rs-btn-default {
+/* .rs-picker-toggle.rs-btn.rs-btn-default {
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   --antd-wave-shadow-color: #1890ff;
@@ -70,7 +70,7 @@
   max-width: 100% !important;
   width: 100% !important;
   touch-action: manipulation;
-} /* deprecated ?? */
+} */ /* deprecated ?? */
 
 .rs-picker-toggle-value {
   color: rgb(62, 62, 62) !important;
