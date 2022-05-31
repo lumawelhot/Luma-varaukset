@@ -23,18 +23,20 @@ export const plugins =  [
 ]
 
 export const getCSV = (visits) => {
+  console.log(visits)
   try {
     const filteredVisits = visits
-      .filter(visit => visit.dataUseAgreement)
+      //.filter(visit => visit.dataUseAgreement)
       .map(visit => {
         const mappedVisit = {
           ...visit,
           event: visit.event.title,
-          eventId: visit.event.id
+          eventId: visit.event.id,
+          dataUseAgreement: visit.dataUseAgreement ? 'true' : 'false'
         }
-        delete mappedVisit.clientName
-        delete mappedVisit.clientEmail
-        delete mappedVisit.clientPhone
+        //delete mappedVisit.clientName
+        //delete mappedVisit.clientEmail
+        //delete mappedVisit.clientPhone
         return mappedVisit
       })
     const sheet = XLSX.utils.json_to_sheet(filteredVisits)
