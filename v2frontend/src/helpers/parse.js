@@ -38,7 +38,7 @@ export const calendarEvents = (events, user) => events
         : resourceColors[event.resourceids[0] - 1])
     return {
       editable: !booked && !event.disabled,
-      booked,
+      booked: event.booked,
       id,
       color,
       start,

@@ -227,5 +227,6 @@
   "length-remote-min": "min / etä",
   "min": "minuuttia",
 
-  "modify-extra": "Muokkaa lisävalintaa"
+  "modify-extra": "Muokkaa lisävalintaa",
+  "booked": "Varattu"
 }

@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import { Badge, OverlayTrigger, Popover, PopoverHeader } from 'react-bootstrap'
+import { useTranslation } from 'react-i18next'
 import { BsEyeSlashFill } from 'react-icons/bs'
 import { FaLock } from 'react-icons/fa'
 import { CLASSES, LANGUAGE_SHORT } from '../../config'
@@ -7,6 +8,7 @@ import { EventContext } from '../../services/contexts'
 
 const Event = ({ content }) => {
   const { find } = useContext(EventContext)
+  const { t } = useTranslation()
   const event = find(content.event._def.publicId)
 
   if (!event) return <></>
@@ -32,6 +34,7 @@ const Event = ({ content }) => {
       <PopoverHeader
         style={{ padding: 10, paddingTop: 5, paddingBottom: 5, fontSize: 13, fontWeight: 'bold' }}
       >
+        {booked && <span style={{ color: 'red', marginRight: 15 }}>{t('booked')}</span>}
         <span>{getTimeRange()}</span>
         <span style={{ marginLeft: 15 }}>{event.title}</span>
         <span style={{ marginLeft: 15 }}>{`(${event.languages?.map(l => LANGUAGE_SHORT[l]).join(', ')})`}</span>
@@ -79,7 +82,7 @@ const Event = ({ content }) => {
         <div>
           {!locked && showEvent() && <BsEyeSlashFill size={15} style={{ margin: 5, marginTop: 2, display: 'inline' }} />}
           {locked && <FaLock size={15} style={{ margin: 5, marginTop: 2, display: 'inline' }} />}
-          {event.title}
+          <span>{booked ? <span style={{ color: 'red', marginRight: 10 }}>{t('booked')}</span> : ''}</span>{event.title}
         </div>
         <div>{content.timeText}</div>
       </div>

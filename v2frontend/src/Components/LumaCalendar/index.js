@@ -80,7 +80,7 @@ const LumaCalendar = () => {
         events={calendarEvents(parsed, user)?.filter(e => !e.unAvailable || filterOptions.showUnavailable)}
         eventClick={({ event }) => {
           const props = event._def.extendedProps
-          if (!user && props.booked) return
+          if (!user && props.unAvailable) return
           else if (set(event._def.publicId, {
             booked: props.booked, start: props.eventStart
           })) navigate('/visit')
