@@ -54,10 +54,19 @@ const CustomForm = ({ show, close, initialValues=customformInit, modify }) => {
   }
 
   const handleAddForm = async () => {
-    if (await add({ fields: JSON.stringify(fields), name: formRef?.current.values.name })) close()
+    const { errors, dirty } = formRef.current
+    if (Object.keys(errors).length || !dirty) {
+      console.log(errors) // toast here
+      return
+    }
+    if (await add({
+      fields: JSON.stringify(fields),
+      name: formRef?.current.values.name
+    })) close()
   }
 
   const handleModifyForm = async () => {
+
     if (await mod({
       fields: JSON.stringify(fields),
       name: formRef?.current.values.name,

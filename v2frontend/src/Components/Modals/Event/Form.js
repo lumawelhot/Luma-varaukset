@@ -9,15 +9,15 @@ import { CLASSES, GRADES, LANG_MAP, MAX_TAG_FILTER_TAGS, PLATFORMS } from '../..
 import { Input, Select, TextArea } from '../../../Embeds/Input'
 import { DatePicker, TimePicker } from '../../../Embeds/Picker'
 import { Checkbox } from '../../../Embeds/Table'
-import Title from '../../../Embeds/Title'
+import Title, { Error, required } from '../../../Embeds/Title'
 import { MiscContext, FormContext, GroupContext } from '../../../services/contexts'
 import _ from 'lodash'
 import { someExist } from '../../../helpers/utils'
-import { eventValidate } from '../../../helpers/validate'
 import Table from '../../Table'
 import { eventDateColumns } from '../../../helpers/columns'
 import { ButtonToolbar, IconButton } from 'rsuite'
 import { DeleteIcon } from '@chakra-ui/icons'
+import { EventValidation } from '../../../helpers/validate'
 
 const Form = React.forwardRef((props, ref) => {
   const { t } = useTranslation()
@@ -27,6 +27,16 @@ const Form = React.forwardRef((props, ref) => {
   const { all: groups, fetch: fetchGroups } = useContext(GroupContext)
   useEffect(fetchExtras, [])
 
+  const updateDates = (values) => {
+    const date = set(values.start, { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 })
+    let found = false
+    dates.forEach(d => {
+      if (new Date(d.date).getTime() === date.getTime()) found = true
+    })
+    if (!found) setDates(dates.concat({ date }))
+  }
+
+  useEffect(() => updateDates({ start: props.initialValues.start }), [])
   const eventColumns = useMemo(eventDateColumns, [])
 
   const dateData = useMemo(() => dates
@@ -41,22 +51,22 @@ const Form = React.forwardRef((props, ref) => {
     }))
   , [dates])
 
-  console.log(dateData)
-
   return (
     <Formik
       innerRef={ref}
-      validate={eventValidate}
+      validationSchema={EventValidation}
       initialValues={props.initialValues}
     >
-      {({ handleChange, setFieldValue, values }) => (
+      {({ handleChange, setFieldValue, handleBlur, values, errors, touched }) => (
         <div style={{ overflowX: 'hidden', padding: 3 }}>
           <Input
             id='title'
-            title={t('event-name')}
+            onBlur={handleBlur}
+            title={required(t('event-name'))}
             onChange={handleChange}
             value={values.title}
           />
+          {errors.title && touched.title && <Error>{t(errors.title)}</Error>}
           <TextArea
             id='desc'
             title={t('description')}
@@ -67,11 +77,13 @@ const Form = React.forwardRef((props, ref) => {
           />
           {props.type === 'create' && <Input
             id='duration'
-            title={t('event-length-minutes')}
+            title={required(t('event-length-minutes'))}
+            onBlur={handleBlur}
             type='number'
             onChange={handleChange}
             value={values.duration}
           />}
+          {errors.duration && touched.duration && <Error>{t(errors.duration)}</Error>}
           <Select
             title={t('tags')}
             max={MAX_TAG_FILTER_TAGS}
@@ -80,7 +92,7 @@ const Form = React.forwardRef((props, ref) => {
             options={tags}
             onChange={v => setFieldValue('tags', v)}
           />
-          <Title>{t('event-type')}</Title>
+          <Title>{required(t('event-type'))}</Title>
           <Stack style={{ marginLeft: 3 }} direction='col'>
             <Checkbox
               isChecked={values.remoteVisit}
@@ -91,9 +103,10 @@ const Form = React.forwardRef((props, ref) => {
               onChange={v => setFieldValue('inPersonVisit', v.target.checked)}
             >{t('inperson-event')}</Checkbox>
           </Stack>
+          {(errors.remoteVisit || errors.inPersonVisit) && <Error>{t(errors.remoteVisit)}</Error>}
           {values.remoteVisit && <CheckboxGroup value={values.remotePlatforms}
             onChange={e => setFieldValue('remotePlatforms', e)}>
-            <Title>{t('remote-platforms')}</Title>
+            <Title>{required(t('remote-platforms'))}</Title>
             <Stack style={{ marginLeft: 3 }} direction='col'>
               {PLATFORMS.map((p, i) => <Checkbox
                 key={i}
@@ -114,7 +127,7 @@ const Form = React.forwardRef((props, ref) => {
           <CheckboxGroup value={values.languages} onChange={v => {
             setFieldValue('languages', v)
           }}>
-            <Title>{t('choose-languages')}</Title>
+            <Title>{required(t('choose-languages'))}</Title>
             <Stack style={{ marginLeft: 3 }} direction='col'>
               {Object.keys(LANG_MAP).map(l => (
                 <Checkbox
@@ -124,10 +137,11 @@ const Form = React.forwardRef((props, ref) => {
               ))}
             </Stack>
           </CheckboxGroup>
+          {errors.languages && <Error>{t(errors.languages)}</Error>}
           <CheckboxGroup value={values.grades} onChange={v => {
             setFieldValue('grades', v)
           }}>
-            <Title>{t('choose-grades')}</Title>
+            <Title>{required(t('choose-grades'))}</Title>
             <Stack style={{ marginLeft: 3 }} direction='col'>
               {GRADES.map(c => (
                 <Checkbox
@@ -137,11 +151,12 @@ const Form = React.forwardRef((props, ref) => {
               ))}
             </Stack>
           </CheckboxGroup>
+          {errors.grades && <Error>{t(errors.grades)}</Error>}
           <CheckboxGroup value={values.resourceids} onChange={v => {
-            setFieldValue('resourceids', v)
             setFieldValue('extras', values.extras.filter(e => someExist(e, v.map(r => Number(r)))))
+            setFieldValue('resourceids', v)
           }}>
-            <Title>{t('choose-resources')}</Title>
+            <Title>{required(t('choose-resources'))}</Title>
             <Stack direction='col'>
               {CLASSES.map(c => (
                 <Checkbox
@@ -151,6 +166,7 @@ const Form = React.forwardRef((props, ref) => {
               ))}
             </Stack>
           </CheckboxGroup>
+          {errors.resourceids && <Error>{t(errors.resourceids)}</Error>}
           <CheckboxGroup onChange={v => setFieldValue('extras', v)} value={values.extras}>
             <Title>{t('choose-extras')}</Title>
             <Stack direction='col'>
@@ -166,7 +182,7 @@ const Form = React.forwardRef((props, ref) => {
               <div style={{ width: '100%', marginRight: 15 }}>
                 <DatePicker
                   value={values.start}
-                  title={t('date')}
+                  title={required(t('date'))}
                   onChange={v => {
                     const end = set(new Date(v), {
                       hours: values.end.getHours(), minutes: values.end.getMinutes()
@@ -178,12 +194,7 @@ const Form = React.forwardRef((props, ref) => {
               </div>
               <div style={{ marginTop: 40 }}>
                 <Button height={9} colorScheme='blue' variant='outline' onClick={() => {
-                  const date = set(values.start, { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 })
-                  let found = false
-                  dates.forEach(d => {
-                    if (new Date(d.date).getTime() === date.getTime()) found = true
-                  })
-                  if (!found) setDates(dates.concat({ date }))
+                  updateDates(values)
                 }}>
                   {t('add-date')}
                 </Button>
@@ -191,33 +202,36 @@ const Form = React.forwardRef((props, ref) => {
             </>}
           </Stack>
           {props.type === 'create' && <Table data={dateData} columns={eventColumns} />}
-          <Stack direction='horizontal'>
+          <Stack style={{ overflow: 'auto' }} direction='horizontal'>
             <div style={{ width: '100%', marginRight: 15 }}>
               <TimePicker
                 value={values.start}
                 hideHours={hour => hour < 8 || hour > 17}
                 hideMinutes={minute => minute % 5 !== 0}
-                title={t('start-time')}
+                title={required(t('start-time'))}
                 onChange={v => setFieldValue('start', v)}
               />
+              {errors.start && <Error>{t(errors.start)}</Error>}
             </div>
             <div style={{ width: '100%', marginRight: props.type === 'create' ? 15 : 0 }}>
               <TimePicker
                 value={values.end}
                 hideHours={hour => hour < 8 || hour > 17}
                 hideMinutes={minute => minute % 5 !== 0}
-                title={t('end-time')}
+                title={required(t('end-time'))}
                 onChange={v => setFieldValue('end', v)}
               />
+              {errors.end && <Error>{t(errors.end)}</Error>}
             </div>
-            {props.type === 'create' && <div style={{ width: '100%' }}>
+            {props.type === 'create' && <div style={{ width: '100%', paddingRight: 2, paddingBottom: 2 }}>
               <Input
                 id='waitingTime'
-                title={t('waiting-time-visits')}
+                title={required(t('waiting-time-visits'))}
                 type='number'
                 onChange={handleChange}
                 value={values.waitingTime}
               />
+              {errors.waitingTime && <Error>{t(errors.waitingTime)}</Error>}
             </div>}
           </Stack>
           <Select

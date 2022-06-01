@@ -8,7 +8,7 @@ import { CheckboxGroup } from '@chakra-ui/react'
 import { Checkbox } from '../../../Embeds/Button'
 import { CLASSES } from '../../../config'
 import Title from '../../../Embeds/Title'
-import { extraValidate } from '../../../helpers/validate'
+import { ExtraValidation } from '../../../helpers/validate'
 
 const Form = React.forwardRef((props, ref) => {
   const { t } = useTranslation()
@@ -17,7 +17,7 @@ const Form = React.forwardRef((props, ref) => {
     <Formik
       innerRef={ref}
       initialValues={props.initialValues}
-      validate={extraValidate}
+      validationSchema={ExtraValidation}
     >
       {({ handleChange, setFieldValue, values }) => (
         <>

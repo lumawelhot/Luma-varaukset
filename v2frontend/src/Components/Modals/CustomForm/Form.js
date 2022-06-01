@@ -11,9 +11,9 @@ import { Stack } from 'react-bootstrap'
 import { RadioGroup } from '@chakra-ui/react'
 import { Radio } from '../../../Embeds/Button'
 import { Checkbox } from '../../../Embeds/Table'
-import Title from '../../../Embeds/Title'
+import Title, { Error, required } from '../../../Embeds/Title'
 import { DEFAULT_FIELD_VALUES } from '../../../config'
-import { eventValidate } from '../../../helpers/validate'
+import { CustomFormValidation } from '../../../helpers/validate'
 
 const Form = React.forwardRef(({ fields, setFields, initialValues, onModify, handleModify }, ref) => {
   const { t } = useTranslation()
@@ -56,7 +56,7 @@ const Form = React.forwardRef(({ fields, setFields, initialValues, onModify, han
   return (
     <Formik
       innerRef={ref}
-      validate={eventValidate}
+      validationSchema={CustomFormValidation}
       initialValues={{
         name: initialValues.name,
         question: '',
@@ -65,14 +65,16 @@ const Form = React.forwardRef(({ fields, setFields, initialValues, onModify, han
         type: 'text'
       }}
     >
-      {({ handleChange, setFieldValue, values }) => (
+      {({ handleChange, setFieldValue, handleBlur, values, errors, touched }) => (
         <div style={{ overflowX: 'hidden', padding: 3 }}>
           <Input
             id='name'
-            title={t('form-name')}
+            title={required(t('form-name'))}
+            onBlur={handleBlur}
             onChange={handleChange}
             value={values.name}
           />
+          {errors.name && touched.name && <Error>{t(errors.name)}</Error>}
           <Table nosort data={fieldData} columns={fieldColumns} component={() => (<>
             <div style={{ height: 30 }}></div>
             <div style={{ margin: 10 }}>
@@ -87,10 +89,12 @@ const Form = React.forwardRef(({ fields, setFields, initialValues, onModify, han
               <Input
                 style={{ maxWidth: 450 }}
                 id='question'
-                title={t('question')}
+                onBlur={handleBlur}
+                title={required(t('question'))}
                 onChange={handleChange}
                 value={values.question}
               />
+              {errors.question && touched.question && <Error>{t(errors.question)}</Error>}
               {values.type !== 'text' && <div>
                 <Title>{t('field-options')}</Title>
                 {values.options.map((v, i) => <div key={i}>

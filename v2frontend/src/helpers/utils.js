@@ -1,4 +1,5 @@
 import i18n from '../i18n'
+import '@fullcalendar/react' // This line is needed or app throws an error
 import fiLocale from '@fullcalendar/core/locales/fi'
 import svLocale from '@fullcalendar/core/locales/sv'
 import enLocale from '@fullcalendar/core/locales/en-gb'

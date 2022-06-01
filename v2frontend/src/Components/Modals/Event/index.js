@@ -30,11 +30,21 @@ const Event = ({ show, close, initialValues=eventInit, options, modify }) => {
   }
 
   const handleModify = async () => {
+    const { errors, dirty } = formRef.current
+    if (Object.keys(errors).length || !dirty) {
+      console.log(errors) // toast here
+      return
+    }
     const modified = await mod({ ...getArguments(), event: event.id })
     if (modified) close()
   }
 
   const handleAdd = async () => {
+    const { errors, dirty } = formRef.current
+    if (Object.keys(errors).length || !dirty) {
+      console.log(errors) // toast here
+      return
+    }
     const added = await add(getArguments())
     if (added) close()
   }

@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 
 const Title = styled.div`
@@ -18,5 +19,14 @@ const Title = styled.div`
   margin-bottom: .5em;
   margin-top: .5em;
 `
+
+export const Error = styled(Title)`
+  color: red;
+  font-weight: 100;
+`
+
+export const required = (text) => {
+  return <Title>{text} <span style={{ color: 'red' }}>*</span></Title>
+}
 
 export default Title

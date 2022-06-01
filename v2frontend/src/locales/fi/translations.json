@@ -228,5 +228,8 @@
   "min": "minuuttia",
 
   "modify-extra": "Muokkaa lisävalintaa",
-  "booked": "Varattu"
+  "booked": "Varattu",
+
+  "waiting-time-visits": "Minimiaika varausten välillä",
+  "add-date": "Lisää päivämäärä"
 }
