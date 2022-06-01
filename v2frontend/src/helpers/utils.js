@@ -49,3 +49,11 @@ export const getCSV = (visits) => {
 
 export const multipleExist = (arr, values) => values.every(v => arr.includes(v))
 export const someExist = (arr, values) => values?.some(v => arr.includes(v))
+
+export const formError = ({ errors }, message) => {
+  if (Object.keys(errors).length) {
+    console.log(errors, message) // toast here
+    return true
+  }
+  return false
+}

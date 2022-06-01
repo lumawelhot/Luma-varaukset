@@ -5,13 +5,13 @@ import React, { useContext, useEffect } from 'react'
 import { Stack } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Input } from '../../../Embeds/Input'
-import Title from '../../../Embeds/Title'
+import Title, { Error, required } from '../../../Embeds/Title'
 import { EventContext, FormContext } from '../../../services/contexts'
 import { PLATFORMS } from '../../../config'
 import { Checkbox, Radio } from '../../../Embeds/Button'
 import { TimePicker } from '../../../Embeds/Picker'
 import { add, format, set } from 'date-fns'
-import { visitValidate } from '../../../helpers/validate'
+import { VisitValidation } from '../../../helpers/validate'
 
 const Form = React.forwardRef((props, ref) => {
   const { current: event } = useContext(EventContext)
@@ -36,7 +36,7 @@ const Form = React.forwardRef((props, ref) => {
   return (
     <Formik
       innerRef={ref}
-      validate={visitValidate}
+      validationSchema={VisitValidation}
       initialValues={{
         clientName: '',
         schoolName: '',
@@ -62,14 +62,14 @@ const Form = React.forwardRef((props, ref) => {
         })
       }}
     >
-      {({ handleChange, setFieldValue, values }) => (
+      {({ handleChange, setFieldValue, handleBlur, values, errors, touched }) => (
         <div className={props.show ? 'visible' : 'hidden'}>
           {event?.languages.length > 1 && (
             <RadioGroup onChange={v => setFieldValue('language', v)} value={values.language}>
               <Title>{t('language')}</Title>
               <Stack direction='col'>
                 {event.languages.map((l, i) =>
-                  <Radio key={i} value={l}>{l}</Radio>
+                  <Radio key={i} value={l}>{t(l)}</Radio>
                 )}
               </Stack>
             </RadioGroup>
@@ -81,7 +81,7 @@ const Form = React.forwardRef((props, ref) => {
               const endTime = add(set(new Date(values.startTime), { seconds: 0, milliseconds: 0 }), { minutes: duration })
               setFieldValue('endTime', endTime)
             }} value={values.visitType}>
-              <Title>{t('choose-visit-type')}</Title>
+              <Title>{required(t('choose-visit-type'))}</Title>
               <Stack direction='col'>
                 <Radio value='remote'>{t('remote')}</Radio>
                 <Radio value='inperson'>{t('inperson')}</Radio>
@@ -90,7 +90,7 @@ const Form = React.forwardRef((props, ref) => {
           ) : null}
           {(values.visitType === 'remote' || (event.remoteVisit && !event.inPersonVisit)) &&
           <RadioGroup onChange={v => setFieldValue('remotePlatform', v)}>
-            <Title>{t('choose-remote-platform')}</Title>
+            <Title>{required(t('choose-remote-platform'))}</Title>
             <Stack direction='col'>
               {event?.remotePlatforms
                 .map(r => PLATFORMS.map((p, i) => i + 1).includes(r)
@@ -109,57 +109,73 @@ const Form = React.forwardRef((props, ref) => {
           </RadioGroup>}
           <Input
             id='clientName'
-            title={t('client-name')}
+            title={required(t('client-name'))}
             onChange={handleChange}
+            onBlur={handleBlur}
             value={values.clientName}
           />
+          {errors.clientName && touched.clientName && <Error>{t(errors.clientName)}</Error>}
           <Input
             id='schoolName'
-            title={t('school-name')}
+            title={required(t('school-name'))}
             onChange={handleChange}
+            onBlur={handleBlur}
             value={values.schoolName}
           />
+          {errors.schoolName && touched.schoolName && <Error>{t(errors.schoolName)}</Error>}
           <Input
             id='schoolLocation'
-            title={t('school-location')}
+            title={required(t('school-location'))}
             onChange={handleChange}
+            onBlur={handleBlur}
             value={values.schoolLocation}
           />
+          {errors.schoolLocation && touched.schoolLocation && <Error>{t(errors.schoolLocation)}</Error>}
           <Input
             id='clientEmail'
-            title={t('client-email')}
+            title={required(t('client-email'))}
             onChange={handleChange}
+            onBlur={handleBlur}
             value={values.clientEmail}
           />
+          {errors.clientEmail && touched.clientEmail && <Error>{t(errors.clientEmail)}</Error>}
           <Input
             id='verifyEmail'
-            title={t('verify-email')}
+            title={required(t('verify-email'))}
             onChange={handleChange}
+            onBlur={handleBlur}
             value={values.verifyEmail}
           />
+          {errors.verifyEmail && touched.verifyEmail && <Error>{t(errors.verifyEmail)}</Error>}
           <Input
             id='clientPhone'
-            title={t('client-phone')}
+            title={required(t('client-phone'))}
             onChange={handleChange}
+            onBlur={handleBlur}
             value={values.clientPhone}
           />
+          {errors.clientPhone && touched.clientPhone && <Error>{t(errors.clientPhone)}</Error>}
           <Stack direction='horizontal'>
             <div style={{ width: '100%', marginRight: 15 }}>
               <Input
                 id='grade'
-                title={t('grade')}
+                title={required(t('grade'))}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 value={values.grade}
               />
+              {errors.grade && touched.grade && <Error>{t(errors.grade)}</Error>}
             </div>
             <div>
               <Input
                 id='participants'
                 type='number'
-                title={t('participants')}
+                title={required(t('participants'))}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 value={values.participants}
               />
+              {errors.participants && touched.participants && <Error>{t(errors.participants)}</Error>}
             </div>
           </Stack>
           <CheckboxGroup onChange={v => {
@@ -178,7 +194,7 @@ const Form = React.forwardRef((props, ref) => {
             </Stack>
           </CheckboxGroup>
           <Stack direction='col'>
-            <Title>{`${t('start-and-timeslot')} ${format(new Date(event.start), 'HH:mm')} - ${format(new Date(event.end), 'HH:mm')})`}</Title>
+            <Title>{required(`${t('start-and-timeslot')} ${format(new Date(event.start), 'HH:mm')} - ${format(new Date(event.end), 'HH:mm')})`)}</Title>
             <Stack direction='horizontal'>
               <TimePicker
                 style={{ maxWidth: 200 }}
@@ -201,8 +217,9 @@ const Form = React.forwardRef((props, ref) => {
             <Checkbox
               onChange={({ target }) => setFieldValue('privacyPolicy', target.checked)}
             >
-              {t('accept-privacy-policy1')} <a className='default' href="https://www2.helsinki.fi/fi/tiedekasvatus/tietosuojailmoitus-opintokaynnit" target="_blank" rel="noreferrer">{t('privacy-policy')}</a> {t('accept-privacy-policy2')}
+              {required(<span>{t('accept-privacy-policy1')} <a className='default' href="https://www2.helsinki.fi/fi/tiedekasvatus/tietosuojailmoitus-opintokaynnit" target="_blank" rel="noreferrer">{t('privacy-policy')}</a> {t('accept-privacy-policy2')}</span>)}
             </Checkbox>
+            {errors.privacyPolicy && touched.privacyPolicy && <Error>{t(errors.privacyPolicy)}</Error>}
             <Checkbox
               onChange={({ target }) => setFieldValue('dataUseAgreement', target.checked)}
             >
@@ -211,13 +228,15 @@ const Form = React.forwardRef((props, ref) => {
             <Checkbox
               onChange={({ target }) => setFieldValue('remoteVisitGuidelines', target.checked)}
             >
-              {t('accept-instructions1')} <a className='default' href="https://www.helsinki.fi/fi/tiedekasvatus/opettajille-ja-opetuksen-tueksi/opintokaynnit-ja-lainattavat-tarvikkeet" target="_blank" rel="noreferrer">{t('instructions')}</a> {t('accept-instructions2')}
+              {required(<span>{t('accept-instructions1')} <a className='default' href="https://www.helsinki.fi/fi/tiedekasvatus/opettajille-ja-opetuksen-tueksi/opintokaynnit-ja-lainattavat-tarvikkeet" target="_blank" rel="noreferrer">{t('instructions')}</a> {t('accept-instructions2')}</span>)}
             </Checkbox>
+            {errors.remoteVisitGuidelines && touched.remoteVisitGuidelines && <Error>{t(errors.remoteVisitGuidelines)}</Error>}
           </Stack>
           {form?.fields && form?.fields?.map((field, j) => {
             const type = field.type
+            const needed = field?.validation?.required
             return <div key={j}>
-              <Title>{field.name}</Title>
+              <Title>{needed ? required(field.name) : field.name}</Title>
               {type === 'text' && <Input
                 value={values?.customFormData[j].value}
                 onChange={e => {
@@ -252,6 +271,7 @@ const Form = React.forwardRef((props, ref) => {
                   >{o.text}</Checkbox>)}
                 </Stack>
               </CheckboxGroup>}
+              {needed && values?.customFormData[j].value.length <= 0 && <Error>{t('fill-field')}</Error>}
             </div>
           })}
         </div>

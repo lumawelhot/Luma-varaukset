@@ -5,7 +5,6 @@ import { CLASSES } from '../config'
 const t = i18n.t
 
 const dateSort = (rowA, rowB, id) => {
-  console.log(rowA.values[id])
   let a = parse(rowA.values[id], 'd.M.y', new Date())
   let b = parse(rowB.values[id], 'd.M.y', new Date())
   if (b - a > 0) return 1

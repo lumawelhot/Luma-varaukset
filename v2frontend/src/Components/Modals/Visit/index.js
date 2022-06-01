@@ -11,6 +11,7 @@ import { EventContext, VisitContext, UserContext } from '../../../services/conte
 import Form from './Form'
 import Info from './Info'
 import Status from './Status'
+import { formError } from '../../../helpers/utils'
 
 const Visit = ({ children, event }) => {
   const { t } = useTranslation()
@@ -44,6 +45,7 @@ const Visit = ({ children, event }) => {
   }
 
   const handleSubmit = async () => {
+    if (formError(formRef.current)) return
     const type = formRef.current.values.visitType
     const customFormData = JSON.stringify(formRef.current.values.customFormData)
     const inPersonVisit = type === 'inperson' ? true : false

@@ -26,7 +26,7 @@ export const Error = styled(Title)`
 `
 
 export const required = (text) => {
-  return <Title>{text} <span style={{ color: 'red' }}>*</span></Title>
+  return <span>{text} <span style={{ color: 'red' }}>*</span></span>
 }
 
 export default Title

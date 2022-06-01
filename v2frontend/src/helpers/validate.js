@@ -18,14 +18,37 @@ export const groupValidate = () => {
 
 }
 
-export const visitValidate = () => {
-
-}
+export const VisitValidation = () => Yup.object().shape({
+  clientName: Yup.string()
+    .required(t('fill-field')),
+  schoolName: Yup.string()
+    .required(t('fill-field')),
+  schoolLocation: Yup.string()
+    .required(t('fill-field')),
+  clientEmail: Yup.string()
+    .email()
+    .required(t('fill-field')),
+  verifyEmail: Yup.string()
+    .email()
+    .oneOf([Yup.ref('clientEmail'), null], t('email-not-match'))
+    .required(t('fill-field')),
+  clientPhone: Yup.string()
+    .required(t('fill-field')),
+  grade: Yup.string()
+    .required(t('fill-field')),
+  participants: Yup.number()
+    .min(1)
+    .required(t('fill-field')),
+  privacyPolicy: Yup.bool()
+    .isTrue(),
+  remoteVisitGuidelines: Yup.bool()
+    .isTrue()
+})
 
 export const ExtraValidation = () => Yup.object().shape({
   name: Yup.string().required(t('fill-field')),
   inPersonLength: Yup.number().min(1).required(t('fill-field')),
-  removeLength: Yup.number().min(1).required(t('fill-field')),
+  remoteLength: Yup.number().min(1).required(t('fill-field')),
   classes: Yup.array().min(1)
 })
 

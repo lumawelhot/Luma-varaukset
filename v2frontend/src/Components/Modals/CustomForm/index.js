@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { DEFAULT_FIELD_VALUES } from '../../../config'
 import { Button } from '../../../Embeds/Button'
 import { customformInit } from '../../../helpers/initialvalues'
+import { formError } from '../../../helpers/utils'
 import { FormContext } from '../../../services/contexts'
 import Form from './Form'
 
@@ -54,11 +55,7 @@ const CustomForm = ({ show, close, initialValues=customformInit, modify }) => {
   }
 
   const handleAddForm = async () => {
-    const { errors, dirty } = formRef.current
-    if (Object.keys(errors).length || !dirty) {
-      console.log(errors) // toast here
-      return
-    }
+    if (formError(formRef.current)) return
     if (await add({
       fields: JSON.stringify(fields),
       name: formRef?.current.values.name
@@ -66,7 +63,7 @@ const CustomForm = ({ show, close, initialValues=customformInit, modify }) => {
   }
 
   const handleModifyForm = async () => {
-
+    if (formError(formRef.current)) return
     if (await mod({
       fields: JSON.stringify(fields),
       name: formRef?.current.values.name,

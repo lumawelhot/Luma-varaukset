@@ -17,7 +17,7 @@ const VisitProvider = ({ children }) => {
   }
 
   const evict = () => {
-    setVisits(undefined)
+    setVisits([])
     setFetched(false)
     setVisit(undefined)
   }

@@ -139,3 +139,7 @@ a.default {
 .rs-picker-toggle-value {
   font-weight: bold;
 }
+
+.rs-picker-toggle-textbox {
+  font-weight: bold;
+}

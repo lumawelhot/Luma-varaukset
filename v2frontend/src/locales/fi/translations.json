@@ -231,5 +231,10 @@
   "booked": "Varattu",
 
   "waiting-time-visits": "Minimiaika varausten välillä",
-  "add-date": "Lisää päivämäärä"
+  "add-date": "Lisää päivämäärä",
+
+  "fi": "Suomi",
+  "sv": "Ruotsi",
+  "en": "Englanti",
+  "language": "Kieli"
 }

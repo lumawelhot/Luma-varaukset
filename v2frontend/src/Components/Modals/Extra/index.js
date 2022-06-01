@@ -1,12 +1,14 @@
 import React, { useRef } from 'react'
 import { Modal } from 'react-bootstrap'
 import { Button } from '../../../Embeds/Button'
+import { formError } from '../../../helpers/utils'
 import Form from './Form'
 
 const Extra = ({ show, close, handle, title, initialValues }) => {
   const formRef = useRef()
 
   const handleSubmit = async () => {
+    if (formError(formRef.current)) return
     const { name, inPersonLength, remoteLength, classes } = formRef.current.values
     await handle({
       name,
