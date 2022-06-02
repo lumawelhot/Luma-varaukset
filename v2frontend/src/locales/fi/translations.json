@@ -150,8 +150,8 @@
   "date": "Päivämäärä",
   "time": "Kellonaika",
   "visit-count": "Varausten määrä",
-  "add-event-to-group": "Lisää vierailu ryhmään",
-  "add-events-to-group": "Lisää vierailu ryhmään",
+  "add-event-to-group": "Lisää vierailut ryhmään",
+  "add-events-to-group": "Lisää vierailut ryhmään",
   "set-publishdate": "Aseta julkaisupäivä",
   "delete-events": "Poista vierailut",
   "show-events": "Näytä vierailut",
@@ -237,5 +237,13 @@
   "sv": "Ruotsi",
   "en": "Englanti",
   "language": "Kieli",
-  "remove-selected-events": "Poista valitut vierailut"
+  "remove-selected-events": "Poista valitut vierailut",
+  "another-sort-options": "Muut suodatus vaihtoehdot",
+  "show-unavailable": "Näytä varatut/menneet",
+  "remove-event-confirm": "Haluatko varmasti poistaa tämän vierailun",
+  "no": "Ei",
+  "yes": "Kyllä",
+  "modify-group": "Muokkaa ryhmää",
+  "unselect-events": "Tyhjennä valinnat",
+  "hide-events": "Piilota vierailut"
 }

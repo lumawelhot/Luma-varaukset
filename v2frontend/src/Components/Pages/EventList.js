@@ -1,6 +1,6 @@
 import React, { useContext, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { EventContext } from '../../services/contexts'
+import { EventContext, UserContext } from '../../services/contexts'
 import Table from '../Table'
 import { Heading } from '@chakra-ui/react'
 import { eventColumns, eventInitialState } from '../../helpers/columns'
@@ -18,6 +18,7 @@ import EventListForms from '../Modals/EventListForms'
 const EventList = () => {
   const { t } = useTranslation()
   const { all, find } = useContext(EventContext)
+  const { current: user } = useContext(UserContext)
   const [showForms, setShowForms] = useState(false)
   const [selected, setSelected] = useState()
   const [filterOptions, setFilterOptions] = useState({
@@ -114,7 +115,7 @@ const EventList = () => {
         return <>
           <Button onClick={() => handleAddToGroup(e)}>{t('add-event-to-group')}</Button>
           <Button onClick={() => handleSetPublish(e)}>{t('set-publishdate')}</Button>
-          <Button onClick={() => handleDelete(e)}>{t('delete-events')}</Button>
+          {user.isAdmin && <Button onClick={() => handleDelete(e)}>{t('delete-events')}</Button>}
         </>
       }} />
       {showForms && <EventListForms

@@ -9,7 +9,7 @@ import Event from './Modals/Event'
 import Banner from '../Embeds/Banner'
 
 const Menu = () => {
-  const user = useContext(UserContext)
+  const { current: user } = useContext(UserContext)
   const [showEvent, setShowEvent] = useState()
   const [showBanner, setShowBanner] = useState(localStorage.getItem('hide-banner') === 'true')
   const { evict } = useEvict()
@@ -21,7 +21,7 @@ const Menu = () => {
     evict()
   }
 
-  if (!user.current) return <div style={{ marginBottom: 40 }}>
+  if (!user) return <div style={{ marginBottom: 40 }}>
     <Banner show={showBanner} />
     <MenuButton
       onClick={() => {
@@ -41,7 +41,7 @@ const Menu = () => {
           <MenuButton className='active' onClick={() => navigate('/')}>{t('calendar')}</MenuButton>
           <MenuButton className='active' onClick={() => navigate('/events')}>{t('event-list')}</MenuButton>
           <MenuButton className='active' onClick={() => navigate('/visits')}>{t('visit-list')}</MenuButton>
-          <MenuButton className='active' onClick={() => navigate('/users')}>{t('user-list')}</MenuButton>
+          {user.isAdmin && <MenuButton className='active' onClick={() => navigate('/users')}>{t('user-list')}</MenuButton>}
           <MenuButton className='active' onClick={() => navigate('/groups')}>{t('group-list')}</MenuButton>
           <MenuButton className='active' onClick={() => navigate('/extras')}>{t('extra-list')}</MenuButton>
           <MenuButton className='active' onClick={() => navigate('/forms')}>{t('form-list')}</MenuButton>

@@ -68,8 +68,10 @@ const Visit = ({ children, event }) => {
   }
 
   const handleRemove = async () => {
-    const result = remove(event.id)
-    if (result) close()
+    if (confirm(t('remove-event-confirm'))) {
+      const result = remove(event.id)
+      if (result) close()
+    }
   }
 
   if (!event) return <Navigate to='/' />
@@ -104,22 +106,24 @@ const Visit = ({ children, event }) => {
         {phase >= 2 && <Status status={status} visit={visit}/>}
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }} >
-        {phase === 0 && <>
-          {user && event?.visits?.length === 0 &&
+        <div style={{ lineHeight: 4, marginBottom: -10 }}>
+          {phase === 0 && <>
+            {user && event?.visits?.length === 0 &&
             <Button onClick={handleRemove}>{t('delete-event')}</Button>}
-          {children}
-          {!event?.disabled && !event?.booked && !event.locked && <Button className='active' onClick={async () => {
-            increment()
-            const token = await lock(event.id)
-            if (!token) close()
-            else setToken(token)
-          }}>{t('book-visit')}</Button>}
-        </>}
-        {phase === 1 && <>
-          <Button onClick={() => setShowInfo(!showInfo)}>{showInfo ? t('show-visit-form') : t('show-info')}</Button>
-          <Button className='active' onClick={handleSubmit}>{t('book-visit-submit')}</Button>
-        </>}
-        {phase === 2 && <Button className='active' onClick={close}>{t('book-visit-close')}</Button>}
+            {children}
+            {!event?.disabled && !event?.booked && !event.locked && <Button className='active' onClick={async () => {
+              increment()
+              const token = await lock(event.id)
+              if (!token) close()
+              else setToken(token)
+            }}>{t('book-visit')}</Button>}
+          </>}
+          {phase === 1 && <>
+            <Button onClick={() => setShowInfo(!showInfo)}>{showInfo ? t('show-visit-form') : t('show-info')}</Button>
+            <Button className='active' onClick={handleSubmit}>{t('book-visit-submit')}</Button>
+          </>}
+          {phase === 2 && <Button className='active' onClick={close}>{t('book-visit-close')}</Button>}
+        </div>
       </Modal.Footer>
     </Modal>
   )

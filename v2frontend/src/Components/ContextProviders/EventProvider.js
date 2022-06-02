@@ -62,7 +62,6 @@ const EventProvider = ({ children }) => {
         Object.values(map).forEach(v => {
           if (v.id === data.getEvent.id) found = true
         })
-        console.log(data.getEvent)
         updateMap(data.getEvent)
         if (found) {
           setParsed(parsed.filter(p => p.id !== data.getEvent.id)
@@ -162,7 +161,6 @@ const EventProvider = ({ children }) => {
       const { data } = await client.mutate({
         mutation: MODIFY_EVENT, variables, fetchPolicy: 'no-cache'
       })
-      console.log(data.modifyEvent)
       if (data?.modifyEvent) {
         const e = data.modifyEvent
         setParsed(parsed.filter(p => p.id !== e.id)
@@ -370,6 +368,8 @@ const EventProvider = ({ children }) => {
     else setSelected(selected.concat(id))
   }
 
+  const unSelectAll = () => setSelected([])
+
   const removeSelected = () => {
     remove(selected)
     setSelected([])
@@ -402,7 +402,8 @@ const EventProvider = ({ children }) => {
         unlock,
         select,
         selected,
-        removeSelected
+        removeSelected,
+        unSelectAll
       }}
     >
       {children}

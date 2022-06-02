@@ -10,13 +10,26 @@ import { calendarEvents } from '../../helpers/parse'
 import { eventInit, eventInitWithValues } from '../../helpers/initialvalues'
 import { Button } from '../../Embeds/Button'
 import { useTranslation } from 'react-i18next'
+import { default as EventSelectAction } from '../Modals/EventListForms'
+import { someExist } from '../..//helpers/utils'
 
 const LumaCalendar = () => {
   const { current: user } = useContext(UserContext)
-  const { set, parsed, find, current, filterOptions, select, selected, removeSelected } = useContext(EventContext)
+  const {
+    all: events,
+    set,
+    parsed,
+    find,
+    current,
+    filterOptions,
+    select, selected,
+    removeSelected,
+    unSelectAll
+  } = useContext(EventContext)
   const { calendarOptions, setCalendarOptions } = useContext(MiscContext)
   const [showEvent, setShowEvent] = useState()
   const [dragValues, setDragValues] = useState()
+  const [actionType, setActionType] = useState()
   const calendarRef = useRef()
   const navigate = useNavigate()
   const { t } = useTranslation()
@@ -61,6 +74,13 @@ const LumaCalendar = () => {
 
   return (
     <>
+      <EventSelectAction
+        show={actionType ? true : false}
+        close={() => setActionType()}
+        selected={events.filter(e => someExist([e.id], selected))}
+        type={actionType}
+        reset={unSelectAll}
+      />
       <CalendarMenu ref={calendarRef} />
       <div id="eventPopover"></div>
       {showEvent && <Event
@@ -99,8 +119,13 @@ const LumaCalendar = () => {
         eventContent={e => <LumaEvent content={e} />}
         { ...CALENDAR_SETTINGS }
       />
-      <div style={{ marginLeft: -10, marginTop: 10 }}>
-        {!!selected.length && <Button onClick={() => removeSelected()}>{t('remove-selected-events')}</Button>}
+      <div style={{ marginLeft: -10, marginTop: 10, lineHeight: 3, marginBottom: 10 }}>
+        {!!selected.length && <Button onClick={() => setActionType('publish')}>{t('set-publishdate')}</Button>}
+        {!!selected.length && <Button onClick={() => setActionType('group')}>{t('add-events-to-group')}</Button>}
+        {!!selected.length && <Button onClick={() => {
+          if (confirm(t('delete-events-confirm'))) removeSelected()
+        }}>{t('remove-selected-events')}</Button>}
+        {!!selected.length && <Button className='active' onClick={() => unSelectAll()}>{t('unselect-events')}</Button>}
       </div>
     </>
   )
