@@ -172,6 +172,21 @@ export const eventDateColumns = () => [
   }
 ]
 
+export const emailColumns = () => [
+  {
+    Header: t('type'),
+    accessor: 'name'
+  },
+  {
+    Header: t('subject'),
+    accessor: 'subject'
+  },
+  {
+    Header: '',
+    accessor: 'options'
+  }
+]
+
 export const eventInitialState = {
   sortBy: [
     {

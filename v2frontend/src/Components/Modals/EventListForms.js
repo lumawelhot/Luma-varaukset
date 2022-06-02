@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { ListItem, UnorderedList } from '@chakra-ui/react'
 import React, { useContext, useState } from 'react'
 import { Modal } from 'react-bootstrap'

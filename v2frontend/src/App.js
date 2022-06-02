@@ -58,10 +58,11 @@ const App = () => {
               <VisitPage />
             </> : <Navigate to={window.location.href.split('/visits')[1]} />}
           </>}/>
-          <Route path='/users' element={user ? <UserList /> : <></>} />
+          <Route path='/users' element={user?.isAdmin ? <UserList /> : <></>} />
           <Route path="/events" element={user ? <EventList /> : <></>} />
           <Route path="/groups" element={user ? <GroupList /> : <></>} />
-          <Route path="/configs" element={user ? <Configs /> : <></>} />
+          <Route path="/configs" element={user ? <Configs></Configs> : <></>} />
+          <Route path="/configs/:page" element={user ? <Configs /> : <></>} />
           <Route path="/extras" element={user ? <ExtraList /> : <></>} />
           <Route path="/forms" element={user ? <FormList /> : <></>} />
           <Route path="/visit" element={<>

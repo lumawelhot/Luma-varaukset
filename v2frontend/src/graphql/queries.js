@@ -566,7 +566,13 @@ export const UPDATE_EMAIL = gql`
       adSubject: $adSubject
       adText: $adText
     ) {
+      subject
+      html
+      text
       name
+      ad
+      adSubject
+      adText
     }
   }
 `

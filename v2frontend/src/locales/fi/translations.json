@@ -218,7 +218,8 @@
   "create-custom-form": "Luo räätälöity lomake",
 
   "configs": "Konfiguraatiot",
-  "get-csv": "csv",
+  "get-csv": "Lataa CSV tiedosto",
+  "csv": "CSV",
 
   "delete-custom-forms": "Poista valitut",
   "remove-selected": "Poista valitut",
@@ -246,5 +247,17 @@
   "modify-group": "Muokkaa ryhmää",
   "unselect-events": "Tyhjennä valinnat",
   "hide-events": "Piilota vierailut",
-  "remove-forms-confirm": "Haluatko varmasti poistaa valitut lomakkeet"
+  "remove-forms-confirm": "Haluatko varmasti poistaa valitut lomakkeet",
+  "emails": "Sähköpostipohjat",
+  "type": "Tyyppi",
+  "subject": "Aihe",
+  "modify-template": "Muokkaa",
+  "email-template": "Sähköpostipohja",
+  "text-content": "Tekstisisältö",
+  "html-content": "HTML-sisältö",
+  "sender-emails": "Lähetä ilmoitus osoitteisiin",
+  "notify-subject": "Ilmoituksen aihe",
+  "notify-text-content": "Ilmoituksen sisältö",
+  "add-email-address": "Lisää osoite",
+  "modify-emails": "Päivitä tiedot"
 }

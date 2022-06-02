@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { useApolloClient } from '@apollo/client'
 import { MiscContext } from '../../services/contexts'
-import { EXTRAS, TAGS, DELETE_EXTRAS, CREATE_EXTRA, MODIFY_EXTRA } from '../../graphql/queries'
+import { EXTRAS, TAGS, DELETE_EXTRAS, CREATE_EXTRA, MODIFY_EXTRA, GET_EMAIL_TEMPLATES, UPDATE_EMAIL } from '../../graphql/queries'
 import { EventContext } from '../../services/contexts'
 import { addDays, set } from 'date-fns'
 import { FIRST_EVENT_AFTER_DAYS } from '../../config'
@@ -10,6 +10,7 @@ const MiscProvider = ({ children }) => {
   const client = useApolloClient()
   const [tags, setTags] = useState()
   const [extras, setExtras] = useState()
+  const [emails, setEmails] = useState()
 
   const [calendarOptions, setCalendarOptions] = useState({
     view: 'timeGridWeek',
@@ -48,6 +49,12 @@ const MiscProvider = ({ children }) => {
     if (data) setExtras(data?.getExtras)
   }
 
+  const fetchEmails = async () => {
+    if (emails !== undefined) return
+    const { data } = await client.query({ query: GET_EMAIL_TEMPLATES })
+    if (data) setEmails(data?.getEmailTemplates)
+  }
+
   const removeExtras = async (ids) => {
     if (ids.length <= 0) return false
     try {
@@ -84,13 +91,27 @@ const MiscProvider = ({ children }) => {
         variables
       })
       if (data?.modifyExtra) {
-        console.log(data)
         setExtras(extras
           .map(e => e.id === variables.id ? data.modifyExtra : e)
         )
         return true
       }
     } catch (err) {console.log(err)}
+    return false
+  }
+
+  const modifyEmail = async (variables) => {
+    try {
+      const { data } = await client.mutate({
+        mutation: UPDATE_EMAIL,
+        variables
+      })
+      if (data?.updateEmail) {
+        const email = data.updateEmail
+        setEmails(emails.map(e => e.name === email.name ? email : e))
+        return true
+      }
+    } catch (err) { console.log(err)}
     return false
   }
 
@@ -105,7 +126,10 @@ const MiscProvider = ({ children }) => {
         extras,
         removeExtras,
         addExtra,
-        modifyExtra
+        modifyExtra,
+        fetchEmails,
+        emails,
+        modifyEmail
       }}
     >
       {children}
