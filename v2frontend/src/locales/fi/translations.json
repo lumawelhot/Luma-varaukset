@@ -245,5 +245,6 @@
   "yes": "Kyllä",
   "modify-group": "Muokkaa ryhmää",
   "unselect-events": "Tyhjennä valinnat",
-  "hide-events": "Piilota vierailut"
+  "hide-events": "Piilota vierailut",
+  "remove-forms-confirm": "Haluatko varmasti poistaa valitut lomakkeet"
 }

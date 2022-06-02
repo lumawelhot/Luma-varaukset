@@ -39,8 +39,10 @@ const FormList = () => {
         <Button onClick={() => setShowAdd(true)}>{t('add-new-form')}</Button>
         {e.checked.length > 0 && <Button onClick={() => {
           const ids = e.checked.map(v => all[Number(v)].id)
-          remove(ids)
-          e.reset()
+          if (confirm(t('remove-forms-confirm'))) {
+            remove(ids)
+            e.reset()
+          }
         }}>{t('delete-custom-forms')}</Button>}
       </>)} />
       {showAdd && <CustomForm

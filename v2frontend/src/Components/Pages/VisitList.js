@@ -8,9 +8,9 @@ import Table from '../Table'
 import { useNavigate } from 'react-router-dom'
 import { CLASSES } from '../../config'
 import { Badge } from '../../Embeds/Badge'
-import { CopyIcon } from '@chakra-ui/icons'
 import { Select } from '../../Embeds/Input'
 import { someExist } from '../../helpers/utils'
+import Clipboard from '../../Embeds/Clipboard'
 
 const VisitList = () => {
   const { t } = useTranslation()
@@ -43,7 +43,7 @@ const VisitList = () => {
         }}>{CLASSES[Number(t) - 1]?.label}</Badge>),
       date: format(new Date(v.startTime), 'd.M.y'),
       status: v.status ? t('status-true') : t('status-false'),
-      urlCopy: <span>{t('copy-url')} <CopyIcon style={{ cursor: 'pointer' }} w={4} h={4} /></span>
+      urlCopy: <Clipboard text={t('copy-url')} content={`${window.location.href.split('/visits')[0]}/${v?.id}`} />
     }))
   , [all, filterOptions])
 

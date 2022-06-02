@@ -77,5 +77,5 @@ export const EventValidation = () => Yup.object().shape({
 
 export const CustomFormValidation = () => Yup.object().shape({
   name: Yup.string().required(t('fill-field')),
-  question: Yup.string().required(t('fill-field'))
+  //question: Yup.string().required(t('fill-field')) -- not needed
 })
