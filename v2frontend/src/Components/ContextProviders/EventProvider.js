@@ -5,7 +5,7 @@ import {
   EVENTS,
   CREATE_EVENTS,
   MODIFY_EVENT,
-  DELETE_EVENT,
+  DELETE_EVENTS,
   EVENT_STATUS,
   EVENT,
   FORCE_DELETE_EVENTS,
@@ -23,7 +23,8 @@ const EventProvider = ({ children }) => {
   const client = useApolloClient()
   const [fetched, setFetched] = useState(false)
   const [event, setEvent] = useState()
-  const [parsed, setParsed] = useState()
+  const [parsed, setParsed] = useState([])
+  const [selected, setSelected] = useState([])
   const [map, setMap] = useState({})
   const [filterOptions, setFilterOptions] = useState({
     tags: [],
@@ -102,8 +103,9 @@ const EventProvider = ({ children }) => {
   const evict = () => {
     setMap({})
     setEvent(undefined)
-    setParsed(undefined)
+    setParsed([])
     setFetched(false)
+    setSelected([])
   }
 
   const fetch = async () => {
@@ -176,16 +178,18 @@ const EventProvider = ({ children }) => {
     return false
   }
 
-  const remove = async id => {
+  const remove = async ids => {
     begin()
     try {
       const { data } = await client.mutate({
-        mutation: DELETE_EVENT, variables: { id }, fetchPolicy: 'no-cache'
+        mutation: DELETE_EVENTS, variables: { ids: Array.isArray(ids) ? ids : [ids] }, fetchPolicy: 'no-cache'
       })
-      if (data.deleteEvent) {
-        setParsed(parsed.filter(p => p.id !== id))
+      if (data?.deleteEvents) {
+        setParsed(parsed.filter(p => !someExist([p.id], data.deleteEvents)))
         const newMap = map
-        delete newMap[id]
+        for (let id of data.deleteEvents) {
+          delete newMap[id]
+        }
         setMap(newMap)
         end()
         return true
@@ -353,12 +357,22 @@ const EventProvider = ({ children }) => {
     return false
   }
 
-  const find = (id) => map[id]
+  const find = id => map[id]
 
   const cacheModify = value => {
     updateMap(value)
     setParsed(parsed.filter(p => p.id !== value.id)
       .concat(parseEvent(value)))
+  }
+
+  const select = id => {
+    if (someExist([id], selected)) setSelected(selected.filter(i => i !== id))
+    else setSelected(selected.concat(id))
+  }
+
+  const removeSelected = () => {
+    remove(selected)
+    setSelected([])
   }
 
   useEffect(fetch, [fetched])
@@ -370,7 +384,7 @@ const EventProvider = ({ children }) => {
         filterOptions,
         setFilterOptions,
         current: event,
-        parsed: filtered,
+        parsed: filtered.map(f => ({ ...f, selected: someExist([f.id], selected) })),
         set,
         fetch,
         find,
@@ -385,7 +399,10 @@ const EventProvider = ({ children }) => {
         disable,
         enable,
         lock,
-        unlock
+        unlock,
+        select,
+        selected,
+        removeSelected
       }}
     >
       {children}

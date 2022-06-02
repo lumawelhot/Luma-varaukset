@@ -312,12 +312,12 @@ export const DELETE_EXTRAS = gql`
   }
 `
 
-export const DELETE_EVENT = gql`
-  mutation deleteEvent(
-    $id: String!
+export const DELETE_EVENTS = gql`
+  mutation deleteEvents(
+    $ids: [ID]!
   ) {
-    deleteEvent(
-      id: $id
+    deleteEvents(
+      ids: $ids
     )
   }
 `

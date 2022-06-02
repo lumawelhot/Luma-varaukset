@@ -291,6 +291,9 @@ const typeDefs = gql`
     deleteEvent(
       id: String!
     ): String
+    deleteEvents(
+      ids: [ID]
+    ): [ID]
     forceDeleteEvents(
       events: [ID]
       password: String!

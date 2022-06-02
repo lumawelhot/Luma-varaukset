@@ -236,5 +236,6 @@
   "fi": "Suomi",
   "sv": "Ruotsi",
   "en": "Englanti",
-  "language": "Kieli"
+  "language": "Kieli",
+  "remove-selected-events": "Poista valitut vierailut"
 }

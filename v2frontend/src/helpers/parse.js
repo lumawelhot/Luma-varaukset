@@ -28,7 +28,7 @@ const resourceColors = CLASSES.map(c => c.color)
 export const calendarEvents = (events, user) => events
   ?.filter(event => !(!user && event.disabled))
   ?.map(event => {
-    const { id, color, start, end, title, locked } = event
+    const { id, color, start, end, title, locked, selected } = event
     const afterDays = differenceInDays(event.start, new Date()) >= BOOKING_FAILS_DAYS_REMAINING
     const afterHours = differenceInHours(event.start, new Date()) >= BOOKING_FAILS_HOURS_REMAINING
     const booked = (!user && !afterDays) || (user && !afterHours) || event.booked
@@ -40,7 +40,7 @@ export const calendarEvents = (events, user) => events
       editable: !booked && !event.disabled && user,
       booked: event.booked,
       id,
-      color,
+      color: selected ? 'black' : color,
       start,
       end,
       eventStart: start,
@@ -49,7 +49,8 @@ export const calendarEvents = (events, user) => events
       locked,
       constraint: 'businessHours',
       durationEditable: false,
-      unAvailable
+      unAvailable,
+      selected
     }
   })
 

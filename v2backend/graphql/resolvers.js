@@ -710,7 +710,7 @@ const resolvers = {
         throw new UserInputError('Backend problem')
       }
     },
-    deleteEvent: async (root, args, { currentUser }) => {
+    deleteEvent: async (root, args, { currentUser }) => { // deprecated
       authorized(currentUser)
       idNotFound(args.id)
       try {
@@ -725,6 +725,25 @@ const resolvers = {
         return 'Deleted Event with ID ' + args.id
       } catch (error) {
         throw new UserInputError('Event has visits!')
+      }
+    },
+    deleteEvents: async (root, args, { currentUser }) => {
+      authorized(currentUser)
+      const validIds = []
+      for (let id of args.ids) {
+        try {
+          const event = await Event.findById(id)
+          if (!event.visits.length) validIds.push(id)
+        } catch (err) { undefined }
+      }
+      try {
+        await Event.deleteMany({ _id: { $in: validIds } })
+        /* pubsub.publish('EVENTS_DELETED', {
+          eventsDeleted: success
+        }) */ // <--- HERE SOMETHING ???
+        return validIds
+      } catch (error) {
+        throw new UserInputError('Error occured')
       }
     },
     forceDeleteEvents: async (root, args, { currentUser }) => {
