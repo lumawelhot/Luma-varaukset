@@ -125,7 +125,7 @@ const LumaCalendar = () => {
         { ...CALENDAR_SETTINGS }
       />
       <div style={{ marginLeft: -10, marginTop: 10, lineHeight: 3, marginBottom: 10 }}>
-        {!selected.length && <Title style={{ paddingLeft: 10 }}>{t('ctrl-tip')}</Title>}
+        {!selected.length && user && <Title style={{ paddingLeft: 10 }}>{t('ctrl-tip')}</Title>}
         {!!selected.length && <Button onClick={() => setActionType('publish')}>{t('set-publishdate')}</Button>}
         {!!selected.length && <Button onClick={() => setActionType('group')}>{t('add-events-to-group')}</Button>}
         {!!selected.length && <Button onClick={() => {

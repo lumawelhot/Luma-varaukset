@@ -1,5 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { Button } from '../Button'
 import {
   BannerImage,
   BannerLink,
@@ -10,7 +11,7 @@ import {
 } from './components'
 
 const Banner = ({ show }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   return (
     <>
@@ -29,6 +30,11 @@ const Banner = ({ show }) => {
             </BannerLink>
             {t('banner-text3')}
           </BannerText>
+          <div style={{ marginLeft: -10, marginTop: 5 }}>
+            <Button className='active' onClick={() => i18n.changeLanguage('fi-FI')}>FI</Button>
+            <Button className='active' onClick={() => i18n.changeLanguage('sv-SV')}>SV</Button>
+            <Button className='active' onClick={() => i18n.changeLanguage('en-US')}>EN</Button>
+          </div>
         </BannerTextBox>
       </BannerProvider>
     </>
