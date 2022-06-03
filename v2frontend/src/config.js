@@ -1,4 +1,4 @@
-import { locale, plugins } from './helpers/utils'
+import { plugins } from './helpers/utils'
 import i18n from './i18n'
 
 export const BOOKING_TIME = 600 // seconds
@@ -50,7 +50,6 @@ export const PLATFORMS = [
 ]
 
 export const CALENDAR_SETTINGS = {
-  locale,
   plugins,
   height: 548,
   weekends: false,

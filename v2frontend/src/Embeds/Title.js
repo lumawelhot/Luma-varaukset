@@ -22,6 +22,8 @@ const Title = styled.div`
 
 export const Error = styled(Title)`
   color: red;
+  margin-top: -2px;
+  font-size: 15px;
   font-weight: 100;
 `
 

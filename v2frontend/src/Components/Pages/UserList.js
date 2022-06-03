@@ -54,7 +54,7 @@ const UserList = () => {
       {showModify && <ModifyUser
         show={showModify}
         close={() => setShowModify(false)}
-        initialValues={selected ? selected : userInit}
+        initialValues={selected ? { ...selected, password: '' } : userInit}
       />}
     </>
   )

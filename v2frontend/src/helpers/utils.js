@@ -1,19 +1,10 @@
-import i18n from '../i18n'
 import '@fullcalendar/react' // This line is needed or app throws an error
-import fiLocale from '@fullcalendar/core/locales/fi'
-import svLocale from '@fullcalendar/core/locales/sv'
-import enLocale from '@fullcalendar/core/locales/en-gb'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import listPlugin from '@fullcalendar/list'
 import luxonPlugin from '@fullcalendar/luxon'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import * as XLSX from 'xlsx'
-const lang = i18n.language
-
-export const locale = lang.startsWith('fi')
-  ? fiLocale : lang.startsWith('sv')
-    ? svLocale : enLocale
 
 export const plugins =  [
   timeGridPlugin,

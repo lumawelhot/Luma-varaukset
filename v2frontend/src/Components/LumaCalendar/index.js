@@ -1,5 +1,8 @@
 import React, { useState, useRef, useContext } from 'react'
 import FullCalendar from '@fullcalendar/react'
+import fiLocale from '@fullcalendar/core/locales/fi'
+import svLocale from '@fullcalendar/core/locales/sv'
+import enLocale from '@fullcalendar/core/locales/en-gb'
 import { UserContext, EventContext, MiscContext } from '../../services/contexts'
 import { useNavigate } from 'react-router-dom'
 import Event from '../Modals/Event'
@@ -33,7 +36,12 @@ const LumaCalendar = () => {
   const [actionType, setActionType] = useState()
   const calendarRef = useRef()
   const navigate = useNavigate()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const lang = i18n.language
+
+  const getLocale = () => lang.startsWith('fi')
+    ? fiLocale : lang.startsWith('sv')
+      ? svLocale : enLocale
 
   const handleView = (item) => setCalendarOptions({
     date: new Date((item.start.getTime() + item.end.getTime()) / 2),
@@ -101,6 +109,7 @@ const LumaCalendar = () => {
         }} />}
       <FullCalendar
         ref={calendarRef}
+        locale={getLocale()}
         editable={user ? true : false}
         initialView={calendarOptions.view}
         initialDate={calendarOptions.date}

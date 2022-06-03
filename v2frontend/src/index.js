@@ -61,10 +61,12 @@ export const client = new ApolloClient({
   link: splitLink,
 })
 
+const [, ...basename] = BASE_URL.split('://')[1].split('/')
+
 ReactDOM.render(
   <ApolloProvider client={client}>
     <React.StrictMode>
-      <Router>
+      <Router basename={`/${basename}`}>
         <ContextProviders>
           <ChakraProvider>
             <App />

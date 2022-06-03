@@ -7,8 +7,9 @@ import { Button } from '../../Embeds/Button'
 import { UserContext } from '../../services/contexts'
 import { Radio, RadioGroup } from '@chakra-ui/react'
 import Title from '../../Embeds/Title'
-import { userValidate } from '../../helpers/validate'
+import { CreateUserValidation } from '../../helpers/validate'
 import { userInit } from '../../helpers/initialvalues'
+import { required } from '../../Embeds/Title'
 
 const CreateUser = ({ show, close }) => {
   const { t } = useTranslation()
@@ -22,7 +23,7 @@ const CreateUser = ({ show, close }) => {
 
   return (
     <Formik
-      validate={userValidate}
+      validationSchema={CreateUserValidation}
       initialValues={userInit}
       onSubmit={submit}
     >
@@ -39,25 +40,25 @@ const CreateUser = ({ show, close }) => {
           <Modal.Body>
             <Input
               id='username'
-              title={t('username')}
+              title={required(t('username'))}
               onChange={handleChange}
               value={values.username}
             />
             <Input
               id='password'
-              title={t('password')}
+              title={required(t('password'))}
               type='password'
               onChange={handleChange}
               value={values.password}
             />
             <Input
               id='confirm'
-              title={t('confirm')}
+              title={required(t('confirm'))}
               type='password'
               onChange={handleChange}
               value={values.confirm}
             />
-            <Title>{t('user-role')}</Title>
+            <Title>{required(t('user-role'))}</Title>
             <RadioGroup onChange={v => setFieldValue('isAdmin', v)} value={values.isAdmin}>
               <Stack direction='col'>
                 <Radio value='true'>{t('admin')}</Radio>

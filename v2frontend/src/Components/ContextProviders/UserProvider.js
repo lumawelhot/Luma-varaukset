@@ -43,7 +43,9 @@ const UserProvider = ({ children }) => {
     try {
       const { data } = await client.mutate({ mutation: MODIFY_USER, variables, fetchPolicy: 'no-cache' })
       if (data?.updateUser) {
-        setUsers(users.map(u => u.id === data?.updateUser.id ? data?.updateUser : u))
+        const usr = data.updateUser
+        setUsers(users.map(u => u.id === usr.id ? usr : u))
+        setUser(usr)
         return true
       }
     } catch (err) {

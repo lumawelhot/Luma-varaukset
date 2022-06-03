@@ -2,9 +2,21 @@ import { t } from '../i18n'
 import * as Yup from 'yup'
 import { EVENT_MIN_LENGTH } from '../config'
 
-export const userValidate = () => {
+export const CreateUserValidation = () => Yup.object().shape({
+  username: Yup.string().min(5, t('too-short')).required(t('fill-field')),
+  password: Yup.string().min(8, t('too-short')).required(t('fill-field')),
+  confirm: Yup.string().oneOf([Yup.ref('password'), null], t('password-not-match')).required(t('fill-field')),
+  isAdmin: Yup.bool().required(t('fill-field'))
+})
 
-}
+export const ModifyUserValidation = () => Yup.object().shape({
+  username: Yup.string().min(5, t('too-short')).required(t('fill-field')),
+  password: Yup.string().notRequired().test(value => {
+    if (value) return Yup.string().min(8).isValidSync(value)
+    return true
+  }),
+  isAdmin: Yup.bool().required(t('fill-field'))
+})
 
 export const userValidateModify = () => {
 
