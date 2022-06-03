@@ -47,8 +47,8 @@ const Event = ({ content }) => {
         >{t.name}</Badge>)}
         <ul style={{ marginTop: 5, listStyle: 'none' }}>
           {event.resourceids.map((r, i) => <li key={i}>
-            <span>{CLASSES[Number(r)].label}</span>
-            <span style={{ marginLeft: 10 }}>({CLASSES[Number(r)].i18n})</span>
+            <span>{CLASSES[Number(r) - 1].label}</span>
+            <span style={{ marginLeft: 10 }}>({CLASSES[Number(r) - 1].i18n})</span>
           </li>)}
         </ul>
         <div style={{ marginTop: 5, fontSize: 13, fontStyle: 'italic' }}>{event.desc}</div>

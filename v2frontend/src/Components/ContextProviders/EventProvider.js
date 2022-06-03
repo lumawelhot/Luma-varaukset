@@ -111,12 +111,12 @@ const EventProvider = ({ children }) => {
     if (fetched) return
     const { data } = await client.query({ query: EVENTS, fetchPolicy: 'no-cache' })
     setFetched(true)
-    const parsed = data?.getEvents?.map(event => parseEvent(event)).flat()
-    setParsed(parsed)
     setMap(data?.getEvents.reduce((set, e) => {
       set[e['id']] = formFieldParse(e)
       return set
     }, {}))
+    const parsed = data?.getEvents?.map(event => parseEvent(event)).flat()
+    setParsed(parsed)
   }
 
   const set = (event, params) => {
@@ -139,12 +139,12 @@ const EventProvider = ({ children }) => {
         mutation: CREATE_EVENTS, variables, fetchPolicy: 'no-cache'
       })
       if (data?.createEvents) {
-        setParsed(parsed.concat(data.createEvents.map(e => parseEvent(e)[0])))
         const newMap = Object.assign({}, map)
         for (let e of data.createEvents) {
           newMap[e.id] = formFieldParse(e)
         }
         setMap(newMap)
+        setParsed(parsed.concat(data.createEvents.map(e => parseEvent(e)[0])))
         end()
         return true
       }
@@ -163,9 +163,9 @@ const EventProvider = ({ children }) => {
       })
       if (data?.modifyEvent) {
         const e = data.modifyEvent
+        updateMap(e)
         setParsed(parsed.filter(p => p.id !== e.id)
           .concat(parseEvent(e)))
-        updateMap(e)
         end()
         return true
       }
@@ -183,12 +183,12 @@ const EventProvider = ({ children }) => {
         mutation: DELETE_EVENTS, variables: { ids: Array.isArray(ids) ? ids : [ids] }, fetchPolicy: 'no-cache'
       })
       if (data?.deleteEvents) {
-        setParsed(parsed.filter(p => !someExist([p.id], data.deleteEvents)))
         const newMap = map
         for (let id of data.deleteEvents) {
           delete newMap[id]
         }
         setMap(newMap)
+        setParsed(parsed.filter(p => !someExist([p.id], data.deleteEvents)))
         end()
         return true
       }
@@ -207,12 +207,12 @@ const EventProvider = ({ children }) => {
         mutation: FORCE_DELETE_EVENTS, variables, fetchPolicy: 'no-cache'
       })
       if (data.forceDeleteEvents) {
-        setParsed(parsed.filter(p => !ids.includes(p.id)))
         const newMap = map
         for (let id of ids) {
           delete newMap[id]
         }
         setMap(newMap)
+        setParsed(parsed.filter(p => !ids.includes(p.id)))
         end()
         return true
       }
@@ -272,9 +272,9 @@ const EventProvider = ({ children }) => {
   }
 
   const toggleDisable = (e, id) => {
+    updateMap({ ...map[id], disabled: e.disabled, locked: false })
     setParsed(parsed.filter(p => p.id !== e.id)
       .concat(parseEvent({ ...map[id], disabled: e.disabled, locked: false })))
-    updateMap({ ...map[id], disabled: e.disabled, locked: false })
     setEvent({ ...event, disabled: e.disabled, locked: false })
     end()
   }

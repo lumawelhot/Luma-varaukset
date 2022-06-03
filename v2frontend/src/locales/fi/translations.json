@@ -259,5 +259,8 @@
   "notify-subject": "Ilmoituksen aihe",
   "notify-text-content": "Ilmoituksen sisältö",
   "add-email-address": "Lisää osoite",
-  "modify-emails": "Päivitä tiedot"
+  "modify-emails": "Päivitä tiedot",
+  "fill-field": "Täytä tämä kenttä",
+  "modify-custom-form": "Muokkaa lomaketta",
+  "ctrl-tip": "Vihje: voit pikavalita vierailun klikkaamalla haluttua vierailua CTRL-näppäin pohjassa"
 }

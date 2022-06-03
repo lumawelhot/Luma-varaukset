@@ -20,8 +20,10 @@ export const groupValidate = () => {
 
 export const VisitValidation = () => Yup.object().shape({
   clientName: Yup.string()
+    .min(5)
     .required(t('fill-field')),
   schoolName: Yup.string()
+    .min(5)
     .required(t('fill-field')),
   schoolLocation: Yup.string()
     .required(t('fill-field')),
