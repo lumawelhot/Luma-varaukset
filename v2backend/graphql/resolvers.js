@@ -201,7 +201,7 @@ const resolvers = {
       isAdmin(currentUser)
       minLenghtTest(args.username, 5)
       const user = await User.findById(args.user)
-      if (user.username === currentUser.username) {
+      if (user.username === currentUser.username && !user.isAdmin) {
         throw new UserInputError('admin user cannot remove own permissions')
       }
       try {
@@ -243,6 +243,7 @@ const resolvers = {
     createUser: async (root, args, { currentUser }) => {
       isAdmin(currentUser)
       minLenghtTest(args.username, 5)
+      minLenghtTest(args.password, 8)
       const salt = 10
       const passwordHash = await bcrypt.hash(args.password, salt)
       const user = new User({
