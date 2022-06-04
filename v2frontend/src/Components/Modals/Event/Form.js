@@ -10,12 +10,12 @@ import { Input, Select, TextArea } from '../../../Embeds/Input'
 import { DatePicker, TimePicker } from '../../../Embeds/Picker'
 import { Checkbox } from '../../../Embeds/Table'
 import Title, { Error, required } from '../../../Embeds/Title'
+import { IconButton } from '../../../Embeds/Button'
 import { MiscContext, FormContext, GroupContext } from '../../../services/contexts'
 import _ from 'lodash'
 import { someExist } from '../../../helpers/utils'
 import Table from '../../Table'
 import { eventDateColumns } from '../../../helpers/columns'
-import { ButtonToolbar, IconButton } from 'rsuite'
 import { DeleteIcon } from '@chakra-ui/icons'
 import { EventValidation } from '../../../helpers/validate'
 
@@ -43,11 +43,11 @@ const Form = React.forwardRef((props, ref) => {
     ?.map((f, i) => ({
       id: i,
       date: format(f.date, 'd.M.y'),
-      optionButtons: <ButtonToolbar style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
-        <IconButton onClick={() => {
+      optionButtons: <div style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
+        <IconButton size='sm' onClick={() => {
           setDates(dates.filter((_, j) => j !== i))
         }} icon={<DeleteIcon color='red.500' />} />
-      </ButtonToolbar>
+      </div>
     }))
   , [dates])
 

@@ -263,5 +263,8 @@
   "fill-field": "Täytä tämä kenttä",
   "modify-custom-form": "Muokkaa lomaketta",
   "ctrl-tip": "Vihje: voit pikavalita vierailun klikkaamalla haluttua vierailua CTRL-näppäin pohjassa",
-  "change-password": "Muuta salasanaa"
+  "change-password": "Muuta salasanaa",
+  "show-visit-form": "Näytä lomake",
+  "too-short": "Liian lyhyt",
+  "password-not-match": "Salasanat eivät täsmää"
 }

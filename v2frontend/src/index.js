@@ -6,7 +6,8 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import './i18n'
 import { setContext } from 'apollo-link-context'
 import 'react-datepicker/dist/react-datepicker.css'
-import 'rsuite/dist/rsuite.min.css'
+import 'rc-steps/assets/index.css'
+import 'react-datepicker/dist/react-datepicker.css'
 
 import {
   ApolloClient,
@@ -20,6 +21,10 @@ import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/link-ws'
 import ContextProviders from './Components/ContextProviders'
 import { ChakraProvider } from '@chakra-ui/react'
+
+import { registerLocale } from  'react-datepicker'
+import fi from 'date-fns/locale/fi'
+registerLocale('fi', fi)
 
 const BASE_URL = process.env.NODE_ENV === 'production' ? process.env.PUBLIC_URL : 'http://localhost:3001'
 const WS_URL = BASE_URL.replace(/^http/,'ws') + '/graphql/ws'

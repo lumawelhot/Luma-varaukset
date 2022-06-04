@@ -263,5 +263,6 @@
   "fill-field": "Fill this field",
   "modify-custom-form": "Modify form",
   "ctrl-tip": "Tip: you can select an event by clicking it while holding CTRL-button",
-  "change-password": "Change password"
+  "change-password": "Change password",
+  "show-visit-form": "Show form"
 }

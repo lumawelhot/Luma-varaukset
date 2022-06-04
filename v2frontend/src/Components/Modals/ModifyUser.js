@@ -63,8 +63,10 @@ const ModifyUser = ({ show, close, initialValues }) => {
               type='password'
               title={t('password')}
               onChange={handleChange}
+              onBlur={handleBlur}
               value={values.password}
             />}
+            {errors.password && touched.password && <Error>{t(errors.password)}</Error>}
           </Modal.Body>
           <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>
             <Button

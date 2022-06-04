@@ -1,6 +1,6 @@
 import { t } from '../i18n'
 import * as Yup from 'yup'
-import { EVENT_MIN_LENGTH } from '../config'
+import { EVENT_MIN_LENGTH, EVENT_MIN_PARTICIPANTS, EXTRA_MIN_INPERSON_LENGTH, EXTRA_MIN_REMOTE_LENGTH } from '../config'
 
 export const CreateUserValidation = () => Yup.object().shape({
   username: Yup.string().min(5, t('too-short')).required(t('fill-field')),
@@ -11,9 +11,12 @@ export const CreateUserValidation = () => Yup.object().shape({
 
 export const ModifyUserValidation = () => Yup.object().shape({
   username: Yup.string().min(5, t('too-short')).required(t('fill-field')),
-  password: Yup.string().notRequired().test(value => {
-    if (value) return Yup.string().min(8).isValidSync(value)
-    return true
+  password: Yup.string().notRequired().test((value, { createError }) => {
+    if (value && !Yup.string().min(8).isValidSync(value)) {
+      return createError({
+        message: t('too-short')
+      })
+    } else return true
   }),
   isAdmin: Yup.bool().required(t('fill-field'))
 })
@@ -32,10 +35,10 @@ export const groupValidate = () => {
 
 export const VisitValidation = () => Yup.object().shape({
   clientName: Yup.string()
-    .min(5)
+    .min(5, t('too-short'))
     .required(t('fill-field')),
   schoolName: Yup.string()
-    .min(5)
+    .min(5, t('too-short'))
     .required(t('fill-field')),
   schoolLocation: Yup.string()
     .required(t('fill-field')),
@@ -51,7 +54,9 @@ export const VisitValidation = () => Yup.object().shape({
   grade: Yup.string()
     .required(t('fill-field')),
   participants: Yup.number()
-    .min(1)
+    .min(EVENT_MIN_PARTICIPANTS,
+      `${t('valid-atleast')} ${EVENT_MIN_PARTICIPANTS} ${EVENT_MIN_LENGTH > 1 ? t('valid-participants') : t('valid-participant')}`
+    )
     .required(t('fill-field')),
   privacyPolicy: Yup.bool()
     .isTrue(),
@@ -61,8 +66,8 @@ export const VisitValidation = () => Yup.object().shape({
 
 export const ExtraValidation = () => Yup.object().shape({
   name: Yup.string().required(t('fill-field')),
-  inPersonLength: Yup.number().min(1).required(t('fill-field')),
-  remoteLength: Yup.number().min(1).required(t('fill-field')),
+  inPersonLength: Yup.number().min(EXTRA_MIN_INPERSON_LENGTH).required(t('fill-field')),
+  remoteLength: Yup.number().min(EXTRA_MIN_REMOTE_LENGTH).required(t('fill-field')),
   classes: Yup.array().min(1)
 })
 

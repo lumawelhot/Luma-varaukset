@@ -11,7 +11,7 @@ export const extraInit = {
 export const userInit = {
   username: '',
   password: '',
-  isAdmin: '',
+  isAdmin: 'false',
   confirm: ''
 }
 

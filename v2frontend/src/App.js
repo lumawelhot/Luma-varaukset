@@ -51,7 +51,7 @@ const App = () => {
             <VisitPage />
             <LumaCalendar />
           </>} />
-          <Route path='/visits' element={user ? <VisitList /> : <Navigate to='/' />} />
+          <Route path='/visits' element={user ? <VisitList /> : <></>} />
           <Route path='/visits/:id' element={<>
             {user ? <>
               <VisitList />

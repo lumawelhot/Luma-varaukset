@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Radio as ChakraRadio, Checkbox as ChakraCheckbox, Link as A } from '@chakra-ui/react'
+import { Radio as ChakraRadio, Checkbox as ChakraCheckbox, Link as A, IconButton as IButton } from '@chakra-ui/react'
 
 export const Button = styled.button`
   -webkit-text-size-adjust: 100%;
@@ -53,4 +53,9 @@ export const Radio = styled(ChakraRadio)`border-color: darkgrey !important;`
 export const Link = styled(A)`
   color: #1890ff !important;
   text-decoration: underline !important;
+`
+
+export const IconButton = styled(IButton)`
+  margin-left: 5px;
+  box-shadow: none !important;
 `

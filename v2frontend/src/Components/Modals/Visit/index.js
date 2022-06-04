@@ -2,7 +2,6 @@ import React, { useContext, useState, useRef } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Navigate, useNavigate } from 'react-router-dom'
-import Steps from 'rsuite/Steps'
 import { BOOKING_TIME } from '../../../config'
 import { Button } from '../../../Embeds/Button'
 import Timer from '../../../Embeds/Timer'
@@ -12,6 +11,9 @@ import Form from './Form'
 import Info from './Info'
 import Status from './Status'
 import { formError } from '../../../helpers/utils'
+import Steps, { Step } from 'rc-steps'
+import { CheckIcon } from '@chakra-ui/icons'
+
 
 const Visit = ({ children, event }) => {
   const { t } = useTranslation()
@@ -92,9 +94,9 @@ const Visit = ({ children, event }) => {
           style={{ color: 'brown', fontWeight: 'bold' }}
         >{t('cannot-be-booked')}</Modal.Title>}
         {!event?.disabled && !event?.booked && !event?.locked && <Steps current={phase}>
-          <Steps.Item title={getTitle(0)} />
-          <Steps.Item title={getTitle(1)} />
-          <Steps.Item title={getTitle(2)} />
+          <Step icons={{ finish: <CheckIcon /> }} title={getTitle(0)} />
+          <Step icons={{ finish: <CheckIcon /> }} title={getTitle(1)} />
+          <Step icons={{ finish: <CheckIcon /> }} title={getTitle(2)} />
         </Steps>}
       </Modal.Header>
       <Modal.Body>

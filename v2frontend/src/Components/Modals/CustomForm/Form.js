@@ -2,14 +2,13 @@
 import { Formik } from 'formik'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ButtonToolbar, IconButton } from 'rsuite'
 import { Input } from '../../../Embeds/Input'
 import { formFieldColumns } from '../../../helpers/columns'
 import Table from '../../Table'
 import { TriangleUpIcon, TriangleDownIcon, DeleteIcon, EditIcon, AddIcon } from '@chakra-ui/icons'
 import { Stack } from 'react-bootstrap'
 import { RadioGroup } from '@chakra-ui/react'
-import { Radio } from '../../../Embeds/Button'
+import { Radio, IconButton } from '../../../Embeds/Button'
 import { Checkbox } from '../../../Embeds/Table'
 import Title, { Error, required } from '../../../Embeds/Title'
 import { DEFAULT_FIELD_VALUES } from '../../../config'
@@ -37,16 +36,17 @@ const Form = React.forwardRef(({ fields, setFields, initialValues, onModify, han
       name: f.name,
       required: f.validation.required ? t('yes') : t('no'),
       type: t(f.type),
-      optionButtons: <ButtonToolbar style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
+      optionButtons: <div style={{ whiteSpace: 'nowrap' }}>
         <IconButton
-          appearance={onModify?.id === i ? 'primary' : 'default'}
+          size='sm'
+          colorScheme={onModify?.id === i ? 'blue' : 'gray'}
           onClick={() => handleModify(i)}
           icon={<EditIcon />}
         />
-        <IconButton onClick={() => handleRemoveField(i)} icon={<DeleteIcon color='red.500' />} />
-        <IconButton onClick={() => handleMoveUp(i)} icon={<TriangleUpIcon />} />
-        <IconButton onClick={() => handleMoveDown(i)} icon={<TriangleDownIcon />} />
-      </ButtonToolbar>
+        <IconButton size='sm' onClick={() => handleRemoveField(i)} icon={<DeleteIcon color='red.500' />} />
+        <IconButton size='sm' onClick={() => handleMoveUp(i)} icon={<TriangleUpIcon />} />
+        <IconButton size='sm' onClick={() => handleMoveDown(i)} icon={<TriangleDownIcon />} />
+      </div>
     }))
   , [fields, onModify])
   const fieldColumns = useMemo(formFieldColumns, [])

@@ -109,3 +109,49 @@ a.default {
 .rs-picker-toggle-placeholder {
   font-weight: bold;
 }
+
+.rc-steps-item-process .rc-steps-item-title::after {
+  background-color: rgb(100, 100, 100) !important;
+}
+
+.rc-steps-item-wait .rc-steps-item-title::after {
+  background-color: rgb(100, 100, 100) !important;
+}
+
+.rc-steps-item-title::after {
+  margin-top: 3px !important;
+}
+
+.rc-steps-item-wait .rc-steps-item-icon {
+  border-color: rgb(100, 100, 100) !important;
+}
+
+.rc-steps-item-wait .rc-steps-icon {
+  color: rgb(100, 100, 100) !important;
+}
+
+.rc-steps-item-title {
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  color: rgb(100, 100, 100) !important;
+}
+
+.react-datepicker__month-container {
+  z-index: 10000 !important;
+}
+
+.hstack {
+  padding: 1px;
+}
+
+.react-datepicker__close-icon::after {
+  color: black !important;
+  background-color: white !important;
+  font-size: 20px !important;
+  padding-bottom: 5px !important;
+}
+
+.react-datepicker__time-list-item.react-datepicker__time-list-item--disabled {
+  display: none !important;
+  visibility: hidden !important;
+}

@@ -7,8 +7,8 @@ import _ from 'lodash'
 import Title from '../../../Embeds/Title'
 import { ListItem, UnorderedList, Button } from '@chakra-ui/react'
 import { Stack } from 'react-bootstrap'
-import { IconButton } from 'rsuite'
 import { DeleteIcon } from '@chakra-ui/icons'
+import { IconButton } from '../../../Embeds/Button'
 
 const Form = React.forwardRef((props, ref) => {
   const [address, setAdress] = useState('')
@@ -52,7 +52,7 @@ const Form = React.forwardRef((props, ref) => {
             {values?.ad?.map((e, i) => <ListItem
               style={{ marginLeft: 10, fontSize: 15 }} key={i}
             >{e}
-              <IconButton style={{ marginLeft: 5, backgroundColor: 'white' }} onClick={() => {
+              <IconButton size='sm' style={{ marginLeft: 5, backgroundColor: 'white' }} onClick={() => {
                 setFieldValue('ad', values.ad.filter(a => a !== e))
               }} icon={<DeleteIcon color='red.500' />} />
             </ListItem>)}

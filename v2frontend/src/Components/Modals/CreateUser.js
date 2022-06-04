@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '../../Embeds/Button'
 import { UserContext } from '../../services/contexts'
 import { Radio, RadioGroup } from '@chakra-ui/react'
-import Title from '../../Embeds/Title'
+import Title, { Error } from '../../Embeds/Title'
 import { CreateUserValidation } from '../../helpers/validate'
 import { userInit } from '../../helpers/initialvalues'
 import { required } from '../../Embeds/Title'
@@ -27,7 +27,7 @@ const CreateUser = ({ show, close }) => {
       initialValues={userInit}
       onSubmit={submit}
     >
-      {({ handleChange, handleSubmit, values, setFieldValue }) => (
+      {({ handleChange, handleSubmit, handleBlur, values, setFieldValue, errors, touched }) => (
         <Modal
           show={show}
           onHide={close}
@@ -42,22 +42,28 @@ const CreateUser = ({ show, close }) => {
               id='username'
               title={required(t('username'))}
               onChange={handleChange}
+              onBlur={handleBlur}
               value={values.username}
             />
+            {errors.username && touched.username && <Error>{t(errors.username)}</Error>}
             <Input
               id='password'
               title={required(t('password'))}
               type='password'
+              onBlur={handleBlur}
               onChange={handleChange}
               value={values.password}
             />
+            {errors.password && touched.password && <Error>{t(errors.password)}</Error>}
             <Input
               id='confirm'
               title={required(t('confirm'))}
               type='password'
               onChange={handleChange}
+              onBlur={handleBlur}
               value={values.confirm}
             />
+            {errors.confirm && touched.confirm && <Error>{t(errors.confirm)}</Error>}
             <Title>{required(t('user-role'))}</Title>
             <RadioGroup onChange={v => setFieldValue('isAdmin', v)} value={values.isAdmin}>
               <Stack direction='col'>
