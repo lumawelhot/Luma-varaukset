@@ -155,3 +155,10 @@ a.default {
   display: none !important;
   visibility: hidden !important;
 }
+
+@media (max-height: 500px) {
+  #visit-form-media {
+    visibility: hidden !important;
+    display: none !important;
+  }
+}

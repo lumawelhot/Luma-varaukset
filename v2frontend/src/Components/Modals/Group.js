@@ -4,7 +4,8 @@ import { Button } from '../../Embeds/Button'
 import { Formik } from 'formik'
 import { Modal, ModalHeader } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { groupValidate } from '../../helpers/validate'
+import { GroupValidation } from '../../helpers/validate'
+import { Error, required } from '../../Embeds/Title'
 
 const Group = ({ show, close, handle, title, initialValues }) => {
   const { t } = useTranslation()
@@ -18,10 +19,10 @@ const Group = ({ show, close, handle, title, initialValues }) => {
   return (
     <Formik
       initialValues={initialValues}
-      validate={groupValidate}
+      validationSchema={GroupValidation}
       onSubmit={onSubmit}
     >
-      {({ handleChange, handleSubmit, values }) => (
+      {({ handleChange, handleSubmit, handleBlur, values, errors, touched }) => (
         <Modal
           show={show}
           backdrop="static"
@@ -34,17 +35,21 @@ const Group = ({ show, close, handle, title, initialValues }) => {
           <Modal.Body>
             <Input
               id='name'
-              title={t('group-name')}
+              title={required(t('group-name'))}
               onChange={handleChange}
+              onBlur={handleBlur}
               value={values.name}
             />
+            {errors.name && touched.name && <Error>{t(errors.name)}</Error>}
             <Input
               id='maxCount'
-              title={t('group-maxcount')}
+              title={required(t('group-maxcount'))}
               onChange={handleChange}
+              onBlur={handleBlur}
               value={values.maxCount}
               type='number'
             />
+            {errors.maxCount && touched.maxCount && <Error>{t(errors.maxCount)}</Error>}
           </Modal.Body>
           <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>
             <Button type='submit' onClick={handleSubmit}>{title}</Button>

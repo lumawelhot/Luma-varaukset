@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { DEFAULT_FIELD_VALUES } from '../../../config'
 import { Button } from '../../../Embeds/Button'
 import { customformInit } from '../../../helpers/initialvalues'
+import { error, success } from '../../../helpers/toasts'
 import { formError } from '../../../helpers/utils'
 import { FormContext } from '../../../services/contexts'
 import Form from './Form'
@@ -55,20 +56,28 @@ const CustomForm = ({ show, close, initialValues=customformInit, modify }) => {
   }
 
   const handleAddForm = async () => {
-    if (formError(formRef.current)) return
-    if (await add({
+    if (await formError(formRef.current)) return
+    const status = await add({
       fields: JSON.stringify(fields),
       name: formRef?.current.values.name
-    })) close()
+    })
+    if (status) {
+      success(t('notify-form-add-success'))
+      close()
+    } else error(t('notify-form-add-failed'))
   }
 
   const handleModifyForm = async () => {
-    if (formError(formRef.current)) return
-    if (await mod({
+    if (await formError(formRef.current)) return
+    const status = await mod({
       fields: JSON.stringify(fields),
       name: formRef?.current.values.name,
       id: initialValues.id
-    })) close()
+    })
+    if (status) {
+      success(t('notify-form-modify-success'))
+      close()
+    } else error(t('notify-form-modify-failed'))
   }
 
   return (
@@ -95,8 +104,8 @@ const CustomForm = ({ show, close, initialValues=customformInit, modify }) => {
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>
         {!onModify && <Button onClick={handleAddField}>{t('add-form-field')}</Button>}
         {onModify && <Button onClick={handleModifyField}>{t('modify-form-field')}</Button>}
-        {!modify && <Button onClick={handleAddForm} className='active'>{t('create-custom-form')}</Button>}
-        {modify && <Button onClick={handleModifyForm} className='active'>{t('modify-custom-form')}</Button>}
+        {!modify && <Button type='submit' onClick={handleAddForm} className='active'>{t('create-custom-form')}</Button>}
+        {modify && <Button type='submit' onClick={handleModifyForm} className='active'>{t('modify-custom-form')}</Button>}
       </Modal.Footer>
     </Modal>
   )

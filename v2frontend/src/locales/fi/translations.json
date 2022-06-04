@@ -266,5 +266,26 @@
   "change-password": "Muuta salasanaa",
   "show-visit-form": "Näytä lomake",
   "too-short": "Liian lyhyt",
-  "password-not-match": "Salasanat eivät täsmää"
+  "password-not-match": "Salasanat eivät täsmää",
+
+  "too-small": "Annetun syötteen oltava suurempi kuin 0",
+  "passed": "Ei varattavissa",
+  "check-this-field": "Valitse tämä kenttä",
+
+  "notify-booking-success": "Vierailun varaaminen onnistui",
+  "notify-booking-failed": "Vierailun varaaminen epäonnistui",
+  "notify-user-modify-success": "Käyttäjän muokkaaminen onnistui",
+  "notify-user-modify-error": "Käyttäjän muokkaaminen epäonnistui",
+  "notify-user-create-success": "Käyttäjän luominen onnistui",
+  "notify-user-create-failed": "Käyttäjän luominen epäonnistui",
+  "notify-login-success": "Olet kirjautunut sisään",
+  "notify-login-failed": "Kirjautuminen epäonnistui",
+  "notify-group-create-success": "Ryhmän luominen onnistui",
+  "notify-group-create-failed": "Ryhmän luominen epäonnistui",
+  "notify-group-modify-success": "Ryhmän muokkaaminen onnistui",
+  "notify-group-modify-failed": "Ryhmän muokkaaminen epäonnistui",
+  "notify-form-add-success": "Lomakkeen luominen onnistui",
+  "notify-form-add-failed": "Lomakkeen luominen epäonnistui",
+  "notify-form-modify-success": "Lomakkeen muokkaaminen onnistui",
+  "notify-form-modify-failed": "Lomakkeen muokkaaminen epäonnistui"
 }

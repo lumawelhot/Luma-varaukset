@@ -8,7 +8,7 @@ const Extra = ({ show, close, handle, title, initialValues }) => {
   const formRef = useRef()
 
   const handleSubmit = async () => {
-    if (formError(formRef.current)) return
+    if (await formError(formRef.current)) return
     const { name, inPersonLength, remoteLength, classes } = formRef.current.values
     await handle({
       name,

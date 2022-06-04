@@ -13,6 +13,7 @@ import Status from './Status'
 import { formError } from '../../../helpers/utils'
 import Steps, { Step } from 'rc-steps'
 import { CheckIcon } from '@chakra-ui/icons'
+import { error, success } from '../../../helpers/toasts'
 
 
 const Visit = ({ children, event }) => {
@@ -47,25 +48,28 @@ const Visit = ({ children, event }) => {
   }
 
   const handleSubmit = async () => {
-    if (formError(formRef.current)) return
     const type = formRef.current.values.visitType
     const customFormData = JSON.stringify(formRef.current.values.customFormData)
     const inPersonVisit = type === 'inperson' ? true : false
     const remoteVisit = type === 'remote' ? true : false
-    increment()
-    const result = await book({
+    const variables = {
       ...formRef.current.values,
       event: event.id,
       token: token,
       inPersonVisit,
       remoteVisit,
       customFormData
-    })
+    }
+    // this should be defined here, otherwise we are getting an error
+    if (await formError(formRef.current)) return
+    increment()
+    const result = await book(variables)
     if (result?.event) {
       setVisit(result)
       const found = find(result.event.id)
       cacheModify(combineEvent(result, found))
-    }
+      success(t('notify-booking-success'))
+    } else error(t('notify-booking-failed'))
     setStatus(result ? true : false)
   }
 
@@ -108,7 +112,7 @@ const Visit = ({ children, event }) => {
         {phase >= 2 && <Status status={status} visit={visit}/>}
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }} >
-        <div style={{ lineHeight: 4, marginBottom: -10 }}>
+        <div style={{ lineHeight: 3, marginBottom: -5 }}>
           {phase === 0 && <>
             {user && event?.visits?.length === 0 &&
             <Button onClick={handleRemove}>{t('delete-event')}</Button>}
@@ -121,8 +125,8 @@ const Visit = ({ children, event }) => {
             }}>{t('book-visit')}</Button>}
           </>}
           {phase === 1 && <>
-            <Button onClick={() => setShowInfo(!showInfo)}>{showInfo ? t('show-visit-form') : t('show-info')}</Button>
-            <Button className='active' onClick={handleSubmit}>{t('book-visit-submit')}</Button>
+            <Button id='visit-form-media' onClick={() => setShowInfo(!showInfo)}>{showInfo ? t('show-visit-form') : t('show-info')}</Button>
+            <Button type='submit' className='active' onClick={handleSubmit}>{t('book-visit-submit')}</Button>
           </>}
           {phase === 2 && <Button className='active' onClick={close}>{t('book-visit-close')}</Button>}
         </div>

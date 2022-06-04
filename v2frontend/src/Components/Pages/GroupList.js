@@ -7,6 +7,7 @@ import Table from '../Table'
 import { Button } from '../../Embeds/Button'
 import Group from '../Modals/Group'
 import { groupInit } from '../../helpers/initialvalues'
+import { error, success } from '../../helpers/toasts'
 
 const GroupList = () => {
   const { t } = useTranslation()
@@ -18,19 +19,25 @@ const GroupList = () => {
 
   const modifyGroup = async values => {
     const { id, name, maxCount } = values
-    return groupContext.modify({
+    const status = await groupContext.modify({
       id,
       name,
       maxCount: Number(maxCount)
     })
+    if (status) success(t('notify-group-modify-success'))
+    else error(t('notify-group-modify-failed'))
+    return status
   }
 
   const addGroup = async values => {
     const { name, maxCount } = values
-    return groupContext.add({
+    const status = await groupContext.add({
       name,
       maxCount: Number(maxCount)
     })
+    if (status) success(t('notify-group-create-success'))
+    else error(t('notify-group-create-failed'))
+    return status
   }
 
   const handleRemove = (ids) => groupContext.remove(ids)

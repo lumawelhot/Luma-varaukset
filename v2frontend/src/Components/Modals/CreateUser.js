@@ -10,6 +10,7 @@ import Title, { Error } from '../../Embeds/Title'
 import { CreateUserValidation } from '../../helpers/validate'
 import { userInit } from '../../helpers/initialvalues'
 import { required } from '../../Embeds/Title'
+import { error, success } from '../../helpers/toasts'
 
 const CreateUser = ({ show, close }) => {
   const { t } = useTranslation()
@@ -17,7 +18,10 @@ const CreateUser = ({ show, close }) => {
 
   const submit = async (values, formik) => {
     const { username, password, isAdmin } = values
-    if (await add({ username, password, isAdmin: isAdmin === 'true' })) close()
+    if (await add({ username, password, isAdmin: isAdmin === 'true' })) {
+      success(t('notify-user-create-success'))
+      close()
+    } else error(t('notify-user-create-failed'))
     formik.resetForm()
   }
 

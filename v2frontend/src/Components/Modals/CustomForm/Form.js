@@ -57,6 +57,7 @@ const Form = React.forwardRef(({ fields, setFields, initialValues, onModify, han
     <Formik
       innerRef={ref}
       validationSchema={CustomFormValidation}
+      onSubmit={() => {}}
       initialValues={{
         name: initialValues.name,
         question: '',
@@ -90,7 +91,7 @@ const Form = React.forwardRef(({ fields, setFields, initialValues, onModify, han
                 style={{ maxWidth: 450 }}
                 id='question'
                 onBlur={handleBlur}
-                title={required(t('question'))}
+                title={t('question')}
                 onChange={handleChange}
                 value={values.question}
               />

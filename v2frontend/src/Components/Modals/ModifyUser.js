@@ -8,6 +8,7 @@ import { Input } from '../../Embeds/Input'
 import Title, { Error, required } from '../../Embeds/Title'
 import { ModifyUserValidation } from '../../helpers/validate'
 import { UserContext } from '../../services/contexts'
+import { error, success } from '../../helpers/toasts'
 
 const ModifyUser = ({ show, close, initialValues }) => {
   const { t } = useTranslation()
@@ -16,8 +17,12 @@ const ModifyUser = ({ show, close, initialValues }) => {
 
   const submit = async (values, formik) => {
     const { username, password, isAdmin } = values
-    if (await modify({ user: values.id, username, password, isAdmin: isAdmin === 'true' })) close()
-    else formik.resetForm()
+    if (await modify({ user: values.id, username, password, isAdmin: isAdmin === 'true' })) {
+      success(t('notify-user-modify-success'))
+      close()
+    }
+    else error(t('notify-user-modify-error'))
+    formik.resetForm()
   }
 
   return (

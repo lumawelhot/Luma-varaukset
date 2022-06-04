@@ -21,6 +21,8 @@ import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/link-ws'
 import ContextProviders from './Components/ContextProviders'
 import { ChakraProvider } from '@chakra-ui/react'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 import { registerLocale } from  'react-datepicker'
 import fi from 'date-fns/locale/fi'
@@ -75,6 +77,17 @@ ReactDOM.render(
         <ContextProviders>
           <ChakraProvider>
             <App />
+            <ToastContainer
+              position="top-right"
+              autoClose={4000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
           </ChakraProvider>
         </ContextProviders>
       </Router>

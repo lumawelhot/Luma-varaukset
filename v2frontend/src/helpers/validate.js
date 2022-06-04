@@ -1,6 +1,5 @@
 import { t } from '../i18n'
 import * as Yup from 'yup'
-import { EVENT_MIN_LENGTH, EVENT_MIN_PARTICIPANTS, EXTRA_MIN_INPERSON_LENGTH, EXTRA_MIN_REMOTE_LENGTH } from '../config'
 
 export const CreateUserValidation = () => Yup.object().shape({
   username: Yup.string().min(5, t('too-short')).required(t('fill-field')),
@@ -29,9 +28,10 @@ export const loginValidate = () => {
 
 }
 
-export const groupValidate = () => {
-
-}
+export const GroupValidation = () => Yup.object().shape({
+  name: Yup.string().required(t('fill-field')),
+  maxCount: Yup.number().min(1, t('too-small')).required(t('fill-field'))
+})
 
 export const VisitValidation = () => Yup.object().shape({
   clientName: Yup.string()
@@ -54,20 +54,18 @@ export const VisitValidation = () => Yup.object().shape({
   grade: Yup.string()
     .required(t('fill-field')),
   participants: Yup.number()
-    .min(EVENT_MIN_PARTICIPANTS,
-      `${t('valid-atleast')} ${EVENT_MIN_PARTICIPANTS} ${EVENT_MIN_LENGTH > 1 ? t('valid-participants') : t('valid-participant')}`
-    )
+    .min(1, t('too-small'))
     .required(t('fill-field')),
   privacyPolicy: Yup.bool()
-    .isTrue(),
+    .isTrue(t('check-this-field')),
   remoteVisitGuidelines: Yup.bool()
-    .isTrue()
+    .isTrue(t('check-this-field'))
 })
 
 export const ExtraValidation = () => Yup.object().shape({
   name: Yup.string().required(t('fill-field')),
-  inPersonLength: Yup.number().min(EXTRA_MIN_INPERSON_LENGTH).required(t('fill-field')),
-  remoteLength: Yup.number().min(EXTRA_MIN_REMOTE_LENGTH).required(t('fill-field')),
+  inPersonLength: Yup.number().min(1, t('too-small')).required(t('fill-field')),
+  remoteLength: Yup.number().min(1, t('too-small')).required(t('fill-field')),
   classes: Yup.array().min(1)
 })
 
@@ -76,7 +74,7 @@ export const EventValidation = () => Yup.object().shape({
     .min(5, t('too-short'))
     .required(t('fill-field')),
   duration: Yup.number()
-    .min(EVENT_MIN_LENGTH)
+    .min(1, t('too-small'))
     .required(t('fill-field')),
   remoteVisit: Yup.bool().when('inPersonVisit', {
     is: inPersonVisit => !inPersonVisit,

@@ -31,13 +31,13 @@ const Event = ({ show, close, initialValues=eventInit, options, modify }) => {
   }
 
   const handleModify = async () => {
-    if (formError(formRef.current)) return
+    if (await formError(formRef.current)) return
     const modified = await mod({ ...getArguments(), event: event.id })
     if (modified) close()
   }
 
   const handleAdd = async () => {
-    if (formError(formRef.current)) return
+    if (await formError(formRef.current)) return
     const added = await add(getArguments())
     if (added) close()
   }

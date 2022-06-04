@@ -37,6 +37,7 @@ const Form = React.forwardRef((props, ref) => {
     <Formik
       innerRef={ref}
       validationSchema={VisitValidation}
+      onSubmit={() => {}}
       initialValues={{
         clientName: '',
         schoolName: '',

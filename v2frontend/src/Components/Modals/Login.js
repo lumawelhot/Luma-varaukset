@@ -7,6 +7,7 @@ import { Input } from '../../Embeds/Input'
 import { UserContext } from '../../services/contexts'
 import { useEvict } from '../../hooks/contexts'
 import { loginValidate } from '../../helpers/validate'
+import { error } from '../../helpers/toasts'
 
 const Login = ({ show, close }) => {
   const { t } = useTranslation()
@@ -21,7 +22,7 @@ const Login = ({ show, close }) => {
       fetch()
       evict()
       close()
-    }
+    } else error(t('notify-login-failed'))
     formik.setFieldValue('username', '')
     formik.setFieldValue('password', '')
   }

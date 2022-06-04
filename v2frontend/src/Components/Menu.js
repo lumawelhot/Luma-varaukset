@@ -11,7 +11,7 @@ import Banner from '../Embeds/Banner'
 const Menu = () => {
   const { current: user } = useContext(UserContext)
   const [showEvent, setShowEvent] = useState()
-  const [showBanner, setShowBanner] = useState(localStorage.getItem('hide-banner') === 'true')
+  const [showBanner, setShowBanner] = useState(localStorage.getItem('hide-banner') !== 'false')
   const { evict } = useEvict()
   const { t } = useTranslation()
   const navigate = useNavigate()

@@ -20,6 +20,7 @@ const Event = ({ content }) => {
   const booked = props.booked
   const view = content.view.type
   const published = event?.publishDate ? new Date() >= new Date(event.publishDate) : true
+  const passed = !booked && props.unAvailable
 
   const getTimeRange = () => {
     const start = new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', timeZone: 'Europe/Helsinki' }).format(new Date(event.start))
@@ -35,6 +36,7 @@ const Event = ({ content }) => {
         style={{ padding: 10, paddingTop: 5, paddingBottom: 5, fontSize: 13, fontWeight: 'bold' }}
       >
         {booked && <span style={{ color: 'red', marginRight: 15 }}>{t('booked')}</span>}
+        {passed && <span style={{ color: 'red', marginRight: 15 }}>{t('passed')}</span>}
         <span>{getTimeRange()}</span>
         <span style={{ marginLeft: 15 }}>{event.title}</span>
         <span style={{ marginLeft: 15 }}>{`(${event.languages?.map(l => LANGUAGE_SHORT[l]).join(', ')})`}</span>
@@ -82,7 +84,9 @@ const Event = ({ content }) => {
         <div>
           {!locked && showEvent() && <BsEyeSlashFill size={15} style={{ margin: 5, marginTop: 2, display: 'inline' }} />}
           {locked && <FaLock size={15} style={{ margin: 5, marginTop: 2, display: 'inline' }} />}
-          <span>{booked ? <span style={{ color: 'red', marginRight: 10 }}>{t('booked')}</span> : ''}</span>{event.title}
+          <span>{booked ? <span style={{ color: 'red', marginRight: 10 }}>{t('booked')}</span> : ''}</span>
+          <span>{passed ? <span style={{ color: 'red', marginRight: 10 }}>{t('passed')}</span> : ''}</span>
+          {event.title}
         </div>
         <div>{content.timeText}</div>
       </div>

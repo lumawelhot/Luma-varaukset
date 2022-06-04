@@ -13,11 +13,6 @@ export const TIME_VALUE_LARGE = 8640000000000000
 
 export const FIRST_EVENT_AFTER_DAYS = 14
 
-export const EVENT_MIN_LENGTH = 15 // minutes
-export const EVENT_MIN_PARTICIPANTS = 1
-export const EXTRA_MIN_INPERSON_LENGTH = 5
-export const EXTRA_MIN_REMOTE_LENGTH = 5
-
 export const LANG_MAP = {
   fi: i18n.t('finnish'),
   en: i18n.t('english'),
