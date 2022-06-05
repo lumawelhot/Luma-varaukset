@@ -78,7 +78,7 @@ const UserProvider = ({ children }) => {
     return null
   }
 
-  useEffect(fetch, [])
+  useEffect(fetch, [user])
 
   return (
     <UserContext.Provider
