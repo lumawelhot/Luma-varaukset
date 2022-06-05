@@ -15,6 +15,14 @@ if (process.env.NODE_ENV === 'production') {
   MONGODB_URI = process.env.MONGODB_URI
 }
 
+const CLASSES = [
+  'SUMMAMUTIKKA',
+  'FOTONI',
+  'LINKKI',
+  'GEOPISTE',
+  'GADOLIN',
+]
+
 module.exports = {
   SECRET,
   PORT,
@@ -23,5 +31,6 @@ module.exports = {
   EMAILUSER,
   EMAILPASSWORD,
   EMAILPORT,
-  HOST_URI
+  HOST_URI,
+  CLASSES
 }

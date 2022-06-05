@@ -19,6 +19,7 @@ const { sub, set } = require('date-fns')
 
 const { PubSub } = require('graphql-subscriptions')
 const { authorized, isAdmin, notFound, minLenghtTest, idNotFound } = require('../utils/errors')
+const { getAttachment } = require('../utils/receipt')
 const pubsub = new PubSub()
 
 const resolvers = {
@@ -531,16 +532,11 @@ const resolvers = {
         if (eventCanBeBooked) {
           savedVisit = await visit.save()
           const details = [
-            {
-              name: 'link',
-              value: `${config.HOST_URI}/${savedVisit.id}`
-            },
-            {
-              name: 'visit',
-              value: `${event.title} ${visit.startTime}-${visit.endTime}`
-            }
+            { name: 'link', value: `${config.HOST_URI}/${savedVisit.id}` },
+            { name: 'visit', value: `${event.title} ${visit.startTime}-${visit.endTime}` }
           ]
           const mail = await Email.findOne({ name: 'welcome' })
+          const attachment = await getAttachment(savedVisit, event)
           if (process.env.NODE_ENV !== 'test') {
             await mailer.sendMail({
               from: 'Luma-Varaukset <noreply@helsinki.fi>',
@@ -554,7 +550,11 @@ const resolvers = {
                 from: 'Luma-Varaukset <noreply@helsinki.fi>',
                 to: recipient,
                 subject: mail.adSubject,
-                text: fillStringWithValues(mail.adText, details)
+                text: fillStringWithValues(mail.adText, details),
+                attachments: [{
+                  filename: 'info.pdf',
+                  content: attachment
+                }]
               })
             })
           }
@@ -569,8 +569,6 @@ const resolvers = {
           return savedVisit
         }
       } catch (error) {
-        event.availableTimes = availableTimes.map(availableTime => availableTime.toISOString())
-        await event.save()
         await savedVisit.delete()
         throw new UserInputError(error.message, {
           invalidArgs: args,

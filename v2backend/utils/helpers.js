@@ -63,7 +63,7 @@ const initEmailMessages = async () => {
     html: '<h1>html/link/r</h1>',
     subject: 'LUMA-tiedeluokan opintokäyntivahvistus',
     adSubject: 'Uusi varaus',
-    ad: ['tester@jest.com', 'jester@second.com'],
+    ad: ['mozelle.willms53@ethereal.email'],
     adText: '/visit/r'
   })
   await thanks.save()
