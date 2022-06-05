@@ -6,7 +6,6 @@ import { Formik } from 'formik'
 import { Input } from '../../Embeds/Input'
 import { UserContext } from '../../services/contexts'
 import { useEvict } from '../../hooks/contexts'
-import { loginValidate } from '../../helpers/validate'
 import { error } from '../../helpers/toasts'
 
 const Login = ({ show, close }) => {
@@ -29,7 +28,6 @@ const Login = ({ show, close }) => {
 
   return (
     <Formik
-      validate={loginValidate}
       initialValues={{
         username: '',
         password: '',

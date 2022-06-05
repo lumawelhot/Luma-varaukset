@@ -4,6 +4,7 @@ import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Button, Radio } from '../../../Embeds/Button'
 import { eventInit } from '../../../helpers/initialvalues'
+import { error, success } from '../../../helpers/toasts'
 import { formError } from '../../../helpers/utils'
 import { EventContext } from '../../../services/contexts'
 import Form from './Form'
@@ -33,13 +34,19 @@ const Event = ({ show, close, initialValues=eventInit, options, modify }) => {
   const handleModify = async () => {
     if (await formError(formRef.current)) return
     const modified = await mod({ ...getArguments(), event: event.id })
-    if (modified) close()
+    if (modified) {
+      success(t('notify-event-modify-success'))
+      close()
+    } else error(t('notify-event-modify-failed'))
   }
 
   const handleAdd = async () => {
     if (await formError(formRef.current)) return
     const added = await add(getArguments())
-    if (added) close()
+    if (added) {
+      success(t('notify-event-add-success'))
+      close()
+    } else error(t('notify-event-add-failed'))
   }
 
   return (
@@ -70,7 +77,7 @@ const Event = ({ show, close, initialValues=eventInit, options, modify }) => {
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>
         <Button
-          onClick={() => type === 'create' ? handleAdd() : handleModify()}
+          type='submit' onClick={() => type === 'create' ? handleAdd() : handleModify()}
         >{type === 'create' ? t('create-event') : t('modify-event')}</Button>
       </Modal.Footer>
     </Modal>

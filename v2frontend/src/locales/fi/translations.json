@@ -269,8 +269,17 @@
   "password-not-match": "Salasanat eivät täsmää",
 
   "too-small": "Annetun syötteen oltava suurempi kuin 0",
+  "atleast-one-visittype": "Valitse etä- tai lähivierailu",
+  "atleast-one-language": "Valitse vähintään yksi kieli",
+  "atleast-one-grade": "Valitse vähintään yksi luokka-aste",
+  "atleast-one-resourceid": "Valitse vähintään yksi tiedeluokka",
+  "atleast-one-remoteplatform": "Valitse vähintään yksi etäalusta",
+  "invalid-time": "Virheellinen kellonaika",
   "passed": "Ei varattavissa",
   "check-this-field": "Valitse tämä kenttä",
+  "text": "Teksti",
+  "checkbox": "Rastiruutu",
+  "radio": "Radio-valinta",
 
   "notify-booking-success": "Vierailun varaaminen onnistui",
   "notify-booking-failed": "Vierailun varaaminen epäonnistui",
@@ -287,5 +296,11 @@
   "notify-form-add-success": "Lomakkeen luominen onnistui",
   "notify-form-add-failed": "Lomakkeen luominen epäonnistui",
   "notify-form-modify-success": "Lomakkeen muokkaaminen onnistui",
-  "notify-form-modify-failed": "Lomakkeen muokkaaminen epäonnistui"
+  "notify-form-modify-failed": "Lomakkeen muokkaaminen epäonnistui",
+  "notify-event-modify-success": "Vierailun muokkaaminen onnistui",
+  "notify-event-modify-failed": "Vierailun muokkaaminen epäonnistui",
+  "notify-event-add-success": "Vierailun lisääminen onnistui",
+  "notify-event-add-failed": "Vierailun lisääminen epäonnistui",
+
+  "modify-form-field": "Muokkaa kenttää"
 }

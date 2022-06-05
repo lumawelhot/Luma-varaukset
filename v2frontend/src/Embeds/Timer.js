@@ -2,7 +2,9 @@ import React from 'react'
 import Countdown from 'react-countdown'
 
 const renderer = ({ minutes, seconds, completed }) => {
-  if (completed) return <span style={{ color: 'red', fontWeight: 'bold' }}>0:00</span>
+  if (completed) {
+    return <span style={{ color: 'red', fontWeight: 'bold' }}>0:00</span>
+  }
   const secString = seconds < 10 ? `0${seconds}` : seconds
   const totalSeconds = 60 * minutes + seconds
   const color = totalSeconds >= 120 ? 'green' : 'red'

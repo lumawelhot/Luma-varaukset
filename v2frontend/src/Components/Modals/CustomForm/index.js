@@ -102,10 +102,12 @@ const CustomForm = ({ show, close, initialValues=customformInit, modify }) => {
         />
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>
-        {!onModify && <Button onClick={handleAddField}>{t('add-form-field')}</Button>}
-        {onModify && <Button onClick={handleModifyField}>{t('modify-form-field')}</Button>}
-        {!modify && <Button type='submit' onClick={handleAddForm} className='active'>{t('create-custom-form')}</Button>}
-        {modify && <Button type='submit' onClick={handleModifyForm} className='active'>{t('modify-custom-form')}</Button>}
+        <div style={{ lineHeight: 3, marginBottom: -5 }}>
+          {!onModify && <Button onClick={handleAddField}>{t('add-form-field')}</Button>}
+          {onModify && <Button onClick={handleModifyField}>{t('modify-form-field')}</Button>}
+          {!modify && <Button type='submit' onClick={handleAddForm} className='active'>{t('create-custom-form')}</Button>}
+          {modify && <Button type='submit' onClick={handleModifyForm} className='active'>{t('modify-custom-form')}</Button>}
+        </div>
       </Modal.Footer>
     </Modal>
   )

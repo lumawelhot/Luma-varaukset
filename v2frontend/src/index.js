@@ -28,7 +28,7 @@ import { registerLocale } from  'react-datepicker'
 import fi from 'date-fns/locale/fi'
 registerLocale('fi', fi)
 
-const BASE_URL = process.env.NODE_ENV === 'production' ? process.env.PUBLIC_URL : 'http://localhost:3001'
+const BASE_URL = (process.env.NODE_ENV === 'production' && process.env.PUBLIC_URL) ? process.env.PUBLIC_URL : 'http://localhost:3001'
 const WS_URL = BASE_URL.replace(/^http/,'ws') + '/graphql/ws'
 
 const authLink = setContext((_, { headers }) => {
@@ -77,17 +77,7 @@ ReactDOM.render(
         <ContextProviders>
           <ChakraProvider>
             <App />
-            <ToastContainer
-              position="top-right"
-              autoClose={4000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-            />
+            <ToastContainer />
           </ChakraProvider>
         </ContextProviders>
       </Router>

@@ -48,3 +48,13 @@ export const formError = async current => {
   }
   return false
 }
+
+export const customFormError = async (real, fields) => {
+  for (let i in real) {
+    const field = real[i]
+    if (field?.validation?.required && fields[i]?.value?.length <= 0) {
+      return true
+    }
+  }
+  return false
+}

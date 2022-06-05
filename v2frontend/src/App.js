@@ -21,6 +21,7 @@ import Event from './Components/Modals/Event'
 import { eventInitWithValues } from './helpers/initialvalues'
 import { useNavigate } from 'react-router-dom'
 import FormList from './Components/Pages/FormList'
+import Root from './Root'
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false)
@@ -51,22 +52,22 @@ const App = () => {
             <VisitPage />
             <LumaCalendar />
           </>} />
-          <Route path='/visits' element={user ? <VisitList /> : <></>} />
+          <Route path='/visits' element={user ? <VisitList /> : <Root />} />
           <Route path='/visits/:id' element={<>
             {user ? <>
               <VisitList />
               <VisitPage />
             </> : <Navigate to={window.location.href.split('/visits')[1]} />}
           </>}/>
-          <Route path='/users' element={user?.isAdmin ? <UserList /> : <></>} />
-          <Route path="/events" element={user ? <EventList /> : <></>} />
-          <Route path="/groups" element={user ? <GroupList /> : <></>} />
-          <Route path="/configs" element={user ? <Configs></Configs> : <></>} />
-          <Route path="/configs/:page" element={user ? <Configs /> : <></>} />
-          <Route path="/extras" element={user ? <ExtraList /> : <></>} />
-          <Route path="/forms" element={user ? <FormList /> : <></>} />
+          <Route path='/users' element={user?.isAdmin ? <UserList /> : <Root />} />
+          <Route path="/events" element={user ? <EventList /> : <Root />} />
+          <Route path="/groups" element={user ? <GroupList /> : <Root />} />
+          <Route path="/configs" element={user ? <Configs></Configs> : <Root />} />
+          <Route path="/configs/:page" element={user ? <Configs /> : <Root />} />
+          <Route path="/extras" element={user ? <ExtraList /> : <Root />} />
+          <Route path="/forms" element={user ? <FormList /> : <Root />} />
           <Route path="/visit" element={<>
-            <Visit event={event}>
+            <Visit>
               {user && !event?.disabled && !event?.booked &&
                 <>
                   <Button onClick={() => disable(event.id)}>{t('disable')}</Button>

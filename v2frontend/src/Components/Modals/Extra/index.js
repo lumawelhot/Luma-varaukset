@@ -33,7 +33,7 @@ const Extra = ({ show, close, handle, title, initialValues }) => {
         <Form ref={formRef} initialValues={initialValues} />
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>
-        <Button onClick={handleSubmit}>{title}</Button>
+        <Button type='submit' onClick={handleSubmit}>{title}</Button>
       </Modal.Footer>
     </Modal>
   )

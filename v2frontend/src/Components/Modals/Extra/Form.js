@@ -16,6 +16,7 @@ const Form = React.forwardRef((props, ref) => {
   return (
     <Formik
       innerRef={ref}
+      onSubmit={() => {}}
       initialValues={props.initialValues}
       validationSchema={ExtraValidation}
     >

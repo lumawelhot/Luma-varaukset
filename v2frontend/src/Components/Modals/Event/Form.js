@@ -54,10 +54,11 @@ const Form = React.forwardRef((props, ref) => {
   return (
     <Formik
       innerRef={ref}
+      onSubmit={() => {}}
       validationSchema={EventValidation}
       initialValues={props.initialValues}
     >
-      {({ handleChange, setFieldValue, handleBlur, values, errors, touched }) => (
+      {({ handleChange, setFieldValue, handleBlur, setFieldTouched, values, errors, touched }) => (
         <div style={{ overflowX: 'hidden', padding: 3 }}>
           <Input
             id='title'
@@ -111,6 +112,7 @@ const Form = React.forwardRef((props, ref) => {
               {PLATFORMS.map((p, i) => <Checkbox
                 key={i}
                 value={`${i + 1}`}
+                onBlur={() => setFieldTouched('remotePlatforms')}
               >
                 {PLATFORMS[i]}
               </Checkbox>)}
@@ -120,10 +122,12 @@ const Form = React.forwardRef((props, ref) => {
               {values.remotePlatforms.includes(`${PLATFORMS.length + 1}`) && <Input
                 id='otherRemotePlatformOption'
                 onChange={handleChange}
+                onBlur={() => setFieldTouched('remotePlatforms')}
                 value={values.otherRemotePlatformOption}
               />}
             </Stack>
           </CheckboxGroup>}
+          {errors.remotePlatforms && touched.remotePlatforms && <Error>{t(errors.remotePlatforms)}</Error>}
           <CheckboxGroup value={values.languages} onChange={v => {
             setFieldValue('languages', v)
           }}>
@@ -133,11 +137,12 @@ const Form = React.forwardRef((props, ref) => {
                 <Checkbox
                   key={l}
                   value={l}
+                  onBlur={() => setFieldTouched('languages')}
                 >{LANG_MAP[l]}</Checkbox>
               ))}
             </Stack>
           </CheckboxGroup>
-          {errors.languages && <Error>{t(errors.languages)}</Error>}
+          {errors.languages && touched.languages && <Error>{t(errors.languages)}</Error>}
           <CheckboxGroup value={values.grades} onChange={v => {
             setFieldValue('grades', v)
           }}>
@@ -147,11 +152,12 @@ const Form = React.forwardRef((props, ref) => {
                 <Checkbox
                   key={c.value}
                   value={c.value.toString()}
+                  onBlur={() => setFieldTouched('grades')}
                 >{c.label}</Checkbox>
               ))}
             </Stack>
           </CheckboxGroup>
-          {errors.grades && <Error>{t(errors.grades)}</Error>}
+          {errors.grades && touched.grades && <Error>{t(errors.grades)}</Error>}
           <CheckboxGroup value={values.resourceids} onChange={v => {
             setFieldValue('extras', values.extras.filter(e => someExist(e, v.map(r => Number(r)))))
             setFieldValue('resourceids', v)
@@ -162,11 +168,12 @@ const Form = React.forwardRef((props, ref) => {
                 <Checkbox
                   key={c.value}
                   value={c.value.toString()}
+                  onBlur={() => setFieldTouched('resourceids')}
                 >{c.label}</Checkbox>
               ))}
             </Stack>
           </CheckboxGroup>
-          {errors.resourceids && <Error>{t(errors.resourceids)}</Error>}
+          {errors.resourceids && touched.resourceids && <Error>{t(errors.resourceids)}</Error>}
           <CheckboxGroup onChange={v => setFieldValue('extras', v)} value={values.extras}>
             <Title>{t('choose-extras')}</Title>
             <Stack direction='col'>

@@ -15,14 +15,13 @@ const ModifyUser = ({ show, close, initialValues }) => {
   const { current: user, modify } = useContext(UserContext)
   const [modifyPassword, setModifyPassword] = useState(false)
 
-  const submit = async (values, formik) => {
+  const submit = async (values) => {
     const { username, password, isAdmin } = values
     if (await modify({ user: values.id, username, password, isAdmin: isAdmin === 'true' })) {
       success(t('notify-user-modify-success'))
       close()
     }
     else error(t('notify-user-modify-error'))
-    formik.resetForm()
   }
 
   return (

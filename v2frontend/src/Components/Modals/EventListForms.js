@@ -65,7 +65,6 @@ const EventListForms = ({ selected, type, show, close, reset }) => {
       show={show}
       backdrop="static"
       onHide={close}
-      scrollable={true}
     >
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         {type === 'group' && <Modal.Title>{t('add-events-to-group')}</Modal.Title>}

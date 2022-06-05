@@ -10,13 +10,13 @@ import { EventContext, VisitContext, UserContext } from '../../../services/conte
 import Form from './Form'
 import Info from './Info'
 import Status from './Status'
-import { formError } from '../../../helpers/utils'
+import { formError, customFormError } from '../../../helpers/utils'
 import Steps, { Step } from 'rc-steps'
 import { CheckIcon } from '@chakra-ui/icons'
 import { error, success } from '../../../helpers/toasts'
 
 
-const Visit = ({ children, event }) => {
+const Visit = ({ children }) => {
   const { t } = useTranslation()
   const [phase, setPhase] = useState(0)
   const [showInfo, setShowInfo] = useState(false)
@@ -27,6 +27,7 @@ const Visit = ({ children, event }) => {
   const { book } = useContext(VisitContext)
   const { cacheModify, find, remove, lock, unlock } = useContext(EventContext)
   const { current: user } = useContext(UserContext)
+  const { current: event } = useContext(EventContext)
   const navigate = useNavigate()
   const formRef = useRef()
 
@@ -48,12 +49,13 @@ const Visit = ({ children, event }) => {
   }
 
   const handleSubmit = async () => {
-    const type = formRef.current.values.visitType
-    const customFormData = JSON.stringify(formRef.current.values.customFormData)
+    const values = formRef.current.values
+    const type = values.visitType
+    const customFormData = JSON.stringify(values.customFormData)
     const inPersonVisit = type === 'inperson' ? true : false
     const remoteVisit = type === 'remote' ? true : false
     const variables = {
-      ...formRef.current.values,
+      ...values,
       event: event.id,
       token: token,
       inPersonVisit,
@@ -62,6 +64,7 @@ const Visit = ({ children, event }) => {
     }
     // this should be defined here, otherwise we are getting an error
     if (await formError(formRef.current)) return
+    if (await customFormError(event?.customForm?.fields, values.customFormData)) return
     increment()
     const result = await book(variables)
     if (result?.event) {

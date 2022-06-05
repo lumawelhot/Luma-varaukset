@@ -60,10 +60,10 @@ const Form = React.forwardRef((props, ref) => {
         customFormData: form?.fields?.map(f => {
           if (f.type === 'checkbox') return { name: f.name, value: [] }
           else return { name: f.name, value: '' }
-        })
+        }),
       }}
     >
-      {({ handleChange, setFieldValue, handleBlur, values, errors, touched }) => (
+      {({ handleChange, setFieldValue, handleBlur, setFieldTouched, values, errors, touched }) => (
         <div className={props.show ? 'visible' : 'hidden'}>
           {event?.languages.length > 1 && (
             <RadioGroup onChange={v => setFieldValue('language', v)} value={values.language}>
@@ -240,9 +240,11 @@ const Form = React.forwardRef((props, ref) => {
               <Title>{needed ? required(field.name) : field.name}</Title>
               {type === 'text' && <Input
                 value={values?.customFormData[j].value}
+                onBlur={() => setFieldTouched(`custom-${j}`)}
                 onChange={e => {
+                  const value = e.target.value
                   setFieldValue('customFormData',
-                    values?.customFormData.map((c, i) => j === i ? { name: c.name, value: e.target.value } : c)
+                    values?.customFormData.map((c, i) => j === i ? { name: c.name, value } : c)
                   )
                 }}
               />}
@@ -254,6 +256,7 @@ const Form = React.forwardRef((props, ref) => {
                 <Stack direction='col'>
                   {field.options.map((o, i) => <Radio
                     key={i}
+                    onBlur={() => setFieldTouched(`custom-${j}`)}
                     value={o.value.toString()}
                   >{o.text}</Radio>)}
                 </Stack>
@@ -268,11 +271,12 @@ const Form = React.forwardRef((props, ref) => {
                 <Stack direction='col'>
                   {field.options.map((o, i) => <Checkbox
                     key={i}
+                    onBlur={() => setFieldTouched(`custom-${j}`)}
                     value={o.value.toString()}
                   >{o.text}</Checkbox>)}
                 </Stack>
               </CheckboxGroup>}
-              {needed && values?.customFormData[j].value.length <= 0 && <Error>{t('fill-field')}</Error>}
+              {needed && (touched[`custom-${j}`] || touched.customFormData) && values?.customFormData[j]?.value?.length <= 0 && <Error>{t('fill-field')}</Error>}
             </div>
           })}
         </div>

@@ -20,14 +20,6 @@ export const ModifyUserValidation = () => Yup.object().shape({
   isAdmin: Yup.bool().required(t('fill-field'))
 })
 
-export const userValidateModify = () => {
-
-}
-
-export const loginValidate = () => {
-
-}
-
 export const GroupValidation = () => Yup.object().shape({
   name: Yup.string().required(t('fill-field')),
   maxCount: Yup.number().min(1, t('too-small')).required(t('fill-field'))
@@ -59,7 +51,7 @@ export const VisitValidation = () => Yup.object().shape({
   privacyPolicy: Yup.bool()
     .isTrue(t('check-this-field')),
   remoteVisitGuidelines: Yup.bool()
-    .isTrue(t('check-this-field'))
+    .isTrue(t('check-this-field')),
 })
 
 export const ExtraValidation = () => Yup.object().shape({
@@ -84,12 +76,19 @@ export const EventValidation = () => Yup.object().shape({
     is: remoteVisit => !remoteVisit,
     then: Yup.bool().oneOf([true], t('atleast-one-visittype'))
   }),
+  remotePlatforms: Yup.array()
+    .when('remoteVisit', {
+      is: true,
+      then: Yup.array().min(1, t('atleast-one-remoteplatform'))
+    }),
   languages: Yup.array().min(1, t('atleast-one-language')),
   grades: Yup.array().min(1, t('atleast-one-grade')),
   resourceids: Yup.array().min(1, t('atleast-one-resourceid')),
   waitingTime: Yup.number()
-    .min(0)
-    .required(t('fill-field'))
+    .min(0, t('too-small'))
+    .required(t('fill-field')),
+  start: Yup.date().required(t('fill-field')).typeError(t('invalid-time')),
+  end: Yup.date().required(t('fill-field')).typeError(t('invalid-time')),
 })
 
 export const CustomFormValidation = () => Yup.object().shape({

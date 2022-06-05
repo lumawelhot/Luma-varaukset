@@ -1,9 +1,10 @@
 import React, { useContext } from 'react'
-import { Badge, OverlayTrigger, Popover, PopoverHeader } from 'react-bootstrap'
+import { OverlayTrigger, Popover, PopoverHeader } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { BsEyeSlashFill } from 'react-icons/bs'
 import { FaLock } from 'react-icons/fa'
 import { CLASSES, LANGUAGE_SHORT } from '../../config'
+import { Badge } from '../../Embeds/Badge'
 import { EventContext } from '../../services/contexts'
 
 const Event = ({ content }) => {
@@ -43,7 +44,7 @@ const Event = ({ content }) => {
       </PopoverHeader>
       <Popover.Body style={{ padding: 10, paddingTop: 5, paddingBottom: 5 }}>
         {event.tags.map((t, i) => <Badge
-          style={{ color: 'black', marginRight: 5, marginLeft: 5, fontSize: 11 }}
+          style={{ marginRight: 5, marginLeft: 0, fontSize: 11 }}
           key={i}
           bg="info"
         >{t.name}</Badge>)}
@@ -78,7 +79,7 @@ const Event = ({ content }) => {
     <OverlayTrigger
       placement='top'
       overlay={popover()}
-      delay={400}
+      delay={700}
     >
       <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
         <div>

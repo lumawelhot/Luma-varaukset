@@ -8,7 +8,7 @@ const UserProvider = ({ children }) => {
   const [user, setUser] = useState()
   const [users, setUsers] = useState()
 
-  const evict = () => setUser(undefined)
+  const evict = () => setUser()
 
   const fetch = async () => {
     try {
@@ -16,7 +16,7 @@ const UserProvider = ({ children }) => {
       const { data } = await client.query({ query: CURRENT_USER, fetchPolicy: 'no-cache' })
       setUser(data?.me)
     } catch (err) {
-      setUser(undefined)
+      setUser(null)
     }
   }
 
@@ -45,7 +45,7 @@ const UserProvider = ({ children }) => {
       if (data?.updateUser) {
         const usr = data.updateUser
         setUsers(users.map(u => u.id === usr.id ? usr : u))
-        setUser(usr)
+        if (usr.id === user.id) setUser(usr)
         return true
       }
     } catch (err) {
@@ -78,7 +78,7 @@ const UserProvider = ({ children }) => {
     return null
   }
 
-  useEffect(fetch)
+  useEffect(fetch, [])
 
   return (
     <UserContext.Provider
