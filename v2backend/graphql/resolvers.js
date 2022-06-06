@@ -19,7 +19,7 @@ const { sub, set } = require('date-fns')
 
 const { PubSub } = require('graphql-subscriptions')
 const { authorized, isAdmin, notFound, minLenghtTest, idNotFound } = require('../utils/errors')
-const { getAttachment } = require('../utils/receipt')
+const { getNotifyHtml } = require('../utils/receipt')
 const pubsub = new PubSub()
 
 const resolvers = {
@@ -536,7 +536,6 @@ const resolvers = {
             { name: 'visit', value: `${event.title} ${visit.startTime}-${visit.endTime}` }
           ]
           const mail = await Email.findOne({ name: 'welcome' })
-          const attachment = await getAttachment(savedVisit, event)
           if (process.env.NODE_ENV !== 'test') {
             await mailer.sendMail({
               from: 'Luma-Varaukset <noreply@helsinki.fi>',
@@ -551,10 +550,7 @@ const resolvers = {
                 to: recipient,
                 subject: mail.adSubject,
                 text: fillStringWithValues(mail.adText, details),
-                attachments: [{
-                  filename: 'info.pdf',
-                  content: attachment
-                }]
+                html: getNotifyHtml(visit, event)
               })
             })
           }

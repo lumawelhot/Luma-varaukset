@@ -1,28 +1,19 @@
 const { format } = require('date-fns')
-const puppeteer = require('puppeteer')
 const { CLASSES } = require('./config')
-const { getBookingInfo } = require('./html')
 
-const getPdfContent = async (html) => {
-  const browser = await puppeteer.launch({
-    headless: true
-  })
-  const page = await browser.newPage()
-  await page.setContent(html, {
-    waitUntil: 'domcontentloaded'
-  })
-  const pdfBuffer = await page.pdf({
-    format: 'A4',
-    margin: {
-      top: '2cm',
-      bottom: '2cm',
-      left: '2cm',
-      right: '2cm'
-    }
-  })
-  await browser.close()
+const gridContainer = (name, value) => `
+<div class="grid-container">
+  <div class="grid-item">${u(name)}</div>
+  <div class="grid-item">${u(value)}</div>
+</div>
+`
 
-  return pdfBuffer
+const containerContent = (names, values) => {
+  let containerHtml = ''
+  for (let i in names) {
+    containerHtml += gridContainer(names[i], values[i])
+  }
+  return containerHtml
 }
 
 const u = (field) => {
@@ -30,35 +21,24 @@ const u = (field) => {
   else return field
 }
 
-const getCustomFormHtml = data => {
+const customFormHtml = data => {
   if (!data) return ''
   let html = ''
   for (let d of data) {
     if (typeof d.value === 'string') {
-      html += `
-      <div class="grid-container">
-        <div class="grid-item">${d.name}</div>
-        <div class="grid-item">${d.value}</div>
-      </div>
-      `
+      html += gridContainer(d.name, d.value)
     } else if (Array.isArray(d.value)) {
       let selectedHtml = ''
       for (let v of d.value) {
         selectedHtml += `<div>${v}</div>`
       }
-      html += `
-      <div class="grid-container">
-        <div class="grid-item">${d.name}</div>
-        <div class="grid-item">
-          ${selectedHtml}
-        </div>
-      </div>
-    `}
+      html += gridContainer(d.name, selectedHtml)
+    }
   }
   return html
 }
 
-const getScienceClasses = data => {
+const scienceClasses = data => {
   if (!data) return ''
   let html = ''
   for (let d of data) {
@@ -67,26 +47,94 @@ const getScienceClasses = data => {
   return html
 }
 
-const getAttachment = async (visit, event) => {
-  return await getPdfContent(getBookingInfo({
-    eventName: u(event.title),
-    eventDescription: u(event.description),
-    eventScienceClasses: getScienceClasses(event.resourceids),
-    eventDate: u(format(new Date(event.start), 'dd.MM.yy')),
-    eventStart: u(format(new Date(visit.startTime), 'HH:mm')),
-    eventEnd: u(format(new Date(visit.endTime), 'HH:mm')),
-    eventType: u(visit.removeVisit ? 'Etävierailu' : 'Lähivierailu'),
-    name: u(visit.clientName),
-    phone: u(visit.clientPhone),
-    email: u(visit.clientEmail),
-    schoolName: u(visit.schoolName),
-    schoolLocation: u(visit.schoolLocation),
-    grade: u(visit.grade),
-    participants: u(visit.participants),
-    dataUseAgreement: u(visit.dataUseAgreement ? 'Kyllä' : 'Ei'),
-    language: u(visit.language === 'fi' ? 'Suomi' : (visit.language === 'en' ? 'Englanti' : 'Ruotsi')),
-    customFormHtml: u(getCustomFormHtml(visit.customFormData))
-  }))
+const bookingInfo = (event, visit) => `
+<!DOCTYPE html>
+<body>
+  <style>
+    body {
+      font-family: sans-serif;;
+    }
+    #header {
+      text-decoration: underline;
+      padding-bottom: 10px;
+    }
+    .container {
+      margin-left: 1em;
+    }
+    .grid-container {
+      display: grid;
+      gap: 50px;
+      grid-template-columns: 200px auto;
+    }
+    .grid-item {
+      padding-bottom: 5px;
+    }
+  </style>
+  <h1 id="header">
+    Varauksen tiedot
+  </h1>
+  <h3 id="subheader">
+    Vierailun tiedot:
+  </h3>
+  <div class="container">
+    ${event}
+  </div>
+  <h3 id="subheader">
+    Varaajan tiedot:
+  </h3>
+  <div class="container">
+    ${visit}
+  </div>
+</body>
+`
+
+const getNotifyHtml= (visit, event) => {
+  return bookingInfo(
+    containerContent(
+      [
+        'Vierailun nimi',
+        'Vierailun kuvaus',
+        'Tiedeluokka(t)',
+        'Päivämäärä',
+        'Aloitusajankohta',
+        'Lopetusajankohta',
+        'Vierailun tyyppi'
+      ],
+      [
+        u(event.title),
+        u(event.description),
+        scienceClasses(event.resourceids),
+        u(format(new Date(event.start), 'dd.MM.yy')),
+        u(format(new Date(visit.startTime), 'HH:mm')),
+        u(format(new Date(visit.endTime), 'HH:mm')),
+        u(visit.removeVisit ? 'Etävierailu' : 'Lähivierailu'),
+      ]
+    ),
+    containerContent(
+      [
+        'Varaajan nimi',
+        'Varaajan puhelinnumero',
+        'Varaajan sähköpostiosoite',
+        'Opetusyhteisön nimi',
+        'Opetusyhteisön sijainti',
+        'Luokka-aste',
+        'Osallistujamäärä',
+        'Lupa tutkimuskäyttöön',
+        'Kieli'
+      ],
+      [
+        u(visit.clientName),
+        u(visit.clientPhone),
+        u(visit.clientEmail),
+        u(visit.schoolName),
+        u(visit.schoolLocation),
+        u(visit.grade),
+        u(visit.participants),
+        u(visit.dataUseAgreement ? 'Kyllä' : 'Ei'),
+        u(visit.language === 'fi' ? 'Suomi' : (visit.language === 'en' ? 'Englanti' : 'Ruotsi'))
+      ]
+    ) + u(customFormHtml(visit.customFormData)),
+  )
 }
 
-module.exports = { getAttachment }
+module.exports = { getNotifyHtml }
