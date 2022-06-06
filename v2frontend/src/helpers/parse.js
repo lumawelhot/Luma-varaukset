@@ -5,8 +5,8 @@ import { calcAvailableTimes } from './calculator'
 export const parseEvent = (event) => event
   ?.availableTimes.map(timeSlot => ({
     id: event.id,
-    start: new Date(timeSlot.startTime),
-    end: new Date(timeSlot.endTime),
+    start: new Date(timeSlot?.startTime),
+    end: new Date(timeSlot?.endTime),
     booked: false,
     disabled: event.disabled,
     resourceids: event.resourceids,

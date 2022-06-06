@@ -31,7 +31,7 @@ const ToggleMedia = styled.span`
 `
 
 const ViewMedia = styled.span`
-  @media (max-width: 480px) {
+  @media (max-width: 500px) {
     display: none;
     visibility: hidden;
   }

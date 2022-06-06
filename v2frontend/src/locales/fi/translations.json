@@ -280,6 +280,7 @@
   "text": "Teksti",
   "checkbox": "Rastiruutu",
   "radio": "Radio-valinta",
+  "email-not-match": "Salasanat eivät täsmää",
 
   "notify-booking-success": "Vierailun varaaminen onnistui",
   "notify-booking-failed": "Vierailun varaaminen epäonnistui",

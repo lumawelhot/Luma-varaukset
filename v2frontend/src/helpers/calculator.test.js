@@ -26,6 +26,11 @@ describe('Find range', () => {
 
 describe('Split', () => {
 
+  it('slot empty', () => {
+    const result = split([], [0, 2], 1)
+    expect(result).toEqual([])
+  })
+
   it('slot in the beginning', () => {
     const result = split([[0, 10]], [0, 2], 1)
     expect(result).toEqual([[3, 10]])
@@ -75,24 +80,34 @@ describe('Split', () => {
 
 describe('Difference', () => {
 
+  it('slot empty', () => {
+    const result = diff([], [0, 10], 1)
+    expect(result).toEqual([[0, 10]])
+  })
+
   it('slot in the beginning', () => {
-    const result = diff([0, 10], [[1, 3]], 1)
+    const result = diff([[1, 3]], [0, 10], 1)
     expect(result).toEqual([[4, 10]])
   })
 
   it('slot in the end', () => {
-    const result = diff([0, 10], [[7, 9]], 1)
+    const result = diff([[7, 9]], [0, 10], 1)
     expect(result).toEqual([[0, 6]])
   })
 
   it('slot in the middle', () => {
-    const result = diff([0, 10], [[4, 6]], 1)
+    const result = diff([[4, 6]], [0, 10], 1)
     expect(result).toEqual([[0, 3], [7, 10]])
   })
 
   it('slot multi', () => {
-    const result = diff([0, 20], [[4, 5], [8, 9], [11,14]], 1)
+    const result = diff([[4, 5], [8, 9], [11,14]], [0, 20], 1)
     expect(result).toEqual([[0, 3], [6, 7], [15, 20]])
+  })
+
+  it('slot full', () => {
+    const result = diff([[0, 10]], [0, 10], 1)
+    expect(result).toEqual([])
   })
 
 })

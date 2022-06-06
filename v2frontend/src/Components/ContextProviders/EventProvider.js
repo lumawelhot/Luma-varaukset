@@ -101,7 +101,7 @@ const EventProvider = ({ children }) => {
 
   const evict = () => {
     setMap({})
-    setEvent(undefined)
+    setEvent()
     setParsed([])
     setFetched(false)
     setSelected([])

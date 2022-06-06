@@ -1,8 +1,6 @@
 const { UserInputError, AuthenticationError } = require('apollo-server-errors')
-const { findValidTimeSlot, calculateAvailabelTimes, calculateNewTimeSlot, formatAvailableTimes } = require('../utils/timeCalculation')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const mailer = require('../services/mailer')
 const config = require('../utils/config')
 const uuid = require('uuid')
 
@@ -14,12 +12,13 @@ const Tag = require('../models/tag')
 const Form = require('../models/forms')
 const Email = require('../models/email')
 const Group = require('../models/group')
-const { addNewTags, fillStringWithValues, checkTimeslot } = require('../utils/helpers')
-const { sub, set } = require('date-fns')
+const { addNewTags, checkTimeslot } = require('../utils/helpers')
+const { sub, set, differenceInDays, differenceInHours } = require('date-fns')
 
 const { PubSub } = require('graphql-subscriptions')
 const { authorized, isAdmin, notFound, minLenghtTest, idNotFound } = require('../utils/errors')
-const { getNotifyHtml } = require('../utils/receipt')
+const { calcAvailableTimes, calcFromVisitTimes, calceNewSlot, validTimeSlot, formatAvailableTimes } = require('../utils/calculator')
+const { sendWelcomes, sendCancellation } = require('../utils/mailSender')
 const pubsub = new PubSub()
 
 const resolvers = {
@@ -263,41 +262,6 @@ const resolvers = {
       const userForToken = { username: user.username, id: user._id }
       return { value: jwt.sign(userForToken, config.SECRET, { expiresIn: '12h' }) }
     },
-    createEvent: async (root, args, { currentUser }) => {
-      authorized(currentUser)
-      minLenghtTest(args.grades, 1)
-      minLenghtTest(args.title, 5)
-      if (checkTimeslot(args.start, args.end)) throw new UserInputError('Invalid start or end time')
-
-      const group = await Group.findById(args.group)
-      const mongoTags = await addNewTags(args.tags)
-      const extras = await Extra.find({ _id: { $in: args.extras } })
-
-      const event = new Event({
-        ...args,
-        availableTimes: [{
-          startTime: args.start,
-          endTime: args.end
-        }],
-        disabled: false,
-        resourceids: args.scienceClass,
-        publishDate: args.publishDate ? new Date(args.publishDate) : null,
-      })
-
-      event.extras = extras
-      event.tags = mongoTags
-      if (group) {
-        group.events = group.events.concat(event.id)
-        event.group = group.id
-        await group.save()
-      }
-      await event.save()
-      await event.populate('group').populate('customForm').execPopulate()
-      pubsub.publish('EVENT_CREATED', {
-        eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
-      })
-      return Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
-    },
     createEvents: async (root, args, { currentUser }) => {
       authorized(currentUser)
       minLenghtTest(args.grades, 1)
@@ -407,7 +371,9 @@ const resolvers = {
       const event = notFound(await Event.findByIdAndUpdate(args.event, { ...update }, { returnOriginal: false })
         .populate('visits')
         .populate('customForm'))
-      if (checkTimeslot(args.start ? args.start : event.start, args.end ? args.end : event.end)) throw new UserInputError('invalid start or end')
+      const start = args.start ? new Date(args.start) : new Date(event.start)
+      const end = args.end ? new Date(args.end) : new Date(event.end)
+      if (checkTimeslot(start, end)) throw new UserInputError('invalid start or end')
       if (event.reserved) throw new UserInputError('Event cannot be modified because booking form is open')
       let group
       let oldGroup
@@ -437,17 +403,12 @@ const resolvers = {
       event.extras = extras
       event.tags = await addNewTags(args.tags)
       if (event.visits.length) {
-        const newTimeSlot = calculateNewTimeSlot(
-          event.visits,
-          args.start ? new Date(args.start) : new Date(event.start),
-          args.end ? new Date(args.end) : new Date(event.end)
-        )
+        const newTimeSlot = calceNewSlot(event.visits, start, end)
         if (newTimeSlot) {
-          const eventTimes = {
-            start: new Date(newTimeSlot.start),
-            end: new Date(newTimeSlot.end)
-          }
-          const newAvailableTimes = calculateAvailabelTimes(event.visits, eventTimes, event.waitingTime, event.duration)
+          const newAvailableTimes = calcFromVisitTimes(event.visits, {
+            startTime: new Date(newTimeSlot.start),
+            endTime: new Date(newTimeSlot.end)
+          }, event.waitingTime, event.duration)
           event.start = newTimeSlot.start.toISOString()
           event.end = newTimeSlot.end.toISOString()
           event.availableTimes = formatAvailableTimes(newAvailableTimes)
@@ -455,11 +416,11 @@ const resolvers = {
           throw new UserInputError('invalid start or end')
         }
       } else {
-        args.start ? event.start = args.start : null
-        args.end ? event.end = args.end : null
+        event.start = start.toISOString()
+        event.end = end.toISOString()
         event.availableTimes = [{
-          startTime: args.start ? args.start : event.start.toISOString(),
-          endTime: args.end ? args.end : event.end.toISOString()
+          startTime: start.toISOString(),
+          endTime: end.toISOString()
         }]
       }
       await event.save()
@@ -491,25 +452,14 @@ const resolvers = {
         }
       }
 
-      const visitTime = {
-        startTime: new Date(args.startTime),
-        endTime: new Date(args.endTime)
-      }
-      const availableTimes = event.availableTimes.map(time => ({
-        startTime: new Date(time.startTime),
-        endTime: new Date(time.endTime)
-      }))
-      const eventTime = {
-        start: new Date(event.start),
-        end: new Date(event.end)
-      }
-      const visitTimes = event.visits.concat(visitTime)
+      const visitTime = { startTime: new Date(args.startTime), endTime: new Date(args.endTime) }
+      const availableTimes = calcAvailableTimes(event.availableTimes, visitTime, event.waitingTime, event.duration)
 
-      if (!findValidTimeSlot(availableTimes, visitTime)) {
+      if (!validTimeSlot(event.availableTimes, visitTime)) {
         throw new UserInputError('Given timeslot is invalid')
       }
 
-      event.availableTimes = calculateAvailabelTimes(visitTimes, eventTime, event.waitingTime, event.duration)
+      event.availableTimes = availableTimes
 
       const visit = new Visit({
         ...args,
@@ -518,42 +468,18 @@ const resolvers = {
         extras: [],
         customFormData: args.customFormData ? JSON.parse(args.customFormData) : null
       })
-      const extras = await Extra.find({ _id: { $in: args.extras } })
-      visit.extras = extras
+      visit.extras = await Extra.find({ _id: { $in: args.extras } })
 
       let savedVisit
       event.availableTimes = formatAvailableTimes(event.availableTimes)
+
       try {
-        const now = new Date()
-        const start = new Date(event.start)
-        const startsAfter14Days = start - now >= 1209600000
-        const startsAfter1Hour = start - now >= 3600000
-        const eventCanBeBooked = !currentUser ? startsAfter14Days : startsAfter1Hour
+        const afterDays = differenceInDays(new Date(event.start), new Date()) >= 14
+        const afterHours = differenceInHours(new Date(event.start), new Date()) >= 1
+        const eventCanBeBooked = !currentUser ? afterDays : afterHours
         if (eventCanBeBooked) {
           savedVisit = await visit.save()
-          const details = [
-            { name: 'link', value: `${config.HOST_URI}/${savedVisit.id}` },
-            { name: 'visit', value: `${event.title} ${visit.startTime}-${visit.endTime}` }
-          ]
-          const mail = await Email.findOne({ name: 'welcome' })
-          if (process.env.NODE_ENV !== 'test') {
-            await mailer.sendMail({
-              from: 'Luma-Varaukset <noreply@helsinki.fi>',
-              to: visit.clientEmail,
-              subject: mail.subject,
-              text: fillStringWithValues(mail.text, details),
-              html: fillStringWithValues(mail.html, details)
-            })
-            mail.ad.forEach(recipient => {
-              mailer.sendMail({
-                from: 'Luma-Varaukset <noreply@helsinki.fi>',
-                to: recipient,
-                subject: mail.adSubject,
-                text: fillStringWithValues(mail.adText, details),
-                html: getNotifyHtml(visit, event)
-              })
-            })
-          }
+          await sendWelcomes(visit, event)
           event.visits = event.visits.concat(savedVisit._id)
           event.reserved = null
           if (group) await group.save()
@@ -578,16 +504,6 @@ const resolvers = {
         .populate('extras', { name: 1 })
         .populate('visits', { startTime: 1, endTime: 1 })
         .populate('tags', { name: 1 }))
-
-      const detailsForMail = [{
-        name: 'visit',
-        value: `${event.title} ${visit.startTime}-${visit.endTime}`
-      }]
-
-      const oldAvailableTimes = event.availableTimes.map(time => ({
-        startTime: new Date(time.startTime),
-        endTime: new Date(time.endTime)
-      }))
       let group
       let newEvent
       if (event.group) {
@@ -616,47 +532,16 @@ const resolvers = {
       }
       const visitTimes = event.visits.filter(v => v.id !== visit.id)
 
-      const eventTime = {
-        start: new Date(event.start),
-        end: new Date(event.end)
-      }
-      let newAvailTimes = calculateAvailabelTimes(visitTimes, eventTime, event.waitingTime, event.duration)
-
-      newAvailTimes = newAvailTimes.map(time => {
-        if (typeof time.startTime === 'string') return time
-        return {
-          startTime: time.startTime.toISOString(),
-          endTime: time.endTime.toISOString()
-        }
-      })
-
       try {
         event.visits = event.visits.filter(v => v.id.toString() !== visit.id)
-        event.availableTimes = newAvailTimes
+        event.availableTimes = formatAvailableTimes(calcFromVisitTimes(visitTimes, {
+          startTime: new Date(event.start),
+          endTime: new Date(event.end)
+        }, event.waitingTime, event.duration))
         visit.status = false
+        await sendCancellation(visit, event)
         await visit.save()
         await event.save()
-        pubsub.publish('EVENT_RESERVATION_CANCELLED', {
-          eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
-        })
-        const mail = await Email.findOne({ name: 'cancellation' })
-        if (process.env.NODE_ENV !== 'test') {
-          await mailer.sendMail({
-            from: 'Luma-Varaukset <noreply@helsinki.fi>',
-            to: visit.clientEmail,
-            subject: mail.subject,
-            text: fillStringWithValues(mail.text, detailsForMail),
-            html: fillStringWithValues(mail.html, detailsForMail)
-          })
-          mail.ad.forEach(recipient => {
-            mailer.sendMail({
-              from: 'Luma-Varaukset <noreply@helsinki.fi>',
-              to: recipient,
-              subject: mail.adSubject,
-              text: fillStringWithValues(mail.adText, detailsForMail)
-            })
-          })
-        }
         if (group) await group.save()
         if (newEvent) {
           await newEvent.save()
@@ -664,16 +549,12 @@ const resolvers = {
             eventModified: Object.assign(newEvent.toJSON(), { locked: event.reserved ? true : false })
           })
         }
+        pubsub.publish('EVENT_RESERVATION_CANCELLED', {
+          eventModified: Object.assign(event.toJSON(), { locked: event.reserved ? true : false })
+        })
         return visit
       } catch (error) {
-        event.visits = event.visits.concat(visit._id)
-        event.availableTimes = oldAvailableTimes
-        visit.status = true
-        await event.save()
-        await visit.save()
-        throw new UserInputError(error.message, {
-          invalidArgs: args,
-        })
+        throw new UserInputError(error.message, { invalidArgs: args })
       }
     },
     createExtra: async (root, args, { currentUser }) => {

@@ -5,6 +5,7 @@ const mailer = require('../services/mailer')
 const Email = require('../models/email')
 const { fillStringWithValues } = require('./helpers')
 const config = require('./config')
+const { getNotifyHtml } = require('./receipt')
 
 const getDetails = (visit) => {
   return ([
@@ -19,7 +20,7 @@ const getDetails = (visit) => {
   ])
 }
 
-const send = async (name, days) => {
+const sendAlert = async (name, days) => {
   const mail = await Email.findOne({ name })
   if (!mail) return null
   const start = add(set(new Date(), { hours: 5, minutes: 0, seconds: 0, milliseconds: 0 }), { days })
@@ -66,11 +67,45 @@ const send = async (name, days) => {
 }
 
 const sendReminder = async () => {
-  return await send('reminder', 1)
+  return await sendAlert('reminder', 1)
 }
 
 const sendThanks = async () => {
-  return await send('thanks', 0)
+  return await sendAlert('thanks', 0)
 }
 
-module.exports = { sendReminder, sendThanks }
+const send = async (visit, event, name) => {
+  const details = [
+    { name: 'link', value: `${config.HOST_URI}/${visit.id}` },
+    { name: 'visit', value: `${event.title} ${visit.startTime}-${visit.endTime}` }
+  ]
+  const mail = await Email.findOne({ name })
+  if (process.env.NODE_ENV !== 'test') {
+    await mailer.sendMail({
+      from: 'Luma-Varaukset <noreply@helsinki.fi>',
+      to: visit.clientEmail,
+      subject: mail.subject,
+      text: fillStringWithValues(mail.text, details),
+      html: fillStringWithValues(mail.html, details)
+    })
+    mail.ad.forEach(recipient => {
+      mailer.sendMail({
+        from: 'Luma-Varaukset <noreply@helsinki.fi>',
+        to: recipient,
+        subject: mail.adSubject,
+        text: fillStringWithValues(mail.adText, details),
+        html: getNotifyHtml(visit, event)
+      })
+    })
+  }
+}
+
+const sendWelcomes = async (visit, event) => {
+  await send(visit, event, 'welcome')
+}
+
+const sendCancellation = async (visit, event) => {
+  await send(visit, event, 'cancellation')
+}
+
+module.exports = { sendReminder, sendThanks, sendWelcomes, sendCancellation }
