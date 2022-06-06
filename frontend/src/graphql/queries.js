@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client'
+import { EVENT_FIELDS, VISIT_FIELDS } from './fragments'
 
 export const LOGIN = gql`
   mutation login($username: String!, $password: String!) {
@@ -19,7 +20,8 @@ export const CREATE_USER = gql`
       isAdmin: $isAdmin
     ) {
       username,
-      isAdmin
+      isAdmin,
+      id
     }
   }
 `
@@ -35,50 +37,21 @@ export const USERS = gql`
 `
 
 export const EVENTS = gql`
+  ${EVENT_FIELDS}
   query getEvents {
     getEvents {
-      id
-      title
-      resourceids
-      grades
-      remotePlatforms
-      otherRemotePlatformOption
-      waitingTime
-      tags {
-        id
-        name
-      }
-      start
-      end
-      desc
-      inPersonVisit
-      remoteVisit
-      availableTimes {
-        startTime
-        endTime
-      }
-      visits {
-        startTime
-        endTime
-      }
-      extras {
-        id
-        name
-        inPersonLength
-        remoteLength
-      }
-      duration
-      customForm
-      disabled
-      locked
-      group {
-        id
-        name
-        disabled
-        publishDate
-      }
-      publishDate
-      languages
+      ...EventFields
+    }
+  }
+`
+
+export const EVENT = gql`
+  ${EVENT_FIELDS}
+  query getEvent($id: ID!) {
+    getEvent(
+      id: $id
+    ) {
+      ...EventFields
     }
   }
 `
@@ -93,32 +66,10 @@ export const TAGS = gql`
 `
 
 export const VISITS = gql`
+  ${VISIT_FIELDS}
   query getVisits {
     getVisits {
-      id
-      event {
-        id
-        title
-        resourceids
-      }
-      clientName
-      schoolName
-      schoolLocation
-      clientEmail
-      clientPhone
-      grade
-      participants
-      extras {
-        id
-        name
-      }
-      status
-      startTime
-      endTime
-      remotePlatform
-      customFormData
-      dataUseAgreement
-      language
+      ...VisitFields
     }
   }
 `
@@ -133,12 +84,14 @@ export const CURRENT_USER = gql`
   }
 `
 
-export const CREATE_EVENT = gql`
+// Deprecated
+/* export const CREATE_EVENT = gql`
+  ${EVENT_FIELDS}
   mutation createEvent(
     $title: String!,
     $start: String!,
     $end: String!,
-    $scienceClass: [Int]!,
+    $resourceids: [Int]!,
     $grades: [Int]!,
     $remotePlatforms: [Int],
     $otherRemotePlatformOption: String,
@@ -158,7 +111,7 @@ export const CREATE_EVENT = gql`
       title: $title,
       start: $start,
       end: $end,
-      scienceClass: $scienceClass,
+      scienceClass: $resourceids,
       desc: $desc,
       grades: $grades,
       remotePlatforms: $remotePlatforms,
@@ -174,51 +127,62 @@ export const CREATE_EVENT = gql`
       publishDate: $publishDate
       languages: $languages
     ) {
-      id
-      title
-      resourceids
-      grades
-      remotePlatforms
-      otherRemotePlatformOption
-      start
-      end
-      tags {
-        name
-        id
-      }
-      visits {
-        startTime,
-        endTime
-      }
-      inPersonVisit
-      remoteVisit
-      desc
-      availableTimes {
-        startTime,
-        endTime
-      }
-      extras {
-        name,
-        inPersonLength,
-        remoteLength,
-        id
-      }
-      duration
-      customForm
-      disabled
-      waitingTime
-      locked
-      group {
-        id
-        name
-      }
-      publishDate
-      languages
+      ...EventFields
+    }
+  }
+` */
+
+export const CREATE_EVENTS = gql`
+  ${EVENT_FIELDS}
+  mutation createEvents(
+    $title: String!,
+    $dates: [String]!,
+    $start: String!,
+    $end: String!,
+    $resourceids: [Int]!,
+    $grades: [Int]!,
+    $remotePlatforms: [Int],
+    $otherRemotePlatformOption: String,
+    $remoteVisit: Boolean!,
+    $inPersonVisit: Boolean!,
+    $desc: String,
+    $tags: [String],
+    $waitingTime: Int!
+    $extras: [ID]
+    $duration: Int!,
+    $customForm: ID,
+    $group: ID,
+    $publishDate: String
+    $languages: [String]
+    ) {
+    createEvents (
+      title: $title,
+      dates: $dates,
+      start: $start,
+      end: $end,
+      scienceClass: $resourceids,
+      desc: $desc,
+      grades: $grades,
+      remotePlatforms: $remotePlatforms,
+      otherRemotePlatformOption: $otherRemotePlatformOption,
+      remoteVisit: $remoteVisit,
+      inPersonVisit: $inPersonVisit,
+      tags: $tags
+      waitingTime: $waitingTime
+      extras: $extras
+      duration: $duration
+      customForm: $customForm
+      group: $group
+      publishDate: $publishDate
+      languages: $languages
+    ) {
+      ...EventFields
     }
   }
 `
 
 export const CREATE_VISIT = gql`
+  ${VISIT_FIELDS}
   mutation createVisit(
     $event: ID!
     $clientName: String!
@@ -259,56 +223,15 @@ export const CREATE_VISIT = gql`
       customFormData: $customFormData
       language: $language
     ) {
-      id
-      event {
-        id
-        title
-      }
-      clientName
-      schoolName
-      schoolLocation
-      clientEmail
-      clientPhone
-      startTime
-      endTime
-      grade
-      participants
-      remotePlatform
-      status
-      customFormData
-      language
+      ...VisitFields
     }
   }
 `
 export const FIND_VISIT = gql`
+  ${VISIT_FIELDS}
   query findVisit($id: ID!) {
     findVisit(id: $id) {
-      clientName
-      schoolName
-      schoolLocation
-      clientEmail
-      clientPhone
-      event {
-        title
-        start
-        end
-        resourceids
-        desc
-      }
-      extras {
-        id
-        name
-      }
-      grade
-      startTime
-      endTime
-      participants
-      inPersonVisit
-      remoteVisit
-      status
-      remotePlatform
-      customFormData
-      language
+      ...VisitFields
     }
   }
 `
@@ -379,41 +302,42 @@ export const MODIFY_EXTRA = gql`
   }
 `
 
-export const DELETE_EXTRA = gql`
-  mutation deleteExtra(
-    $id: String!
+export const DELETE_EXTRAS = gql`
+  mutation deleteExtras(
+    $ids: [String]!
   ) {
-    deleteExtra(
-      id: $id
+    deleteExtras(
+      ids: $ids
     )
   }
 `
 
-export const DELETE_EVENT = gql`
-  mutation deleteEvent(
-    $id: String!
+export const DELETE_EVENTS = gql`
+  mutation deleteEvents(
+    $ids: [ID]!
   ) {
-    deleteEvent(
-      id: $id
+    deleteEvents(
+      ids: $ids
     )
   }
 `
 
-export const DELETE_USER = gql`
-  mutation deleteUser(
-    $id: String!
+export const DELETE_USERS = gql`
+  mutation deleteUsers(
+    $ids: [ID]!
   ) {
-    deleteUser(
-      id: $id
+    deleteUsers(
+      ids: $ids
     )
   }
 `
 
-export const UPDATE_EVENT = gql`
+export const MODIFY_EVENT = gql`
+  ${EVENT_FIELDS}
   mutation modifyEvent(
     $event: ID!
     $title: String
-    $scienceClass: [Int]
+    $resourceids: [Int]
     $grades: [Int]
     $remotePlatforms: [Int]
     $otherRemotePlatformOption: String
@@ -432,7 +356,7 @@ export const UPDATE_EVENT = gql`
     modifyEvent(
       event: $event
       title: $title
-      resourceids: $scienceClass
+      resourceids: $resourceids
       grades: $grades
       remotePlatforms: $remotePlatforms
       otherRemotePlatformOption: $otherRemotePlatformOption
@@ -448,39 +372,7 @@ export const UPDATE_EVENT = gql`
       publishDate: $publishDate
       languages: $languages
     ) {
-      id
-      title
-      resourceids
-      grades
-      remotePlatforms
-      otherRemotePlatformOption
-      inPersonVisit
-      remoteVisit
-      desc
-      start
-      end
-      availableTimes {
-        startTime,
-        endTime
-      }
-      extras {
-        name,
-        inPersonLength,
-        remoteLength,
-        id
-      }
-      tags {
-        name,
-        id
-      }
-      customForm
-      disabled
-      group {
-        id
-        name
-      }
-      publishDate
-      languages
+      ...EventFields
     }
   }
 `
@@ -493,7 +385,6 @@ export const DISABLE_EVENT = gql `
       event: $event
     ) {
       id
-      title
       disabled
     }
   }
@@ -507,7 +398,6 @@ export const ENABLE_EVENT = gql `
       event: $event
     ) {
       id
-      title
       disabled
     }
   }
@@ -537,16 +427,6 @@ export const GET_EMAIL_TEMPLATES = gql`
   }
 `
 
-export const GET_FORM = gql`
-  query getForm($id: ID!) {
-    getForm(id: $id) {
-      id
-      name
-      fields
-    }
-  }
-`
-
 export const CREATE_FORM = gql`
   mutation createForm($name: String!, $fields: String) {
     createForm(
@@ -560,7 +440,7 @@ export const CREATE_FORM = gql`
   }
 `
 
-export const UPDATE_FORM = gql`
+export const MODIFY_FORM = gql`
   mutation updateForm($id: ID!, $name: String!, $fields: String) {
     updateForm(
       id: $id
@@ -574,36 +454,25 @@ export const UPDATE_FORM = gql`
   }
 `
 
-export const DELETE_FORM = gql`
-  mutation deleteForm($id: ID!) {
-    deleteForm(
-      id: $id
+export const DELETE_FORMS = gql`
+  mutation deleteForms($ids: [ID]!) {
+    deleteForms(
+      ids: $ids
     )
   }
 `
 
-export const CREATE_FORM_SUBMISSION = gql`
-  mutation createFormSubmission($formID: ID!, $values: String) {
-    createFormSubmission(
-      formID: $formID
-      values: $values
+export const MODIFY_USER = gql`
+  mutation updateUser($user: ID!, $password: String, $username: String!, $isAdmin: Boolean!) {
+    updateUser(
+      user: $user
+      password: $password
+      username: $username
+      isAdmin: $isAdmin
     ) {
       id
-      form {
-        id
-      }
-      values
-    }
-  }
-`
-
-export const GET_FORM_SUBMISSIONS = gql`
-  query getFormSubmissions($formID: ID!) {
-    getFormSubmissions(
-      formID: $formID
-    ) {
-      id
-      values
+      username
+      isAdmin
     }
   }
 `
@@ -697,12 +566,18 @@ export const UPDATE_EMAIL = gql`
       adSubject: $adSubject
       adText: $adText
     ) {
+      subject
+      html
+      text
       name
+      ad
+      adSubject
+      adText
     }
   }
 `
 
-export const GET_GROUPS = gql`
+export const GROUPS = gql`
   query getGroups {
     getGroups {
       id
@@ -710,12 +585,6 @@ export const GET_GROUPS = gql`
       events {
         id
         title
-        resourceids
-        grades
-        remotePlatforms
-        otherRemotePlatformOption
-        start
-        end
       }
       maxCount
       visitCount
@@ -738,16 +607,24 @@ export const CREATE_GROUP = gql`
     ) {
       id
       name
+      events {
+        id
+        title
+      }
+      maxCount
+      visitCount
+      publishDate
+      disabled
     }
   }
 `
 
-export const DELETE_GROUP = gql`
-  mutation deleteGroup(
-    $group: ID!
+export const DELETE_GROUPS = gql`
+  mutation deleteGroups(
+    $ids: [ID]!
   ) {
-    deleteGroup(
-      group: $group
+    deleteGroups(
+      ids: $ids
     )
   }
 `
@@ -783,7 +660,7 @@ export const ASSIGN_PUBLISH_DATE_TO_EVENTS = gql `
   }
 `
 
-export const UPDATE_GROUP = gql`
+export const MODIFY_GROUP = gql`
   mutation modifyGroup(
     $id: ID!
     $name: String
@@ -800,6 +677,14 @@ export const UPDATE_GROUP = gql`
     ) {
       id
       name
+      events {
+        id
+        title
+      }
+      maxCount
+      visitCount
+      publishDate
+      disabled
     }
   }
 `
