@@ -73,7 +73,11 @@ const CalendarMenu = React.forwardRef((_, ref) => {
           >{t('day')}</NavButton>
         </ViewMedia>
         <NavButton
-          onClick={() => calApi.changeView('listMonth', calApi.getDate())}
+          onClick={e => {
+            if (e.view.innerWidth <= 500 && calApi.view.type === 'listMonth') {
+              calApi.changeView('timeGridWeek', calApi.getDate())
+            } else calApi.changeView('listMonth', calApi.getDate())
+          }}
           className={view === 'listMonth' ? 'active' : ''}
         >{t('agenda')}</NavButton>
         <Button style={{ marginLeft: 15 }} onClick={() => setShowFilter(true)}>

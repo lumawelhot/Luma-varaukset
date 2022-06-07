@@ -198,3 +198,7 @@ body {
 .css-1pahdxg-control:hover {
   border-color: #dbdbdb !important;
 }
+
+.fc-scroller.fc-scroller-liquid-absolute {
+  overflow-y: hidden !important;
+}
