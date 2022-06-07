@@ -35,7 +35,7 @@ const base = css`
   width: 100%;
   touch-action: manipulation;
   &:focus {
-    outline: 2px solid lightblue !important;
+    outline: 1px solid #0479a5 !important;
   }
 `
 

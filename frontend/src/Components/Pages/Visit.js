@@ -18,16 +18,16 @@ const Visit = () => {
 
   useEffect(() => find(id), [])
 
-  const cancelVisit = () => {
-    if (confirm(t('cancel-confirm'))) {
-      remove(visit.id)
-      navigate('/visits')
-    }
-  }
-
   const toVisits = () => {
     if (window.location.href.includes('/visits')) navigate('/visits')
     else navigate('/')
+  }
+
+  const cancelVisit = () => {
+    if (confirm(t('cancel-confirm'))) {
+      remove(visit.id)
+      toVisits()
+    }
   }
 
   if (!visit) return <></>

@@ -13,6 +13,10 @@ export const TIME_VALUE_LARGE = 8640000000000000
 
 export const FIRST_EVENT_AFTER_DAYS = 14
 
+export const DEFAULT_PAGE_SIZE = 10
+
+export const TABLE_PAGE_SIZE_OPTIONS = [5, 10, 20, 50, 100]
+
 export const LANG_MAP = {
   fi: i18n.t('finnish'),
   en: i18n.t('english'),

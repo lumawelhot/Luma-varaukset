@@ -46,18 +46,16 @@ const App = () => {
       />
       <Menu />
       <Container style={{ marginTop: 30 }}>
+        {user && window.location.href.includes('/visits') && <VisitList />}
         <Routes>
           <Route path='/' element={<LumaCalendar />} />
           <Route path='/:id' element={<>
             <VisitPage />
             <LumaCalendar />
           </>} />
-          <Route path='/visits' element={user ? <VisitList /> : <Root />} />
+          <Route path='/visits' element={!user && <Root />} />
           <Route path='/visits/:id' element={<>
-            {user ? <>
-              <VisitList />
-              <VisitPage />
-            </> : <Navigate to={window.location.href.split('/visits')[1]} />}
+            {user ? <VisitPage /> : <Navigate to={window.location.href.split('/visits')[1]} />}
           </>}/>
           <Route path='/users' element={user?.isAdmin ? <UserList /> : <Root />} />
           <Route path="/events" element={user ? <EventList /> : <Root />} />

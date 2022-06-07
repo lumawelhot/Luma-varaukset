@@ -27,7 +27,7 @@ const VisitList = () => {
     ?.filter(p => {
       const classes = filterOptions.classes
       if (classes.length <= 0) return true
-      return someExist(find(p.event.id)?.resourceids, classes.map(c => c.value))
+      return someExist(find(p?.event?.id)?.resourceids, classes.map(c => c.value))
     })
     ?.map(v => ({
       title: <span

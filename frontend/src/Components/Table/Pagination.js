@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-vars */
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { BiChevronsLeft, BiChevronsRight, BiChevronLeft, BiChevronRight } from 'react-icons/bi'
+import { Select } from '../../Embeds/Input'
+import { TABLE_PAGE_SIZE_OPTIONS } from '../../config'
 
 const Button = styled.button`
   font-size: 28px;
@@ -23,10 +25,15 @@ const Pagination = ({
   gotoPage,
   nextPage,
   previousPage,
-  //setPageSize, -- can be implemented later
+  setPageSize,
   pageIndex,
-  //pageSize,
+  pageSize,
 }) => {
+  const [option, setOption] = useState({ value: pageSize, label: pageSize })
+  const changePageSize = value => {
+    setPageSize(value.label)
+    setOption(value)
+  }
 
   return (
     <>
@@ -44,11 +51,21 @@ const Pagination = ({
       </Button>
 
       <Span>
-        <span style={{ position: 'absolute', width: 200, marginTop: 2 }}>
+        <span style={{ position: 'absolute', width: 200, marginTop: 2, marginLeft: 130 }}>
           Page{' '}
           <strong>
             {pageIndex + 1} of {pageOptions.length}
           </strong>{' '}
+        </span>
+        <span style={{ position: 'absolute', width: 110, marginTop: -13 }}>
+          <Select
+            isMulti={false}
+            isClearable={false}
+            value={option}
+            onChange={changePageSize}
+            options={TABLE_PAGE_SIZE_OPTIONS.map(o => ({ value: o, label: o }))}
+            menuPlacement='top'
+          />
         </span>
       </Span>
     </>

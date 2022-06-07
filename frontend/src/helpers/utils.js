@@ -37,8 +37,8 @@ export const getCSV = (visits) => {
   } catch (err) { console.error(err) }
 }
 
-export const multipleExist = (arr, values) => values.every(v => arr.includes(v))
-export const someExist = (arr, values) => values?.some(v => arr.includes(v))
+export const multipleExist = (arr, values) => values?.every(v => arr?.includes(v))
+export const someExist = (arr, values) => values?.some(v => arr?.includes(v))
 
 export const formError = async current => {
   const errors = await current.validateForm()
