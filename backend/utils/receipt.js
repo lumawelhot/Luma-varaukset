@@ -1,5 +1,5 @@
 const { format } = require('date-fns')
-const { CLASSES } = require('./config')
+const { scienceClasses, u } = require('./helpers')
 
 const gridContainer = (name, value) => `
 <div class="grid-container">
@@ -16,11 +16,6 @@ const containerContent = (names, values) => {
   return containerHtml
 }
 
-const u = (field) => {
-  if (field === undefined) return ''
-  else return field
-}
-
 const customFormHtml = data => {
   if (!data) return ''
   let html = ''
@@ -34,15 +29,6 @@ const customFormHtml = data => {
       }
       html += gridContainer(d.name, selectedHtml)
     }
-  }
-  return html
-}
-
-const scienceClasses = data => {
-  if (!data) return ''
-  let html = ''
-  for (let d of data) {
-    html += `<div>${u(CLASSES[d - 1])}</div>`
   }
   return html
 }
@@ -89,52 +75,59 @@ const bookingInfo = (event, visit) => `
 `
 
 const getNotifyHtml= (visit, event) => {
-  return bookingInfo(
-    containerContent(
-      [
-        'Vierailun nimi',
-        'Vierailun kuvaus',
-        'Tiedeluokka(t)',
-        'Päivämäärä',
-        'Aloitusajankohta',
-        'Lopetusajankohta',
-        'Vierailun tyyppi'
-      ],
-      [
-        u(event.title),
-        u(event.description),
-        scienceClasses(event.resourceids),
-        u(format(new Date(event.start), 'dd.MM.yy')),
-        u(format(new Date(visit.startTime), 'HH:mm')),
-        u(format(new Date(visit.endTime), 'HH:mm')),
-        u(visit.removeVisit ? 'Etävierailu' : 'Lähivierailu'),
-      ]
-    ),
-    containerContent(
-      [
-        'Varaajan nimi',
-        'Varaajan puhelinnumero',
-        'Varaajan sähköpostiosoite',
-        'Opetusyhteisön nimi',
-        'Opetusyhteisön sijainti',
-        'Luokka-aste',
-        'Osallistujamäärä',
-        'Lupa tutkimuskäyttöön',
-        'Kieli'
-      ],
-      [
-        u(visit.clientName),
-        u(visit.clientPhone),
-        u(visit.clientEmail),
-        u(visit.schoolName),
-        u(visit.schoolLocation),
-        u(visit.grade),
-        u(visit.participants),
-        u(visit.dataUseAgreement ? 'Kyllä' : 'Ei'),
-        u(visit.language === 'fi' ? 'Suomi' : (visit.language === 'en' ? 'Englanti' : 'Ruotsi'))
-      ]
-    ) + u(customFormHtml(visit.customFormData)),
-  )
+  try {
+    return bookingInfo(
+      containerContent(
+        [
+          'Vierailun nimi',
+          'Vierailun kuvaus',
+          'Tiedeluokka(t)',
+          'Päivämäärä',
+          'Aloitusajankohta',
+          'Lopetusajankohta',
+          'Vierailun tyyppi'
+        ],
+        [
+          u(event.title),
+          u(event.description),
+          scienceClasses(event.resourceids),
+          u(format(new Date(event.start), 'dd.MM.yy')),
+          u(format(new Date(visit.startTime), 'HH:mm')),
+          u(format(new Date(visit.endTime), 'HH:mm')),
+          u(visit.removeVisit ? 'Etävierailu' : 'Lähivierailu'),
+        ]
+      ),
+      containerContent(
+        [
+          'Varaajan nimi',
+          'Varaajan puhelinnumero',
+          'Varaajan sähköpostiosoite',
+          'Opetusyhteisön nimi',
+          'Opetusyhteisön sijainti',
+          'Luokka-aste',
+          'Osallistujamäärä',
+          'Lupa tutkimuskäyttöön',
+          'Kieli'
+        ],
+        [
+          u(visit.clientName),
+          u(visit.clientPhone),
+          u(visit.clientEmail),
+          u(visit.schoolName),
+          u(visit.schoolLocation),
+          u(visit.grade),
+          u(visit.participants),
+          u(visit.dataUseAgreement ? 'Kyllä' : 'Ei'),
+          u(visit.language === 'fi' ? 'Suomi' : (visit.language === 'en' ? 'Englanti' : 'Ruotsi'))
+        ]
+      ) + u(customFormHtml(visit.customFormData)),
+    )
+  } catch (err) {
+    return `
+      <h1>500 - Internal Server Error</h1>
+      <div>Debug: ${err.message}</div>
+    `
+  }
 }
 
 module.exports = { getNotifyHtml }

@@ -51,7 +51,7 @@ export const eventColumns = () => [
     accessor: 'date',
     sortType: dateSort
   }, {
-    Header: <span style={{ paddingRight: 12 }}>{t('time')}</span>,
+    Header: <span style={{ paddingRight: 13 }}>{t('time')}</span>,
     accessor: 'time'
   }, {
     Header: t('group'),

@@ -84,7 +84,7 @@ const EventList = () => {
   return (
     <>
       <Heading as='h1' style={{ paddingBottom: 30 }}>{t('events')}</Heading>
-      <div style={{ maxWidth: 426 }}>
+      <div style={{ maxWidth: 440 }}>
         <Select
           title={t('filter-by-classes')}
           value={filterOptions.classes}

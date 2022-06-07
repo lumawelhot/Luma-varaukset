@@ -190,3 +190,11 @@ body {
   border: 1px solid transparent;
   background-clip: content-box;
 }
+
+.css-1pahdxg-control {
+  border-color: #dbdbdb !important;
+}
+
+.css-1pahdxg-control:hover {
+  border-color: #dbdbdb !important;
+}

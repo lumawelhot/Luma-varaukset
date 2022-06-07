@@ -1,5 +1,6 @@
 const Tag = require('../models/tag')
 const Email = require('../models/email')
+const { CLASSES } = require('./config')
 
 const addNewTags = async tags => {
   const mongoTags = await Tag.find({ name: { $in: tags } })
@@ -34,7 +35,7 @@ const initEmailMessages = async () => {
     html: '<h1>Olet perunut opintokäynnin: /visit/r</h1>',
     subject: 'LUMA-tiedeluokan opintokäynnin peruutusvahvistus',
     adSubject: 'Peruutus',
-    ad: ['tester@jest.com', 'jester@second.com'],
+    ad: ['mozelle.willms53@ethereal.email'],
     adText: '/visit/r'
   })
   const thanks = new Email({
@@ -43,7 +44,7 @@ const initEmailMessages = async () => {
     html: '<h1>html</h1>',
     subject: 'Thanks',
     adSubject: 'New visit',
-    ad: ['tester@jest.com'],
+    ad: ['mozelle.willms53@ethereal.email'],
     adText: 'text'
   })
   const reminder = new Email({
@@ -52,7 +53,7 @@ const initEmailMessages = async () => {
     html: '<p>Älä vastaa tähän viestiin, tämä on automaattinen muistutus huomisesta varauksestasi LUMA-tiedeluokkaan. Tervetuloa opintokäynnille!</p>',
     subject: 'Muistutus',
     adSubject: 'Muistutus',
-    ad: ['tester@jest.com'],
+    ad: ['mozelle.willms53@ethereal.email'],
     adText: 'text'
   })
   const welcome = new Email({
@@ -80,4 +81,15 @@ const checkTimeslot = (argsStart, argsEnd) => {
   return false
 }
 
-module.exports = { addNewTags, fillStringWithValues, initEmailMessages, checkTimeslot }
+const u = (field) => field === undefined ? '' : field
+
+const scienceClasses = data => {
+  if (!data) return ''
+  let html = ''
+  for (let d of data) {
+    html += `<div>${u(CLASSES[d - 1])}</div>`
+  }
+  return html
+}
+
+module.exports = { addNewTags, fillStringWithValues, initEmailMessages, checkTimeslot, scienceClasses, u }

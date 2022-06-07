@@ -91,4 +91,4 @@ const formatAvailableTimes = (availableTimes) => {
   })
 }
 
-module.exports = { findRange, calcAvailableTimes, calcFromVisitTimes, calceNewSlot, validTimeSlot, formatAvailableTimes }
+module.exports = { findRange, calcAvailableTimes, calcFromVisitTimes, calceNewSlot, validTimeSlot, formatAvailableTimes, split, diff, sort }
