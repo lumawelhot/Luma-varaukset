@@ -1,5 +1,4 @@
 import { plugins } from './helpers/utils'
-import i18n from './i18n'
 
 export const BOOKING_TIME = 600 // seconds
 
@@ -18,9 +17,9 @@ export const DEFAULT_PAGE_SIZE = 10
 export const TABLE_PAGE_SIZE_OPTIONS = [5, 10, 20, 50, 100]
 
 export const LANG_MAP = {
-  fi: i18n.t('finnish'),
-  en: i18n.t('english'),
-  sv: i18n.t('swedish')
+  fi: 'finnish',
+  en: 'english',
+  sv: 'swedish'
 }
 
 export const LANGUAGE_SHORT = {
@@ -30,19 +29,19 @@ export const LANGUAGE_SHORT = {
 }
 
 export const CLASSES = [
-  { value: 1, label: 'SUMMAMUTIKKA', color: '#F2634C', i18n: i18n.t('mathematics'), short: 'SUM' },
-  { value: 2, label: 'FOTONI', color: '#8E5993', i18n: i18n.t('physics'), short: 'FOT' },
-  { value: 3, label: 'LINKKI', color: '#32A272', i18n: i18n.t('computer-science'), short: 'LIN' },
-  { value: 4, label: 'GEOPISTE', color: '#00A2C0', i18n: i18n.t('geography'), short: 'GEO' },
-  { value: 5, label: 'GADOLIN', color: '#F7CF00', i18n: i18n.t('chemistry'), short: 'GAD' }
+  { value: 1, label: 'SUMMAMUTIKKA', color: '#F2634C', i18n: 'mathematics', short: 'SUM' },
+  { value: 2, label: 'FOTONI', color: '#8E5993', i18n: 'physics', short: 'FOT' },
+  { value: 3, label: 'LINKKI', color: '#32A272', i18n: 'computer-science', short: 'LIN' },
+  { value: 4, label: 'GEOPISTE', color: '#00A2C0', i18n: 'geography', short: 'GEO' },
+  { value: 5, label: 'GADOLIN', color: '#F7CF00', i18n: 'chemistry', short: 'GAD' }
 ]
 
 export const GRADES = [
-  { value: 1, label: i18n.t('grade1') },
-  { value: 2, label: i18n.t('grade2') },
-  { value: 3, label: i18n.t('grade3') },
-  { value: 4, label: i18n.t('grade4') },
-  { value: 5, label: i18n.t('grade5') }
+  { value: 1, label: 'grade1' },
+  { value: 2, label: 'grade2' },
+  { value: 3, label: 'grade3' },
+  { value: 4, label: 'grade4' },
+  { value: 5, label: 'grade5' }
 ]
 
 export const PLATFORMS = [

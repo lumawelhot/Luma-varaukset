@@ -138,7 +138,7 @@ const Form = React.forwardRef((props, ref) => {
                   key={l}
                   value={l}
                   onBlur={() => setFieldTouched('languages')}
-                >{LANG_MAP[l]}</Checkbox>
+                >{t(LANG_MAP[l])}</Checkbox>
               ))}
             </Stack>
           </CheckboxGroup>
@@ -153,7 +153,7 @@ const Form = React.forwardRef((props, ref) => {
                   key={c.value}
                   value={c.value.toString()}
                   onBlur={() => setFieldTouched('grades')}
-                >{c.label}</Checkbox>
+                >{t(c.label)}</Checkbox>
               ))}
             </Stack>
           </CheckboxGroup>

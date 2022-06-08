@@ -190,7 +190,7 @@
   "group-name": "Name",
   "group-maxcount": "Max amount of visits",
   
-  "length-inperson": "Duration ",
+  "length-inperson": "Duration on-premises",
   "length-remote": "Duration remote",
   "inperson-length": "Duration on-premise",
   "remote-length": "Duration remote",

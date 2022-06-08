@@ -1,8 +1,7 @@
-import i18n from '../i18n'
 import React from 'react'
+import { t } from '../i18n'
 import parse from 'date-fns/parse'
 import { CLASSES } from '../config'
-const t = i18n.t
 
 const dateSort = (rowA, rowB, id) => {
   let a = parse(rowA.values[id], 'd.M.y', new Date())

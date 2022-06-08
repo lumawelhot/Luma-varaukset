@@ -28,14 +28,14 @@ const UserList = () => {
       }}>{t('modify-user')}</Button>,
       nocheck : u.username === userContext?.current?.username ? true : false
     }))
-  , [userContext.all, userContext.current])
+  , [userContext.all, userContext.current, t])
 
   const handleRemove = e => {
     userContext.remove(e.checked.map(i => users[i].id))
     e.reset()
   }
 
-  const columns = useMemo(userColumns, [])
+  const columns = useMemo(userColumns, [t])
 
   if (!users) return <></>
 

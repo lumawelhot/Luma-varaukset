@@ -53,9 +53,9 @@ const GroupList = () => {
       setGroup(g)
       setShowModify(true)
     }}>{t('modify')}</Button>
-  })), [groupContext.all])
+  })), [groupContext.all, t])
 
-  const columns = useMemo(groupColumns, [])
+  const columns = useMemo(groupColumns, [t])
 
   if (!groups) return <></>
 

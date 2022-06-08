@@ -40,7 +40,7 @@ const Info = () => {
       <P>
         <Title>{t('available-grades')}: </Title>
         <Ul>
-          {event?.grades?.map((g, i) => <Li key={i}>{GRADES[g - 1]?.label}</Li>)}
+          {event?.grades?.map((g, i) => <Li key={i}>{t(GRADES[g - 1]?.label)}</Li>)}
         </Ul>
       </P>
       <P>

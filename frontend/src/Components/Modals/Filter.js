@@ -50,7 +50,7 @@ const Filter = ({ show, close }) => {
           title={t('filter-by-grades')}
           value={filterOptions.grades}
           onChange={e => setFilterOptions({ ...filterOptions, grades: e })}
-          options={GRADES}
+          options={GRADES.map(g => ({ ...g, label: t(g.label) }))}
         />
         <CheckboxGroup value={filterOptions.visitTypes} onChange={v => {
           setFilterOptions({ ...filterOptions, visitTypes: v })

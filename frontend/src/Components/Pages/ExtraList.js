@@ -48,9 +48,9 @@ const ExtraList = () => {
           setShowModify(true)
         }}>{t('modify')}</Button>
     }))
-  , [misc.extras, filterOptions])
+  , [misc.extras, filterOptions, t])
 
-  const columns = useMemo(extraColumns, [])
+  const columns = useMemo(extraColumns, [t])
 
   if (!extras) return <></>
 

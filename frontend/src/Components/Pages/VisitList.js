@@ -45,9 +45,9 @@ const VisitList = () => {
       status: v.status ? t('status-true') : t('status-false'),
       urlCopy: <Clipboard text={t('copy-url')} content={`${window.location.href.split('/visits')[0]}/${v?.id}`} />
     }))
-  , [all, filterOptions])
+  , [all, filterOptions, t])
 
-  const columns = useMemo(visitColumns, [])
+  const columns = useMemo(visitColumns, [t])
 
   if (!visits) return <></>
 

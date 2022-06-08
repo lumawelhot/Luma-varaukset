@@ -54,7 +54,7 @@ const EventList = () => {
       visitCount: e?.visits?.length,
       publishDate: e.publishDate ? format(new Date(e.publishDate), 'H:mm, d.M.y') : null
     }))
-  , [all, filterOptions])
+  , [all, filterOptions, t])
 
   const handleDelete = e => {
     const selectedEvents = e.checked.map(v => events[v])
@@ -77,7 +77,7 @@ const EventList = () => {
     setShowForms(true)
   }
 
-  const columns = useMemo(eventColumns, [])
+  const columns = useMemo(eventColumns, [t])
 
   if (!events) return <></>
 

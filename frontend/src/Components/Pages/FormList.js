@@ -25,9 +25,9 @@ const FormList = () => {
         setShowModify(true)
       }}>{t('modify-form')}</Button>
     }))
-  , [all])
+  , [all, t])
 
-  const columns = useMemo(formColumns, [])
+  const columns = useMemo(formColumns, [t])
 
   if (!forms) return <></>
   const fields = selectedForm?.fields
