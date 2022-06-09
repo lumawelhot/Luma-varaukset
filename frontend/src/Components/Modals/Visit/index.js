@@ -42,6 +42,9 @@ const Visit = ({ children }) => {
   }
 
   const increment = () => setPhase(phase + 1)
+
+  const toForm = () => setPhase(1)
+
   const close = () => {
     if (token) unlock(event.id)
     setToken(undefined)
@@ -108,10 +111,12 @@ const Visit = ({ children }) => {
       </Modal.Header>
       <Modal.Body>
         {phase === 0 && <Info />}
-        {phase === 1 && <>
-          {<Form ref={formRef} show={!showInfo} />}
-          {showInfo && <Info />}
-        </>}
+        <div className={phase === 1 ? 'show-visitform' : 'hide-visitform'}>
+          <>
+            {<Form ref={formRef} show={!showInfo} />}
+            {showInfo && <Info />}
+          </>
+        </div>
         {phase >= 2 && <Status status={status} visit={visit}/>}
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }} >
@@ -131,6 +136,7 @@ const Visit = ({ children }) => {
             <Button id='visit-form-media' onClick={() => setShowInfo(!showInfo)}>{showInfo ? t('show-visit-form') : t('show-info')}</Button>
             <Button type='submit' className='active' onClick={handleSubmit}>{t('book-visit-submit')}</Button>
           </>}
+          {phase === 2 && status === false && <Button onClick={toForm}>{t('back-to-form')}</Button>}
           {phase === 2 && <Button className='active' onClick={close}>{t('book-visit-close')}</Button>}
         </div>
       </Modal.Footer>

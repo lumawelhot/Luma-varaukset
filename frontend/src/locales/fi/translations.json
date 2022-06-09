@@ -303,5 +303,6 @@
   "notify-event-add-success": "Vierailun lisääminen onnistui",
   "notify-event-add-failed": "Vierailun lisääminen epäonnistui",
 
-  "modify-form-field": "Muokkaa kenttää"
+  "modify-form-field": "Muokkaa kenttää",
+  "back-to-form": "Takaisin lomakkeeseen"
 }

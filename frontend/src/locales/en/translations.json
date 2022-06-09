@@ -303,5 +303,6 @@
   "notify-event-add-success": "New event created successfully",
   "notify-event-add-failed": "Failed to create new event",
 
-  "modify-form-field": "Modify field"
+  "modify-form-field": "Modify field",
+  "back-to-form": "Back to form"
 }
