@@ -53,17 +53,20 @@ const Visit = ({ children }) => {
 
   const handleSubmit = async () => {
     const values = formRef.current.values
+    const otherRemote = values.otherRemotePlatformOption
     const type = values.visitType
     const customFormData = JSON.stringify(values.customFormData)
     const inPersonVisit = type === 'inperson' ? true : false
     const remoteVisit = type === 'remote' ? true : false
+    const remotePlatform = otherRemote?.length ? otherRemote : values.remotePlatform
     const variables = {
       ...values,
       event: event.id,
       token: token,
       inPersonVisit,
       remoteVisit,
-      customFormData
+      customFormData,
+      remotePlatform
     }
     // this should be defined here, otherwise we are getting an error
     if (await formError(formRef.current)) return

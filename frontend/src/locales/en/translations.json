@@ -304,5 +304,6 @@
   "notify-event-add-failed": "Failed to create new event",
 
   "modify-form-field": "Modify field",
-  "back-to-form": "Back to form"
+  "back-to-form": "Back to form",
+  "selected-remote-platform": "Selected remote platform"
 }

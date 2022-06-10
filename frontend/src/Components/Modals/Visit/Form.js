@@ -93,9 +93,13 @@ const Form = React.forwardRef((props, ref) => {
           <RadioGroup onChange={v => setFieldValue('remotePlatform', v)}>
             <Title>{required(t('choose-remote-platform'))}</Title>
             <Stack direction='col'>
+              {/*
+                NOTE, plantform functionality is not working well and should be reworked.
+                Contains potential bugs that are hard to fix
+              */}
               {event?.remotePlatforms
-                .map(r => PLATFORMS.map((p, i) => i + 1).includes(r)
-                  ? PLATFORMS[r - 1] : event.otherRemotePlatformOption)
+                .map((_, j) => PLATFORMS.map((p, i) => i + 1).includes(j + 1)
+                  ? PLATFORMS[j] : event.otherRemotePlatformOption)
                 .map((r, i) => <Radio key={i} value={`${i + 1}`}>{r}</Radio>)
               }
               <Radio value={`${event?.remotePlatforms.length + 1}`}>{t('other-what')}</Radio>

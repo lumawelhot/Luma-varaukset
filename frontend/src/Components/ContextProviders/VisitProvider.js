@@ -9,11 +9,19 @@ const VisitProvider = ({ children }) => {
   const [visits, setVisits] = useState([])
   const [visit, setVisit] = useState()
 
+  const formFieldParse = data => {
+    const formData = data?.customFormData
+    return {
+      ...data,
+      customFormData: typeof formData === 'string' ? JSON.parse(formData) : formData
+    }
+  }
+
   const fetch = async () => {
     if (fetched) return
     const { data } = await client.query({ query: VISITS, fetchPolicy: 'no-cache' })
     setFetched(true)
-    setVisits(data?.getVisits)
+    setVisits(data?.getVisits?.map(v => formFieldParse(v)))
   }
 
   const evict = () => {

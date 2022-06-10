@@ -75,35 +75,40 @@ export const combineEvent = (visit, event) => {
 export const parseCSV = (visit, event) => {
   const parsed = {}
 
-  parsed['Event id'] = visit?.event?.id
-  parsed['Event title'] = event?.title
-  parsed['Event duration'] = event?.duration
-  parsed['Event date'] = visit?.startTime ? format(new Date(visit?.startTime), 'd.M.yyyy') : ''
-  parsed['Event start'] = visit?.startTime ? format(new Date(visit?.startTime), 'HH:mm') : ''
-  parsed['Event end'] = visit?.endTime ? format(new Date(visit?.endTime), 'HH:mm') : ''
-  parsed['Event type'] = visit?.remoteVisit ? 'etäopetus' : 'lähiopetus'
-  parsed['Event language'] = visit?.language === 'en' ? 'englanti' : (visit?.language === 'sv' ? 'ruotsi' : 'suomi')
-  parsed['Event grade'] = visit?.grade
-  parsed['Event cancelled'] = visit?.status ? 'false' : 'true'
-  parsed['Event group'] = event?.group
-  parsed['Event science class'] = event?.resourceids?.map(r => CLASSES.find(c => c.value === r)?.label).join(', ')
+  try {
+    parsed['Event id'] = visit?.event?.id
+    parsed['Event title'] = event?.title
+    parsed['Event duration'] = event?.duration
+    parsed['Event date'] = visit?.startTime ? format(new Date(visit?.startTime), 'd.M.yyyy') : ''
+    parsed['Event start'] = visit?.startTime ? format(new Date(visit?.startTime), 'HH:mm') : ''
+    parsed['Event end'] = visit?.endTime ? format(new Date(visit?.endTime), 'HH:mm') : ''
+    parsed['Event type'] = visit?.remoteVisit ? 'etäopetus' : 'lähiopetus'
+    parsed['Event language'] = visit?.language === 'en' ? 'englanti' : (visit?.language === 'sv' ? 'ruotsi' : 'suomi')
+    parsed['Event grade'] = visit?.grade
+    parsed['Event cancelled'] = visit?.status ? 'false' : 'true'
+    parsed['Event group'] = event?.group
+    parsed['Event science class'] = event?.resourceids?.map(r => CLASSES?.find(c => c?.value === r)?.label).join(', ')
 
-  const platform = Number(visit?.remotePlatform) - 1
-  parsed['Remote platform'] = Number.isNaN(platform) ? '' : (PLATFORMS
-    .map((_, i) => i).includes(platform) ? PLATFORMS[platform] : event.otherRemotePlatformOption)
-  parsed['Client name'] = visit?.clientName
-  parsed['Client email'] = visit?.clientEmail
-  parsed['Client phone'] = visit?.clientPhone
-  parsed['School name'] = visit?.schoolName
-  parsed['School location'] = visit?.schoolLocation
-  parsed['Data use agreement'] = visit?.dataUseAgreement ? 'true' : 'false'
+    const platform = Number(visit?.remotePlatform) - 1
+    parsed['Remote platform'] = Number.isNaN(platform) ? '' : (PLATFORMS
+      ?.map((_, i) => i)?.includes(platform) ? PLATFORMS[platform] : event?.otherRemotePlatformOption)
+    parsed['Client name'] = visit?.clientName
+    parsed['Client email'] = visit?.clientEmail
+    parsed['Client phone'] = visit?.clientPhone
+    parsed['School name'] = visit?.schoolName
+    parsed['School location'] = visit?.schoolLocation
+    parsed['Data use agreement'] = visit?.dataUseAgreement ? 'true' : 'false'
 
-  parsed['Participants'] = visit?.participants
-  parsed['Custom form data'] = visit?.customFormData?.map(d => {
-    if (typeof d.value === 'string') return `${d.name}: "${d.value}"`
-    else if (Array.isArray(d.value)) return `${d.name}: "${d.value.join(', ')}"`
-  }).join(' // ')
-  parsed['Visit extras'] = visit?.extras?.map(e => `"${e.name}"`).join(', ')
+    parsed['Participants'] = visit?.participants
+    parsed['Custom form data'] = Array.isArray(visit?.customFormData) ? visit?.customFormData?.map(d => {
+      if (typeof d.value === 'string') return `${d.name}: "${d.value}"`
+      else if (Array.isArray(d.value)) return `${d.name}: "${d.value?.join(', ')}"`
+    })?.join(' // ') : ''
+    parsed['Visit extras'] = visit?.extras?.map(e => `"${e.name}"`).join(', ')
+  } catch (err) {
+    console.log(err.message)
+    return {}
+  }
 
   return parsed
 }

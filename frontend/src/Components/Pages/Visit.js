@@ -5,14 +5,15 @@ import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '../../Embeds/Button'
-import { VisitContext } from '../../services/contexts'
+import { EventContext, VisitContext } from '../../services/contexts'
 import { Title, Text, Li, Ul, P } from '../../Embeds/Info'
-import { CLASSES } from '../../config'
+import { CLASSES, PLATFORMS } from '../../config'
 
 const Visit = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { current: visit, find, remove, fetch } = useContext(VisitContext)
+  const { find : findEvent } = useContext(EventContext)
   useEffect(fetch, [])
   const { id } = useParams()
 
@@ -31,6 +32,14 @@ const Visit = () => {
   }
 
   if (!visit) return <></>
+
+  // So much mess because need to get remote platforms working
+  // Pls deprecate and redesign this functionality
+  const event = findEvent(visit?.event?.id)
+
+  if (!event) return <></>
+
+  const remotePlatform = Number(visit.remotePlatform) - 1
 
   return (
     <Modal
@@ -117,7 +126,9 @@ const Visit = () => {
         </P>
         {visit.remoteVisit && <P>
           <Title>{t('selected-remote-platform')}: </Title>
-          <Text>{visit.remotePlatform}</Text>
+          <Text>{Number.isNaN(remotePlatform) ? visit.remotePlatform
+            : (PLATFORMS[remotePlatform] ? PLATFORMS[remotePlatform] : event.otherRemotePlatformOption)
+          }</Text>
         </P>}
         {!!visit?.customFormData
           && Array.isArray(visit.customFormData)

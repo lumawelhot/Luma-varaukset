@@ -84,54 +84,6 @@ export const CURRENT_USER = gql`
   }
 `
 
-// Deprecated
-/* export const CREATE_EVENT = gql`
-  ${EVENT_FIELDS}
-  mutation createEvent(
-    $title: String!,
-    $start: String!,
-    $end: String!,
-    $resourceids: [Int]!,
-    $grades: [Int]!,
-    $remotePlatforms: [Int],
-    $otherRemotePlatformOption: String,
-    $remoteVisit: Boolean!,
-    $inPersonVisit: Boolean!,
-    $desc: String,
-    $tags: [String],
-    $waitingTime: Int!
-    $extras: [ID]
-    $duration: Int!,
-    $customForm: ID,
-    $group: ID,
-    $publishDate: String
-    $languages: [String]
-    ) {
-    createEvent (
-      title: $title,
-      start: $start,
-      end: $end,
-      scienceClass: $resourceids,
-      desc: $desc,
-      grades: $grades,
-      remotePlatforms: $remotePlatforms,
-      otherRemotePlatformOption: $otherRemotePlatformOption,
-      remoteVisit: $remoteVisit,
-      inPersonVisit: $inPersonVisit,
-      tags: $tags
-      waitingTime: $waitingTime
-      extras: $extras
-      duration: $duration
-      customForm: $customForm
-      group: $group
-      publishDate: $publishDate
-      languages: $languages
-    ) {
-      ...EventFields
-    }
-  }
-` */
-
 export const CREATE_EVENTS = gql`
   ${EVENT_FIELDS}
   mutation createEvents(

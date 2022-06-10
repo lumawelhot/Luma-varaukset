@@ -304,5 +304,6 @@
   "notify-event-add-failed": "Vierailun lisääminen epäonnistui",
 
   "modify-form-field": "Muokkaa kenttää",
-  "back-to-form": "Takaisin lomakkeeseen"
+  "back-to-form": "Takaisin lomakkeeseen",
+  "selected-remote-platform": "Valittu etäyhteysalusta"
 }
