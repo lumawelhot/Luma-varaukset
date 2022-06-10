@@ -1,10 +1,13 @@
+/* eslint-disable no-unused-vars */
 import '@fullcalendar/react' // This line is needed or app throws an error
 import dayGridPlugin from '@fullcalendar/daygrid'
 import listPlugin from '@fullcalendar/list'
 import luxonPlugin from '@fullcalendar/luxon'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import { EventContext } from '../services/contexts'
 import * as XLSX from 'xlsx'
+import { parseCSV } from './parse'
 
 export const plugins =  [
   timeGridPlugin,
@@ -14,21 +17,12 @@ export const plugins =  [
   luxonPlugin
 ]
 
-export const getCSV = (visits) => {
+export const getCSV = (visits, findEvent) => {
   try {
     const filteredVisits = visits
-      //.filter(visit => visit.dataUseAgreement)
       ?.map(visit => {
-        const mappedVisit = {
-          ...visit,
-          event: visit?.event?.title,
-          eventId: visit?.event?.id,
-          dataUseAgreement: visit.dataUseAgreement ? 'true' : 'false'
-        }
-        //delete mappedVisit.clientName
-        //delete mappedVisit.clientEmail
-        //delete mappedVisit.clientPhone
-        return mappedVisit
+        const event = findEvent(visit?.event?.id)
+        return parseCSV(visit, event)
       })
     const sheet = XLSX.utils.json_to_sheet(filteredVisits)
     const book = XLSX.utils.book_new()

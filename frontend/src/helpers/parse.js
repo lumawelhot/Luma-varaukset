@@ -1,5 +1,5 @@
-import { differenceInDays, differenceInHours } from 'date-fns'
-import { BOOKING_FAILS_DAYS_REMAINING, BOOKING_FAILS_HOURS_REMAINING, CLASSES } from '../config'
+import { differenceInDays, differenceInHours, format } from 'date-fns'
+import { BOOKING_FAILS_DAYS_REMAINING, BOOKING_FAILS_HOURS_REMAINING, CLASSES, PLATFORMS } from '../config'
 import { calcAvailableTimes } from './calculator'
 
 export const parseEvent = (event) => event
@@ -70,4 +70,40 @@ export const combineEvent = (visit, event) => {
     },
     availableTimes: calcAvailableTimes(event.availableTimes, visit, event.waitingTime, event.duration)
   }
+}
+
+export const parseCSV = (visit, event) => {
+  const parsed = {}
+
+  parsed['Event id'] = visit?.event?.id
+  parsed['Event title'] = event?.title
+  parsed['Event duration'] = event?.duration
+  parsed['Event date'] = visit?.startTime ? format(new Date(visit?.startTime), 'd.M.yyyy') : ''
+  parsed['Event start'] = visit?.startTime ? format(new Date(visit?.startTime), 'HH:mm') : ''
+  parsed['Event end'] = visit?.endTime ? format(new Date(visit?.endTime), 'HH:mm') : ''
+  parsed['Event type'] = visit?.remoteVisit ? 'etäopetus' : 'lähiopetus'
+  parsed['Event language'] = visit?.language === 'en' ? 'englanti' : (visit?.language === 'sv' ? 'ruotsi' : 'suomi')
+  parsed['Event grade'] = visit?.grade
+  parsed['Event cancelled'] = visit?.status ? 'false' : 'true'
+  parsed['Event group'] = event?.group
+  parsed['Event science class'] = event?.resourceids?.map(r => CLASSES.find(c => c.value === r)?.label).join(', ')
+
+  const platform = Number(visit?.remotePlatform) - 1
+  parsed['Remote platform'] = Number.isNaN(platform) ? '' : (PLATFORMS
+    .map((_, i) => i).includes(platform) ? PLATFORMS[platform] : event.otherRemotePlatformOption)
+  parsed['Client name'] = visit?.clientName
+  parsed['Client email'] = visit?.clientEmail
+  parsed['Client phone'] = visit?.clientPhone
+  parsed['School name'] = visit?.schoolName
+  parsed['School location'] = visit?.schoolLocation
+  parsed['Data use agreement'] = visit?.dataUseAgreement ? 'true' : 'false'
+
+  parsed['Participants'] = visit?.participants
+  parsed['Custom form data'] = visit?.customFormData?.map(d => {
+    if (typeof d.value === 'string') return `${d.name}: "${d.value}"`
+    else if (Array.isArray(d.value)) return `${d.name}: "${d.value.join(', ')}"`
+  }).join(' // ')
+  parsed['Visit extras'] = visit?.extras?.map(e => `"${e.name}"`).join(', ')
+
+  return parsed
 }
