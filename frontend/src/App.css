@@ -212,3 +212,11 @@ body {
   visibility: visible;
   display: initial;
 }
+
+.fc-list-event-title {
+  cursor: pointer !important;
+}
+
+.fc-daygrid-event {
+  cursor: pointer !important;
+}

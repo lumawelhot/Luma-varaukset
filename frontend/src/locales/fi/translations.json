@@ -305,5 +305,8 @@
 
   "modify-form-field": "Muokkaa kenttää",
   "back-to-form": "Takaisin lomakkeeseen",
-  "selected-remote-platform": "Valittu etäyhteysalusta"
+  "selected-remote-platform": "Valittu etäyhteysalusta",
+  "step-check": "Tarkastele",
+  "step-book": "Varaa",
+  "step-confirm": "Vahvistus"
 }

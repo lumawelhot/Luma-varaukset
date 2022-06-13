@@ -305,5 +305,8 @@
 
   "modify-form-field": "Modify field",
   "back-to-form": "Back to form",
-  "selected-remote-platform": "Selected remote platform"
+  "selected-remote-platform": "Selected remote platform",
+  "step-check": "View info",
+  "step-book": "Book",
+  "step-confirm": "Confirmation"
 }

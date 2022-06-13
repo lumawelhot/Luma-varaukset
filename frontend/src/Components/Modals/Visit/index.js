@@ -36,9 +36,9 @@ const Visit = ({ children }) => {
       if (!timer) return setTimer(<Timer seconds={BOOKING_TIME} />)
       return timer
     }
-    else if (current > phase) return t('waiting')
-    else if (current === phase) return t('inprogress')
-    else return t('finished')
+    if (current === 0) return t('step-check')
+    if (current === 1) return t('step-book')
+    if (current === 2) return t('step-confirm')
   }
 
   const increment = () => setPhase(phase + 1)
@@ -90,7 +90,7 @@ const Visit = ({ children }) => {
   }
 
   if (!event) return <Navigate to='/' />
-
+  console.log(event)
   return (
     <Modal
       show={true}
@@ -128,7 +128,7 @@ const Visit = ({ children }) => {
             {user && event?.visits?.length === 0 &&
             <Button onClick={handleRemove}>{t('delete-event')}</Button>}
             {children}
-            {!event?.disabled && !event?.booked && !event.locked && <Button className='active' onClick={async () => {
+            {!event?.unAvailable && !event?.disabled && !event?.booked && !event.locked && <Button className='active' onClick={async () => {
               increment()
               const token = await lock(event.id)
               if (!token) close()

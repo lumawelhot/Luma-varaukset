@@ -121,9 +121,9 @@ const LumaCalendar = () => {
             return
           }
           const props = event._def.extendedProps
-          if (!user && props.unAvailable) return
-          else if (set(event._def.publicId, {
-            booked: props.booked, start: props.eventStart
+          /* if (!user && props.unAvailable) return
+          else  */if (set(event._def.publicId, {
+            booked: props.booked, start: props.eventStart, unAvailable: props.unAvailable
           })) navigate('/visit')
         }}
         datesSet={handleView}
