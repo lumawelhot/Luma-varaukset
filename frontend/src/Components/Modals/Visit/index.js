@@ -90,7 +90,7 @@ const Visit = ({ children }) => {
   }
 
   if (!event) return <Navigate to='/' />
-  console.log(event)
+
   return (
     <Modal
       show={true}
