@@ -45,7 +45,7 @@ const typeDefs = gql`
     waitingTime: Int!
     extras: [Extra]
     duration: Int!
-    customForm: ID
+    customForm: Form
     disabled: Boolean!
     locked: Boolean!
     group: Group
@@ -103,6 +103,7 @@ const typeDefs = gql`
   type Query {
     getUsers: [User]!
     me: User!
+    getEvent(id: ID!): Event!
     getEvents: [Event]!
     findVisit(id: ID!): Visit
     getVisits: [Visit]
@@ -133,6 +134,9 @@ const typeDefs = gql`
     deleteGroup(
       group: ID!
     ): String
+    deleteGroups(
+      ids: [ID]!
+    ): String
     assignEventsToGroup(
       events: [ID]
       group: ID!
@@ -152,6 +156,12 @@ const typeDefs = gql`
     unlockEvent(
       event: ID!
     ): Event
+    updateUser(
+      user: ID!
+      password: String
+      username: String!
+      isAdmin: Boolean!
+    ): User
     resetPassword(
       user: ID!
       password: String!
@@ -170,7 +180,7 @@ const typeDefs = gql`
       username: String!
       password: String!
     ): Token
-    createEvent(
+    createEvents(
       title: String!
       scienceClass: [Int]!
       grades: [Int]!
@@ -178,6 +188,7 @@ const typeDefs = gql`
       otherRemotePlatformOption: String
       start: String!
       end: String!
+      dates: [String]!
       desc: String
       inPersonVisit: Boolean!
       remoteVisit: Boolean!
@@ -189,7 +200,7 @@ const typeDefs = gql`
       group: ID
       publishDate: String
       languages: [String]
-    ): Event
+    ): [Event]
     modifyEvent(
       event: ID!
       title: String
@@ -254,15 +265,21 @@ const typeDefs = gql`
     deleteExtra(
       id: String!
     ): String
+    deleteExtras(
+      ids: [String]!
+    ): String
     deleteEvent(
       id: String!
     ): String
+    deleteEvents(
+      ids: [ID]
+    ): [ID]
     forceDeleteEvents(
       events: [ID]
       password: String!
     ): [Event]
-    deleteUser(
-      id: String!
+    deleteUsers(
+      ids: [ID]!
     ): String
     createForm(
       name: String!
@@ -273,8 +290,8 @@ const typeDefs = gql`
       name: String!
       fields: String
     ): Form
-    deleteForm(
-      id: ID!
+    deleteForms(
+      ids: [ID]!
     ): String
   }
   type Subscription {

@@ -1,7 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { setContext } from 'apollo-link-context'
+import App from './App'
+import 'bootstrap/dist/css/bootstrap.min.css'
 import { BrowserRouter as Router } from 'react-router-dom'
+import './i18n'
+import { setContext } from 'apollo-link-context'
+import 'react-datepicker/dist/react-datepicker.css'
+import 'rc-steps/assets/index.css'
+import 'react-datepicker/dist/react-datepicker.css'
 
 import {
   ApolloClient,
@@ -13,12 +19,16 @@ import {
 
 import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/link-ws'
+import ContextProviders from './Components/ContextProviders'
+import { ChakraProvider } from '@chakra-ui/react'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
-import './index.css'
-import App from './App'
-import './i18n'
+import { registerLocale } from  'react-datepicker'
+import fi from 'date-fns/locale/fi'
+registerLocale('fi', fi)
 
-const BASE_URL = process.env.NODE_ENV === 'production' ? process.env.PUBLIC_URL : 'http://localhost:3001'
+const BASE_URL = (process.env.NODE_ENV === 'production' && process.env.PUBLIC_URL) ? process.env.PUBLIC_URL : 'http://localhost:3001'
 const WS_URL = BASE_URL.replace(/^http/,'ws') + '/graphql/ws'
 
 const authLink = setContext((_, { headers }) => {
@@ -53,55 +63,25 @@ const splitLink = split(
   authLink.concat(httpLink)
 )
 
-const client = new ApolloClient({
+export const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: splitLink,
 })
 
-const viewportContext = React.createContext({})
-
-const ViewportProvider = ({ children }) => {
-  // This is the exact same logic that we previously had in our hook
-
-  const [width, setWidth] = React.useState(window.innerWidth)
-  const [height, setHeight] = React.useState(window.innerHeight)
-
-  const handleWindowResize = () => {
-    setWidth(window.innerWidth)
-    setHeight(window.innerHeight)
-  }
-
-  React.useEffect(() => {
-    window.addEventListener('resize', handleWindowResize)
-    return () => window.removeEventListener('resize', handleWindowResize)
-  }, [])
-
-  /* Now we are dealing with a context instead of a Hook, so instead
-     of returning the width and height we store the values in the
-     value of the Provider */
-  return (
-    <viewportContext.Provider value={{ width, height }}>
-      {children}
-    </viewportContext.Provider>
-  )
-}
-
-/* Rewrite the "useViewport" hook to pull the width and height values
-   out of the context instead of calculating them itself */
-export const useViewport = () => {
-  /* We can use the "useContext" Hook to acccess a context from within
-     another Hook, remember, Hooks are composable! */
-  const { width, height } = React.useContext(viewportContext)
-  return { width, height }
-}
+const [, ...basename] = BASE_URL.split('://')[1].split('/')
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <Router basename={process.env.PUBLIC_URL?.includes('staging') ? '/luma-varaukset' : ''}>
-      <ViewportProvider>
-        <App />
-      </ViewportProvider>
-    </Router>
+    <React.StrictMode>
+      <Router basename={`/${basename}`}>
+        <ContextProviders>
+          <ChakraProvider>
+            <App />
+            <ToastContainer />
+          </ChakraProvider>
+        </ContextProviders>
+      </Router>
+    </React.StrictMode>
   </ApolloProvider>,
   document.getElementById('root')
 )

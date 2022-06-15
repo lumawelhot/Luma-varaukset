@@ -1,41 +1,28 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
-import commonFI from './locales/fi/common.json'
-import eventFI from './locales/fi/event.json'
-import visitFI from './locales/fi/visit.json'
-import userFI from './locales/fi/user.json'
-import commonEN from './locales/en/common.json'
-import eventEN from './locales/en/event.json'
-import visitEN from './locales/en/visit.json'
-import userEN from './locales/en/user.json'
-import commonSV from './locales/sv/common.json'
-import eventSV from './locales/sv/event.json'
-import visitSV from './locales/sv/visit.json'
-import userSV from './locales/sv/user.json'
+import fi from './locales/fi/translations.json'
+import en from './locales/en/translations.json'
+import sv from './locales/sv/translations.json'
+
+export const resources = {
+  fi: {
+    translation: fi,
+    language: 'fi'
+  },
+  en: {
+    translation: en,
+    language: 'en'
+  },
+  sv: {
+    translation: sv,
+    language: 'sv'
+  }
+}
 
 i18n
   .use(initReactI18next)
   .init({
-    resources: {
-      fi: {
-        event: eventFI,
-        common: commonFI,
-        visit: visitFI,
-        user: userFI
-      },
-      sv: {
-        event: eventSV,
-        common: commonSV,
-        visit: visitSV,
-        user: userSV
-      },
-      en: {
-        event: eventEN,
-        common: commonEN,
-        visit: visitEN,
-        user: userEN
-      }
-    },
+    resources,
     fallbackLng: 'fi',
     debug: false,
     interpolation: {
@@ -43,5 +30,6 @@ i18n
     }
   })
 
+export const t = i18n.t
 
 export default i18n
