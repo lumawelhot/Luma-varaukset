@@ -7,10 +7,6 @@ const sendMail = (mailDetails) => {
       host: config.EMAILHOST,
       port: config.EMAILPORT,
       secure: false, // true for 465, false for other ports
-      auth: {
-        user: config.EMAILUSER,
-        pass: config.EMAILPASSWORD
-      } // remove this when moving to real production environment !!
     }
     :
     {
@@ -27,7 +23,6 @@ const sendMail = (mailDetails) => {
   return new Promise((resolve, reject) => {
     transporter.sendMail(mailDetails, (err, info) => {
       if (err) {
-        console.log(err)
         reject(err)
       } else {
         resolve(info)
