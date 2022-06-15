@@ -203,6 +203,10 @@ body {
   overflow-y: hidden !important;
 }
 
+.fc-scroller.fc-scroller-liquid {
+  overflow-x: auto !important;
+}
+
 .hide-visitform {
   visibility: hidden;
   display: none;

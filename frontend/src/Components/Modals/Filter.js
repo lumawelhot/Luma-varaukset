@@ -29,7 +29,7 @@ const Filter = ({ show, close }) => {
       onHide={close}
       scrollable={true}
     >
-      <Modal.Header>
+      <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         <Modal.Title>{t('filter')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -69,7 +69,7 @@ const Filter = ({ show, close }) => {
           }} style={{ marginRight: 15 }}>{t('show-unavailable')}</Checkbox>
         </Stack>
       </Modal.Body>
-      <Modal.Footer>
+      <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>
         <Button onClick={close}>{t('ok')}</Button>
       </Modal.Footer>
     </Modal>

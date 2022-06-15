@@ -40,7 +40,7 @@ const Login = ({ show, close }) => {
           onHide={close}
           backdrop="static"
         >
-          <Modal.Header closeButton>
+          <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
             <Modal.Title>{t('login-header')}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -58,7 +58,7 @@ const Login = ({ show, close }) => {
               value={values.password}
             />
           </Modal.Body>
-          <Modal.Footer>
+          <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>
             <Button
               className='active'
               onClick={handleSubmit}
