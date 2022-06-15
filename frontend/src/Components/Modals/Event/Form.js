@@ -190,11 +190,11 @@ const Form = React.forwardRef((props, ref) => {
                 <DatePicker
                   value={values.start}
                   title={required(t('date'))}
-                  onChange={v => {
+                  onChange={async v => {
                     const end = set(new Date(v), {
                       hours: values.end.getHours(), minutes: values.end.getMinutes()
                     })
-                    setFieldValue('start', v)
+                    await setFieldValue('start', v)
                     setFieldValue('end', end)
                   }}
                 />

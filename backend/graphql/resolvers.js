@@ -474,7 +474,7 @@ const resolvers = {
       event.availableTimes = formatAvailableTimes(event.availableTimes)
 
       try {
-        const afterDays = differenceInDays(new Date(event.start), new Date()) >= 13 // 14
+        const afterDays = differenceInDays(new Date(event.start), new Date()) >= 14 // 14
         const afterHours = differenceInHours(new Date(event.start), new Date()) >= 1
         const eventCanBeBooked = !currentUser ? afterDays : afterHours
         if (eventCanBeBooked) {
