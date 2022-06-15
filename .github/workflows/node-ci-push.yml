@@ -1,12 +1,12 @@
-#name: Node.js CI on push
-#
-#on:
-#  push:
-#    branches: [main]
-#  workflow_dispatch:
-#    branches: [main]
-#
-#jobs:
+name: Node.js CI on push
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    branches: [main]
+
+jobs:
 #  frontend:
 #    runs-on: ubuntu-latest
 #    defaults:
@@ -72,30 +72,30 @@
 #          EMAILPASSWORD: ${{secrets.EMAILPASSWORD}}
 #          EMAILPORT: 587
 #          SECRET: ${{secrets.SECRET}}
-#
-#  build:
-#    name: 'Publish to dockerhub'
-#    needs: [frontend, backend]
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#      - name: Login to Dockerhub
-#        uses: docker/login-action@v1
-#        with:
-#          username: ${{ secrets.DOCKER_USERNAME }}
-#          password: ${{ secrets.DOCKER_PASSWORD }}
-#      - name: Publish production version to Dockerhub
-#        uses: docker/build-push-action@v2
-#        with:
-#          push: true
-#          tags: lumawelhot/luma-varaukset:latest
-#          build-args: |
-#            PUBLIC_URL=https://luma-varaukset.cs.helsinki.fi
-#      - name: Publish staging version to Dockerhub
-#        uses: docker/build-push-action@v2
-#        with:
-#          push: true
-#          tags: lumawelhot/luma-varaukset:staging
-#          build-args: |
-#            PUBLIC_URL=https://ohtup-staging.cs.helsinki.fi/luma-varaukset
+
+  build:
+    name: 'Publish to dockerhub'
+    needs: [frontend, backend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Login to Dockerhub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Publish production version to Dockerhub
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: lumawelhot/luma-varaukset:latest
+          build-args: |
+            PUBLIC_URL=https://luma-varaukset.cs.helsinki.fi
+      - name: Publish staging version to Dockerhub
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: lumawelhot/luma-varaukset:staging
+          build-args: |
+            PUBLIC_URL=https://ohtup-staging.cs.helsinki.fi/luma-varaukset
