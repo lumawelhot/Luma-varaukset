@@ -308,5 +308,8 @@
   "selected-remote-platform": "Selected remote platform",
   "step-check": "View info",
   "step-book": "Book",
-  "step-confirm": "Confirmation"
+  "step-confirm": "Confirmation",
+  "invalid-start": "Invalid start time",
+  "invalid-end": "Invalid end time",
+  "end-after-start": "Invalid start time"
 }

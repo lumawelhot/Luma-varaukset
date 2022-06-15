@@ -61,6 +61,10 @@ const Form = React.forwardRef((props, ref) => {
           if (f.type === 'checkbox') return { name: f.name, value: [] }
           else return { name: f.name, value: '' }
         }),
+        eventTimes: {
+          start: new Date(event.start),
+          end: new Date(event.end)
+        }
       }}
     >
       {({ handleChange, setFieldValue, handleBlur, setFieldTouched, values, errors, touched }) => (
@@ -206,9 +210,9 @@ const Form = React.forwardRef((props, ref) => {
                 value={values.startTime}
                 hideHours={hour => hour < 8 || hour > 17}
                 hideMinutes={minute => minute % 5 !== 0}
-                onChange={v => {
+                onChange={async v => {
                   const startTime = set(new Date(v), { seconds: 0, milliseconds: 0 })
-                  setFieldValue('startTime', startTime)
+                  await setFieldValue('startTime', startTime)
                   const duration = totalDuration(values)
                   const endTime = add(set(new Date(v), { seconds: 0, milliseconds: 0 }), { minutes: duration })
                   setFieldValue('endTime', endTime)
@@ -216,6 +220,7 @@ const Form = React.forwardRef((props, ref) => {
               />
               <span style={{ fontSize: 15, marginTop: 8, marginLeft: 10 }}>{` – ${format(values.endTime, 'HH:mm')}`}</span>
             </Stack>
+            {(errors.startTime || errors.endTime) && <Error>{t(errors.startTime ? errors.startTime : errors.endTime)}</Error>}
           </Stack>
           <Title />
           <Stack direction='col'>

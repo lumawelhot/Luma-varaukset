@@ -41,6 +41,28 @@ export const VisitValidation = () => Yup.object().shape({
     .email()
     .oneOf([Yup.ref('clientEmail'), null], t('email-not-match'))
     .required(t('fill-field')),
+  startTime: Yup.date()
+    .test((value, formik) => {
+      const eventTimes = formik?.parent?.eventTimes
+      if (eventTimes && eventTimes.start > value) {
+        return formik.createError({
+          message: t('invalid-start')
+        })
+      } else return true
+    })
+    .required()
+    .typeError(t('invalid-time')),
+  endTime: Yup.date()
+    .test((value, formik) => {
+      const eventTimes = formik?.parent?.eventTimes
+      if (eventTimes && eventTimes.end < value) {
+        return formik.createError({
+          message: t('invalid-end')
+        })
+      } else return true
+    })
+    .required()
+    .typeError(t('invalid-time')),
   clientPhone: Yup.string()
     .required(t('fill-field')),
   grade: Yup.string()
@@ -87,8 +109,21 @@ export const EventValidation = () => Yup.object().shape({
   waitingTime: Yup.number()
     .min(0, t('too-small'))
     .required(t('fill-field')),
-  start: Yup.date().required(t('fill-field')).typeError(t('invalid-time')),
-  end: Yup.date().required(t('fill-field')).typeError(t('invalid-time')),
+  start: Yup.date()
+    .test((value, formik) => {
+      const end = formik?.parent?.end
+      if (!end || end < value) {
+        return formik.createError({
+          message: t('end-after-start')
+        })
+      }
+      return true
+    })
+    .required(t('fill-field'))
+    .typeError(t('invalid-time')),
+  end: Yup.date()
+    .required(t('fill-field'))
+    .typeError(t('invalid-time')),
 })
 
 export const CustomFormValidation = () => Yup.object().shape({

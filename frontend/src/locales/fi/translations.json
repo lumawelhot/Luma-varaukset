@@ -308,5 +308,8 @@
   "selected-remote-platform": "Valittu etäyhteysalusta",
   "step-check": "Tarkastele",
   "step-book": "Varaa",
-  "step-confirm": "Vahvistus"
+  "step-confirm": "Vahvistus",
+  "invalid-start": "Virheellinen aloitusajankohta",
+  "invalid-end": "Virheellinen lopetusajankohta",
+  "end-after-start": "Virheellinen aloitusajankohta"
 }
