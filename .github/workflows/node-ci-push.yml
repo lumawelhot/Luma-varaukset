@@ -75,7 +75,7 @@ jobs:
 
   build:
     name: 'Publish to dockerhub'
-    needs: [frontend, backend]
+    #needs: [frontend, backend]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
