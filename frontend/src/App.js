@@ -1,33 +1,33 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import Login from './Components/Modals/Login'
+import Login from './components/Modals/Login'
 import './App.css'
-import LumaCalendar from './Components/LumaCalendar'
+import LumaCalendar from './components/LumaCalendar'
 import { Container } from 'react-bootstrap'
 import { FcKey } from 'react-icons/fc'
-import { UserContext, EventContext } from './services/contexts'
-import Menu from './Components/Menu'
-import EventList from './Components/Pages/EventList'
-import GroupList from './Components/Pages/GroupList'
-import UserList from './Components/Pages/UserList'
-import VisitList from './Components/Pages/VisitList'
-import { default as VisitPage } from './Components/Pages/Visit'
-import Visit from './Components/Modals/Visit'
-import Configs from './Components/Pages/Configs'
-import ExtraList from './Components/Pages/ExtraList'
+import Menu from './components/Menu'
+import EventList from './components/Pages/EventList'
+import GroupList from './components/Pages/GroupList'
+import UserList from './components/Pages/UserList'
+import VisitList from './components/Pages/VisitList'
+import { default as VisitPage } from './components/Pages/Visit'
+import Visit from './components/Modals/Visit'
+import Configs from './components/Pages/Configs'
+import ExtraList from './components/Pages/ExtraList'
 import { useTranslation } from 'react-i18next'
-import { Button } from './Embeds/Button'
-import Event from './Components/Modals/Event'
+import { Button } from './components/Embeds/Button'
+import Event from './components/Modals/Event'
 import { eventInitWithValues } from './helpers/initialvalues'
 import { useNavigate } from 'react-router-dom'
-import FormList from './Components/Pages/FormList'
+import FormList from './components/Pages/FormList'
 import Root from './Root'
+import { useEvents, useUser } from './hooks/api'
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false)
   const [showEvent, setShowEvent] = useState(false)
-  const { current: user } = useContext(UserContext)
-  const { current: event, enable, disable } = useContext(EventContext)
+  const { current: user } = useUser()
+  const { current: event, enable, disable } = useEvents()
   const { t } = useTranslation()
   const navigate = useNavigate()
 

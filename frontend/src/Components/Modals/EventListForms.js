@@ -1,16 +1,16 @@
 import { ListItem, UnorderedList } from '@chakra-ui/react'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { Button, Link } from '../../Embeds/Button'
-import { Input, Select } from '../../Embeds/Input'
-import { DatePicker, TimePicker } from '../../Embeds/Picker'
-import Title from '../../Embeds/Title'
-import { EventContext, GroupContext } from '../../services/contexts'
+import { Button, Link } from '../Embeds/Button'
+import { Input, Select } from '../Embeds/Input'
+import { DatePicker, TimePicker } from '../Embeds/Picker'
+import Title from '../Embeds/Title'
+import { useEvents, useGroups } from '../../hooks/api'
 
 const EventListForms = ({ selected, type, show, close, reset }) => {
-  const { forceRemove, assignToGroup, setPublish } = useContext(EventContext)
-  const { fetch, all: groups } = useContext(GroupContext)
+  const { forceRemove, assignToGroup, setPublish } = useEvents()
+  const { fetch, all: groups } = useGroups()
   const [showSelected, setShowSelected] = useState(false)
   const [password, setPassword] = useState('')
   const [publishDate, setPublishDate] = useState(new Date())

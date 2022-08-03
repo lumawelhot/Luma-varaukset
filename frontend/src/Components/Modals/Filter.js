@@ -1,25 +1,23 @@
-/* eslint-disable no-unused-vars */
 import { Modal, Stack } from 'react-bootstrap'
 import React from 'react'
-import { Button, Checkbox } from '../../Embeds/Button'
+import { Button, Checkbox } from '../Embeds/Button'
 import { useTranslation } from 'react-i18next'
-import { Select } from '../../Embeds/Input'
-import { useContext } from 'react'
-import { EventContext, MiscContext } from '../../services/contexts'
+import { Select } from '../Embeds/Input'
 import { CLASSES, GRADES } from '../../config'
 import { CheckboxGroup } from '@chakra-ui/react'
-import Title from '../../Embeds/Title'
+import Title from '../Embeds/Title'
+import { useEvents, useMisc } from '../../hooks/api'
 
 const Filter = ({ show, close }) => {
   const { t } = useTranslation()
   const {
     tags,
     fetchTags
-  } = useContext(MiscContext)
+  } = useMisc()
   const {
     filterOptions,
     setFilterOptions,
-  } = useContext(EventContext)
+  } = useEvents()
 
   return (
     <Modal

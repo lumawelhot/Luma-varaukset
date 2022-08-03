@@ -1,9 +1,9 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Navigate } from 'react-router-dom'
-import { UserContext } from './services/contexts'
+import { useUser } from './hooks/api'
 
 const Root = () => {
-  const { current: user } = useContext(UserContext)
+  const { current: user } = useUser()
 
   if (user === undefined) return <></>
 

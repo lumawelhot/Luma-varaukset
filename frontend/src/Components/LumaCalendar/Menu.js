@@ -1,7 +1,7 @@
 /* eslint-disable react/display-name */
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../Embeds/Button'
+import { Button } from '../Embeds/Button'
 import { FaFilter } from 'react-icons/fa'
 import Filter from '../Modals/Filter'
 import styled from 'styled-components'

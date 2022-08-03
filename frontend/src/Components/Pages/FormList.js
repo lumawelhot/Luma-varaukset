@@ -1,15 +1,15 @@
 import { Heading } from '@chakra-ui/react'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Table from '../Table'
-import { FormContext } from '../../services/contexts'
 import { formColumns } from '../../helpers/columns'
-import { Button } from '../../Embeds/Button'
+import { Button } from '../Embeds/Button'
 import CustomForm from '../Modals/CustomForm'
+import { useForms } from '../../hooks/api'
 
 const FormList = () => {
   const { t } = useTranslation()
-  const { all, fetch, remove } = useContext(FormContext)
+  const { all, fetch, remove } = useForms()
   const [showAdd, setShowAdd] = useState()
   const [showModify, setShowModify] = useState()
   const [selectedForm, setSelectedForm] = useState()

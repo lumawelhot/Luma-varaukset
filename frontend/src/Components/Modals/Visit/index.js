@@ -1,12 +1,11 @@
-import React, { useContext, useState, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { BOOKING_TIME } from '../../../config'
-import { Button } from '../../../Embeds/Button'
-import Timer from '../../../Embeds/Timer'
+import { Button } from '../../Embeds/Button'
+import Timer from '../../Embeds/Timer'
 import { combineEvent } from '../../../helpers/parse'
-import { EventContext, VisitContext, UserContext } from '../../../services/contexts'
 import Form from './Form'
 import Info from './Info'
 import Status from './Status'
@@ -14,6 +13,7 @@ import { formError, customFormError } from '../../../helpers/utils'
 import Steps, { Step } from 'rc-steps'
 import { CheckIcon } from '@chakra-ui/icons'
 import { error, success } from '../../../helpers/toasts'
+import { useEvents, useUser, useVisits } from '../../../hooks/api'
 
 
 const Visit = ({ children }) => {
@@ -24,10 +24,9 @@ const Visit = ({ children }) => {
   const [timer, setTimer] = useState()
   const [token, setToken] = useState()
   const [visit, setVisit] = useState()
-  const { book } = useContext(VisitContext)
-  const { cacheModify, find, remove, lock, unlock } = useContext(EventContext)
-  const { current: user } = useContext(UserContext)
-  const { current: event } = useContext(EventContext)
+  const { book } = useVisits()
+  const { cacheModify, find, remove, lock, unlock, current: event } = useEvents()
+  const { current: user } = useUser()
   const navigate = useNavigate()
   const formRef = useRef()
 

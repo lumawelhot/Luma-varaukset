@@ -1,9 +1,9 @@
 const httpServer = require('./app')
-const config = require('./utils/config')
+const config = require('./config')
 const PORT = config.PORT || 3001
 
 const cron = require('node-cron')
-const { sendReminder, sendThanks } = require('./utils/mailSender')
+const { sendReminder, sendThanks } = require('./utils/mailer/mailSender')
 
 cron.schedule('0 7 * * *', async () => {
   console.log('Running a task every day at 07:00')

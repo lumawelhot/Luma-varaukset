@@ -45,7 +45,6 @@ export const EVENT_FIELDS = gql`
       id
       name
       disabled
-      publishDate
     }
     publishDate
     languages
@@ -66,7 +65,6 @@ export const VISIT_FIELDS = gql`
       start
       end
       resourceids
-      desc
     }
     extras {
       id

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { Modal } from 'react-bootstrap'
-import { Button } from '../../../Embeds/Button'
+import { Button } from '../../Embeds/Button'
 import { formError } from '../../../helpers/utils'
 import Form from './Form'
 

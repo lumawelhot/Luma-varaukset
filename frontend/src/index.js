@@ -19,7 +19,7 @@ import {
 
 import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/link-ws'
-import ContextProviders from './Components/ContextProviders'
+import LumaContext from './context'
 import { ChakraProvider } from '@chakra-ui/react'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -74,12 +74,12 @@ ReactDOM.render(
   <ApolloProvider client={client}>
     <React.StrictMode>
       <Router basename={`/${basename}`}>
-        <ContextProviders>
+        <LumaContext>
           <ChakraProvider>
             <App />
             <ToastContainer />
           </ChakraProvider>
-        </ContextProviders>
+        </LumaContext>
       </Router>
     </React.StrictMode>
   </ApolloProvider>,

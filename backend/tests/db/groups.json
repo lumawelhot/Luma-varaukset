@@ -1,0 +1,34 @@
+[
+  {
+    "id": "1",
+    "name": "Group 1",
+    "events": [],
+    "maxCount": 1,
+    "visitCount": 0,
+    "disabled": false
+  },
+  {
+    "id": "2",
+    "name": "Group 2",
+    "events": [],
+    "maxCount": 3,
+    "visitCount": 0,
+    "disabled": false
+  },
+  {
+    "id": "3",
+    "name": "Group 3",
+    "events": [],
+    "maxCount": 2,
+    "visitCount": 3,
+    "disabled": false
+  },
+  {
+    "id": "4",
+    "name": "Group 4",
+    "events": [],
+    "maxCount": 3,
+    "visitCount": 3,
+    "disabled": true
+  }
+]

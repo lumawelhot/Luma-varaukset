@@ -1,21 +1,21 @@
 /* eslint-disable react/display-name */
 import { RadioGroup, CheckboxGroup } from '@chakra-ui/react'
 import { Formik } from 'formik'
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Stack } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { Input } from '../../../Embeds/Input'
-import Title, { Error, required } from '../../../Embeds/Title'
-import { EventContext, FormContext } from '../../../services/contexts'
+import { Input } from '../../Embeds/Input'
+import Title, { Error, required } from '../../Embeds/Title'
 import { PLATFORMS } from '../../../config'
-import { Checkbox, Radio } from '../../../Embeds/Button'
-import { TimePicker } from '../../../Embeds/Picker'
+import { Checkbox, Radio } from '../../Embeds/Button'
+import { TimePicker } from '../../Embeds/Picker'
 import { add, format, set } from 'date-fns'
 import { VisitValidation } from '../../../helpers/validate'
+import { useEvents, useForms } from '../../../hooks/api'
 
 const Form = React.forwardRef((props, ref) => {
-  const { current: event } = useContext(EventContext)
-  const { fetch } = useContext(FormContext)
+  const { current: event } = useEvents()
+  const { fetch } = useForms()
   const { t } = useTranslation()
   useEffect(fetch, [])
 

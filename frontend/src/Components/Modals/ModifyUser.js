@@ -1,18 +1,18 @@
 import { RadioGroup, Button as ChakraButton } from '@chakra-ui/react'
 import { Formik } from 'formik'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { Modal, Stack } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { Button, Radio } from '../../Embeds/Button'
-import { Input } from '../../Embeds/Input'
-import Title, { Error, required } from '../../Embeds/Title'
+import { Button, Radio } from '../Embeds/Button'
+import { Input } from '../Embeds/Input'
+import Title, { Error, required } from '../Embeds/Title'
 import { ModifyUserValidation } from '../../helpers/validate'
-import { UserContext } from '../../services/contexts'
 import { error, success } from '../../helpers/toasts'
+import { useUser } from '../../hooks/api'
 
 const ModifyUser = ({ show, close, initialValues }) => {
   const { t } = useTranslation()
-  const { current: user, modify } = useContext(UserContext)
+  const { current: user, modify } = useUser()
   const [modifyPassword, setModifyPassword] = useState(false)
 
   const submit = async (values) => {

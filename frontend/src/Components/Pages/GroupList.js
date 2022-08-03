@@ -1,17 +1,17 @@
 import { Heading } from '@chakra-ui/react'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { groupColumns } from '../../helpers/columns'
-import { GroupContext } from '../../services/contexts'
 import Table from '../Table'
-import { Button } from '../../Embeds/Button'
+import { Button } from '../Embeds/Button'
 import Group from '../Modals/Group'
 import { groupInit } from '../../helpers/initialvalues'
 import { error, success } from '../../helpers/toasts'
+import { useGroups } from '../../hooks/api'
 
 const GroupList = () => {
   const { t } = useTranslation()
-  const groupContext = useContext(GroupContext)
+  const groupContext = useGroups()
   const [showAdd, setShowAdd] = useState()
   const [showModify, setShowModify] = useState()
   const [group, setGroup] = useState()

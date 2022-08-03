@@ -1,16 +1,15 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../Embeds/Button'
+import { Button } from '../Embeds/Button'
 import { Formik } from 'formik'
-import { Input } from '../../Embeds/Input'
-import { UserContext } from '../../services/contexts'
-import { useEvict } from '../../hooks/contexts'
+import { Input } from '../Embeds/Input'
+import { useEvict, useUser } from '../../hooks/api'
 import { error } from '../../helpers/toasts'
 
 const Login = ({ show, close }) => {
   const { t } = useTranslation()
-  const { login, fetch } = useContext(UserContext)
+  const { login, fetch } = useUser()
   const { evict } = useEvict()
 
   const submit = async (values, formik) => {

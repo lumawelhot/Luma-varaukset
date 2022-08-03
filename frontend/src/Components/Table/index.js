@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { usePagination, useSortBy, useTable } from 'react-table'
-import { Table as List, Thead, Tbody, Tr, Th, Td, Container, Checkbox } from '../../Embeds/Table'
+import { Table as List, Thead, Tbody, Tr, Th, Td, Container, Checkbox } from '../Embeds/Table'
 import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai'
 import { multipleExist, someExist } from '../../helpers/utils'
 import Pagination from './Pagination'
@@ -58,7 +58,7 @@ const Table = ({ checkboxed, columns, data, component, nosort, initialState }) =
                       multipleExist(checked, pageColIds)
                     }}
                   />
-                </Th> : <></>}
+                </Th> : (checkboxed ? <Th></Th> : <></>)}
                 {group.headers.map((col, j) => (
                   <Th
                     last={group.headers.length === j + 1 ? 'true' : 'false'}

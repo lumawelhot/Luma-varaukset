@@ -1,14 +1,14 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Badge } from '../../../Embeds/Badge'
-import { EventContext } from '../../../services/contexts'
+import { Badge } from '../../Embeds/Badge'
 import { LANG_MAP, CLASSES, GRADES } from '../../../config'
 import { format } from 'date-fns'
-import { Title, Text, Li, Ul, P } from '../../../Embeds/Info'
+import { Title, Text, Li, Ul, P } from '../../Embeds/Info'
+import { useEvents } from '../../../hooks/api'
 
 const Info = () => {
   const { t } = useTranslation()
-  const { current: event } = useContext(EventContext)
+  const { current: event } = useEvents()
 
   if (!event) return <></>
 

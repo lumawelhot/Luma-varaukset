@@ -1,17 +1,17 @@
 import { RadioGroup } from '@chakra-ui/react'
-import React, { useContext, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { Button, Radio } from '../../../Embeds/Button'
+import { Button, Radio } from '../../Embeds/Button'
 import { eventInit } from '../../../helpers/initialvalues'
 import { error, success } from '../../../helpers/toasts'
 import { formError } from '../../../helpers/utils'
-import { EventContext } from '../../../services/contexts'
+import { useEvents } from '../../../hooks/api'
 import Form from './Form'
 
 const Event = ({ show, close, initialValues=eventInit, options, modify }) => {
   const [type, setType] = useState(modify ? 'modify' : 'create')
-  const { add, modify : mod, current: event } = useContext(EventContext)
+  const { add, modify : mod, current: event } = useEvents()
   const [dates, setDates] = useState([])
   const { t } = useTranslation()
   const formRef = useRef()

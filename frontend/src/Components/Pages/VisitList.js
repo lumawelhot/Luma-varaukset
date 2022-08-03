@@ -1,22 +1,22 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { VisitContext, EventContext } from '../../services/contexts'
 import { visitColumns, visitInitialState } from '../../helpers/columns'
 import { Heading } from '@chakra-ui/react'
 import { format } from 'date-fns'
 import Table from '../Table'
 import { useNavigate } from 'react-router-dom'
 import { CLASSES } from '../../config'
-import { Badge } from '../../Embeds/Badge'
-import { Select } from '../../Embeds/Input'
+import { Badge } from '../Embeds/Badge'
+import { Select } from '../Embeds/Input'
 import { someExist } from '../../helpers/utils'
-import Clipboard from '../../Embeds/Clipboard'
+import Clipboard from '../Embeds/Clipboard'
+import { useEvents, useVisits } from '../../hooks/api'
 
 const VisitList = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { all, fetch } = useContext(VisitContext)
-  const { find } = useContext(EventContext)
+  const { all, fetch } = useVisits()
+  const { find } = useEvents()
   const [filterOptions, setFilterOptions] = useState({
     classes: [],
   })

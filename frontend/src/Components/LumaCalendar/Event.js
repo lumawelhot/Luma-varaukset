@@ -1,14 +1,14 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { OverlayTrigger, Popover, PopoverHeader } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { BsEyeSlashFill } from 'react-icons/bs'
 import { FaLock } from 'react-icons/fa'
 import { CLASSES, LANGUAGE_SHORT } from '../../config'
-import { Badge } from '../../Embeds/Badge'
-import { EventContext } from '../../services/contexts'
+import { Badge } from '../Embeds/Badge'
+import { useEvents } from '../../hooks/api'
 
 const Event = ({ content }) => {
-  const { find } = useContext(EventContext)
+  const { find } = useEvents()
   const { t } = useTranslation()
   const event = find(content.event._def.publicId)
 

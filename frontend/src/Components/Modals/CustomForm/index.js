@@ -1,12 +1,12 @@
-import React, { useContext, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { DEFAULT_FIELD_VALUES } from '../../../config'
-import { Button } from '../../../Embeds/Button'
+import { Button } from '../../Embeds/Button'
 import { customformInit } from '../../../helpers/initialvalues'
 import { error, success } from '../../../helpers/toasts'
 import { formError } from '../../../helpers/utils'
-import { FormContext } from '../../../services/contexts'
+import { useForms } from '../../../hooks/api'
 import Form from './Form'
 
 const CustomForm = ({ show, close, initialValues=customformInit, modify }) => {
@@ -14,7 +14,7 @@ const CustomForm = ({ show, close, initialValues=customformInit, modify }) => {
   const [onModify, setOnModify] = useState()
   const formRef = useRef()
   const [fields, setFields] = useState(initialValues.fields)
-  const { add, modify: mod } = useContext(FormContext)
+  const { add, modify: mod } = useForms()
 
   const getField = () => {
     const fieldValues = formRef?.current?.values

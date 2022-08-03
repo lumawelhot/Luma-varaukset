@@ -1,12 +1,12 @@
-import React, { useContext, useRef } from 'react'
+import React, { useRef } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../../Embeds/Button'
-import { MiscContext } from '../../../services/contexts'
+import { Button } from '../../Embeds/Button'
+import { useMisc } from '../../../hooks/api'
 import Form from './Form'
 
 const Emails = ({ show, close, template }) => {
-  const { modifyEmail } = useContext(MiscContext)
+  const { modifyEmail } = useMisc()
   const { t } = useTranslation()
   const formRef = useRef()
 

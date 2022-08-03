@@ -1,24 +1,24 @@
-import React, { useContext, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { EventContext, UserContext } from '../../services/contexts'
 import Table from '../Table'
 import { Heading } from '@chakra-ui/react'
 import { eventColumns, eventInitialState } from '../../helpers/columns'
 import { format } from 'date-fns'
-import { Button } from '../../Embeds/Button'
-import { Select } from '../../Embeds/Input'
+import { Button } from '../Embeds/Button'
+import { Select } from '../Embeds/Input'
 import { CLASSES, TIME_VALUE_LARGE } from '../../config'
 import { someExist } from '../../helpers/utils'
 import { Stack } from 'react-bootstrap'
-import { DatePicker } from '../../Embeds/Picker'
-import Title from '../../Embeds/Title'
-import { Badge } from '../../Embeds/Badge'
+import { DatePicker } from '../Embeds/Picker'
+import Title from '../Embeds/Title'
+import { Badge } from '../Embeds/Badge'
 import EventListForms from '../Modals/EventListForms'
+import { useEvents, useUser } from '../../hooks/api'
 
 const EventList = () => {
   const { t } = useTranslation()
-  const { all, find } = useContext(EventContext)
-  const { current: user } = useContext(UserContext)
+  const { all, find } = useEvents()
+  const { current: user } = useUser()
   const [showForms, setShowForms] = useState(false)
   const [selected, setSelected] = useState()
   const [filterOptions, setFilterOptions] = useState({

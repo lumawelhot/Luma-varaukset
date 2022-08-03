@@ -311,5 +311,7 @@
   "step-confirm": "Vahvistus",
   "invalid-start": "Virheellinen aloitusajankohta",
   "invalid-end": "Virheellinen lopetusajankohta",
-  "end-after-start": "Virheellinen aloitusajankohta"
+  "end-after-start": "Virheellinen aloitusajankohta",
+  
+  "remove-user-confirm": "Haluatko varmasti poistaa valitut käyttäjät"
 }

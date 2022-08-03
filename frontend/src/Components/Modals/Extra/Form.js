@@ -1,13 +1,13 @@
 /* eslint-disable react/display-name */
 import React from 'react'
 import { Formik } from 'formik'
-import { Input } from '../../../Embeds/Input'
+import { Input } from '../../Embeds/Input'
 import { useTranslation } from 'react-i18next'
 import { Stack } from 'react-bootstrap'
 import { CheckboxGroup } from '@chakra-ui/react'
-import { Checkbox } from '../../../Embeds/Button'
+import { Checkbox } from '../../Embeds/Button'
 import { CLASSES } from '../../../config'
-import Title, { Error } from '../../../Embeds/Title'
+import Title, { Error } from '../../Embeds/Title'
 import { ExtraValidation } from '../../../helpers/validate'
 
 const Form = React.forwardRef((props, ref) => {

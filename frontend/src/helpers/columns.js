@@ -59,7 +59,7 @@ export const eventColumns = () => [
     Header: t('visit-count'),
     accessor: 'visitCount'
   }, {
-    Header: t('publish-date'),
+    Header: <span style={{ paddingRight: 10 }}>{t('publish-date')}</span>,
     accessor: 'publishDate'
   }
 ]

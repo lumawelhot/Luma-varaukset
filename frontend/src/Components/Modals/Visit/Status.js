@@ -2,7 +2,7 @@ import React from 'react'
 import { Spinner } from '@chakra-ui/react'
 import { Alert } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../../Embeds/Button'
+import { Button } from '../../Embeds/Button'
 import { useNavigate } from 'react-router-dom'
 
 const Status = ({ status, visit }) => {

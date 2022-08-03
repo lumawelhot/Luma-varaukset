@@ -5,7 +5,6 @@ import listPlugin from '@fullcalendar/list'
 import luxonPlugin from '@fullcalendar/luxon'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import { EventContext } from '../services/contexts'
 import * as XLSX from 'xlsx'
 import { parseCSV } from './parse'
 

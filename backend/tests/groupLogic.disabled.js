@@ -162,33 +162,6 @@ beforeEach(async () => {
 
 describe('A group', () => {
 
-  it('can be created by an employee', async () => {
-    const response = await createGroup('group', 5, null, true)
-    expect(response.errors).toBeUndefined()
-    expect(response.data.createGroup.name).toBe('group')
-  })
-
-  it('cannot be created by an unauthorized user', async () => {
-    const response = await createGroup('nogroup', 5, null, false)
-    expect(response.errors[0].message).toBe('Not authenticated')
-    expect(response.data.createGroup).toBe(null)
-  })
-
-  it('can be modified by an employee', async () => {
-    const response = await modifyGroup(group1.id, 'new name', 4, '', true)
-    const { name, maxCount, publishDate } = response.data.modifyGroup
-    expect(response.errors).toBeUndefined()
-    expect(name).toBe('new name')
-    expect(maxCount).toBe(4)
-    expect(publishDate).toBe(null)
-  })
-
-  it('cannot be modified by an unauthorized user', async () => {
-    const response = await modifyGroup(group1.id, 'name try', 5, '', false)
-    expect(response.errors[0].message).toBe('Not authenticated')
-    expect(response.data.modifyGroup).toBe(null)
-  })
-
   it('can be assigned to multiple events', async () => {
     const response = await assignEventsToGroup(group1.id, [event1.id, event3.id])
     expect(response.errors).toBeUndefined()
@@ -197,12 +170,6 @@ describe('A group', () => {
     event2 = await Event.findById(event2.id)
     expect(event1.group.toString()).toBe(group1.id)
     expect(event2.group).toBe(undefined)
-  })
-
-  xit('can be deleted by an employee', async () => {
-    const response = await deleteGroup(group1.id)
-    expect(response.errors).toBeUndefined()
-    expect(response.data.deleteGroup).toBe(`Deleted Group with ID ${group1.id}`)
   })
 
   it('is disabled if it reaches maximum number of visits', async () => {

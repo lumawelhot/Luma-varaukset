@@ -1,0 +1,100 @@
+[
+  {
+    "id": "1",
+    "title": "Maanjäristysten alueellisuus ja niiden vaikutukset",
+    "resourceids": [4],
+    "grades": [1],
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "waitingTime": 15,
+    "duration": 30,
+    "desc": "I feel the earth move under my feet, I feel the sky tumbling down, tumbling down!",
+    "disabled": false,
+    "locked": null,
+    "tags": ["Maantiede"],
+
+    "fromNow": 15
+  },
+  {
+    "id": "2",
+    "title": "Lämpösäteily ja ilmastonmuutos",
+    "resourceids": [4],
+    "grades": [1],
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "waitingTime": 15,
+    "extras": [],
+    "duration": 30,
+    "disabled": false,
+    "locked": null,
+    "tags": ["Fysiikka", "Ilmastonmuutos", "Lämpö"],
+
+    "fromNow": 2
+  },
+  {
+    "id": "3",
+    "title": "Kemian kokeelliset työt",
+    "resourceids": [4],
+    "grades": [1],
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "waitingTime": 15,
+    "extras": [],
+    "duration": 30,
+    "disabled": false,
+    "locked": false,
+    "tags": ["Reaktiot"],
+
+    "fromNow": 3
+  },
+  {
+    "id": "4",
+    "title": "Python-ohjelmointikieli",
+    "resourceids": [3],
+    "grades": [1],
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "waitingTime": 15,
+    "extras": [],
+    "duration": 30,
+    "disabled": false,
+    "locked": false,
+    "tags": ["Ohjelmointi"],
+
+    "fromNow": 5
+  },
+  {
+    "id": "5",
+    "title": "Matematiikan työpaja",
+    "desc": "kuvaus",
+    "resourceids": [1,2],
+    "grades": [1],
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "waitingTime": 15,
+    "extras": [],
+    "duration": 30,
+    "disabled": false,
+    "locked": false,
+    "tags": ["Matematiikka", "Geometria", "Todennäköisyydet"],
+
+    "fromNow": -2
+  },
+  {
+    "id": "6",
+    "title": "Scratch-ohjelmointikieli",
+    "desc": "kuvaus",
+    "resourceids": [3],
+    "grades": [1, 2],
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "waitingTime": 15,
+    "extras": [],
+    "duration": 30,
+    "disabled": false,
+    "locked": false,
+    "tags": ["Ohjelmointi"],
+
+    "fromNow": -1
+  }
+]

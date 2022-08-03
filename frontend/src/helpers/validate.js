@@ -94,10 +94,10 @@ export const EventValidation = () => Yup.object().shape({
     is: inPersonVisit => !inPersonVisit,
     then: Yup.bool().oneOf([true], t('atleast-one-visittype'))
   }),
-  inPersonVisit: Yup.bool().when('removeVisit', {
+  /* inPersonVisit: Yup.bool().when('remoteVisit', {
     is: remoteVisit => !remoteVisit,
     then: Yup.bool().oneOf([true], t('atleast-one-visittype'))
-  }),
+  }), */
   remotePlatforms: Yup.array()
     .when('remoteVisit', {
       is: true,

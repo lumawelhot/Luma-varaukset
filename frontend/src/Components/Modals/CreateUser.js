@@ -1,20 +1,20 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Formik } from 'formik'
 import { Modal, Stack } from 'react-bootstrap'
-import { Input } from '../../Embeds/Input'
+import { Input } from '../Embeds/Input'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../Embeds/Button'
-import { UserContext } from '../../services/contexts'
+import { Button } from '../Embeds/Button'
 import { Radio, RadioGroup } from '@chakra-ui/react'
-import Title, { Error } from '../../Embeds/Title'
+import Title, { Error } from '../Embeds/Title'
 import { CreateUserValidation } from '../../helpers/validate'
 import { userInit } from '../../helpers/initialvalues'
-import { required } from '../../Embeds/Title'
+import { required } from '../Embeds/Title'
 import { error, success } from '../../helpers/toasts'
+import { useUser } from '../../hooks/api'
 
 const CreateUser = ({ show, close }) => {
   const { t } = useTranslation()
-  const { add } = useContext(UserContext)
+  const { add } = useUser()
 
   const submit = async (values, formik) => {
     const { username, password, isAdmin } = values

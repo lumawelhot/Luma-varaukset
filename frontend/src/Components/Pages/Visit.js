@@ -1,19 +1,19 @@
 import { Heading } from '@chakra-ui/react'
 import { format } from 'date-fns'
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button } from '../../Embeds/Button'
-import { EventContext, VisitContext } from '../../services/contexts'
-import { Title, Text, Li, Ul, P } from '../../Embeds/Info'
+import { Button } from '../Embeds/Button'
+import { Title, Text, Li, Ul, P } from '../Embeds/Info'
 import { CLASSES, PLATFORMS } from '../../config'
+import { useEvents, useVisits } from '../../hooks/api'
 
 const Visit = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { current: visit, find, remove, fetch } = useContext(VisitContext)
-  const { find : findEvent } = useContext(EventContext)
+  const { current: visit, find, remove, fetch } = useVisits()
+  const { find : findEvent } = useEvents()
   useEffect(fetch, [])
   const { id } = useParams()
 

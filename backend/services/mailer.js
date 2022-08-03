@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer')
-const config = require('../utils/config')
+const config = require('../config')
 
 const sendMail = (mailDetails) => {
   const senderSettings = process.env.NODE_ENV === 'production' ?

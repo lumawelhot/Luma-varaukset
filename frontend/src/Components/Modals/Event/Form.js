@@ -2,29 +2,29 @@
 import { Button, CheckboxGroup } from '@chakra-ui/react'
 import { format, set } from 'date-fns'
 import { Formik } from 'formik'
-import React, { useContext, useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Stack } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { CLASSES, GRADES, LANG_MAP, MAX_TAG_FILTER_TAGS, PLATFORMS } from '../../../config'
-import { Input, Select, TextArea } from '../../../Embeds/Input'
-import { DatePicker, TimePicker } from '../../../Embeds/Picker'
-import { Checkbox } from '../../../Embeds/Table'
-import Title, { Error, required } from '../../../Embeds/Title'
-import { IconButton } from '../../../Embeds/Button'
-import { MiscContext, FormContext, GroupContext } from '../../../services/contexts'
+import { Input, Select, TextArea } from '../../Embeds/Input'
+import { DatePicker, TimePicker } from '../../Embeds/Picker'
+import { Checkbox } from '../../Embeds/Table'
+import Title, { Error, required } from '../../Embeds/Title'
+import { IconButton } from '../../Embeds/Button'
 import _ from 'lodash'
 import { someExist } from '../../../helpers/utils'
 import Table from '../../Table'
 import { eventDateColumns } from '../../../helpers/columns'
 import { DeleteIcon } from '@chakra-ui/icons'
 import { EventValidation } from '../../../helpers/validate'
+import { useForms, useGroups, useMisc } from '../../../hooks/api'
 
 const Form = React.forwardRef((props, ref) => {
   const { t } = useTranslation()
   const { dates, setDates } = props
-  const { extras, tags, fetchTags, fetchExtras } = useContext(MiscContext)
-  const { all: forms, fetch: fetchForms } = useContext(FormContext)
-  const { all: groups, fetch: fetchGroups } = useContext(GroupContext)
+  const { extras, tags, fetchTags, fetchExtras } = useMisc()
+  const { all: forms, fetch: fetchForms } = useForms()
+  const { all: groups, fetch: fetchGroups } = useGroups()
   useEffect(fetchExtras, [])
 
   const updateDates = (values) => {
@@ -92,6 +92,7 @@ const Form = React.forwardRef((props, ref) => {
             value={values.tags}
             options={tags}
             onChange={v => setFieldValue('tags', v)}
+            creatable
           />
           <Title>{required(t('event-type'))}</Title>
           <Stack style={{ marginLeft: 3 }} direction='col'>

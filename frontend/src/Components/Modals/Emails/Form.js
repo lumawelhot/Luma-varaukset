@@ -2,13 +2,13 @@
 import { Formik } from 'formik'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Input, TextArea } from '../../../Embeds/Input'
+import { Input, TextArea } from '../../Embeds/Input'
 import _ from 'lodash'
-import Title from '../../../Embeds/Title'
+import Title from '../../Embeds/Title'
 import { ListItem, UnorderedList, Button } from '@chakra-ui/react'
 import { Stack } from 'react-bootstrap'
 import { DeleteIcon } from '@chakra-ui/icons'
-import { IconButton } from '../../../Embeds/Button'
+import { IconButton } from '../../Embeds/Button'
 
 const Form = React.forwardRef((props, ref) => {
   const [address, setAdress] = useState('')

@@ -1,6 +1,5 @@
 const { gql } = require('apollo-server-express')
 
-//Visit- ja Event-tyyppien kentät gradeId ja online tarkistettava
 const typeDefs = gql`
   type Lock {
     event: ID!
@@ -102,14 +101,13 @@ const typeDefs = gql`
   }
   type Query {
     getUsers: [User]!
-    me: User!
+    me: User
     getEvent(id: ID!): Event!
-    getEvents: [Event]!
+    getEvents(ids: [ID]): [Event]!
     findVisit(id: ID!): Visit
     getVisits: [Visit]
     getTags: [Tag]!
     getExtras: [Extra]!
-    getForm(id: ID): Form
     getForms: [Form]
     getEmailTemplates: [EmailTemplate]
     getGroups: [Group]
@@ -131,12 +129,9 @@ const typeDefs = gql`
       publishDate: String
       disabled: Boolean
     ): Group
-    deleteGroup(
-      group: ID!
-    ): String
     deleteGroups(
       ids: [ID]!
-    ): String
+    ): [ID]
     assignEventsToGroup(
       events: [ID]
       group: ID!
@@ -159,17 +154,8 @@ const typeDefs = gql`
     updateUser(
       user: ID!
       password: String
-      username: String!
-      isAdmin: Boolean!
-    ): User
-    resetPassword(
-      user: ID!
-      password: String!
-    ): User
-    changeUsername(
-      user: ID!
-      username: String!
-      isAdmin: Boolean!
+      username: String
+      isAdmin: Boolean
     ): User
     createUser(
       username: String!
@@ -182,7 +168,7 @@ const typeDefs = gql`
     ): Token
     createEvents(
       title: String!
-      scienceClass: [Int]!
+      resourceids: [Int]!
       grades: [Int]!
       remotePlatforms: [Int]
       otherRemotePlatformOption: String
@@ -257,30 +243,24 @@ const typeDefs = gql`
     ): Extra
     modifyExtra(
       id: ID!
-      name: String!
-      classes: [Int]!
-      remoteLength: Int!
-      inPersonLength: Int!
+      name: String
+      classes: [Int]
+      remoteLength: Int
+      inPersonLength: Int
     ): Extra
-    deleteExtra(
-      id: String!
-    ): String
     deleteExtras(
-      ids: [String]!
-    ): String
-    deleteEvent(
-      id: String!
-    ): String
+      ids: [ID]!
+    ): [ID]
     deleteEvents(
-      ids: [ID]
+      ids: [ID]!
     ): [ID]
     forceDeleteEvents(
-      events: [ID]
+      events: [ID]!
       password: String!
     ): [Event]
     deleteUsers(
       ids: [ID]!
-    ): String
+    ): [ID]
     createForm(
       name: String!
       fields: String
@@ -292,11 +272,12 @@ const typeDefs = gql`
     ): Form
     deleteForms(
       ids: [ID]!
-    ): String
+    ): [ID]
   }
   type Subscription {
     eventModified: Event
-    eventsDeleted: [Event]
+    eventsModified: [Event]
+    eventsDeleted: [ID]
   }
 `
 module.exports = typeDefs

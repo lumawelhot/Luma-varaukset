@@ -1,20 +1,20 @@
 import { Heading } from '@chakra-ui/react'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Table from '../Table'
 import { userColumns } from '../../helpers/columns'
-import { UserContext } from '../../services/contexts'
-import { Button } from '../../Embeds/Button'
+import { Button } from '../Embeds/Button'
 import CreateUser from '../Modals/CreateUser'
 import { userInit } from '../../helpers/initialvalues'
 import ModifyUser from '../Modals/ModifyUser'
+import { useUser } from '../../hooks/api'
 
 const UserList = () => {
   const { t } = useTranslation()
   const [showAdd, setShowAdd] = useState(false)
   const [showModify, setShowModify] = useState(false)
   const [selected, setSelected] = useState()
-  const userContext = useContext(UserContext)
+  const userContext = useUser()
   useEffect(() => userContext.fetchAll(), [userContext])
 
   const users = useMemo(() => userContext?.all?.
@@ -31,8 +31,10 @@ const UserList = () => {
   , [userContext.all, userContext.current, t])
 
   const handleRemove = e => {
-    userContext.remove(e.checked.map(i => users[i].id))
-    e.reset()
+    if (confirm('remove-user-confirm')) {
+      userContext.remove(e.checked.map(i => users[i].id))
+      e.reset()
+    }
   }
 
   const columns = useMemo(userColumns, [t])
@@ -44,7 +46,9 @@ const UserList = () => {
       <Heading as='h1' style={{ paddingBottom: 30 }}>{t('users')}</Heading>
       <Table checkboxed data={users} columns={columns} component={e => (<>
         <Button onClick={() => setShowAdd(true)}>{t('create-user')}</Button>
-        <Button onClick={() => handleRemove(e)}>{t('remove-chosen')}</Button>
+        {e.checked.length > 0 && <Button onClick={() => handleRemove(e)}>
+          {t('remove-chosen')}
+        </Button>}
       </>)}/>
       <CreateUser
         show={showAdd}

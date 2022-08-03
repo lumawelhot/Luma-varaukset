@@ -1,20 +1,20 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Heading } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next'
 import { extraColumns } from '../../helpers/columns'
 import Table from '../Table'
-import { MiscContext } from '../../services/contexts'
 import { CLASSES } from '../../config'
 import { BsCheck2Circle } from 'react-icons/bs'
-import { Button } from '../../Embeds/Button'
+import { Button } from '../Embeds/Button'
 import Extra from '../Modals/Extra'
 import { extraInit } from '../../helpers/initialvalues'
-import { Select } from '../../Embeds/Input'
+import { Select } from '../Embeds/Input'
 import { someExist } from '../../helpers/utils'
+import { useMisc } from '../../hooks/api'
 
 const ExtraList = () => {
   const { t } = useTranslation()
-  const misc = useContext(MiscContext)
+  const misc = useMisc()
   const [showAdd, setShowAdd] = useState(false)
   const [showModify, setShowModify] = useState(false)
   const [extra, setExtra] = useState()

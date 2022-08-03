@@ -1,15 +1,14 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { MenuButton } from '../Embeds/Button'
-import { UserContext } from '../services/contexts'
-import { useEvict } from '../hooks/contexts'
+import { MenuButton } from './Embeds/Button'
+import { useEvict, useUser } from '../hooks/api'
 import { Container } from 'react-bootstrap'
 import Event from './Modals/Event'
-import Banner from '../Embeds/Banner'
+import Banner from './Embeds/Banner'
 
 const Menu = () => {
-  const { current: user } = useContext(UserContext)
+  const { current: user } = useUser()
   const [showEvent, setShowEvent] = useState()
   const [showBanner, setShowBanner] = useState(localStorage.getItem('hide-banner') !== 'false')
   const { evict } = useEvict()

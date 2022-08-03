@@ -38,8 +38,10 @@ export const USERS = gql`
 
 export const EVENTS = gql`
   ${EVENT_FIELDS}
-  query getEvents {
-    getEvents {
+  query getEvents($ids: [ID]) {
+    getEvents(
+      ids: $ids
+    ) {
       ...EventFields
     }
   }
@@ -112,7 +114,7 @@ export const CREATE_EVENTS = gql`
       dates: $dates,
       start: $start,
       end: $end,
-      scienceClass: $resourceids,
+      resourceids: $resourceids,
       desc: $desc,
       grades: $grades,
       remotePlatforms: $remotePlatforms,
@@ -256,7 +258,7 @@ export const MODIFY_EXTRA = gql`
 
 export const DELETE_EXTRAS = gql`
   mutation deleteExtras(
-    $ids: [String]!
+    $ids: [ID]!
   ) {
     deleteExtras(
       ids: $ids
@@ -415,7 +417,7 @@ export const DELETE_FORMS = gql`
 `
 
 export const MODIFY_USER = gql`
-  mutation updateUser($user: ID!, $password: String, $username: String!, $isAdmin: Boolean!) {
+  mutation updateUser($user: ID!, $password: String, $username: String, $isAdmin: Boolean) {
     updateUser(
       user: $user
       password: $password
@@ -425,29 +427,6 @@ export const MODIFY_USER = gql`
       id
       username
       isAdmin
-    }
-  }
-`
-
-export const RESET_PASSWORD = gql`
-  mutation resetPassword($user: ID!, $password: String!) {
-    resetPassword(
-      user: $user
-      password: $password
-    ) {
-      id
-    }
-  } 
-`
-
-export const CHANGE_USERNAME = gql`
-  mutation changeUsername($user: ID!, $username: String!, $isAdmin: Boolean!) {
-    changeUsername(
-      user: $user
-      username: $username
-      isAdmin: $isAdmin
-    ) {
-      id
     }
   }
 `
@@ -472,7 +451,7 @@ export const UNLOCK_EVENT = gql`
   }
 `
 
-export const EVENT_STATUS = gql`
+export const EVENT_MODIFIED = gql`
   subscription {
     eventModified {
       id
@@ -480,16 +459,22 @@ export const EVENT_STATUS = gql`
   }
 `
 
-export const EVENTS_DELETED = gql`
+export const EVENTS_MODIFIED = gql`
   subscription {
-    eventsDeleted {
+    eventsModified {
       id
     }
   }
 `
 
+export const EVENTS_DELETED = gql`
+  subscription {
+    eventsDeleted
+  }
+`
+
 export const FORCE_DELETE_EVENTS = gql`
-  mutation forceDeleteEvents($events: [ID], $password: String!) {
+  mutation forceDeleteEvents($events: [ID]!, $password: String!) {
     forceDeleteEvents(
       events: $events
       password: $password
@@ -507,7 +492,7 @@ export const UPDATE_EMAIL = gql`
     $text: String!, 
     $ad: [String]!, 
     $adSubject: String!, 
-    $adText: String!
+    $senderText: String!
   ) {
     updateEmail(
       name: $name
@@ -516,7 +501,7 @@ export const UPDATE_EMAIL = gql`
       text: $text
       ad: $ad
       adSubject: $adSubject
-      adText: $adText
+      adText: $senderText
     ) {
       subject
       html
@@ -540,7 +525,6 @@ export const GROUPS = gql`
       }
       maxCount
       visitCount
-      publishDate
       disabled
     }
   }
@@ -550,12 +534,10 @@ export const CREATE_GROUP = gql`
   mutation createGroup (
     $name: String!
     $maxCount: Int!
-    $publishDate: String
   ) {
     createGroup(
       name: $name
       maxCount: $maxCount
-      publishDate: $publishDate
     ) {
       id
       name
@@ -565,7 +547,6 @@ export const CREATE_GROUP = gql`
       }
       maxCount
       visitCount
-      publishDate
       disabled
     }
   }
@@ -617,14 +598,12 @@ export const MODIFY_GROUP = gql`
     $id: ID!
     $name: String
     $maxCount: Int
-    $publishDate: String
     $disabled: Boolean
   ) {
     modifyGroup(
       id: $id
       name: $name
       maxCount: $maxCount
-      publishDate: $publishDate
       disabled: $disabled
     ) {
       id
@@ -635,7 +614,6 @@ export const MODIFY_GROUP = gql`
       }
       maxCount
       visitCount
-      publishDate
       disabled
     }
   }

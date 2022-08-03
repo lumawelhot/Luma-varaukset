@@ -105,6 +105,7 @@ const eventSchema = mongoose.Schema({
 eventSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
+    // are these creating errors ???
     returnedObject.start = document.start.toISOString()
     returnedObject.end = document.end.toISOString()
     delete returnedObject._id

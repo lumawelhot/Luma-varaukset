@@ -1,16 +1,16 @@
 import { Heading } from '@chakra-ui/react'
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../../Embeds/Button'
-import { UserContext, VisitContext } from '../../../services/contexts'
+import { Button } from '../../Embeds/Button'
 import { useNavigate, useParams } from 'react-router-dom'
 import CSV from './CSV'
 import Emails from './Emails'
+import { useUser, useVisits } from '../../../hooks/api'
 
 const Configs = () => {
   const { t } = useTranslation()
-  const { fetch } = useContext(VisitContext)
-  const { current: user } = useContext(UserContext)
+  const { fetch } = useVisits()
+  const { current: user } = useUser()
   const { page } = useParams()
   const navigate = useNavigate()
   const title = page ? page : 'csv'

@@ -1,11 +1,11 @@
 import React from 'react'
-import { Input } from '../../Embeds/Input'
-import { Button } from '../../Embeds/Button'
+import { Input } from '../Embeds/Input'
+import { Button } from '../Embeds/Button'
 import { Formik } from 'formik'
 import { Modal, ModalHeader } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { GroupValidation } from '../../helpers/validate'
-import { Error, required } from '../../Embeds/Title'
+import { Error, required } from '../Embeds/Title'
 
 const Group = ({ show, close, handle, title, initialValues }) => {
   const { t } = useTranslation()

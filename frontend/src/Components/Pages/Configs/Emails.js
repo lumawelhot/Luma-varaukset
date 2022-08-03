@@ -1,13 +1,13 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
-import { Button } from '../../../Embeds/Button'
+import React, { useEffect, useMemo, useState } from 'react'
+import { Button } from '../../Embeds/Button'
 import { emailColumns } from '../../../helpers/columns'
-import { MiscContext } from '../../../services/contexts'
 import Table from '../../Table'
 import { default as EmailModal } from '../../Modals/Emails'
 import { useTranslation } from 'react-i18next'
+import { useMisc } from '../../../hooks/api'
 
 const Emails = () => {
-  const { fetchEmails, emails } = useContext(MiscContext)
+  const { fetchEmails, emails } = useMisc()
   const [template, setTemplate] = useState()
   const { t } = useTranslation()
 

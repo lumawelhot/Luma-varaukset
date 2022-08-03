@@ -1,12 +1,12 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { getCSV } from '../../../helpers/utils'
-import { EventContext, VisitContext } from '../../../services/contexts'
-import { Button } from '../../../Embeds/Button'
+import { Button } from '../../Embeds/Button'
 import { useTranslation } from 'react-i18next'
+import { useEvents, useVisits } from '../../../hooks/api'
 
 const CSV = () => {
-  const { all } = useContext(VisitContext)
-  const { find } = useContext(EventContext)
+  const { all } = useVisits()
+  const { find } = useEvents()
   const { t } = useTranslation()
 
   return <>

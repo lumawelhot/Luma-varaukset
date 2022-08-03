@@ -1,9 +1,8 @@
-import React, { useState, useRef, useContext } from 'react'
+import React, { useState, useRef } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import fiLocale from '@fullcalendar/core/locales/fi'
 import svLocale from '@fullcalendar/core/locales/sv'
 import enLocale from '@fullcalendar/core/locales/en-gb'
-import { UserContext, EventContext, MiscContext } from '../../services/contexts'
 import { useNavigate } from 'react-router-dom'
 import Event from '../Modals/Event'
 import { default as LumaEvent } from './Event'
@@ -11,14 +10,15 @@ import { CALENDAR_SETTINGS } from '../../config'
 import CalendarMenu from './Menu'
 import { calendarEvents } from '../../helpers/parse'
 import { eventInit, eventInitWithValues } from '../../helpers/initialvalues'
-import { Button } from '../../Embeds/Button'
+import { Button } from '../Embeds/Button'
 import { useTranslation } from 'react-i18next'
 import { default as EventSelectAction } from '../Modals/EventListForms'
-import { someExist } from '../..//helpers/utils'
-import Title from '../../Embeds/Title'
+import { someExist } from '../../helpers/utils'
+import Title from '../Embeds/Title'
+import { useEvents, useMisc, useUser } from '../../hooks/api'
 
 const LumaCalendar = () => {
-  const { current: user } = useContext(UserContext)
+  const { current: user } = useUser()
   const {
     all: events,
     set,
@@ -29,8 +29,8 @@ const LumaCalendar = () => {
     select, selected,
     removeSelected,
     unSelectAll
-  } = useContext(EventContext)
-  const { calendarOptions, setCalendarOptions } = useContext(MiscContext)
+  } = useEvents()
+  const { calendarOptions, setCalendarOptions } = useMisc()
   const [showEvent, setShowEvent] = useState()
   const [dragValues, setDragValues] = useState()
   const [actionType, setActionType] = useState()

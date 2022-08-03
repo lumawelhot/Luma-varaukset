@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { BiChevronsLeft, BiChevronsRight, BiChevronLeft, BiChevronRight } from 'react-icons/bi'
-import { Select } from '../../Embeds/Input'
+import { Select } from '../Embeds/Input'
 import { TABLE_PAGE_SIZE_OPTIONS } from '../../config'
 
 const Button = styled.button`
