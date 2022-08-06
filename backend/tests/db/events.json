@@ -6,12 +6,16 @@
     "grades": [1],
     "inPersonVisit": true,
     "remoteVisit": false,
+    "extras": [],
     "waitingTime": 15,
     "duration": 30,
     "desc": "I feel the earth move under my feet, I feel the sky tumbling down, tumbling down!",
     "disabled": false,
     "locked": null,
     "tags": ["Maantiede"],
+    "customForm": null,
+    "group": null,
+    "languages": ["fi"],
 
     "fromNow": 15
   },
@@ -23,13 +27,16 @@
     "inPersonVisit": true,
     "remoteVisit": false,
     "waitingTime": 15,
-    "extras": [],
+    "extras": ["1", "3"],
     "duration": 30,
     "disabled": false,
     "locked": null,
     "tags": ["Fysiikka", "Ilmastonmuutos", "Lämpö"],
+    "customForm": null,
+    "group": null,
+    "languages": ["fi"],
 
-    "fromNow": 2
+    "fromNow": 13
   },
   {
     "id": "3",
@@ -44,8 +51,12 @@
     "disabled": false,
     "locked": false,
     "tags": ["Reaktiot"],
+    "customForm": null,
+    "group": null,
+    "languages": ["fi"],
+    "reserved": "token",
 
-    "fromNow": 3
+    "fromNow": 15
   },
   {
     "id": "4",
@@ -60,8 +71,11 @@
     "disabled": false,
     "locked": false,
     "tags": ["Ohjelmointi"],
+    "customForm": null,
+    "group": null,
+    "languages": ["fi"],
 
-    "fromNow": 5
+    "fromNow": 1
   },
   {
     "id": "5",
@@ -77,6 +91,9 @@
     "disabled": false,
     "locked": false,
     "tags": ["Matematiikka", "Geometria", "Todennäköisyydet"],
+    "customForm": null,
+    "group": null,
+    "languages": ["fi"],
 
     "fromNow": -2
   },
@@ -94,7 +111,87 @@
     "disabled": false,
     "locked": false,
     "tags": ["Ohjelmointi"],
+    "customForm": null,
+    "group": null,
+    "languages": ["fi"],
 
     "fromNow": -1
+  },
+  {
+    "id": "7",
+    "title": "Fully booked",
+    "resourceids": [4],
+    "grades": [1],
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "extras": [],
+    "waitingTime": 15,
+    "duration": 30,
+    "disabled": false,
+    "locked": null,
+    "tags": ["Maantiede"],
+    "customForm": null,
+    "group": null,
+    "languages": ["fi"],
+    "visits": ["1", "2"],
+
+    "fromNow": 15
+  },
+  {
+    "id": "8",
+    "title": "Disabled event",
+    "resourceids": [4],
+    "grades": [1],
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "extras": [],
+    "waitingTime": 15,
+    "duration": 30,
+    "disabled": true,
+    "locked": null,
+    "tags": ["Maantiede"],
+    "customForm": null,
+    "group": null,
+    "languages": ["fi"],
+
+    "fromNow": 15
+  },
+  {
+    "id": "9",
+    "title": "Event in full group",
+    "resourceids": [4],
+    "grades": [1],
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "extras": [],
+    "waitingTime": 15,
+    "duration": 30,
+    "disabled": false,
+    "locked": null,
+    "tags": ["Maantiede"],
+    "customForm": null,
+    "group": "4",
+    "languages": ["fi"],
+
+    "fromNow": 15
+  },
+  {
+    "id": "10",
+    "title": "Event in disabled group",
+    "resourceids": [4],
+    "grades": [1],
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "extras": [],
+    "waitingTime": 15,
+    "duration": 30,
+    "disabled": false,
+    "locked": null,
+    "tags": ["Maantiede"],
+    "customForm": null,
+    "group": "5",
+    "languages": ["fi"],
+
+    "fromNow": 15
   }
 ]

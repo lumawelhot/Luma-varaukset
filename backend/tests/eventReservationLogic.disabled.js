@@ -95,18 +95,6 @@ beforeEach(async () => {
 
 describe('Event with reservation', () => {
 
-  it('can be booked with valid token', async () => {
-    const response = await visitResponse(eventWithReservation.id, 'token')
-    expect(response.errors).toBeUndefined()
-    expect(response.data.createVisit.clientName).toBe('Teacher')
-  })
-
-  it('cannot be booked with invalid token', async () => {
-    const response = await visitResponse(eventWithReservation.id, 'invalid')
-    expect(response.errors[0].message).toBe('Invalid session')
-    expect(response.data.createVisit).toBeNull()
-  })
-
   it('cannot be modified', async () => {
     const response = await modifyResponse(eventWithReservation.id)
     expect(response.errors[0].message).toBe('Event cannot be modified because booking form is open')
@@ -118,14 +106,6 @@ describe('Event with reservation', () => {
     expect(response.errors[0].message).toBe('Older session is already active')
     expect(response.data.lockEvent).toBeNull()
   })
-
-  it('can be booked if reservation is cancelled', async () => {
-    const unlock = await unlockEventResponse(eventWithReservation.id)
-    expect(unlock.errors).toBeUndefined()
-    const response = await visitResponse(eventWithReservation.id, 'invalid')
-    expect(response.errors).toBeUndefined()
-    expect(response.data.createVisit.clientName).toBe('Teacher')
-  })
 })
 
 describe('Event without reservation', () => {
@@ -134,12 +114,6 @@ describe('Event without reservation', () => {
     expect(response.errors).toBeUndefined()
     expect(response.data.lockEvent.token).not.toBe(null)
   }) */ // TÄMÄ TESTI AIHEUTTAA JOSTAIN SYYSTÄ OPENHANDLEN
-
-  it('can be booked with invalid token', async () => {
-    const response = await visitResponse(eventWithoutReservation.id, 'invalid')
-    expect(response.errors).toBeUndefined()
-    expect(response.data.createVisit.clientName).toBe('Teacher')
-  })
 
   it('can be modified', async () => {
     const response = await modifyResponse(eventWithoutReservation.id)

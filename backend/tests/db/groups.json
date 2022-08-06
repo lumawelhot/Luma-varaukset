@@ -30,5 +30,13 @@
     "maxCount": 3,
     "visitCount": 3,
     "disabled": true
+  },
+  {
+    "id": "5",
+    "name": "Group 5",
+    "events": [],
+    "maxCount": 3,
+    "visitCount": 1,
+    "disabled": true
   }
 ]

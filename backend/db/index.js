@@ -3,26 +3,30 @@ const { sub } = require('date-fns')
 const Common = require('./common')
 const encoders = require('./encoders')
 
+const getModel = modelName => process.env.NODE_ENV !== 'test'
+  ? require(`../models/${modelName}`)
+  : require(`../models/${modelName}`) // TODO: for testing this class add test dir path
+
 class User extends Common {
-  constructor(session) { super(require('../models/user'), encoders.user, session) }
+  constructor(session) { super(getModel('user'), encoders.user, session) }
   instance(session) { return new User(session) }
 }
 
 class Event extends Common {
-  constructor(session) { super(require('../models/event'), encoders.event, session) }
-  instance(session) { return new Event(session) }//new Event(session) }
+  constructor(session) { super(getModel('event'), encoders.event, session) }
+  instance(session) { return new Event(session) }
   async findByDays(days, expand) {
     return await this.find({ end: { $gt: sub(new Date(), { days }) } }, expand)
   }
 }
 
 class Visit extends Common {
-  constructor(session) { super(require('../models/visit'), encoders.visit, session) }
+  constructor(session) { super(getModel('visit'), encoders.visit, session) }
   instance(session) { return new Visit(session) }
 }
 
 class Group extends Common {
-  constructor(session) { super(require('../models/group'), encoders.group, session) }
+  constructor(session) { super(getModel('group'), encoders.group, session) }
   instance(session) { return new Group(session) }
   async Update(id, args, expand) {
     const group = await this.findById(id)
@@ -59,12 +63,12 @@ class Group extends Common {
 }
 
 class Extra extends Common {
-  constructor(session) { super(require('../models/extra'), encoders.extra, session) }
+  constructor(session) { super(getModel('extra'), encoders.extra, session) }
   instance(session) { return new Extra(session) }
 }
 
 class Tag extends Common {
-  constructor(session) { super(require('../models/tag'), encoders.tag, session) }
+  constructor(session) { super(getModel('tag'), encoders.tag, session) }
   instance(session) { return new Tag(session) }
   // Defined here but includes old design. Deprecate this later.
   async Insert(tags) {
@@ -81,15 +85,16 @@ class Tag extends Common {
 }
 
 class Form extends Common {
-  constructor(session) { super(require('../models/forms'), encoders.form, session) }
+  constructor(session) { super(getModel('forms'), encoders.form, session) }
   instance(session) { return new Form(session) }
 }
 
 class Email extends Common {
-  constructor(session) { super(require('../models/email'), encoders.email, session) }
+  constructor(session) { super(getModel('email'), encoders.email, session) }
   instance(session) { return new Email(session) }
 }
 
+// Maybe we can use MongoDB transactions but I thought it was a fun idea to create own
 class Transaction {
   constructor() {
     this.instances = {}

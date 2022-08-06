@@ -41,7 +41,11 @@
     "exclude": [
       "models",
       "tests",
-      "node_modules"
+      "services/mailer.js",
+      "services/dbsetup.js",
+      "node_modules",
+      "utils/mailer",
+      "config.js"
     ]
   },
   "devDependencies": {

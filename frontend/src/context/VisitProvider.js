@@ -30,6 +30,9 @@ const VisitProvider = ({ children }) => {
     setVisit(undefined)
   }
 
+  // This could probably communicate with EventProvider ??
+  // Now assuming that subscriptions fetches a modified event
+  // TODO: fix this, still you should avoid of creating depency between two providers
   const remove = async (id) => {
     try {
       const { data } = await client.mutate({

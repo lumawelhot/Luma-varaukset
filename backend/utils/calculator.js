@@ -2,6 +2,8 @@
 const { set } = require('date-fns')
 
 // --------------------- HELPERS
+const parseDate = date => set(new Date(date), { seconds: 0, milliseconds: 0 }).toISOString()
+
 const sort = ranges => ranges.sort((a, b) => a[0] - b[0])
 
 const findRange = (ranges, target) => {
@@ -47,8 +49,8 @@ const calcAvailableTimes = (availableTimes, visit, waitingTime, duration) => {
   const newAvailableTimes = split(ranges, range, waitingTime * 60000)
   return newAvailableTimes.filter(f => f[1] - f[0] >= duration * 60000).map(a => {
     return {
-      startTime: new Date(a[0]).toISOString(),
-      endTime: new Date(a[1]).toISOString()
+      startTime: parseDate(a[0]),
+      endTime: parseDate(a[1])
     }
   })
 }
@@ -60,17 +62,17 @@ const calcFromVisitTimes = (visitTimes, event, waitingTime, duration) => {
   const newAvailableTimes = diff(ranges, range, waitingTime * 60000)
   return newAvailableTimes.filter(f => f[1] - f[0] >= duration * 60000).map(a => {
     return {
-      startTime: new Date(a[0]).toISOString(),
-      endTime: new Date(a[1]).toISOString()
+      startTime: parseDate(a[0]),
+      endTime: parseDate(a[1])
     }
   })
 }
 
-// Check that new timeslot fits with visit times
+// Check that new timeslot that fits with visit times
 const calcTimeSlot = (visitTimes, startTime, endTime) => {
   if (!visitTimes || !visitTimes.length) return {
-    start: new Date(startTime).toISOString(),
-    end: new Date(endTime).toISOString()
+    start: parseDate(startTime),
+    end: parseDate(endTime)
   }
   const startTimes = visitTimes.map(v => new Date(v.startTime).getTime()).sort((a, b) => a - b)
   const endTimes = visitTimes.map(v => new Date(v.endTime).getTime()).sort((a, b) => b - a)
@@ -78,8 +80,8 @@ const calcTimeSlot = (visitTimes, startTime, endTime) => {
   const end = new Date(endTimes[0])
   if (new Date(startTime) <= start && end <= new Date(endTime)) {
     return {
-      start: new Date(startTime).toISOString(),
-      end: new Date(endTime).toISOString()
+      start: parseDate(startTime),
+      end: parseDate(endTime)
     }
   } else return null
 }
@@ -110,12 +112,12 @@ const checkTimeslot = (argsStart, argsEnd) => {
 
 // Fit timeslot to given date
 const slotFromDate = (date, start, end) => {
-  date = new Date(date)
-  start = new Date(start)
-  end = new Date(end)
+  const dateObj = new Date(date)
+  const startObj = new Date(start)
+  const endObj = new Date(end)
   return [
-    set(date, { hours: start.getHours(), minutes: start.getMinutes(), seconds: 0, milliseconds: 0 }).toISOString(),
-    set(date, { hours: end.getHours(), minutes: end.getMinutes(), seconds: 0, milliseconds: 0 }).toISOString()
+    set(dateObj, { hours: startObj.getHours(), minutes: startObj.getMinutes(), seconds: 0, milliseconds: 0 }).toISOString(),
+    set(dateObj, { hours: endObj.getHours(), minutes: endObj.getMinutes(), seconds: 0, milliseconds: 0 }).toISOString()
   ]
 }
 
@@ -129,5 +131,6 @@ module.exports = {
   diff,
   sort,
   checkTimeslot,
-  slotFromDate
+  slotFromDate,
+  parseDate
 }

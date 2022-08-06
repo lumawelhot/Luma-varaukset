@@ -1,3 +1,4 @@
+// ----------------------------------- HELPERS
 const replace = (a, b) => {
   for (const [key, value] of Object.entries(b)) {
     if (key === 'id' || value === undefined) continue
@@ -18,6 +19,7 @@ const populate = (inst, models) => {
   }
   return inst
 }
+// -------------------------------------------
 
 // This class is a db access interface,
 class Common {

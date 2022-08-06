@@ -28,7 +28,8 @@ afterEach(() => {
 
 const getGroups = async () => {
   const { query } = createTestClient(serverEmployee)
-  return (await query({ query: GROUPS }))?.data?.getGroups
+  const { data } = await query({ query: GROUPS })
+  return data.getGroups
 }
 
 

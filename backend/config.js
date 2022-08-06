@@ -15,6 +15,10 @@ if (process.env.NODE_ENV === 'production') {
   MONGODB_URI = process.env.MONGODB_URI
 }
 
+const EVENT_LOCK_DURATION = process.env.NODE_ENV !== 'test'
+  ? 610000 : 3000
+//dev and prod / tests
+
 const CLASSES = [
   'SUMMAMUTIKKA',
   'FOTONI',
@@ -32,5 +36,6 @@ module.exports = {
   EMAILPASSWORD,
   EMAILPORT,
   HOST_URI,
-  CLASSES
+  CLASSES,
+  EVENT_LOCK_DURATION
 }

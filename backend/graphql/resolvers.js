@@ -111,7 +111,7 @@ const resolvers = {
       const [session, eventInst, groupInst] = Transaction.construct(Event, Group)
 
       let group = await groupInst.findById(args.group)
-      const tags = []//await Tag.Insert(args.tags)
+      const tags = await Tag.Insert(args.tags)
       const extras = await Extra.findByIds(args.extras)
 
       const events = []
@@ -138,12 +138,12 @@ const resolvers = {
       return events
     }),
     disableEvent: authorized(async (root, args) => {
-      const event = await Event.update(args.event, { disabled: true })
+      const event = await Event.update(args.event, { disabled: true, reserved: null })
       pubsub.publish('EVENT_MODIFIED', { eventModified: event })
       return event
     }),
     enableEvent: authorized(async (root, args) => {
-      const event = await Event.update(args.event, { disabled: false })
+      const event = await Event.update(args.event, { disabled: false, reserved: null })
       pubsub.publish('EVENT_MODIFIED', { eventModified: event })
       return event
     }),
@@ -217,7 +217,7 @@ const resolvers = {
       createVisitValidate(args, event, currentUser)
 
       const group = await groupInst.DeltaUpdate(event.group, { visitCount: 1, returnOriginal: true })
-      if (group?.disabled) throw new UserInputError('This group is disabled')
+      if (group?.disabled) throw new UserInputError('Event is assigned to a disabled group')
 
       const extras = await Extra.findByIds(args.extras)
 
@@ -241,7 +241,6 @@ const resolvers = {
       await sendWelcomes(visit, danglingEvent)
       pubsub.publish('EVENT_MODIFIED', { eventModified: danglingEvent })
       await session.commit()
-      console.log(session)
       return visit
     },
     cancelVisit: async (root, args) => {

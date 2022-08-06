@@ -1,3 +1,4 @@
+// Keep this file up to date with the counterpart in frontend directory
 const { gql } = require('apollo-server-express')
 const { EVENT_FIELDS, VISIT_FIELDS } = require('./fragments')
 
@@ -451,28 +452,6 @@ const UNLOCK_EVENT = gql`
   }
 `
 
-const EVENT_MODIFIED = gql`
-  subscription {
-    eventModified {
-      id
-    }
-  }
-`
-
-const EVENTS_MODIFIED = gql`
-  subscription {
-    eventsModified {
-      id
-    }
-  }
-`
-
-const EVENTS_DELETED = gql`
-  subscription {
-    eventsDeleted
-  }
-`
-
 const FORCE_DELETE_EVENTS = gql`
   mutation forceDeleteEvents($events: [ID]!, $password: String!) {
     forceDeleteEvents(
@@ -639,7 +618,18 @@ module.exports = {
   CREATE_FORM,
   MODIFY_FORM,
   DELETE_FORMS,
+  VISITS,
   CREATE_VISIT,
   CANCEL_VISIT,
-  FIND_VISIT
+  FIND_VISIT,
+  MODIFY_EVENT,
+  DELETE_EVENTS,
+  FORCE_DELETE_EVENTS,
+  TAGS,
+  CURRENT_USER,
+  DISABLE_EVENT,
+  ENABLE_EVENT,
+  EVENT,
+  LOCK_EVENT,
+  UNLOCK_EVENT
 }

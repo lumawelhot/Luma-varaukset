@@ -1,7 +1,7 @@
 const sinon = require('sinon')
 const expect = require('chai').expect
 const { createTestClient } = require('apollo-server-testing')
-const { USERS, CREATE_USER, MODIFY_USER, LOGIN, DELETE_USERS } = require('./graphql/queries')
+const { USERS, CREATE_USER, MODIFY_USER, LOGIN, DELETE_USERS, CURRENT_USER } = require('./graphql/queries')
 const { adminServer, employeeServer, customerServer } = require('./utils/server')
 const { usersStub } = require('./utils/dbstub')
 
@@ -159,7 +159,7 @@ describe('As an employee I', () => {
 
 })
 
-describe('As a customer I', () => {
+describe('As a user I', () => {
   it('can log in', async () => {
     const { mutate } = createTestClient(serverCustomer)
     const { data } = await mutate({
@@ -170,5 +170,14 @@ describe('As a customer I', () => {
       }
     })
     expect(data.login.value).to.be.a('string')
+  })
+  it('can get my user details', async () => {
+    const { query } = createTestClient(serverEmployee)
+    const { data } = await query({ query: CURRENT_USER })
+    expect(data.me).to.deep.equal({
+      id: '2',
+      username: 'employee',
+      isAdmin: false
+    })
   })
 })

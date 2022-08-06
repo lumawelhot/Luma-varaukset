@@ -42,7 +42,7 @@ const unlockEvents = async () => {
   console.log('event reservations unlocked')
 }
 
-if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development' ) { // dev mode
+if (process.env.NODE_ENV === 'development' ) { // dev mode
   const { MongoMemoryServer } = require('mongodb-memory-server')
   const mongoServer = new MongoMemoryServer()
   mongoose.set('useFindAndModify', false)
@@ -57,7 +57,7 @@ if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development' ) 
         console.log('error connecting to MongoDB: ', error.message)
       })
   })
-} else {
+} else if (process.env.NODE_ENV !== 'test') {
   const uri = process.env.NODE_ENV === 'production'
     ? 'mongodb://luma-varaukset-db:27017/luma-varaukset' // production mode
     : 'mongodb://localhost:27017' // docker dev
@@ -71,4 +71,8 @@ if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development' ) 
     .catch((error) => {
       console.log('Error connecting to MongoDB: ', error.message)
     })
+}
+
+module.exports = {
+  initializeDB
 }

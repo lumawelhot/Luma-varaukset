@@ -1,10 +1,55 @@
-const visitTwoWeeksAhead = {
+const { addDays, set } = require('date-fns')
+const times = { minutes: 0, seconds: 0, milliseconds: 0 }
+
+const commonDetails = {
+  desc: 'This is a description',
+  duration: 45,
+  grades: [1, 3, 4],
+  inPersonVisit: true,
+  languages: ['fi'],
+  otherRemotePlatformOption: '',
+  publishDate: null,
+  remotePlatforms: [],
+  remoteVisit: false,
+  resourceids: [4],
+  title: 'This is a new event',
+  waitingTime: 15,
+  extras: ['3', '5'],
+  tags: ['Ohjelmointi', 'Algoritmit'],
+  group: '2'
+}
+
+const eventsInTheFuture = {
+  ...commonDetails,
+  dates: [
+    addDays(new Date(), 14).toISOString(),
+    addDays(new Date(), 21).toISOString()
+  ],
+  start: set(new Date(), { hours: 10, ...times }).toISOString(),
+  end: set(new Date(), { hours: 13, ...times }).toISOString()
+}
+const eventsInTheFutureDates = [
+  (set(addDays(new Date(), 14), { hours: 10, ...times })).toISOString(),
+  (set(addDays(new Date(), 21), { hours: 10, ...times })).toISOString(),
+]
+
+const getTimeByHours = (startHours, endHours) => ({
+  dates: [ addDays(new Date(), 21).toISOString() ],
+  start: set(new Date(), { hours: startHours, ...times }).toISOString(),
+  end: set(new Date(), { hours: endHours, ...times }).toISOString()
+})
+
+const eventTooEarly = { ...commonDetails, ...getTimeByHours(7, 10) }
+const eventTooLate = { ...commonDetails, ...getTimeByHours(13, 18) }
+const eventStartAfterEnd = { ...commonDetails, ...getTimeByHours(11, 10) }
+
+
+const visitClientDetails = {
   clientEmail: 'olli.opettaja@alppilankoulu.fi',
   clientName: 'Olli Opettaja',
   clientPhone: '050 313131313',
   customFormData: null,
   dataUseAgreement: false,
-  event: '1',
   extras: [],
   grade: '1st grade',
   inPersonVisit: true,
@@ -15,6 +60,20 @@ const visitTwoWeeksAhead = {
   schoolName: 'Alppilan koulu',
   token: '43bbd438-7362-4981-a05b-708c1107e4c1',
 }
+
+const visitTwoWeeksAhead = { ...visitClientDetails, event: '1' }
+
+const visitLessThanTwoWeeksAhead = { ...visitClientDetails, event: '2' }
+
+const visitOneHourAhead = { ...visitClientDetails, event: '4' }
+
+const reservedEventVisit = { ...visitClientDetails, event: '3' }
+
+const disabledEventVisit = { ...visitClientDetails, event: '8' }
+
+const visitEventInFullGroup = { ...visitClientDetails, event: '9' }
+
+const visitEventInDisabledGroup = { ...visitClientDetails, event: '10' }
 
 const validExtra = {
   name: 'A new extra',
@@ -31,5 +90,16 @@ const validForm = {
 module.exports = {
   validExtra,
   validForm,
-  visitTwoWeeksAhead
+  visitTwoWeeksAhead,
+  visitLessThanTwoWeeksAhead,
+  visitOneHourAhead,
+  eventsInTheFuture,
+  eventsInTheFutureDates,
+  eventTooEarly,
+  eventTooLate,
+  eventStartAfterEnd,
+  reservedEventVisit,
+  disabledEventVisit,
+  visitEventInFullGroup,
+  visitEventInDisabledGroup
 }
