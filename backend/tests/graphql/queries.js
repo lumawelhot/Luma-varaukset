@@ -466,12 +466,12 @@ const FORCE_DELETE_EVENTS = gql`
 const UPDATE_EMAIL = gql`
   mutation updateEmail(
     $name: String!,
-    $subject: String!, 
-    $html: String!, 
-    $text: String!, 
-    $ad: [String]!, 
-    $adSubject: String!, 
-    $senderText: String!
+    $subject: String,
+    $html: String,
+    $text: String,
+    $ad: [String],
+    $adSubject: String,
+    $senderText: String,
   ) {
     updateEmail(
       name: $name
@@ -631,5 +631,9 @@ module.exports = {
   ENABLE_EVENT,
   EVENT,
   LOCK_EVENT,
-  UNLOCK_EVENT
+  UNLOCK_EVENT,
+  ASSIGN_EVENTS_TO_GROUP,
+  ASSIGN_PUBLISH_DATE_TO_EVENTS,
+  UPDATE_EMAIL,
+  GET_EMAIL_TEMPLATES
 }

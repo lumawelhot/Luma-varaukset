@@ -16,7 +16,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const EVENT_LOCK_DURATION = process.env.NODE_ENV !== 'test'
-  ? 610000 : 3000
+  ? 610000 : 0
 //dev and prod / tests
 
 const CLASSES = [

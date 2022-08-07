@@ -160,7 +160,7 @@ const resolvers = {
         } catch (err) {
           console.log('\x1b[31m%s\x1b[0m', 'ERROR:', err.message)
         }
-      }, 610000)
+      }, config.EVENT_LOCK_DURATION, event)
 
       pubsub.publish('EVENT_MODIFIED', { eventModified: danglingEvent })
       return {
@@ -264,8 +264,8 @@ const resolvers = {
           start: new Date(visit.startTime),
           end: new Date(visit.endTime),
           availableTimes: [{
-            startTime: visit.startTime.toISOString(),
-            endTime: visit.endTime.toISOString()
+            startTime: new Date(visit.startTime).toISOString(),
+            endTime: new Date(visit.endTime).toISOString()
           }],
           extras,
           tags

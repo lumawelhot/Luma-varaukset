@@ -71,6 +71,18 @@ const unPopulate = (inst, expand) => {
   return object
 }
 
+// Important if args contains "mongo" like objects
+const parseArgs = (args) => {
+  const fields = Object.keys(args)
+  const expand = {}
+  for (const field of fields) {
+    if (encoderByField[field]) {
+      expand[field] = true
+    }
+  }
+  return unPopulate({ ...args }, expand)
+}
+
 class TransactionMock {
   constructor() {
     this.instances = {}
@@ -114,7 +126,8 @@ const dbStub = (sandbox, db, model, encoder) => {
   })
   sandbox.stub(model, 'update').callsFake((id, args, expand) => {
     if (!id) return
-    const object = format({ ...db.find(u => u.id === id), ...args }, encoder)
+    const parsedArgs = parseArgs(args)
+    const object = format({ ...db.find(u => u.id === id), ...parsedArgs }, encoder)
     db = db.map(e => e.id === object.id ? unPopulate(object, expand) : e)
     return populate(object, expand)
   })
@@ -181,24 +194,31 @@ const tagsStub = sandbox => {
 const extrasStub = sandbox => dbStub(sandbox, dbextras, Extra, 'extra')
 const emailsStub = sandbox => dbStub(sandbox, dbemails, Email, 'email')
 const formsStub = sandbox => dbStub(sandbox, dbforms, Form, 'form')
-const groupsStub = sandbox => dbStub(sandbox, dbgroups, Group, 'group')
+const groupsStub = sandbox => {
+  const _DeltaUpdate = Group.DeltaUpdate
+  sandbox.stub(Group, 'DeltaUpdate').callsFake(async (id, delta, expand, args) => {
+    const _id = id === null ? null : typeof id === 'object' ? id.id : id
+    return await _DeltaUpdate(_id, delta, expand, args, Group)
+  })
+  return dbStub(sandbox, dbgroups, Group, 'group')
+}
 
 const transactionStub = sandbox => {
   const session = new TransactionMock()
   sandbox.stub(Transaction, 'construct').callsFake((...args) => {
     const connections = []
     for (const connection of args) {
-      const oldInsert = connection.insert
-      const oldUpdate = connection.update
-      const oldFindById = connection.findById
+      const _insert = connection.insert
+      const _update = connection.update
+      const _findById = connection.findById
       connection.insert = (args, expand) => {
-        const object = oldInsert(args, expand)
+        const object = _insert(args, expand)
         session.insert(object, connection.constructor.name)
         return object
       }
       connection.update = (id, args, expand) => {
         if (!id) return
-        const object = oldUpdate(id, args, expand)
+        const object = _update(id, args, expand)
         session.insert(object, connection.constructor.name)
         return object
       }
@@ -206,7 +226,7 @@ const transactionStub = sandbox => {
         if (!id) return
         const object = session.instanceById(id, connection.constructor.name)
         if (object) return object
-        return oldFindById(id, expand)
+        return _findById(id, expand)
       }
       connections.push(connection.instance(session))
     }

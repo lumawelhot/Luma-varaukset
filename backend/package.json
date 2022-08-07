@@ -43,6 +43,7 @@
       "tests",
       "services/mailer.js",
       "services/dbsetup.js",
+      "db/encoders.js",
       "node_modules",
       "utils/mailer",
       "config.js"

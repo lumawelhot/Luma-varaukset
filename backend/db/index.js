@@ -42,22 +42,26 @@ class Group extends Common {
       disabled: false
     }, expand)
   }
-  async DeltaUpdate(id, delta, expand, args) {
+  // Stub is injected so tests can run properly.
+  // Make sure that "stub" arg is defined as null or undefined in production code
+  async DeltaUpdate(id, delta, expand, args, stub) {
     if (!id) return
-    const group = await this.findById(id)
+    const group = stub ? await stub.findById(id) : await this.findById(id)
     const visitCount = group.visitCount + delta.visitCount
     if (group.maxCount < visitCount) {
       throw new UserInputError('Max number of visits exceeded')
     }
-    const disabled = visitCount >= group.maxCount
+    const disabled = group.disabled || visitCount >= group.maxCount
     let events = group.events
-    if (delta.events?.concat) {
+    if (delta.events?.concat && !events.includes(delta.events.concat)) {
       events = events.concat(delta.events.concat)
     }
     if (delta.events?.filter) {
       events = events.filter(e => e.toString() !== delta.events.filter)
     }
-    const updatedGroup = await this.update(id, { ...args, visitCount, events, disabled }, expand)
+    const updatedGroup = stub
+      ? await stub.update(id, { ...args, visitCount, events, disabled }, expand)
+      : await this.update(id, { ...args, visitCount, events, disabled }, expand)
     return delta.returnOriginal ? group : updatedGroup
   }
 }

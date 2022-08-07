@@ -138,12 +138,12 @@ const typeDefs = gql`
     ): [Event]
     updateEmail(
       name: String!
-      html: String!
-      text: String!
-      subject: String!
-      ad: [String]!
-      adSubject: String!
-      adText: String!
+      html: String
+      text: String
+      subject: String
+      ad: [String]
+      adSubject: String
+      adText: String
     ): EmailTemplate
     lockEvent(
       event: ID!

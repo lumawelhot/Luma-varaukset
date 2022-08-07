@@ -19,14 +19,14 @@
     "id": "3",
     "name": "Group 3",
     "events": [],
-    "maxCount": 2,
-    "visitCount": 3,
+    "maxCount": 3,
+    "visitCount": 2,
     "disabled": false
   },
   {
     "id": "4",
     "name": "Group 4",
-    "events": [],
+    "events": ["9"],
     "maxCount": 3,
     "visitCount": 3,
     "disabled": true
@@ -34,9 +34,25 @@
   {
     "id": "5",
     "name": "Group 5",
-    "events": [],
+    "events": ["10"],
     "maxCount": 3,
     "visitCount": 1,
     "disabled": true
+  },
+  {
+    "id": "6",
+    "name": "Group 6",
+    "events": ["7"],
+    "maxCount": 2,
+    "visitCount": 2,
+    "disabled": true
+  },
+  {
+    "id": "7",
+    "name": "Group 7",
+    "events": ["7"],
+    "maxCount": 7,
+    "visitCount": 2,
+    "disabled": false
   }
 ]

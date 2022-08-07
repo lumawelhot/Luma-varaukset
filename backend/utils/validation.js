@@ -27,6 +27,7 @@ const eventValidate = args => {
 }
 
 const eventModifiableAndSlot = (args, event) => {
+  if (!event) throw new UserInputError('Event not found')
   const start = args.start ? args.start : event.start
   const end = args.end ? args.end : event.end
   if (checkTimeslot(start, end)) throw new UserInputError('Invalid start or end')

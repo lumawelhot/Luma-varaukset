@@ -1,1 +1,42 @@
-[]
+[
+  {
+    "id": "1",
+    "name": "cancellation",
+    "text": "Olet perunut opintokäynnin: /event-title/r",
+    "html": "<h1>Olet perunut opintokäynnin: /event-title/r</h1>",
+    "subject": "LUMA-tiedeluokan opintokäynnin peruutusvahvistus",
+    "adSubject": "Peruutus",
+    "ad": ["mozelle.willms53@ethereal.email"],
+    "adText": "/event-title/r"
+  },
+  {
+    "id": "2",
+    "name": "thanks",
+    "text": "Kiitokset opintokäynti vierailusta",
+    "html": "<h1>Kiitokset opintokäynti vierailusta",
+    "subject": "Kiitokset tiedevierailusta",
+    "adSubject": "Kiitokset",
+    "ad": ["mozelle.willms53@ethereal.email"],
+    "adText": "Kiitokset"
+  },
+  {
+    "id": "3",
+    "name": "reminder",
+    "text": "Älä vastaa tähän viestiin, tämä on automaattinen muistutus huomisesta varauksestasi LUMA-tiedeluokkaan. Tervetuloa opintokäynnille!",
+    "html": "<p>Älä vastaa tähän viestiin, tämä on automaattinen muistutus huomisesta varauksestasi LUMA-tiedeluokkaan. Tervetuloa opintokäynnille!</p>",
+    "subject": "Muistutus tiedevierailusta",
+    "adSubject": "Muistutus",
+    "ad": ["mozelle.willms53@ethereal.email"],
+    "adText": "Muistutus"
+  },
+  {
+    "id": "4",
+    "name": "welcome",
+    "text": "Kiitos varauksestasi! Älä vastaa tähän viestiin, tämä on automaattinen viesti varauksestasi LUMA-tiedeluokkaan. Opintokäynnin ohjaaja on sinuun yhteydessä viimeistään 1–2 viikkoa ennen varaamaasi opintokäyntiä. Voit olla meihin yhteydessä halutessasi jo ennen sitä sähköpostitse osoitteeseen tiedekasvatus@helsinki.fi. Linkki varaukseen: /link/r",
+    "html": "<h4>Kiitos varauksestasi! Älä vastaa tähän viestiin, tämä on automaattinen viesti varauksestasi LUMA-tiedeluokkaan. Opintokäynnin ohjaaja on sinuun yhteydessä viimeistään 1–2 viikkoa ennen varaamaasi opintokäyntiä. Voit olla meihin yhteydessä halutessasi jo ennen sitä sähköpostitse osoitteeseen tiedekasvatus@helsinki.fi. Linkki varaukseen: /link/r</h4>",
+    "subject": "LUMA-tiedeluokan opintokäyntivahvistus",
+    "adSubject": "Uusi varaus",
+    "ad": ["mozelle.willms53@ethereal.email"],
+    "adText": "/event-title/r"
+  }
+]

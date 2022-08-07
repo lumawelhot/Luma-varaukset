@@ -1,13 +1,14 @@
 const sinon = require('sinon')
 const expect = require('chai').expect
 const { createTestClient } = require('apollo-server-testing')
-const { EVENTS, CREATE_EVENTS, FORCE_DELETE_EVENTS, TAGS, EVENT, MODIFY_EVENT, DISABLE_EVENT, ENABLE_EVENT, LOCK_EVENT } = require('./graphql/queries')
+const { EVENTS, CREATE_EVENTS, FORCE_DELETE_EVENTS, TAGS, EVENT, MODIFY_EVENT, DISABLE_EVENT, ENABLE_EVENT, LOCK_EVENT, ASSIGN_PUBLISH_DATE_TO_EVENTS } = require('./graphql/queries')
 const { adminServer, employeeServer, customerServer } = require('./utils/server')
 const { eventsStub, groupsStub, transactionStub, extrasStub, usersStub, visitsStub, tagsStub } = require('./utils/dbstub')
 const { PubSub } = require('graphql-subscriptions')
-const { eventsInTheFuture, eventTooEarly, eventTooLate, eventStartAfterEnd } = require('./db/data')
+const { eventsInTheFuture, eventTooEarly, eventTooLate, eventStartAfterEnd, modifyDetails } = require('./db/data')
 const dbevents = require('./db/events.json')
 const dbtags = require('./db/tags.json')
+const { timeByDaysAndHours } = require('./utils/helpers')
 
 let serverAdmin
 let serverEmployee
@@ -40,6 +41,12 @@ const getEvents = async () => {
   return res.data.getEvents
 }
 
+const getEvent = async id => {
+  const { query } = createTestClient(serverAdmin)
+  const res = await query({ query: EVENT, variables: { id } })
+  return res.data.getEvent
+}
+
 const getTags = async () => {
   const { query } = createTestClient(serverCustomer)
   const { data } = await query({ query: TAGS })
@@ -56,6 +63,7 @@ describe('As an admin I', () => {
   })
 
   // ----- FORCE DELETE
+
   it('can force delete events with valid password', async () => {
     const { mutate } = createTestClient(serverAdmin)
     const { data, errors } = await mutate({
@@ -74,6 +82,7 @@ describe('As an admin I', () => {
     })
     expect(errors[0].message).to.equal('Invalid password')
   })
+
   // ------------------
 
 })
@@ -89,6 +98,7 @@ describe('As an employee I', () => {
   })
 
   // ----- CREATE EVENTS
+
   it('can create new events', async () => {
     const { mutate } = createTestClient(serverEmployee)
     const { data, errors } = await mutate({
@@ -143,13 +153,67 @@ describe('As an employee I', () => {
     })
     expect(errors[0].message).to.equal('Invalid start or end time')
   })
+
   // -------------------
 
   // ----- MODIFY EVENT
-  //it('')
+
+  it('can modify an event', async () => {
+    const { mutate } = createTestClient(serverEmployee)
+    const { data, errors } = await mutate({
+      mutation: MODIFY_EVENT,
+      variables: { ...modifyDetails, event: '1' }
+    })
+    expect(errors).to.be.undefined
+    const event = session.committed['1-Event']
+    const group = session.committed[`${event.group.id}-Group`]
+    expect(group.id).to.equal(event.group.id)
+    expect(event.id).to.equal(group.events[0])
+    expect(event.desc).to.equal(modifyDetails.desc)
+    expect(event.tags.map(t => t.name)).to.have.members(modifyDetails.tags)
+    expect(event.extras.map(e => e.id)).to.have.members(modifyDetails.extras)
+    expect(event.grades).to.deep.equal(modifyDetails.grades)
+    expect(event.id).to.equal(data.modifyEvent.id)
+    expect(data.modifyEvent.group.id).to.deep.equal(group.id)
+    // Maybe this is enough, if we want we can add more asserts
+  })
+
+  it('cannot modify an event that do not exist', async () => {
+    const { mutate } = createTestClient(serverEmployee)
+    const { data, errors } = await mutate({
+      mutation: MODIFY_EVENT,
+      variables: { ...modifyDetails, event: 'aaaaaaaaaaaaaaaaaaaaaaaa' }
+    })
+    expect(errors[0].message).to.equal('Event not found')
+    expect(data.modifyEvent).to.be.null
+  })
+
+  it('cannot modify an event if it\'s locked', async () => {
+    const { mutate } = createTestClient(serverEmployee)
+    const { data, errors } = await mutate({
+      mutation: MODIFY_EVENT,
+      variables: { ...modifyDetails, event: '3' }
+    })
+    expect(errors[0].message).to.equal('Event cannot be modified because booking form is open')
+    expect(data.modifyEvent).to.be.null
+    expect(Object.values(session.committed).length).to.equal(0)
+  })
+
+  it('cannot modify an event if it\'s disabled', async () => {
+    const { mutate } = createTestClient(serverEmployee)
+    const { data, errors } = await mutate({
+      mutation: MODIFY_EVENT,
+      variables: { ...modifyDetails, event: '8' }
+    })
+    expect(errors[0].message).to.equal('This event is disabled')
+    expect(data.modifyEvent).to.be.null
+    expect(Object.values(session.committed).length).to.equal(0)
+  })
+
   // ------------------
 
   // ----- FORCE DELETE
+
   it('cannot force delete events', async () => {
     const { mutate } = createTestClient(serverEmployee)
     const { errors } = await mutate({
@@ -158,6 +222,7 @@ describe('As an employee I', () => {
     })
     expect(errors[0].message).to.equal('No admin privileges')
   })
+
   // ------------------
 
   // ----- DISABLE / ENABLE
@@ -197,11 +262,29 @@ describe('As an employee I', () => {
 
   // ----------------------
 
+  // ----- PUBLISH DATE TO EVENTS
+
+  it('can assign publish date to events', async () => {
+    const { mutate } = createTestClient(serverEmployee)
+    const publishDate = timeByDaysAndHours(2, 9)
+    const { data, errors } = await mutate({
+      mutation: ASSIGN_PUBLISH_DATE_TO_EVENTS,
+      variables: { events: ['1', '3'], publishDate }
+    })
+    const events = data.assignPublishDateToEvents
+    expect(errors).to.be.undefined
+    expect(events.map(e => e.id)).to.deep.equal(['1', '3'])
+    expect(events.map(e => e.publishDate)).to.deep.equal([publishDate, publishDate])
+  })
+
+  // ----------------------------
+
 })
 
 describe('As a customer I', () => {
 
   // ----- CREATE EVENTS
+
   it('cannot create new events', async () => {
     const { mutate } = createTestClient(serverCustomer)
     const { errors } = await mutate({
@@ -211,16 +294,22 @@ describe('As a customer I', () => {
     expect(Object.values(session.committed).length).to.equal(0)
     expect(errors[0].message).to.equal('Not authorized')
   })
+
   // -------------------
 
   // ----- MODIFY EVENT
-  /* it('cannot modify an event', async () => {
+
+  it('cannot modify an event', async () => {
     const { mutate } = createTestClient(serverCustomer)
-    const { errors } = await mutate({
+    const { data, errors } = await mutate({
       mutation: MODIFY_EVENT,
-      variables: modifiedEventDetails
+      variables: { ...modifyDetails, event: '1' }
     })
-  }) */
+    expect(errors[0].message).to.equal('Not authorized')
+    expect(data.modifyEvent).to.be.null
+    expect(Object.values(session.committed).length).to.equal(0)
+  })
+
   // ------------------
 
   // ----- DISABLE / ENABLE
@@ -248,6 +337,7 @@ describe('As a customer I', () => {
   // ----------------------
 
   // ----- LOCK / UNLOCK
+  // currently we can't test that the event is unlocked after a specific period
 
   it('cannot lock an event that is already locked', async () => {
     const { mutate } = createTestClient(serverCustomer)
@@ -259,6 +349,36 @@ describe('As a customer I', () => {
     expect(data.lockEvent).to.be.null
   })
 
+  it('can lock an event that is not locked', async () => {
+    const { mutate } = createTestClient(serverCustomer)
+    const id = '1'
+    const eventBefore = await getEvent(id)
+    const { errors, data } = await mutate({
+      mutation: LOCK_EVENT,
+      variables: { event: id }
+    })
+    const event = await getEvent(id)
+    expect(errors).to.be.undefined
+    expect(eventBefore.locked).to.be.false
+    expect(event.locked).to.be.true
+    expect(data.lockEvent.token).to.be.a('string')
+  })
+
   // -------------------
+
+  // ----- PUBLISH DATE TO EVENTS
+
+  it('can assign publish date to events', async () => {
+    const { mutate } = createTestClient(serverCustomer)
+    const publishDate = timeByDaysAndHours(2, 9)
+    const { data, errors } = await mutate({
+      mutation: ASSIGN_PUBLISH_DATE_TO_EVENTS,
+      variables: { events: ['1', '3'], publishDate }
+    })
+    expect(errors[0].message).to.equal('Not authorized')
+    expect(data.assignPublishDateToEvents).to.be.null
+  })
+
+  // ----------------------------
 
 })

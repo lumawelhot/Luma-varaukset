@@ -3,11 +3,12 @@ const expect = require('chai').expect
 const { createTestClient } = require('apollo-server-testing')
 const { CREATE_VISIT, VISITS, FIND_VISIT, CANCEL_VISIT } = require('./graphql/queries')
 const { employeeServer, customerServer } = require('./utils/server')
-const { groupsStub, visitsStub, eventsStub, transactionStub, extrasStub } = require('./utils/dbstub')
+const { groupsStub, visitsStub, eventsStub, transactionStub, extrasStub, tagsStub } = require('./utils/dbstub')
 const { PubSub } = require('graphql-subscriptions')
 const { visitTwoWeeksAhead, visitLessThanTwoWeeksAhead, visitOneHourAhead, reservedEventVisit, disabledEventVisit, visitEventInDisabledGroup, visitEventInFullGroup } = require('./db/data')
 const { subMinutes, addMinutes } = require('date-fns')
 const dbvisits = require('./db/visits.json')
+const dbevents = require('./db/events.json')
 const { timeSlotByDay } = require('./utils/helpers')
 
 let serverEmployee
@@ -24,6 +25,7 @@ beforeEach(async () => {
   visitsStub(sandbox)
   eventsStub(sandbox)
   extrasStub(sandbox)
+  tagsStub(sandbox)
   session = transactionStub(sandbox)
 })
 
@@ -153,14 +155,15 @@ describe('As a customer I', () => {
     expect(errors[0].message).to.equal('This event is disabled')
   })
 
-  it('cannot book an event which is assigned to full group', async () => {
+  it('cannot book an event if an event group has maximum number of visits', async () => {
     const { mutate } = createTestClient(serverCustomer)
     const [startTime, endTime] = timeSlotByDay(15, { start: 11, end: 12 })
-    const { errors } = await mutate({
+    const { errors, data } = await mutate({
       mutation: CREATE_VISIT,
       variables: { ...visitEventInFullGroup, startTime, endTime }
     })
     expect(errors[0].message).to.equal('Max number of visits exceeded')
+    expect(data.createVisit).to.be.null
   })
 
   it('cannot book an event which is in disabled group', async () => {
@@ -194,22 +197,33 @@ describe('As a customer I', () => {
   })
 
   // ------------ VISIT CANCEL
+
   it('can cancel a visit', async () => {
     const { mutate } = createTestClient(serverCustomer)
-    const { data } = await mutate({
+    const id = '2'
+    const { data, errors } = await mutate({
       mutation: CANCEL_VISIT,
-      variables: { id: '2' }
+      variables: { id }
     })
-    const visit = session.committed['2-Visit']
+    expect(errors).to.be.undefined
+    const visit = session.committed[`${id}-Visit`]
     const event = session.committed[`${visit.event}-Event`]
-    expect(visit.id).to.equal('2')
+    const newEvent = session.committed[`${dbevents.length + 1}-Event`]
+    const group = session.committed[`${event.group}-Group`]
+    expect(visit.id).to.equal(id)
     expect(visit.status).to.equal(false)
     expect(visit.clientName).to.equal('Ivalon Opettaja 2')
     expect(event.title).to.equal('Fully booked')
     expect(event.visits.map(v => v.id)).not.to.contain(visit.id)
     expect(event.visits.length).to.equal(1)
-    expect(Object.entries(session.committed).length).to.equal(2)
-    expect(data.cancelVisit.id).to.equal('2')
+    expect(event.group).to.equal(group.id)
+    expect(group.visitCount).to.equal(1)
+    expect(group.disabled).to.be.true
+    expect(newEvent.group).to.be.null
+    expect(newEvent.start).to.equal(visit.startTime)
+    expect(newEvent.end).to.equal(visit.endTime)
+    expect(Object.entries(session.committed).length).to.equal(4)
+    expect(data.cancelVisit.id).to.equal(id)
   })
 
   it('cannot cancel a visit that does not exist', async () => {

@@ -64,6 +64,7 @@ module.exports = {
   dateByHours,
   timeSlotByDay,
   assignDates,
+  timeByDaysAndHours,
   models: {
     User,
     Event,

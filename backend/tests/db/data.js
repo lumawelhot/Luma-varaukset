@@ -19,6 +19,18 @@ const commonDetails = {
   group: '2'
 }
 
+const modifyDetails = {
+  desc: 'Modified description',
+  duration: 15,
+  grades: [2, 3],
+  languages: ['en'],
+  resourceids: [1, 2],
+  waitingTime: 5,
+  extras: ['2', '5'],
+  tags: ['Ohjelmointi', 'Matematiikka'],
+  group: '1'
+}
+
 const eventsInTheFuture = {
   ...commonDetails,
   dates: [
@@ -101,5 +113,6 @@ module.exports = {
   reservedEventVisit,
   disabledEventVisit,
   visitEventInFullGroup,
-  visitEventInDisabledGroup
+  visitEventInDisabledGroup,
+  modifyDetails
 }
