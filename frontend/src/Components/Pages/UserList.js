@@ -15,7 +15,10 @@ const UserList = () => {
   const [showModify, setShowModify] = useState(false)
   const [selected, setSelected] = useState()
   const userContext = useUser()
-  useEffect(() => userContext.fetchAll(), [userContext])
+  useEffect(() => {
+    const exec = () => userContext.fetchAll()
+    exec()
+  }, [userContext])
 
   const users = useMemo(() => userContext?.all?.
     map(u => ({

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import App from './App'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { BrowserRouter as Router } from 'react-router-dom'
@@ -69,7 +69,8 @@ export const client = new ApolloClient({
 
 const [, ...basename] = BASE_URL.split('://')[1].split('/')
 
-ReactDOM.render(
+const root = createRoot(document.getElementById('root'))
+root.render(
   <ApolloProvider client={client}>
     <React.StrictMode>
       <Router basename={`/${basename}`}>
@@ -81,6 +82,5 @@ ReactDOM.render(
         </LumaContext>
       </Router>
     </React.StrictMode>
-  </ApolloProvider>,
-  document.getElementById('root')
+  </ApolloProvider>
 )

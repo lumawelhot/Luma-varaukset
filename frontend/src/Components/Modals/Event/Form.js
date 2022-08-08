@@ -25,7 +25,10 @@ const Form = React.forwardRef((props, ref) => {
   const { extras, tags, fetchTags, fetchExtras } = useMisc()
   const { all: forms, fetch: fetchForms } = useForms()
   const { all: groups, fetch: fetchGroups } = useGroups()
-  useEffect(fetchExtras, [])
+  useEffect(() => {
+    const exec = () => fetchExtras()
+    exec()
+  }, [])
 
   const updateDates = (values) => {
     const date = set(values.start, { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 })

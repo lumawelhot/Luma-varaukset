@@ -15,7 +15,10 @@ const GroupList = () => {
   const [showAdd, setShowAdd] = useState()
   const [showModify, setShowModify] = useState()
   const [group, setGroup] = useState()
-  useEffect(() => groupContext.fetch(), [])
+  useEffect(() => {
+    const exec = () => groupContext.fetch()
+    exec()
+  }, [])
 
   const modifyGroup = async values => {
     const { id, name, maxCount } = values

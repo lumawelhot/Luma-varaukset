@@ -22,7 +22,10 @@ const ExtraList = () => {
     classes: [],
   })
 
-  useEffect(() => misc.fetchExtras(), [misc])
+  useEffect(() => {
+    const exec = () => misc.fetchExtras()
+    exec()
+  }, [misc])
 
   const handleRemove = async ids => await misc.removeExtras(ids)
 

@@ -420,7 +420,10 @@ const EventProvider = ({ children }) => {
     setSelected([])
   }
 
-  useEffect(fetch, [fetched])
+  useEffect(() => {
+    const exec = () => fetch()
+    exec()
+  }, [fetched])
 
   return (
     <EventContext.Provider

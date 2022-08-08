@@ -15,7 +15,10 @@ const Configs = () => {
   const navigate = useNavigate()
   const title = page ? page : 'csv'
 
-  useEffect(fetch, [])
+  useEffect(() => {
+    const exec = () => fetch()
+    exec()
+  }, [])
 
   return (
     <>

@@ -11,7 +11,10 @@ const Emails = () => {
   const [template, setTemplate] = useState()
   const { t } = useTranslation()
 
-  useEffect(fetchEmails, [])
+  useEffect(() => {
+    const exec = () => fetchEmails()
+    exec()
+  }, [])
 
   const templates = useMemo(() => emails
     ?.map(e => ({

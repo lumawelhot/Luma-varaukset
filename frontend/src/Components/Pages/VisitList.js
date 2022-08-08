@@ -21,7 +21,10 @@ const VisitList = () => {
     classes: [],
   })
 
-  useEffect(fetch, [])
+  useEffect(() => {
+    const exec = () => fetch()
+    exec()
+  }, [])
 
   const visits = useMemo(() => all
     ?.filter(p => {

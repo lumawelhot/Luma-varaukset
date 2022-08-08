@@ -17,7 +17,10 @@ const Form = React.forwardRef((props, ref) => {
   const { current: event } = useEvents()
   const { fetch } = useForms()
   const { t } = useTranslation()
-  useEffect(fetch, [])
+  useEffect(() => {
+    const exec = () => fetch()
+    exec()
+  }, [])
 
   const totalDuration = (values) => {
     if (!values.visitType) return event.duration

@@ -14,7 +14,10 @@ const FormList = () => {
   const [showModify, setShowModify] = useState()
   const [selectedForm, setSelectedForm] = useState()
 
-  useEffect(fetch, [])
+  useEffect(() => {
+    const exec = () => fetch()
+    exec()
+  }, [])
 
   const forms = useMemo(() => all
     ?.map(f => ({

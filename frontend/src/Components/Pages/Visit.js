@@ -14,10 +14,16 @@ const Visit = () => {
   const navigate = useNavigate()
   const { current: visit, find, remove, fetch } = useVisits()
   const { find : findEvent } = useEvents()
-  useEffect(fetch, [])
+  useEffect(() => {
+    const exec = () => fetch()
+    exec()
+  }, [])
   const { id } = useParams()
 
-  useEffect(() => find(id), [])
+  useEffect(() => {
+    const exec = () => find(id)
+    exec()
+  }, [])
 
   const toVisits = () => {
     if (window.location.href.includes('/visits')) navigate('/visits')
