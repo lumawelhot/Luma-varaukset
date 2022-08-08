@@ -62,7 +62,7 @@ class Common {
     delete args.id
     delete args._id // deleting id and _id is important or you can encounter bugs
     let object = new this.inst(this.encode(args))
-    object = await populate(object, expand).execPopulate()
+    object = await populate(object, expand)
     if (this.session) {
       this.session.insert(object)
       return this.decode(object)
@@ -80,7 +80,7 @@ class Common {
     let object = await this.inst.findById(id)
     if (!object) return
     object = replace(object, encoded)
-    object = await populate(object, expand).execPopulate()
+    object = await populate(object, expand)
     if (this.session) {
       this.session.insert(object)
       return this.decode(object)

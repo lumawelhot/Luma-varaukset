@@ -6,9 +6,6 @@ const mongoose = require('mongoose')
 const User = require('./models/user')
 const Email = require('./models/email')
 
-mongoose.set('useFindAndModify', false)
-mongoose.set('useCreateIndex', true)
-
 var ADMIN_USERNAME = process.argv[2]
 var ADMIN_PASSWORD = process.argv[3]
 
@@ -68,7 +65,7 @@ const createAdmin = async () => {
 
 if (ADMIN_USERNAME && ADMIN_PASSWORD ) {
   console.log('Initializing Luma-varaukset administrator: ' + ADMIN_USERNAME)
-  mongoose.connect('mongodb://luma-varaukset-db:27017/luma-varaukset', { useNewUrlParser: true, useUnifiedTopology: true })
+  mongoose.connect('mongodb://luma-varaukset-db:27017/luma-varaukset')
     .then(() => {
       createEmailTemplates().then(() => {
         createAdmin().then(() => {

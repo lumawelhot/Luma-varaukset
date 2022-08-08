@@ -45,10 +45,8 @@ const unlockEvents = async () => {
 if (process.env.NODE_ENV === 'development' ) { // dev mode
   const { MongoMemoryServer } = require('mongodb-memory-server')
   const mongoServer = new MongoMemoryServer()
-  mongoose.set('useFindAndModify', false)
-  mongoose.set('useCreateIndex', true)
   mongoServer.getUri().then(uri => {
-    mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+    mongoose.connect(uri)
       .then(async () => {
         console.log('connected to MongoDB memory server, initializing database')
         await initializeDB()
@@ -61,9 +59,7 @@ if (process.env.NODE_ENV === 'development' ) { // dev mode
   const uri = process.env.NODE_ENV === 'production'
     ? 'mongodb://luma-varaukset-db:27017/luma-varaukset' // production mode
     : 'mongodb://localhost:27017' // docker dev
-  mongoose.set('useFindAndModify', false)
-  mongoose.set('useCreateIndex', true)
-  mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  mongoose.connect(uri)
     .then(() => {
       console.log('Connected to MongoDB')
       unlockEvents()
