@@ -1,6 +1,6 @@
 const sinon = require('sinon')
 const expect = require('chai').expect
-const { createTestClient } = require('apollo-server-testing')
+const { createTestClient } = require('./utils/client')
 const { USERS, CREATE_USER, MODIFY_USER, LOGIN, DELETE_USERS, CURRENT_USER } = require('./graphql/queries')
 const { adminServer, employeeServer, customerServer } = require('./utils/server')
 const { usersStub } = require('./utils/dbstub')

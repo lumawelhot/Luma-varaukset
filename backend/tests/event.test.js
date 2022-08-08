@@ -1,6 +1,6 @@
 const sinon = require('sinon')
 const expect = require('chai').expect
-const { createTestClient } = require('apollo-server-testing')
+const { createTestClient } = require('./utils/client')
 const { EVENTS, CREATE_EVENTS, FORCE_DELETE_EVENTS, TAGS, EVENT, MODIFY_EVENT, DISABLE_EVENT, ENABLE_EVENT, LOCK_EVENT, ASSIGN_PUBLISH_DATE_TO_EVENTS } = require('./graphql/queries')
 const { adminServer, employeeServer, customerServer } = require('./utils/server')
 const { eventsStub, groupsStub, transactionStub, extrasStub, usersStub, visitsStub, tagsStub } = require('./utils/dbstub')

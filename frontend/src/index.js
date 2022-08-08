@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
@@ -18,7 +19,6 @@ import {
 } from '@apollo/client'
 
 import { getMainDefinition } from '@apollo/client/utilities'
-import { WebSocketLink } from '@apollo/link-ws'
 import LumaContext from './context'
 import { ChakraProvider } from '@chakra-ui/react'
 import { ToastContainer } from 'react-toastify'
@@ -26,6 +26,10 @@ import 'react-toastify/dist/ReactToastify.css'
 
 import { registerLocale } from  'react-datepicker'
 import fi from 'date-fns/locale/fi'
+
+import { createClient } from 'graphql-ws'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+
 registerLocale('fi', fi)
 
 const BASE_URL = (process.env.NODE_ENV === 'production' && process.env.PUBLIC_URL) ? process.env.PUBLIC_URL : 'http://localhost:3001'
@@ -44,12 +48,7 @@ const authLink = setContext((_, { headers }) => {
 
 const httpLink = new HttpLink({ uri: BASE_URL + '/graphql' })
 
-const wsLink = new WebSocketLink({
-  uri: WS_URL,
-  options: {
-    reconnect: true,
-  },
-})
+const wsLink = new GraphQLWsLink(createClient({ url: WS_URL }))
 
 const splitLink = split(
   ({ query }) => {

@@ -1,6 +1,6 @@
 const express = require('express')
 const cookieParser = require('cookie-parser')
-const logger = require('morgan')
+//const logger = require('morgan')
 const path = require('path')
 const app = express()
 const cors = require('cors')
@@ -11,16 +11,18 @@ const config = require('./config')
 
 const { ApolloServer } = require('apollo-server-express')
 const { createServer } = require('http')
-const { execute, subscribe } = require('graphql')
-const { SubscriptionServer } = require('subscriptions-transport-ws')
 const { makeExecutableSchema } = require('@graphql-tools/schema')
 const httpServer = createServer(app)
+
+const { WebSocketServer } = require('ws')
+const { useServer } = require('graphql-ws/lib/use/ws')
 
 const resolvers = require('./graphql/resolvers')
 const typeDefs = require('./graphql/typeDefs')
 const schema = makeExecutableSchema({ typeDefs, resolvers })
 
 const graphQLEndpoint = process.env.PUBLIC_URL?.includes('staging') ? '/luma-varaukset/graphql' : '/graphql'
+
 const server = new ApolloServer({
   schema,
   introspection: true,
@@ -52,21 +54,20 @@ const server = new ApolloServer({
     }
   }
 })
-server.applyMiddleware({ app })
+server.start().then(() => {
+  server.applyMiddleware({ app })
+})
 
-SubscriptionServer.create({
-  schema,
-  execute,
-  subscribe,
-}, {
+const wsServer = new WebSocketServer({
   server: httpServer,
   path: server.graphqlPath + '/ws',
 })
+useServer({ schema }, wsServer)
 
 // Setup MongoDB
 require('./services/dbsetup')
 
-app.use(logger('dev'))
+//app.use(logger('dev'))
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
