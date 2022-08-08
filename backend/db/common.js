@@ -19,6 +19,22 @@ const populate = (inst, models) => {
   }
   return inst
 }
+
+// Some technical debt but maybe it is easier to separate populate and execPopulate
+// execPopulate should use promises but populate should not
+const execPopulate = async (inst, models) => {
+  if (!models) return inst
+  if (Array.isArray(models)) {
+    for (const model of models) {
+      await inst.populate(model)
+    }
+  }
+  for (const [model, options] of Object.entries(models)) {
+    await inst.populate(model, options)
+  }
+  return inst
+}
+
 // -------------------------------------------
 
 // This class is a db access interface,
@@ -62,7 +78,7 @@ class Common {
     delete args.id
     delete args._id // deleting id and _id is important or you can encounter bugs
     let object = new this.inst(this.encode(args))
-    object = await populate(object, expand)
+    object = await execPopulate(object, expand)
     if (this.session) {
       this.session.insert(object)
       return this.decode(object)
@@ -80,7 +96,7 @@ class Common {
     let object = await this.inst.findById(id)
     if (!object) return
     object = replace(object, encoded)
-    object = await populate(object, expand)
+    object = await execPopulate(object, expand)
     if (this.session) {
       this.session.insert(object)
       return this.decode(object)
