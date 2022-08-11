@@ -1,4 +1,4 @@
-import { set } from 'date-fns'
+import { add, set } from 'date-fns'
 import { parseExtras, parseTags } from './parse'
 
 export const extraInit = {
@@ -89,4 +89,33 @@ export const eventInitWithValues = ({
     value: group.id,
     label: group.name
   } : ''
+})
+
+export const visitInitialValues = (event, form) => ({
+  clientName: '',
+  schoolName: '',
+  schoolLocation: '',
+  clientEmail: '',
+  verifyEmail: '',
+  clientPhone: '',
+  grade: '',
+  participants: '',
+  privacyPolicy: false,
+  remoteVisitGuidelines: false,
+  dataUseAgreement: false,
+  language: event?.languages[0],
+  otherRemotePlatformOption: '',
+  extras: [],
+  startTime: new Date(event.start),
+  endTime: add(new Date(event.start), { minutes: event.duration }),
+  visitType: event.inPersonVisit ? 'inperson' : 'remote',
+  fields: [],
+  customFormData: form?.fields?.map(f => {
+    if (f.type === 'checkbox') return { name: f.name, value: [] }
+    else return { name: f.name, value: '' }
+  }),
+  eventTimes: {
+    start: new Date(event.start),
+    end: new Date(event.end)
+  }
 })

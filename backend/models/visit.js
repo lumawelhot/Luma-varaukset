@@ -78,6 +78,10 @@ const visitSchema = mongoose.Schema({
   language: {
     type: String,
     required: false
+  },
+  created: {
+    type: Date,
+    required: false
   }
 })
 

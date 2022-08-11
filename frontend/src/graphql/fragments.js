@@ -83,5 +83,6 @@ export const VISIT_FIELDS = gql`
     remotePlatform
     customFormData
     language
+    created
   }
 `

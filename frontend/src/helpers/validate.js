@@ -1,14 +1,14 @@
 import { t } from '../i18n'
 import * as Yup from 'yup'
 
-export const CreateUserValidation = () => Yup.object().shape({
+export const CreateUserValidation = Yup.object().shape({
   username: Yup.string().min(5, t('too-short')).required(t('fill-field')),
   password: Yup.string().min(8, t('too-short')).required(t('fill-field')),
   confirm: Yup.string().oneOf([Yup.ref('password'), null], t('password-not-match')).required(t('fill-field')),
   isAdmin: Yup.bool().required(t('fill-field'))
 })
 
-export const ModifyUserValidation = () => Yup.object().shape({
+export const ModifyUserValidation = Yup.object().shape({
   username: Yup.string().min(5, t('too-short')).required(t('fill-field')),
   password: Yup.string().notRequired().test((value, { createError }) => {
     if (value && !Yup.string().min(8).isValidSync(value)) {
@@ -20,7 +20,7 @@ export const ModifyUserValidation = () => Yup.object().shape({
   isAdmin: Yup.bool().required(t('fill-field'))
 })
 
-export const GroupValidation = () => Yup.object().shape({
+export const GroupValidation = Yup.object().shape({
   name: Yup.string().required(t('fill-field')),
   maxCount: Yup.number().min(1, t('too-small')).required(t('fill-field'))
 })
@@ -76,7 +76,7 @@ export const VisitValidation = () => Yup.object().shape({
     .isTrue(t('check-this-field')),
 })
 
-export const ExtraValidation = () => Yup.object().shape({
+export const ExtraValidation = Yup.object().shape({
   name: Yup.string().required(t('fill-field')),
   inPersonLength: Yup.number().min(1, t('too-small')).required(t('fill-field')),
   remoteLength: Yup.number().min(1, t('too-small')).required(t('fill-field')),
@@ -126,7 +126,6 @@ export const EventValidation = () => Yup.object().shape({
     .typeError(t('invalid-time')),
 })
 
-export const CustomFormValidation = () => Yup.object().shape({
+export const CustomFormValidation = Yup.object().shape({
   name: Yup.string().required(t('fill-field')),
-  //question: Yup.string().required(t('fill-field')) -- not needed
 })

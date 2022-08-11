@@ -1,112 +1,56 @@
-import React, { useRef, useState } from 'react'
+import React, { useId, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { DEFAULT_FIELD_VALUES } from '../../../config'
 import { Button } from '../../Embeds/Button'
 import { customformInit } from '../../../helpers/initialvalues'
 import { error, success } from '../../../helpers/toasts'
-import { formError } from '../../../helpers/utils'
 import { useForms } from '../../../hooks/api'
 import Form from './Form'
 
 const CustomForm = ({ show, close, initialValues=customformInit, modify }) => {
   const { t } = useTranslation()
+  const formId = useId()
   const [onModify, setOnModify] = useState()
-  const formRef = useRef()
-  const [fields, setFields] = useState(initialValues.fields)
   const { add, modify: mod } = useForms()
 
-  const getField = () => {
-    const fieldValues = formRef?.current?.values
-    const details = {
-      name: fieldValues.question,
-      type: fieldValues.type,
-      validation: { required: fieldValues.required }
-    }
-    if (fieldValues.type === 'text') return details
-    else return {
-      ...details,
-      options: fieldValues.options.map((f, i) => ({ value: i, text: f })),
-    }
-  }
-
-  const reset = () => {
-    formRef.current.setFieldValue('question', '')
-    formRef.current.setFieldValue('options', DEFAULT_FIELD_VALUES)
-  }
-
-  const handleAddField = () => {
-    setFields(fields.concat(getField()))
-    reset()
-  }
-
-  const handleModifyField = () => {
-    setOnModify(undefined)
-    setFields(fields.map((f, i) => onModify.id === i ? getField() : f))
-    reset()
-  }
-
-  const handleModify = id => {
-    setOnModify({ ...fields[id], id })
-    const { name, options, type, validation } = fields[id]
-    formRef?.current?.setFieldValue('question', name)
-    formRef?.current?.setFieldValue('options', options ? options.map(o => o.text) : DEFAULT_FIELD_VALUES)
-    formRef?.current?.setFieldValue('type', type)
-    formRef?.current?.setFieldValue('required', validation.required)
-  }
-
-  const handleAddForm = async () => {
-    if (await formError(formRef.current)) return
-    const status = await add({
-      fields: JSON.stringify(fields),
-      name: formRef?.current.values.name
-    })
+  const handleAddForm = async values => {
+    const status = await add({ ...values })
     if (status) {
       success(t('notify-form-add-success'))
       close()
     } else error(t('notify-form-add-failed'))
   }
 
-  const handleModifyForm = async () => {
-    if (await formError(formRef.current)) return
-    const status = await mod({
-      fields: JSON.stringify(fields),
-      name: formRef?.current.values.name,
-      id: initialValues.id
-    })
+  const handleModifyForm = async values => {
+    const status = await mod({ ...values, id: initialValues.id })
     if (status) {
       success(t('notify-form-modify-success'))
       close()
     } else error(t('notify-form-modify-failed'))
   }
 
+  const onSubmit = v => modify ? handleModifyForm(v) : handleAddForm(v)
+
   return (
-    <Modal
-      show={show}
-      backdrop="static"
-      size="lg"
-      onHide={close}
-      scrollable={true}
-    >
+    <Modal show={show} backdrop="static" size="lg" onHide={close} scrollable={true} >
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         <Modal.Title>{modify ? t('modify-form') : t('create-form')}</Modal.Title>
       </Modal.Header>
       <Modal.Body style={{ minHeight: 400 }}>
         <Form
-          ref={formRef}
+          formId={formId}
           initialValues={initialValues}
-          fields={fields}
-          setFields={setFields}
           onModify={onModify}
-          handleModify={handleModify}
+          setOnModify={setOnModify}
+          onSubmit={onSubmit}
         />
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>
         <div style={{ lineHeight: 3, marginBottom: -5 }}>
-          {!onModify && <Button onClick={handleAddField}>{t('add-form-field')}</Button>}
-          {onModify && <Button onClick={handleModifyField}>{t('modify-form-field')}</Button>}
-          {!modify && <Button type='submit' onClick={handleAddForm} className='active'>{t('create-custom-form')}</Button>}
-          {modify && <Button type='submit' onClick={handleModifyForm} className='active'>{t('modify-custom-form')}</Button>}
+          {!onModify && <Button form='custom-add' type='submit'>{t('add-form-field')}</Button>}
+          {onModify && <Button form='custom-modify' type='submit'>{t('modify-form-field')}</Button>}
+          {!modify && <Button form={formId} type='submit' className='active'>{t('create-custom-form')}</Button>}
+          {modify && <Button form={formId} type='submit' className='active'>{t('modify-custom-form')}</Button>}
         </div>
       </Modal.Footer>
     </Modal>

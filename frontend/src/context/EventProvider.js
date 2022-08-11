@@ -55,7 +55,6 @@ const EventProvider = ({ children }) => {
   }
 
   const addOrModify = event => {
-    console.log(event, event.publishDate, new Date() >= new Date(event.publishDate))
     if (event.publishDate && new Date() < new Date(event.publishDate)) return
     let found = false
     Object.values(map).forEach(v => {

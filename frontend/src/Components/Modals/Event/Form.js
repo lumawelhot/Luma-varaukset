@@ -250,6 +250,7 @@ const Form = React.forwardRef((props, ref) => {
             onClick={fetchGroups}
             isMulti={false}
             value={values.group}
+            menuPlacement="top"
             options={groups?.map(g => ({
               value: g.id,
               label: g.name
@@ -261,6 +262,7 @@ const Form = React.forwardRef((props, ref) => {
             onClick={fetchForms}
             isMulti={false}
             value={values.customForm}
+            menuPlacement="top"
             options={forms?.map(f => ({
               value: f.id,
               label: f.name,

@@ -226,7 +226,8 @@ const resolvers = {
         event: event.id,
         status: true,
         extras,
-        customFormData: args.customFormData ? JSON.parse(args.customFormData) : null
+        customFormData: args.customFormData ? JSON.parse(args.customFormData) : null,
+        created: new Date()
       }, expandVisits)
 
       const danglingEvent = await eventInst.update(event.id, {

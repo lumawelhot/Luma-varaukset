@@ -72,6 +72,7 @@ const typeDefs = gql`
     remotePlatform: String
     customFormData: String
     language: String
+    created: String
   }
   type Token {
     value: String!

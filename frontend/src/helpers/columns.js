@@ -4,8 +4,11 @@ import parse from 'date-fns/parse'
 import { CLASSES } from '../config'
 
 const dateSort = (rowA, rowB, id) => {
-  let a = parse(rowA.values[id], 'd.M.y', new Date())
-  let b = parse(rowB.values[id], 'd.M.y', new Date())
+  const _a = rowA.values[id]
+  const _b = rowB.values[id]
+  if (!_b) return -1
+  const a = parse(_a, 'd.M.y - HH:mm', new Date())
+  const b = parse(_b, 'd.M.y - HH:mm', new Date())
   if (b - a > 0) return 1
   if (a - b > 0) return -1
   return 0
@@ -76,6 +79,11 @@ export const visitColumns = () => [
   {
     Header: t('date'),
     accessor: 'date',
+    sortType: dateSort
+  },
+  {
+    Header: <span style={{ paddingRight: 70 }}>{t('created')}</span>,
+    accessor: 'created',
     sortType: dateSort
   },
   {
@@ -198,7 +206,7 @@ export const eventInitialState = {
 export const visitInitialState = {
   sortBy: [
     {
-      id: 'date',
+      id: 'created',
       desc: false
     }
   ]

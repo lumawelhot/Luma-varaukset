@@ -12,6 +12,7 @@ import { TimePicker } from '../../Embeds/Picker'
 import { add, format, set } from 'date-fns'
 import { VisitValidation } from '../../../helpers/validate'
 import { useEvents, useForms } from '../../../hooks/api'
+import { visitInitialValues } from '../../../helpers/initialvalues'
 
 const Form = React.forwardRef((props, ref) => {
   const { current: event } = useEvents()
@@ -41,34 +42,7 @@ const Form = React.forwardRef((props, ref) => {
       innerRef={ref}
       validationSchema={VisitValidation}
       onSubmit={() => {}}
-      initialValues={{
-        clientName: '',
-        schoolName: '',
-        schoolLocation: '',
-        clientEmail: '',
-        verifyEmail: '',
-        clientPhone: '',
-        grade: '',
-        participants: '',
-        privacyPolicy: false,
-        remoteVisitGuidelines: false,
-        dataUseAgreement: false,
-        language: event?.languages[0],
-        otherRemotePlatformOption: '',
-        extras: [],
-        startTime: new Date(event.start),
-        endTime: add(new Date(event.start), { minutes: event.duration }),
-        visitType: event.inPersonVisit ? 'inperson' : 'remote',
-        fields: [],
-        customFormData: form?.fields?.map(f => {
-          if (f.type === 'checkbox') return { name: f.name, value: [] }
-          else return { name: f.name, value: '' }
-        }),
-        eventTimes: {
-          start: new Date(event.start),
-          end: new Date(event.end)
-        }
-      }}
+      initialValues={visitInitialValues(event, form)}
     >
       {({ handleChange, setFieldValue, handleBlur, setFieldTouched, values, errors, touched }) => (
         <div className={props.show ? 'visible' : 'hidden'}>

@@ -313,5 +313,6 @@
   "invalid-end": "Virheellinen lopetusajankohta",
   "end-after-start": "Virheellinen aloitusajankohta",
   
-  "remove-user-confirm": "Haluatko varmasti poistaa valitut käyttäjät"
+  "remove-user-confirm": "Haluatko varmasti poistaa valitut käyttäjät",
+  "created": "Luotu"
 }

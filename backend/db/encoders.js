@@ -91,6 +91,7 @@ const visit = {
         remotePlatform: o.remotePlatform,
         customFormData: o.customFormData ? JSON.stringify(o.customFormData) : null,
         language: o.language,
+        created: o.created ? new Date(o.created).toISOString() : null
       }
     } catch (err) {
       throw new Error(`Failed to decode a visit with id: "${o?.id}"`)

@@ -46,7 +46,8 @@ const VisitList = () => {
         }}>{CLASSES[Number(t) - 1]?.label}</Badge>),
       date: format(new Date(v.startTime), 'd.M.y'),
       status: v.status ? t('status-true') : t('status-false'),
-      urlCopy: <Clipboard text={t('copy-url')} content={`${window.location.href.split('/visits')[0]}/${v?.id}`} />
+      urlCopy: <Clipboard text={t('copy-url')} content={`${window.location.href.split('/visits')[0]}/${v?.id}`} />,
+      created: v.created ? format(new Date(v.created), 'd.M.y - HH:mm') : ''
     }))
   , [all, filterOptions, t])
 

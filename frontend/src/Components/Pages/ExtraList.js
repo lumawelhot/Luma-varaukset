@@ -15,8 +15,7 @@ import { useMisc } from '../../hooks/api'
 const ExtraList = () => {
   const { t } = useTranslation()
   const misc = useMisc()
-  const [showAdd, setShowAdd] = useState(false)
-  const [showModify, setShowModify] = useState(false)
+  const [modalType, setModalType] = useState()
   const [extra, setExtra] = useState()
   const [filterOptions, setFilterOptions] = useState({
     classes: [],
@@ -48,7 +47,7 @@ const ExtraList = () => {
       modifyButton: <Button
         onClick={() => {
           setExtra(e)
-          setShowModify(true)
+          setModalType('modify')
         }}>{t('modify')}</Button>
     }))
   , [misc.extras, filterOptions, t])
@@ -69,7 +68,7 @@ const ExtraList = () => {
         />
       </div>
       <Table checkboxed data={extras} columns={columns} component={e => (<>
-        <Button onClick={() => setShowAdd(true)}>{t('add-extra')}</Button>
+        <Button onClick={() => setModalType('create')}>{t('create')}</Button>
         {e.checked.length > 0 && <Button onClick={() => {
           const ids = e.checked.map(c => misc.extras[Number(c)].id) // WHY misc.extras ??
           handleRemove(ids)
@@ -77,15 +76,15 @@ const ExtraList = () => {
         }}>{t('remove-selected')}</Button>}
       </>)} />
       <Extra
-        show={showAdd}
-        close={() => setShowAdd(false)}
+        show={modalType === 'create'}
+        close={() => setModalType()}
         handle={misc.addExtra}
         initialValues={extraInit}
         title={t('create-extra')}
       />
       <Extra
-        show={showModify}
-        close={() => setShowModify(false)}
+        show={modalType === 'modify'}
+        close={() => setModalType()}
         handle={v => misc.modifyExtra({ ...v, id: extra.id })}
         initialValues={extra ? {
           name: extra.name,

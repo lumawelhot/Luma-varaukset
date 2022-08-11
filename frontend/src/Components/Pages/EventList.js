@@ -93,7 +93,7 @@ const EventList = () => {
         />
       </div>
       <Title>{t('time-range')}</Title>
-      <Stack style={{ marginTop: -5, overflowX: 'auto' }} direction='horizontal'>
+      <Stack style={{ marginTop: -10, overflowX: 'auto' }} direction='horizontal'>
         <DatePicker
           cleanable
           placeholder={t('choose-date')}
