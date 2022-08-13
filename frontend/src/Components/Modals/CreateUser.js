@@ -1,9 +1,10 @@
+/* eslint-disable no-unreachable */
 import React, { useId } from 'react'
-import { Modal, Stack } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../Embeds/Button'
-import { Radio, RadioGroup } from '@chakra-ui/react'
-import Title, { Error } from '../Embeds/Title'
+import { Radio } from '@chakra-ui/react'
+import { Error } from '../Embeds/Title'
 import { CreateUserValidation } from '../../helpers/validate'
 import { userInit } from '../../helpers/initialvalues'
 import { useForm } from 'react-hook-form'
@@ -12,12 +13,13 @@ import { error, success } from '../../helpers/toasts'
 import { useUser } from '../../hooks/api'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from '../Embeds/Input'
+import { _RadioGroup as RadioGroup } from '../Embeds/Button'
 
 const CreateUser = ({ show, close }) => {
   const { t } = useTranslation()
   const formId = useId()
   const { add } = useUser()
-  const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm({
+  const { control, register, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: yupResolver(CreateUserValidation),
     defaultValues: userInit
   })
@@ -44,13 +46,10 @@ const CreateUser = ({ show, close }) => {
           {errors.password && <Error>{t(errors.password.message)}</Error>}
           <Input id='confirm' title={required(t('confirm'))} type='password' {...register('confirm')} />
           {errors.confirm && <Error>{t(errors.confirm.message)}</Error>}
-          <Title>{required(t('user-role'))}</Title>
-          <RadioGroup onChange={v => setValue('isAdmin', v)} value={watch('isAdmin')}>
-            <Stack direction='col'>
-              <Radio value='true'>{t('admin')}</Radio>
-              <Radio value='false'>{t('employee')}</Radio>
-            </Stack>
-          </RadioGroup>
+          <RadioGroup name='isAdmin' title={required(t('user-role'))} control={control} render={<>
+            <Radio value='true'>{t('admin')}</Radio>
+            <Radio value='false'>{t('employee')}</Radio>
+          </>} />
         </form>
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>

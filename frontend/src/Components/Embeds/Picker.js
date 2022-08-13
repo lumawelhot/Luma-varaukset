@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React from 'react'
 import { default as UPicker } from 'react-datepicker'
 import Title from './Title'
@@ -6,15 +7,10 @@ import { getDay } from 'date-fns'
 
 
 const Picker = styled(UPicker)`
-  -webkit-text-size-adjust: 100%;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  -webkit-font-smoothing: antialiased;
-  font-feature-settings: 'tnum', "tnum";
   box-sizing: border-box;
   margin: 0;
   font-family: inherit;
   overflow: visible;
-  -webkit-appearance: none;
   align-items: center;
   border: 1px solid transparent;
   display: inline-flex;
@@ -41,10 +37,11 @@ const Picker = styled(UPicker)`
   }
 `
 
-export const TimePicker = rest => {
+export const TimePicker = React.forwardRef((rest, ref) => {
   return <div>
     <Title>{rest.title}</Title>
     <Picker
+      ref={ref}
       selected={rest.value}
       showTimeSelect
       showTimeSelectOnly
@@ -62,12 +59,13 @@ export const TimePicker = rest => {
       { ...rest}
     />
   </div>
-}
+})
 
-export const DatePicker = rest => {
+export const DatePicker = React.forwardRef((rest, ref) => {
   return <div>
     <Title>{rest.title}</Title>
     <Picker
+      ref={ref}
       isClearable={rest.cleanable}
       filterDate={(date) => {
         const day = getDay(date)
@@ -80,4 +78,4 @@ export const DatePicker = rest => {
       selected={rest.value}
     />
   </div>
-}
+})

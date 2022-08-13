@@ -68,7 +68,7 @@ const Filter = ({ show, close }) => {
         </Stack>
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>
-        <Button onClick={close}>{t('ok')}</Button>
+        <Button onClick={close}>{t('OK')}</Button>
       </Modal.Footer>
     </Modal>
   )

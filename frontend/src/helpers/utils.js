@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import '@fullcalendar/react' // This line is needed or app throws an error
 import dayGridPlugin from '@fullcalendar/daygrid'
 import listPlugin from '@fullcalendar/list'
@@ -32,22 +31,3 @@ export const getCSV = (visits, findEvent) => {
 
 export const multipleExist = (arr, values) => values?.every(v => arr?.includes(v))
 export const someExist = (arr, values) => values?.some(v => arr?.includes(v))
-
-export const formError = async current => {
-  const errors = await current.validateForm()
-  current.handleSubmit()
-  if (Object.keys(errors).length) {
-    return true
-  }
-  return false
-}
-
-export const customFormError = async (real, fields) => {
-  for (let i in real) {
-    const field = real[i]
-    if (field?.validation?.required && fields[i]?.value?.length <= 0) {
-      return true
-    }
-  }
-  return false
-}

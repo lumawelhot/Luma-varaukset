@@ -1,11 +1,10 @@
 import { RadioGroup } from '@chakra-ui/react'
-import React, { useRef, useState } from 'react'
+import React, { useId, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Button, Radio } from '../../Embeds/Button'
 import { eventInit } from '../../../helpers/initialvalues'
 import { error, success } from '../../../helpers/toasts'
-import { formError } from '../../../helpers/utils'
 import { useEvents } from '../../../hooks/api'
 import Form from './Form'
 
@@ -14,12 +13,12 @@ const Event = ({ show, close, initialValues=eventInit, options, modify }) => {
   const { add, modify : mod, current: event } = useEvents()
   const [dates, setDates] = useState([])
   const { t } = useTranslation()
-  const formRef = useRef()
+  const formId = useId()
 
-  const getArguments = () => {
-    const { tags, resourceids, grades, remotePlatforms, group, extras, customForm } = formRef.current.values
+  const getArguments = values => {
+    const { tags, resourceids, grades, remotePlatforms, group, extras, customForm } = values
     return {
-      ...formRef.current.values,
+      ...values,
       dates: dates.map(d => new Date(d.date).toISOString()),
       tags: tags.map(t => t.label),
       resourceids: resourceids.map(r => Number(r)),
@@ -31,18 +30,16 @@ const Event = ({ show, close, initialValues=eventInit, options, modify }) => {
     }
   }
 
-  const handleModify = async () => {
-    if (await formError(formRef.current)) return
-    const modified = await mod({ ...getArguments(), event: event.id })
+  const handleModify = async values => {
+    const modified = await mod({ ...getArguments(values), event: event.id })
     if (modified) {
       success(t('notify-event-modify-success'))
       close()
     } else error(t('notify-event-modify-failed'))
   }
 
-  const handleAdd = async () => {
-    if (await formError(formRef.current)) return
-    const added = await add(getArguments())
+  const handleAdd = async values => {
+    const added = await add(getArguments(values))
     if (added) {
       success(t('notify-event-add-success'))
       close()
@@ -68,16 +65,16 @@ const Event = ({ show, close, initialValues=eventInit, options, modify }) => {
       </Modal.Header>}
       <Modal.Body style={{ minHeight: 400 }}>
         <Form
-          ref={formRef}
+          formId={formId}
           type={type}
+          onSubmit={type === 'create' ? handleAdd : handleModify}
           initialValues={initialValues}
           dates={dates}
           setDates={setDates}
         />
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>
-        <Button
-          type='submit' onClick={() => type === 'create' ? handleAdd() : handleModify()}
+        <Button form={formId} type='submit'
         >{type === 'create' ? t('create-event') : t('modify-event')}</Button>
       </Modal.Footer>
     </Modal>

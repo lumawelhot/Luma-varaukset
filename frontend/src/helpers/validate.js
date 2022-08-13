@@ -25,56 +25,64 @@ export const GroupValidation = Yup.object().shape({
   maxCount: Yup.number().min(1, t('too-small')).required(t('fill-field'))
 })
 
-export const VisitValidation = () => Yup.object().shape({
-  clientName: Yup.string()
-    .min(5, t('too-short'))
-    .required(t('fill-field')),
-  schoolName: Yup.string()
-    .min(5, t('too-short'))
-    .required(t('fill-field')),
-  schoolLocation: Yup.string()
-    .required(t('fill-field')),
-  clientEmail: Yup.string()
-    .email()
-    .required(t('fill-field')),
-  verifyEmail: Yup.string()
-    .email()
-    .oneOf([Yup.ref('clientEmail'), null], t('email-not-match'))
-    .required(t('fill-field')),
-  startTime: Yup.date()
-    .test((value, formik) => {
-      const eventTimes = formik?.parent?.eventTimes
-      if (eventTimes && eventTimes.start > value) {
-        return formik.createError({
-          message: t('invalid-start')
-        })
-      } else return true
-    })
-    .required()
-    .typeError(t('invalid-time')),
-  endTime: Yup.date()
-    .test((value, formik) => {
-      const eventTimes = formik?.parent?.eventTimes
-      if (eventTimes && eventTimes.end < value) {
-        return formik.createError({
-          message: t('invalid-end')
-        })
-      } else return true
-    })
-    .required()
-    .typeError(t('invalid-time')),
-  clientPhone: Yup.string()
-    .required(t('fill-field')),
-  grade: Yup.string()
-    .required(t('fill-field')),
-  participants: Yup.number()
-    .min(1, t('too-small'))
-    .required(t('fill-field')),
-  privacyPolicy: Yup.bool()
-    .isTrue(t('check-this-field')),
-  remoteVisitGuidelines: Yup.bool()
-    .isTrue(t('check-this-field')),
-})
+export const VisitValidation = form => {
+  const formFields = form?.fields ? Object.assign({}, ...Object.entries(form?.fields)
+    .filter(e => e[1].validation.required)
+    .map(e => {
+      const o = {}
+      o[`custom-${e[0]}`] = e[1].type === 'text'
+        ? Yup.string().required() : e[1].type === 'checkbox'
+          ? Yup.array().min(1, t('too-short')) : e[1].type === 'radio'
+            ? Yup.string().required() : undefined
+      return o
+    })) : {}
+  return Yup.object().shape({
+    clientName: Yup.string()
+      .min(5, t('too-short'))
+      .required(t('fill-field')),
+    schoolName: Yup.string()
+      .min(5, t('too-short'))
+      .required(t('fill-field')),
+    schoolLocation: Yup.string()
+      .required(t('fill-field')),
+    clientEmail: Yup.string()
+      .email()
+      .required(t('fill-field')),
+    verifyEmail: Yup.string()
+      .email()
+      .oneOf([Yup.ref('clientEmail'), null], t('email-not-match'))
+      .required(t('fill-field')),
+    remotePlatform: Yup.string()
+      .when('visitType', {
+        is: 'remote',
+        then: Yup.string().required()
+      }),
+    startTime: Yup.date()
+      .test((value, handler) => {
+        const eventTimes = handler?.parent?.eventTimes
+        const endTime = handler?.parent?.endTime
+        if (eventTimes && (eventTimes.start > value || eventTimes.end < endTime)) {
+          return handler.createError({
+            message: t('invalid-start')
+          })
+        } else return true
+      })
+      .required()
+      .typeError(t('invalid-time')),
+    clientPhone: Yup.string()
+      .required(t('fill-field')),
+    grade: Yup.string()
+      .required(t('fill-field')),
+    participants: Yup.number()
+      .min(1, t('too-small'))
+      .required(t('fill-field')),
+    privacyPolicy: Yup.bool()
+      .isTrue(t('check-this-field')),
+    remoteVisitGuidelines: Yup.bool()
+      .isTrue(t('check-this-field')),
+    ...formFields
+  })
+}
 
 export const ExtraValidation = Yup.object().shape({
   name: Yup.string().required(t('fill-field')),
@@ -83,7 +91,7 @@ export const ExtraValidation = Yup.object().shape({
   classes: Yup.array().min(1)
 })
 
-export const EventValidation = () => Yup.object().shape({
+export const EventValidation = Yup.object().shape({
   title: Yup.string()
     .min(5, t('too-short'))
     .required(t('fill-field')),
@@ -94,10 +102,10 @@ export const EventValidation = () => Yup.object().shape({
     is: inPersonVisit => !inPersonVisit,
     then: Yup.bool().oneOf([true], t('atleast-one-visittype'))
   }),
-  /* inPersonVisit: Yup.bool().when('remoteVisit', {
+  inPersonVisit: Yup.bool().when('remoteVisit', {
     is: remoteVisit => !remoteVisit,
     then: Yup.bool().oneOf([true], t('atleast-one-visittype'))
-  }), */
+  }),
   remotePlatforms: Yup.array()
     .when('remoteVisit', {
       is: true,
@@ -110,10 +118,10 @@ export const EventValidation = () => Yup.object().shape({
     .min(0, t('too-small'))
     .required(t('fill-field')),
   start: Yup.date()
-    .test((value, formik) => {
-      const end = formik?.parent?.end
+    .test((value, handler) => {
+      const end = handler?.parent?.end
       if (!end || end < value) {
-        return formik.createError({
+        return handler.createError({
           message: t('end-after-start')
         })
       }
@@ -124,7 +132,7 @@ export const EventValidation = () => Yup.object().shape({
   end: Yup.date()
     .required(t('fill-field'))
     .typeError(t('invalid-time')),
-})
+}, [['inPersonVisit', 'remoteVisit']])
 
 export const CustomFormValidation = Yup.object().shape({
   name: Yup.string().required(t('fill-field')),

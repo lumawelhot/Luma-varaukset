@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react'
+/* eslint-disable no-unreachable */
+import React, { useState, useId } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Navigate, useNavigate } from 'react-router-dom'
@@ -9,15 +10,14 @@ import { combineEvent } from '../../../helpers/parse'
 import Form from './Form'
 import Info from './Info'
 import Status from './Status'
-import { formError, customFormError } from '../../../helpers/utils'
 import Steps, { Step } from 'rc-steps'
 import { CheckIcon } from '@chakra-ui/icons'
 import { error, success } from '../../../helpers/toasts'
 import { useEvents, useUser, useVisits } from '../../../hooks/api'
 
-
 const Visit = ({ children }) => {
   const { t } = useTranslation()
+  const formId = useId()
   const [phase, setPhase] = useState(0)
   const [showInfo, setShowInfo] = useState(false)
   const [status, setStatus] = useState()
@@ -28,7 +28,6 @@ const Visit = ({ children }) => {
   const { cacheModify, find, remove, lock, unlock, current: event } = useEvents()
   const { current: user } = useUser()
   const navigate = useNavigate()
-  const formRef = useRef()
 
   const getTitle = (current) => {
     if (current === 1 && current === phase) {
@@ -50,11 +49,15 @@ const Visit = ({ children }) => {
     navigate('/')
   }
 
-  const handleSubmit = async () => {
-    const values = formRef.current.values
+  const handleSubmit = async values => {
+    const fieldValues = Object.fromEntries(Object.entries(values)
+      .filter(e => e[0].includes('custom-'))
+      .map(e => [Number(e[0].split('-')[1]), e[1]]))
     const otherRemote = values.otherRemotePlatformOption
     const type = values.visitType
-    const customFormData = JSON.stringify(values.customFormData)
+    const customFormData = JSON.stringify(values.customFormData.map((c, i) => {
+      return { ...c, value: fieldValues[i] }
+    }))
     const inPersonVisit = type === 'inperson' ? true : false
     const remoteVisit = type === 'remote' ? true : false
     const remotePlatform = otherRemote?.length ? otherRemote : values.remotePlatform
@@ -67,9 +70,6 @@ const Visit = ({ children }) => {
       customFormData,
       remotePlatform
     }
-    // this should be defined here, otherwise we are getting an error
-    if (await formError(formRef.current)) return
-    if (await customFormError(event?.customForm?.fields, values.customFormData)) return
     increment()
     const result = await book(variables)
     if (result?.event) {
@@ -114,10 +114,8 @@ const Visit = ({ children }) => {
       <Modal.Body>
         {phase === 0 && <Info />}
         <div className={phase === 1 ? 'show-visitform' : 'hide-visitform'}>
-          <>
-            {<Form ref={formRef} show={!showInfo} />}
-            {showInfo && <Info />}
-          </>
+          {<Form formId={formId} show={!showInfo} onSubmit={handleSubmit} />}
+          {showInfo && <Info />}
         </div>
         {phase >= 2 && <Status status={status} visit={visit}/>}
       </Modal.Body>
@@ -136,7 +134,7 @@ const Visit = ({ children }) => {
           </>}
           {phase === 1 && <>
             <Button id='visit-form-media' onClick={() => setShowInfo(!showInfo)}>{showInfo ? t('show-visit-form') : t('show-info')}</Button>
-            <Button type='submit' className='active' onClick={handleSubmit}>{t('book-visit-submit')}</Button>
+            <Button form={formId} type='submit' className='active'>{t('book-visit-submit')}</Button>
           </>}
           {phase === 2 && status === false && <Button onClick={toForm}>{t('back-to-form')}</Button>}
           {phase === 2 && <Button className='active' onClick={close}>{t('book-visit-close')}</Button>}

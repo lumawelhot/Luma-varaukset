@@ -91,7 +91,7 @@ export const eventInitWithValues = ({
   } : ''
 })
 
-export const visitInitialValues = (event, form) => ({
+export const visitInitialValues = event => ({
   clientName: '',
   schoolName: '',
   schoolLocation: '',
@@ -110,7 +110,7 @@ export const visitInitialValues = (event, form) => ({
   endTime: add(new Date(event.start), { minutes: event.duration }),
   visitType: event.inPersonVisit ? 'inperson' : 'remote',
   fields: [],
-  customFormData: form?.fields?.map(f => {
+  customFormData: event?.customForm?.fields?.map(f => {
     if (f.type === 'checkbox') return { name: f.name, value: [] }
     else return { name: f.name, value: '' }
   }),

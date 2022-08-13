@@ -1,22 +1,23 @@
-import { RadioGroup, Button as ChakraButton } from '@chakra-ui/react'
+import { Button as ChakraButton } from '@chakra-ui/react'
 import React, { useId, useState } from 'react'
-import { Modal, Stack } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Button, Radio } from '../Embeds/Button'
-import Title, { Error, required } from '../Embeds/Title'
+import { Error, required } from '../Embeds/Title'
 import { ModifyUserValidation } from '../../helpers/validate'
 import { error, success } from '../../helpers/toasts'
 import { useUser } from '../../hooks/api'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from '../Embeds/Input'
+import { _RadioGroup as RadioGroup } from '../Embeds/Button'
 
 const ModifyUser = ({ show, close, initialValues }) => {
   const { t } = useTranslation()
   const formId = useId()
   const { current: user, modify } = useUser()
   const [modifyPassword, setModifyPassword] = useState(false)
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
+  const { control, register, handleSubmit, formState: { errors }, watch } = useForm({
     resolver: yupResolver(ModifyUserValidation),
     defaultValues: initialValues
   })
@@ -37,15 +38,12 @@ const ModifyUser = ({ show, close, initialValues }) => {
         <form id={formId} onSubmit={handleSubmit(onSubmit)}>
           <Input id='username' title={required(t('username'))} {...register('username')}/>
           {errors.username && <Error>{t(errors.username.message)}</Error>}
-          {user.id !== watch('id') && <>
-            <Title>{t('user-role')}</Title>
-            <RadioGroup onChange={v => setValue('isAdmin', v)} value={watch('isAdmin')}>
-              <Stack direction='col'>
-                <Radio value='true'>{t('admin')}</Radio>
-                <Radio value='false'>{t('employee')}</Radio>
-              </Stack>
-            </RadioGroup>
-          </>}
+          {user.id !== watch('id') && (
+            <RadioGroup name='isAdmin' title={t('user-role')} control={control} render={<>
+              <Radio value='true'>{t('admin')}</Radio>
+              <Radio value='false'>{t('employee')}</Radio>
+            </>}/>
+          )}
           {!modifyPassword && <ChakraButton
             style={{ marginTop: 15 }}
             onClick={() => setModifyPassword(true)}

@@ -3,6 +3,7 @@ const mailer = require('../../services/mailer')
 const config = require('../../config')
 const { getNotifyHtml, u, scienceClasses } = require('./receipt')
 const { Email, Visit } = require('../../db')
+const { expandVisits } = require('../../db/expand')
 
 const fillStringWithValues = (str, replace) => {
   let newString = str
@@ -45,7 +46,7 @@ const sendAlert = async (name, days) => {
       $gte: start.toISOString(),
       $lt: end.toISOString()
     }
-  }, ['event'])
+  }, expandVisits)
   const report = {
     success: [],
     failed: []

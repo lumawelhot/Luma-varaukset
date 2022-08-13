@@ -2,19 +2,20 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { ExtraValidation } from '../../../helpers/validate'
 import { Input } from '../../Embeds/Input'
-import Title, { Error } from '../../Embeds/Title'
+import { Error } from '../../Embeds/Title'
 import { Stack } from 'react-bootstrap'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
-import { CheckboxGroup } from '@chakra-ui/react'
+import { _CheckboxGroup as CheckboxGroup } from '../../Embeds/Button'
 import { CLASSES } from '../../../config'
 import { Checkbox } from '../../Embeds/Button'
 
 const Form = ({ onSubmit, initialValues, formId }) => {
   const { t } = useTranslation()
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
+  const { control, register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(ExtraValidation),
-    defaultValues: initialValues
+    defaultValues: initialValues,
+    mode: 'onTouched'
   })
 
   return <form id={formId} onSubmit={handleSubmit(onSubmit)} >
@@ -30,15 +31,10 @@ const Form = ({ onSubmit, initialValues, formId }) => {
         {errors.remoteLength && <Error>{t(errors.remoteLength.message)}</Error>}
       </div>
     </Stack>
-    <CheckboxGroup value={watch('classes')} onChange={v => setValue('classes', v)}>
-      <Title>{t('extra-classes')}</Title>
-      <Stack direction='col'>
-        {CLASSES.map(c => (
-          <Checkbox key={c.value} value={c.value.toString()}>{c.label}</Checkbox>
-        ))}
-      </Stack>
-      {errors.classes && <Error>{t(errors.classes.message)}</Error>}
-    </CheckboxGroup>
+    <CheckboxGroup name='classes' control={control} title={t('extra-classes')} render={<>
+      {CLASSES.map(c => <Checkbox key={c.value} value={c.value.toString()}>{c.label}</Checkbox>)}
+    </>} />
+    {errors.classes && <Error>{t(errors.classes.message)}</Error>}
   </form>
 }
 

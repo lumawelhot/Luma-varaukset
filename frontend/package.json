@@ -20,7 +20,6 @@
     "apollo-link-context": "^1.0.20",
     "bootstrap": "^5.2.0",
     "date-fns": "^2.29.1",
-    "formik": "^2.2.9",
     "graphql-ws": "^5.9.1",
     "i18next": "^21.9.0",
     "lodash": "^4.17.21",
