@@ -22,7 +22,7 @@ export const ModifyUserValidation = Yup.object().shape({
 
 export const GroupValidation = Yup.object().shape({
   name: Yup.string().required(t('fill-field')),
-  maxCount: Yup.number().min(1, t('too-small')).required(t('fill-field'))
+  maxCount: Yup.number().min(1, t('too-small')).required(t('fill-field')).typeError('invalid-syntax')
 })
 
 export const VisitValidation = form => {
@@ -46,10 +46,10 @@ export const VisitValidation = form => {
     schoolLocation: Yup.string()
       .required(t('fill-field')),
     clientEmail: Yup.string()
-      .email()
+      .email('invalid-email')
       .required(t('fill-field')),
     verifyEmail: Yup.string()
-      .email()
+      .email('invalid-email')
       .oneOf([Yup.ref('clientEmail'), null], t('email-not-match'))
       .required(t('fill-field')),
     remotePlatform: Yup.string()
@@ -75,7 +75,8 @@ export const VisitValidation = form => {
       .required(t('fill-field')),
     participants: Yup.number()
       .min(1, t('too-small'))
-      .required(t('fill-field')),
+      .required(t('fill-field'))
+      .typeError('invalid-syntax'),
     privacyPolicy: Yup.bool()
       .isTrue(t('check-this-field')),
     remoteVisitGuidelines: Yup.bool()

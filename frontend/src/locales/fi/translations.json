@@ -314,5 +314,9 @@
   "end-after-start": "Virheellinen aloitusajankohta",
   
   "remove-user-confirm": "Haluatko varmasti poistaa valitut käyttäjät",
-  "created": "Luotu"
+  "created": "Luotu",
+  "disabled": "Piilotettu",
+  "unpublished": "Julkaisematon",
+  "invalid-syntax": "Virheellinen syöte",
+  "invalid-email": "Virheellinen sähköpostiosoite"
 }

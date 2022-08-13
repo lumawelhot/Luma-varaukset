@@ -11,12 +11,11 @@ import Form from './Form'
 const Event = ({ show, close, initialValues=eventInit, options, modify }) => {
   const [type, setType] = useState(modify ? 'modify' : 'create')
   const { add, modify : mod, current: event } = useEvents()
-  const [dates, setDates] = useState([])
   const { t } = useTranslation()
   const formId = useId()
 
   const getArguments = values => {
-    const { tags, resourceids, grades, remotePlatforms, group, extras, customForm } = values
+    const { tags, resourceids, grades, remotePlatforms, group, extras, customForm, dates } = values
     return {
       ...values,
       dates: dates.map(d => new Date(d.date).toISOString()),
@@ -69,8 +68,6 @@ const Event = ({ show, close, initialValues=eventInit, options, modify }) => {
           type={type}
           onSubmit={type === 'create' ? handleAdd : handleModify}
           initialValues={initialValues}
-          dates={dates}
-          setDates={setDates}
         />
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>

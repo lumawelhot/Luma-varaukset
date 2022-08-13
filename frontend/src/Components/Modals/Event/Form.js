@@ -18,7 +18,7 @@ import { useForms, useGroups, useMisc } from '../../../hooks/api'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
 
-const Form = ({ formId, onSubmit, initialValues, type, dates, setDates }) => {
+const Form = ({ formId, onSubmit, initialValues, type }) => {
   const { t } = useTranslation()
   const { extras, tags, fetchTags, fetchExtras } = useMisc()
   const { all: forms, fetch: fetchForms } = useForms()
@@ -29,32 +29,34 @@ const Form = ({ formId, onSubmit, initialValues, type, dates, setDates }) => {
   }, [])
 
   const { control, register, handleSubmit, formState: { errors }, setValue, watch, getValues } = useForm({
-    resolver: yupResolver(EventValidation), defaultValues: initialValues, mode: 'onTouched'
+    resolver: yupResolver(EventValidation),
+    defaultValues: { ...initialValues, dates: [] },
+    mode: 'onTouched'
   })
 
   const updateDates = (values) => {
     const date = set(values.start, { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 })
     let found = false
-    dates.forEach(d => {
+    watch('dates').forEach(d => {
       if (new Date(d.date).getTime() === date.getTime()) found = true
     })
-    if (!found) setDates(dates.concat({ date }))
+    if (!found) setValue('dates', watch('dates').concat({ date }))
   }
 
   useEffect(() => updateDates({ start: initialValues.start }), [])
   const eventColumns = useMemo(eventDateColumns, [])
 
-  const dateData = useMemo(() => dates
+  const dateData = useMemo(() => watch('dates')
     ?.map((f, i) => ({
       id: i,
       date: format(f.date, 'd.M.y'),
       optionButtons: <div style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
         <IconButton size='sm' onClick={() => {
-          setDates(dates.filter((_, j) => j !== i))
+          setValue('dates', watch('dates').filter((_, j) => j !== i))
         }} icon={<DeleteIcon color='red.500' />} />
       </div>
     }))
-  , [dates])
+  , [watch('dates')])
 
   return (
     <form id={formId} onSubmit={handleSubmit(onSubmit)} style={{ overflowX: 'hidden', padding: 3 }}>

@@ -39,8 +39,6 @@ const Visit = () => {
 
   if (!visit) return <></>
 
-  // So much mess because need to get remote platforms working
-  // Pls deprecate and redesign this functionality
   const event = findEvent(visit?.event?.id)
 
   if (!event) return <></>

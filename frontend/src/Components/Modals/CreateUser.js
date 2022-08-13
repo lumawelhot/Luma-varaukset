@@ -21,7 +21,8 @@ const CreateUser = ({ show, close }) => {
   const { add } = useUser()
   const { control, register, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: yupResolver(CreateUserValidation),
-    defaultValues: userInit
+    defaultValues: userInit,
+    mode: 'onTouched'
   })
 
   const onSubmit = async values => {

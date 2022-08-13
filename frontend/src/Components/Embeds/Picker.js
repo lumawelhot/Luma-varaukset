@@ -57,6 +57,7 @@ export const TimePicker = React.forwardRef((rest, ref) => {
       locale='fi'
       dateFormat='H:mm'
       { ...rest}
+      title={undefined}
     />
   </div>
 })
@@ -76,6 +77,7 @@ export const DatePicker = React.forwardRef((rest, ref) => {
       cleanable={rest?.cleanable ? true : false}
       { ...rest }
       selected={rest.value}
+      title={undefined}
     />
   </div>
 })

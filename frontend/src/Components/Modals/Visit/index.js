@@ -1,4 +1,3 @@
-/* eslint-disable no-unreachable */
 import React, { useState, useId } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
@@ -45,7 +44,7 @@ const Visit = ({ children }) => {
 
   const close = () => {
     if (token) unlock(event.id)
-    setToken(undefined)
+    setToken()
     navigate('/')
   }
 
@@ -89,7 +88,6 @@ const Visit = ({ children }) => {
   }
 
   if (!event) return <Navigate to='/' />
-
   return (
     <Modal
       show={true}
@@ -102,14 +100,14 @@ const Visit = ({ children }) => {
         <Modal.Title>{event.title}</Modal.Title>
       </Modal.Header>
       <Modal.Header style={{ display: 'inline' }}>
-        {(event?.disabled || event?.booked || event?.locked) && <Modal.Title
+        {(event?.disabled || event?.booked || event?.locked || event.unAvailable) ? <Modal.Title
           style={{ color: 'brown', fontWeight: 'bold' }}
-        >{t('cannot-be-booked')}</Modal.Title>}
-        {!event?.disabled && !event?.booked && !event?.locked && <Steps current={phase}>
-          <Step icons={{ finish: <CheckIcon /> }} title={getTitle(0)} />
-          <Step icons={{ finish: <CheckIcon /> }} title={getTitle(1)} />
-          <Step icons={{ finish: <CheckIcon /> }} title={getTitle(2)} />
-        </Steps>}
+        >{t('cannot-be-booked')}</Modal.Title> :
+          <Steps current={phase}>
+            <Step icons={{ finish: <CheckIcon /> }} title={getTitle(0)} />
+            <Step icons={{ finish: <CheckIcon /> }} title={getTitle(1)} />
+            <Step icons={{ finish: <CheckIcon /> }} title={getTitle(2)} />
+          </Steps>}
       </Modal.Header>
       <Modal.Body>
         {phase === 0 && <Info />}

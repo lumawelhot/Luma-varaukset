@@ -11,6 +11,7 @@ const Event = ({ content }) => {
   const { find } = useEvents()
   const { t } = useTranslation()
   const event = find(content.event._def.publicId)
+  const unavailableColor = '#bd4047'
 
   if (!event) return <></>
 
@@ -21,7 +22,7 @@ const Event = ({ content }) => {
   const booked = props.booked
   const view = content.view.type
   const published = event?.publishDate ? new Date() >= new Date(event.publishDate) : true
-  const passed = !booked && props.unAvailable
+  const passed = !disabled && !booked && props.unAvailable
 
   const getTimeRange = () => {
     const start = new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', timeZone: 'Europe/Helsinki' }).format(new Date(event.start))
@@ -36,8 +37,8 @@ const Event = ({ content }) => {
       <PopoverHeader
         style={{ padding: 10, paddingTop: 5, paddingBottom: 5, fontSize: 13, fontWeight: 'bold' }}
       >
-        {booked && <span style={{ color: 'red', marginRight: 15 }}>{t('booked')}</span>}
-        {passed && <span style={{ color: 'red', marginRight: 15 }}>{t('passed')}</span>}
+        {booked && <span style={{ color: unavailableColor, marginRight: 15 }}>{t('booked')}</span>}
+        {passed && <span style={{ color: unavailableColor, marginRight: 15 }}>{t('passed')}</span>}
         <span>{getTimeRange()}</span>
         <span style={{ marginLeft: 15 }}>{event.title}</span>
         <span style={{ marginLeft: 15 }}>{`(${event.languages?.map(l => LANGUAGE_SHORT[l]).join(', ')})`}</span>
@@ -54,7 +55,9 @@ const Event = ({ content }) => {
             <span style={{ marginLeft: 10 }}>({t(CLASSES[Number(r) - 1].i18n)})</span>
           </li>)}
         </ul>
-        <div style={{ marginTop: 5, fontSize: 13, fontStyle: 'italic' }}>{event.desc}</div>
+        <div style={{ marginTop: 5, fontSize: 13, fontStyle: 'italic' }}>
+          {event?.desc?.length > 200 ? `${event.desc.slice(0, 200)}...` : event.desc}
+        </div>
       </Popover.Body>
     </Popover>
   )
@@ -85,8 +88,14 @@ const Event = ({ content }) => {
         <div>
           {!locked && showEvent() && <BsEyeSlashFill size={15} style={{ margin: 5, marginTop: 2, display: 'inline' }} />}
           {locked && <FaLock size={15} style={{ margin: 5, marginTop: 2, display: 'inline' }} />}
-          <span>{booked ? <span style={{ color: 'red', marginRight: 10 }}>{t('booked')}</span> : ''}</span>
-          <span>{passed ? <span style={{ color: 'red', marginRight: 10 }}>{t('passed')}</span> : ''}</span>
+          <span>{booked ? <span style={{ color: unavailableColor, marginRight: 10 }}>{t('booked')}</span> : ''}</span>
+          <span>{passed ? <span style={{ color: unavailableColor, marginRight: 10 }}>{t('passed')}</span> : ''}</span>
+          <span>{(disabled && !booked && !passed) ?
+            <span style={{ color: unavailableColor, marginRight: 10 }}>{t('disabled')}</span>
+            : ''}</span>
+          <span>{(!published && !booked && !passed) ?
+            <span style={{ color: unavailableColor, marginRight: 10 }}>{t('unpublished')}</span>
+            : ''}</span>
           {event.title}
         </div>
         <div>{content.timeText}</div>

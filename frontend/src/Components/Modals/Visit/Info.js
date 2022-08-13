@@ -17,7 +17,9 @@ const Info = () => {
       {event?.tags?.map((t, i) => <Badge key={i} bg="primary">{t.name}</Badge>)}
       <P>
         <Title>{t('description')}: </Title>
-        <Text>{event.desc}</Text>
+        <div style={{ marginLeft: 10 }}>
+          <Text>{event.desc}</Text>
+        </div>
       </P>
       <P>
         <Title>{t('languages')}: </Title>
