@@ -8,13 +8,14 @@ import { Badge } from '../Embeds/Badge'
 import { useEvents } from '../../hooks/api'
 
 const Event = ({ content }) => {
-  const { find } = useEvents()
+  const { find, selected } = useEvents()
   const { t } = useTranslation()
   const event = find(content.event._def.publicId)
   const unavailableColor = '#bd4047'
 
   if (!event) return <></>
 
+  const isSelected = selected.includes(event.id)
   const props = content.event._def.extendedProps
   const disabled = event.disabled
   const groupFull = event?.group?.disabled
@@ -86,7 +87,10 @@ const Event = ({ content }) => {
     >
       <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
         <div>
-          {!locked && showEvent() && <BsEyeSlashFill size={15} style={{ margin: 5, marginTop: 2, display: 'inline' }} />}
+          {!locked && showEvent() && <BsEyeSlashFill
+            size={15}
+            style={{ margin: 5, marginTop: 2, display: 'inline', color: isSelected ? '#b8b8b8' : 'inherit' }}
+          />}
           {locked && <FaLock size={15} style={{ margin: 5, marginTop: 2, display: 'inline' }} />}
           <span>{booked ? <span style={{ color: unavailableColor, marginRight: 10 }}>{t('booked')}</span> : ''}</span>
           <span>{passed ? <span style={{ color: unavailableColor, marginRight: 10 }}>{t('passed')}</span> : ''}</span>
@@ -96,9 +100,9 @@ const Event = ({ content }) => {
           <span>{(!published && !booked && !passed) ?
             <span style={{ color: unavailableColor, marginRight: 10 }}>{t('unpublished')}</span>
             : ''}</span>
-          {event.title}
+          <span style={{ color: isSelected ? '#b8b8b8' : 'inherit' }}>{event.title}</span>
         </div>
-        <div>{content.timeText}</div>
+        <div style={{ color: isSelected ? '#b8b8b8' : 'inherit' }}>{content.timeText}</div>
       </div>
     </OverlayTrigger>
   )
