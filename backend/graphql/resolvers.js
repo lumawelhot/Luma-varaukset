@@ -310,6 +310,10 @@ const resolvers = {
       for (const id of args.events) {
         const event = await Event.findById(id)
         await Visit.remove(event.visits)
+        !!event.group && await Group.DeltaUpdate(event.group, {
+          visitCount: - event.visits.length,
+          events: { filter: event.id }
+        })
         await Event.remove(event.id)
         events.push(event)
       }

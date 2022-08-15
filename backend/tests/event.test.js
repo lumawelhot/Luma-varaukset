@@ -97,6 +97,17 @@ describe('As an employee I', () => {
       .filter(e => e.fromNow >= 0).map(e => e.id))
   })
 
+  it('can get events by ids', async () => {
+    const { query } = createTestClient(serverEmployee)
+    const { data, errors } = await query({ query: EVENTS, variables: { ids: ['2', '4'] } })
+    expect(errors).to.be.undefined
+    expect(data.getEvents.map(e => e.title)).to.have.members([
+      'Lämpösäteily ja ilmastonmuutos',
+      'Python-ohjelmointikieli'
+    ])
+    expect(data.getEvents.length).to.equal(2)
+  })
+
   // ----- CREATE EVENTS
 
   it('can create new events', async () => {

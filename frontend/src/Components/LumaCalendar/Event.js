@@ -94,7 +94,7 @@ const Event = ({ content }) => {
           {locked && <FaLock size={15} style={{ margin: 5, marginTop: 2, display: 'inline' }} />}
           <span>{booked ? <span style={{ color: unavailableColor, marginRight: 10 }}>{t('booked')}</span> : ''}</span>
           <span>{passed ? <span style={{ color: unavailableColor, marginRight: 10 }}>{t('passed')}</span> : ''}</span>
-          <span>{(disabled && !booked && !passed) ?
+          <span>{((disabled || groupFull) && !booked && !passed) ?
             <span style={{ color: unavailableColor, marginRight: 10 }}>{t('disabled')}</span>
             : ''}</span>
           <span>{(!published && !booked && !passed) ?

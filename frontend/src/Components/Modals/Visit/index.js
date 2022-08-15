@@ -54,7 +54,7 @@ const Visit = ({ children }) => {
       .map(e => [Number(e[0].split('-')[1]), e[1]]))
     const otherRemote = values.otherRemotePlatformOption
     const type = values.visitType
-    const customFormData = JSON.stringify(values.customFormData.map((c, i) => {
+    const customFormData = JSON.stringify(values.customFormData?.map((c, i) => {
       return { ...c, value: fieldValues[i] }
     }))
     const inPersonVisit = type === 'inperson' ? true : false
@@ -88,6 +88,7 @@ const Visit = ({ children }) => {
   }
 
   if (!event) return <Navigate to='/' />
+
   return (
     <Modal
       show={true}
@@ -100,7 +101,7 @@ const Visit = ({ children }) => {
         <Modal.Title>{event.title}</Modal.Title>
       </Modal.Header>
       <Modal.Header style={{ display: 'inline' }}>
-        {(event?.disabled || event?.booked || event?.locked || event.unAvailable) ? <Modal.Title
+        {(event?.disabled || event?.booked || event?.locked || event.unAvailable || event?.group?.disabled) ? <Modal.Title
           style={{ color: 'brown', fontWeight: 'bold' }}
         >{t('cannot-be-booked')}</Modal.Title> :
           <Steps current={phase}>
@@ -123,12 +124,14 @@ const Visit = ({ children }) => {
             {user && event?.visits?.length === 0 &&
             <Button onClick={handleRemove}>{t('delete-event')}</Button>}
             {children}
-            {!event?.unAvailable && !event?.disabled && !event?.booked && !event.locked && <Button className='active' onClick={async () => {
-              increment()
-              const token = await lock(event.id)
-              if (!token) close()
-              else setToken(token)
-            }}>{t('book-visit')}</Button>}
+            {!event?.unAvailable && !event?.disabled && !event?.booked && !event.locked && !event?.group?.disabled && (
+              <Button className='active' onClick={async () => {
+                increment()
+                const token = await lock(event.id)
+                if (!token) close()
+                else setToken(token)
+              }}>{t('book-visit')}</Button>
+            )}
           </>}
           {phase === 1 && <>
             <Button id='visit-form-media' onClick={() => setShowInfo(!showInfo)}>{showInfo ? t('show-visit-form') : t('show-info')}</Button>

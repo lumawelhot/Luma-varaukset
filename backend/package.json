@@ -10,7 +10,8 @@
     "build:ui": "rm -rf build && cd ../frontend && npm run build --prod && cp -r build ../backend",
     "lint": "eslint .",
     "test": "cross-env NODE_ENV=test mocha 'tests/index.js' --timeout 60000",
-    "coverage": "nyc npm run test"
+    "coverage": "nyc npm run test",
+    "report": "nyc --reporter=html npm run test"
   },
   "dependencies": {
     "@graphql-tools/schema": "^7.1.5",
