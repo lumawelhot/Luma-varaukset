@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Input } from '../../Embeds/Input'
 import Title, { Error, required } from '../../Embeds/Title'
 import { PLATFORMS } from '../../../config'
-import { Checkbox, Radio, _RadioGroup, _CheckboxGroup } from '../../Embeds/Button'
+import { Checkbox, Radio, RadioGroup, CheckboxGroup } from '../../Embeds/Button'
 import { TimePicker } from '../../Embeds/Picker'
 import { add, format, set } from 'date-fns'
 import { VisitValidation } from '../../../helpers/validate'
@@ -49,13 +49,13 @@ const Form = ({ formId, show, onSubmit }) => {
     <form id={formId} onSubmit={handleSubmit(onSubmit)} className={show ? 'visible' : 'hidden'}>
 
       {event?.languages.length > 1 && (
-        <_RadioGroup name='language' control={control} title={t('language')} render={<>
+        <RadioGroup name='language' control={control} title={t('language')} render={<>
           {event.languages.map((l, i) => <Radio key={i} value={l}>{t(l)}</Radio>)}
         </>}/>
       )}
 
       {event.inPersonVisit && event.remoteVisit ? (
-        <_RadioGroup name= 'visitType' control={control} title={t('choose-visit-type')} onChange={() => {
+        <RadioGroup name= 'visitType' control={control} title={t('choose-visit-type')} onChange={() => {
           const duration = totalDuration()
           const endTime = add(set(new Date(watch('startTime')), { seconds: 0, milliseconds: 0 }), { minutes: duration })
           setValue('endTime', endTime)
@@ -66,7 +66,7 @@ const Form = ({ formId, show, onSubmit }) => {
       ) : null}
 
       {(watch('visitType') === 'remote' || (event.remoteVisit && !event.inPersonVisit)) &&
-      <_RadioGroup name='remotePlatform' title={required(t('choose-remote-platform'))} control={control} render={<>
+      <RadioGroup name='remotePlatform' title={required(t('choose-remote-platform'))} control={control} render={<>
         {event?.remotePlatforms
           .map((_, j) => PLATFORMS.map((_, i) => i + 1).includes(j + 1)
             ? PLATFORMS[j] : event.otherRemotePlatformOption)
@@ -108,7 +108,7 @@ const Form = ({ formId, show, onSubmit }) => {
         </div>
       </Stack>
 
-      <_CheckboxGroup name='extras' control={control} onChange={v => {
+      <CheckboxGroup name='extras' control={control} onChange={v => {
         const duration = totalDuration({ extras: v })
         const endTime = add(set(new Date(watch('startTime')), { seconds: 0, milliseconds: 0 }), { minutes: duration })
         setValue('endTime', endTime)
@@ -171,10 +171,10 @@ const Form = ({ formId, show, onSubmit }) => {
         return <div key={j}>
           <Title>{field?.validation?.required ? required(field.name) : field.name}</Title>
           {type === 'text' && <Input id={j} {...register(`custom-${j}`)}/>}
-          {type === 'radio' && <_RadioGroup name={`custom-${j}`} control={control} render={<>
+          {type === 'radio' && <RadioGroup name={`custom-${j}`} control={control} render={<>
             {field.options.map((o, i) => <Radio key={i} value={o.text.toString()} >{o.text}</Radio>)}
           </>}/>}
-          {type === 'checkbox' && <_CheckboxGroup name={`custom-${j}`} control={control} render={<>
+          {type === 'checkbox' && <CheckboxGroup name={`custom-${j}`} control={control} render={<>
             {field.options.map((o, i) => <Checkbox key={i} value={o.text.toString()} >{o.text}</Checkbox>)}
           </>} />}
           {errors[`custom-${j}`] && <Error>{t('fill-field')}</Error>}

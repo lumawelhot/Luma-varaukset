@@ -6,7 +6,7 @@ import { Error } from '../../Embeds/Title'
 import { Stack } from 'react-bootstrap'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
-import { _CheckboxGroup as CheckboxGroup } from '../../Embeds/Button'
+import { CheckboxGroup } from '../../Embeds/Button'
 import { CLASSES } from '../../../config'
 import { Checkbox } from '../../Embeds/Button'
 

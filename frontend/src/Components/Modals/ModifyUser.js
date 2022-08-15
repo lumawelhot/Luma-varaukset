@@ -10,7 +10,7 @@ import { useUser } from '../../hooks/api'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from '../Embeds/Input'
-import { _RadioGroup as RadioGroup } from '../Embeds/Button'
+import { RadioGroup } from '../Embeds/Button'
 
 const ModifyUser = ({ show, close, initialValues }) => {
   const { t } = useTranslation()

@@ -13,7 +13,7 @@ import { error, success } from '../../helpers/toasts'
 import { useUser } from '../../hooks/api'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from '../Embeds/Input'
-import { _RadioGroup as RadioGroup } from '../Embeds/Button'
+import { RadioGroup } from '../Embeds/Button'
 
 const CreateUser = ({ show, close }) => {
   const { t } = useTranslation()

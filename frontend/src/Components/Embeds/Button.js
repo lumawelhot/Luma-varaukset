@@ -1,6 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Radio as ChakraRadio, Checkbox as ChakraCheckbox, Link as A, IconButton as IButton, RadioGroup, CheckboxGroup } from '@chakra-ui/react'
+import {
+  Radio as ChakraRadio,
+  Checkbox as ChakraCheckbox,
+  Link as A,
+  IconButton as IButton,
+  RadioGroup as _RadioGroup,
+  CheckboxGroup as _CheckboxGroup
+} from '@chakra-ui/react'
 import { Controller } from 'react-hook-form'
 import Title from './Title'
 import { Stack } from 'react-bootstrap'
@@ -40,13 +47,13 @@ export const MenuButton = styled(Button)`
 export const Checkbox = styled(ChakraCheckbox)`border-color: darkgrey;`
 export const Radio = styled(ChakraRadio)`border-color: darkgrey !important;`
 
-export const _RadioGroup = ({ name, control, title, render, onChange }) => {
+export const RadioGroup = ({ name, control, title, render, onChange }) => {
   const _onChange = onChange
   return <Controller
     name={name}
     control={control}
     render={({ field: { onChange, value } }) => (
-      <RadioGroup onChange={(v, ...r) => {
+      <_RadioGroup onChange={(v, ...r) => {
         _onChange && _onChange(v)
         return onChange(v, ...r)
       }} value={value}>
@@ -54,18 +61,18 @@ export const _RadioGroup = ({ name, control, title, render, onChange }) => {
         <Stack direction='col'>
           {render}
         </Stack>
-      </RadioGroup>
+      </_RadioGroup>
     )}
   />
 }
 
-export const _CheckboxGroup = ({ name, control, title, render, onChange }) => {
+export const CheckboxGroup = ({ name, control, title, render, onChange }) => {
   const _onChange = onChange
   return <Controller
     name={name}
     control={control}
     render={({ field: { onChange, value } }) => (
-      <CheckboxGroup onChange={(v, ...r) => {
+      <_CheckboxGroup onChange={(v, ...r) => {
         _onChange && _onChange(v)
         return onChange(v, ...r)
       }} value={value}>
@@ -73,7 +80,7 @@ export const _CheckboxGroup = ({ name, control, title, render, onChange }) => {
         <Stack direction='col'>
           {render}
         </Stack>
-      </CheckboxGroup>
+      </_CheckboxGroup>
     )}
   />
 }
