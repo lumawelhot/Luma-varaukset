@@ -81,8 +81,7 @@ const LumaCalendar = () => {
     calApi.changeView('timeGridDay', info.date)
   }
 
-  // These are here because of bugs with prodcution build. Race conditions ???
-  calendarEvents(parsed, user)?.filter(e => !e.unAvailable || filterOptions.showUnavailable)
+  // This is here because of bugs with prodcution build. Race conditions ??? Do not remove or create an alternative solution.
   calendarEvents(parsed, user)?.filter(e => !e.unAvailable || filterOptions.showUnavailable)
 
   return (
@@ -121,8 +120,7 @@ const LumaCalendar = () => {
             return
           }
           const props = event._def.extendedProps
-          /* if (!user && props.unAvailable) return
-          else  */if (set(event._def.publicId, {
+          if (set(event._def.publicId, {
             booked: props.booked, start: props.eventStart, unAvailable: props.unAvailable
           })) navigate('/visit')
         }}
