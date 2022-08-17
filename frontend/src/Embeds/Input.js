@@ -47,7 +47,7 @@ const TextAreaBase = styled.textarea`${() => base}
 export const Input = (rest) => (
   <>
     <Title>{rest.title}</Title>
-    <InputBase { ...rest } />
+    <InputBase { ...rest } onWheel={e => e.currentTarget.blur()} />
   </>
 )
 
