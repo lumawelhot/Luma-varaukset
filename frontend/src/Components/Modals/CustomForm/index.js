@@ -70,7 +70,9 @@ const CustomForm = ({ show, close, initialValues=customformInit, modify }) => {
   const handleModifyForm = async () => {
     if (await formError(formRef.current)) return
     const status = await mod({
-      fields: JSON.stringify(fields.map(field => ({ ...field, options: field.options.map((o, i) => ({ ...o, value: i })) }))),
+      fields: JSON.stringify(fields.map(field => field.options ? {
+        ...field, options: field.options.map((o, i) => ({ ...o, value: i }))
+      } : field)),
       name: formRef?.current.values.name,
       id: initialValues.id
     })
