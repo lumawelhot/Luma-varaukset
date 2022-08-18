@@ -15,7 +15,7 @@ class User extends Common {
 class Event extends Common {
   constructor(session) { super(getModel('event'), encoders.event, session) }
   instance(session) { return new Event(session) }
-  async findByDays(days, expand) {
+  async FindByDays(days, expand) {
     return await this.find({ end: { $gt: sub(new Date(), { days }) } }, expand)
   }
 }

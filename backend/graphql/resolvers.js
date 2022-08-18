@@ -19,7 +19,7 @@ const resolvers = {
     getEvent: async (root, args) => await Event.findById(args.id, expandEvents),
     getEvents: async (root, args, { currentUser }) => {
       if (args.ids) return await Event.findByIds(args.ids, expandEvents)
-      const events = await Event.findByDays(currentUser?.isAdmin ? 90 : 0, expandEvents)
+      const events = await Event.FindByDays(currentUser?.isAdmin ? 90 : 0, expandEvents)
       return currentUser ? events : events
         .filter(e => !e.publishDate || new Date() >= new Date(e.publishDate))
         .map(e => e.group?.disabled ? { ...e, availableTimes: [] } : e)

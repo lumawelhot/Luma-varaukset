@@ -167,7 +167,7 @@ const dbStub = (sandbox, db, model, encoder) => {
 
 const usersStub = sandbox => dbStub(sandbox, dbusers, User, 'user')
 const eventsStub = sandbox => {
-  sandbox.stub(Event, 'findByDays').callsFake((days, expand) => {
+  sandbox.stub(Event, 'FindByDays').callsFake((days, expand) => {
     return events.filter(e => new Date(e.end) >= sub(new Date(), { days }))
       .map(u => populate(u, expand))
       .map(u => format(u, 'event'))

@@ -11,12 +11,12 @@ const formSchema = mongoose.Schema({
     required: false,
     maxLength: 10
   },
-  submissions: [
+  /* submissions: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'FormSubmissions'
     }
-  ]
+  ] */
 })
 
 formSchema.set('toJSON', {

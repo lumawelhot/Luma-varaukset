@@ -37,7 +37,7 @@ const Form = (({ initialValues, setOnModify, onModify, onSubmit, formId }) => {
     setFields(newFields)
   }
 
-  const handleRemoveField = id => setFields(fields.filter((f, i) => i !== id))
+  const handleRemoveField = id => setFields(fields.filter((_, i) => i !== id))
   const handleMoveUp = id => move(id, -1)
   const handleMoveDown = id => move(id, 1)
   const handleModify = id => {

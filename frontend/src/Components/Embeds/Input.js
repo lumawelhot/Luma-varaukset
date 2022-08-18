@@ -30,7 +30,12 @@ const TextAreaBase = styled.textarea`${() => base}
 
 export const Input = React.forwardRef((rest, ref) => <>
   <Title>{rest.title}</Title>
-  <InputBase { ...rest } title={undefined} ref={ref} />
+  <InputBase
+    { ...rest }
+    title={undefined}
+    ref={ref}
+    onWheel={e => e.currentTarget.blur()}
+  />
 </>)
 
 export const TextArea = React.forwardRef((rest, ref) => <>
