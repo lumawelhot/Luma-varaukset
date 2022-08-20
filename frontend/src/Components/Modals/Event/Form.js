@@ -134,7 +134,7 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
             <DatePicker
               value={watch('start')}
               title={required(t('date'))}
-              onChange={async v => {
+              onChange={v => {
                 const end = set(new Date(v), { hours: watch('end').getHours(), minutes: watch('end').getMinutes() })
                 setValue('start', v)
                 setValue('end', end)
@@ -182,7 +182,7 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
         onClick={fetchGroups}
         isMulti={false}
         value={watch('group')}
-        menuPlacement="top"
+        menuPlacement='top'
         options={groups?.map(g => ({ value: g.id, label: g.name }))}
         onChange={v => setValue('group', v)}
       />
@@ -191,7 +191,7 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
         onClick={fetchForms}
         isMulti={false}
         value={watch('customForm')}
-        menuPlacement="top"
+        menuPlacement='top'
         options={forms?.map(f => ({ value: f.id, label: f.name, fields: f.fields }))}
         onChange={v => setValue('customForm', v)}
       />

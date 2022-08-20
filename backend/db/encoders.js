@@ -4,12 +4,10 @@
 // Modify this file instead of mongo models
 
 const user = {
-  encode: o => {
-    return {
-      ...o,
-      passwordHash: o.passwordHash ? o.passwordHash : undefined
-    }
-  },
+  encode: o => ({
+    ...o,
+    passwordHash: o.passwordHash ? o.passwordHash : undefined
+  }),
   decode: o => {
     try {
       return {
@@ -26,9 +24,7 @@ const user = {
 }
 
 const event = {
-  encode: o => {
-    return o
-  },
+  encode: o => o,
   decode: o => {
     try {
       return {
@@ -65,9 +61,7 @@ const event = {
 }
 
 const visit = {
-  encode: o => {
-    return o
-  },
+  encode: o => o,
   decode: o => {
     try {
       return {
@@ -100,9 +94,7 @@ const visit = {
 }
 
 const group = {
-  encode: o => {
-    return o
-  },
+  encode: o => o,
   decode: o => {
     try {
       return {
@@ -121,9 +113,7 @@ const group = {
 }
 
 const form = {
-  encode: o => {
-    return o
-  },
+  encode: o => o,
   decode: (o) => {
     try {
       return {
@@ -139,9 +129,7 @@ const form = {
 }
 
 const tag = {
-  encode: o => {
-    return o
-  },
+  encode: o => o,
   decode: o => {
     try {
       return {
@@ -156,12 +144,10 @@ const tag = {
 }
 
 const extra = {
-  encode: o => {
-    return {
-      ...o,
-      _id: o.id
-    }
-  },
+  encode: o => ({
+    ...o,
+    _id: o.id
+  }),
   decode: o => {
     try {
       return {
@@ -179,9 +165,7 @@ const extra = {
 }
 
 const email = {
-  encode: o => {
-    return o
-  },
+  encode: o => o,
   decode: o => {
     try {
       return {

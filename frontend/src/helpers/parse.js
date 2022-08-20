@@ -62,15 +62,13 @@ export const parseTags = tags => tags.map(t => ({
 
 export const parseExtras = extras => extras.map(e => e.id)
 
-export const combineEvent = (visit, event) => {
-  return {
-    ...{
-      ...event,
-      visits: [...event.visits, visit]
-    },
-    availableTimes: calcAvailableTimes(event.availableTimes, visit, event.waitingTime, event.duration)
-  }
-}
+export const combineEvent = (visit, event) => ({
+  ...{
+    ...event,
+    visits: [...event.visits, visit]
+  },
+  availableTimes: calcAvailableTimes(event.availableTimes, visit, event.waitingTime, event.duration)
+})
 
 export const parseCSV = (visit, event) => {
   const parsed = {}
@@ -111,4 +109,38 @@ export const parseCSV = (visit, event) => {
   }
 
   return parsed
+}
+
+export const parseVisitSubmission = values => {
+  const fieldValues = Object.fromEntries(Object.entries(values)
+    .filter(e => e[0].includes('custom-'))
+    .map(e => [Number(e[0].split('-')[1]), e[1]]))
+  const otherRemote = values.otherRemotePlatformOption
+  const type = values.visitType
+  const customFormData = JSON.stringify(values.customFormData?.map((c, i) => ({ ...c, value: fieldValues[i] })))
+  const inPersonVisit = type === 'inperson' ? true : false
+  const remoteVisit = type === 'remote' ? true : false
+  const remotePlatform = otherRemote?.length ? otherRemote : values.remotePlatform
+  return {
+    ...values,
+    inPersonVisit,
+    remoteVisit,
+    customFormData,
+    remotePlatform
+  }
+}
+
+export const parseEventSubmission = values => {
+  const { tags, resourceids, grades, remotePlatforms, group, extras, customForm, dates } = values
+  return {
+    ...values,
+    dates: dates.map(d => new Date(d.date).toISOString()),
+    tags: tags.map(t => t.label),
+    resourceids: resourceids.map(r => Number(r)),
+    grades: grades.map(g => Number(g)),
+    remotePlatforms: remotePlatforms.map(r => Number(r)),
+    group: group?.value ? group.value : null,
+    extras,
+    customForm: customForm?.value ? customForm.value : null
+  }
 }

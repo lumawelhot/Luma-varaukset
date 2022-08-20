@@ -39,7 +39,7 @@ const UserProvider = ({ children }) => {
     return false
   }
 
-  const modify = async (variables)  => {
+  const modify = async (variables) => {
     try {
       const { data } = await client.mutate({ mutation: MODIFY_USER, variables, fetchPolicy: 'no-cache' })
       if (data?.updateUser) {

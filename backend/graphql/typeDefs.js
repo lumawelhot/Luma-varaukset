@@ -229,6 +229,23 @@ const typeDefs = gql`
       customFormData: String
       language: String
     ): Visit
+    modifyVisit(
+      visit: ID!
+      clientName: String
+      schoolName: String
+      schoolLocation: String
+      clientEmail: String
+      clientPhone: String
+      grade: String
+      participants: Int
+      extras: [ID]
+      inPersonVisit: Boolean
+      remoteVisit: Boolean
+      dataUseAgreement: Boolean
+      remotePlatform: String
+      customFormData: String
+      language: String
+    ): Visit
     disableEvent(
       event: ID!
     ): Event

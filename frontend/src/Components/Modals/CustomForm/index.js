@@ -6,8 +6,9 @@ import { customformInit } from '../../../helpers/initialvalues'
 import { error, success } from '../../../helpers/toasts'
 import { useForms } from '../../../hooks/api'
 import Form from './Form'
+import { notifier } from '../../../helpers/notifier'
 
-const CustomForm = ({ show, close, initialValues=customformInit, modify }) => {
+const CustomForm = ({ show, close, initialValues = customformInit, modify }) => {
   const { t } = useTranslation()
   const formId = useId()
   const [onModify, setOnModify] = useState()
@@ -15,10 +16,8 @@ const CustomForm = ({ show, close, initialValues=customformInit, modify }) => {
 
   const handleAddForm = async values => {
     const status = await add({ ...values })
-    if (status) {
-      success(t('notify-form-add-success'))
-      close()
-    } else error(t('notify-form-add-failed'))
+    notifier.createForm(status)
+    if (status) close()
   }
 
   const handleModifyForm = async values => {
@@ -32,7 +31,7 @@ const CustomForm = ({ show, close, initialValues=customformInit, modify }) => {
   const onSubmit = v => modify ? handleModifyForm(v) : handleAddForm(v)
 
   return (
-    <Modal show={show} backdrop="static" size="lg" onHide={close} scrollable={true} >
+    <Modal show={show} backdrop='static' size='lg' onHide={close} scrollable={true} >
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         <Modal.Title>{modify ? t('modify-form') : t('create-form')}</Modal.Title>
       </Modal.Header>

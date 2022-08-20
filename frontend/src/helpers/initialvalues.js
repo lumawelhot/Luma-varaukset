@@ -91,31 +91,49 @@ export const eventInitWithValues = ({
   } : ''
 })
 
-export const visitInitialValues = event => ({
-  clientName: '',
-  schoolName: '',
-  schoolLocation: '',
-  clientEmail: '',
-  verifyEmail: '',
-  clientPhone: '',
-  grade: '',
-  participants: '',
-  privacyPolicy: false,
-  remoteVisitGuidelines: false,
-  dataUseAgreement: false,
-  language: event?.languages[0],
-  otherRemotePlatformOption: '',
-  extras: [],
-  startTime: new Date(event.start),
-  endTime: add(new Date(event.start), { minutes: event.duration }),
-  visitType: event.inPersonVisit ? 'inperson' : 'remote',
-  fields: [],
-  customFormData: event?.customForm?.fields?.map(f => {
-    if (f.type === 'checkbox') return { name: f.name, value: [] }
-    else return { name: f.name, value: '' }
-  }),
-  eventTimes: {
-    start: new Date(event.start),
-    end: new Date(event.end)
+export const visitInitialValues = (event, visit = {}) => {
+  const {
+    clientName,
+    schoolName,
+    schoolLocation,
+    clientEmail,
+    clientPhone,
+    grade,
+    participants,
+    dataUseAgreement,
+  } = visit
+  let values = {}
+  if (visit.customFormData) {
+    values = Object.fromEntries(visit.customFormData.map(f => [f.name, f.value]))
   }
-})
+  const customFormData = event?.customForm?.fields?.map(f => {
+    const value = values[f.name] ? values[f.name] : undefined
+    if (f.type === 'checkbox') return { name: f.name, value: value ? value : [] }
+    else return { name: f.name, value: value ? value : '' }
+  })
+  return {
+    clientName: clientName ? clientName : '',
+    schoolName: schoolName ? schoolName : '',
+    schoolLocation: schoolLocation ? schoolLocation : '',
+    clientEmail: clientEmail ? clientEmail : '',
+    verifyEmail: '',
+    clientPhone: clientPhone ? clientPhone : '',
+    grade: grade ? grade : '',
+    participants: participants ? participants : '',
+    privacyPolicy: false,
+    remoteVisitGuidelines: false,
+    dataUseAgreement: dataUseAgreement ? dataUseAgreement : false,
+    language: event?.languages[0],
+    otherRemotePlatformOption: '',
+    extras: [],
+    startTime: new Date(event.start),
+    endTime: add(new Date(event.start), { minutes: event.duration }),
+    visitType: event.inPersonVisit ? 'inperson' : 'remote',
+    fields: [],
+    customFormData,
+    eventTimes: {
+      start: new Date(event.start),
+      end: new Date(event.end)
+    }
+  }
+}

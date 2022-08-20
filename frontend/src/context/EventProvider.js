@@ -37,9 +37,7 @@ const EventProvider = ({ children }) => {
   })
   const [hold, setHold] = useState(false)
   const begin = () => setHold(true)
-  const end = async () => {
-    setHold(false)
-  }
+  const end = () => setHold(false)
 
   const formFieldParse = data => {
     const form = data?.customForm
@@ -49,7 +47,7 @@ const EventProvider = ({ children }) => {
   }
 
   const updateMap = data => {
-    const newMap = Object.assign({}, map)
+    const newMap = { ...map }
     newMap[data.id] = formFieldParse(data)
     setMap(newMap)
   }
@@ -102,11 +100,11 @@ const EventProvider = ({ children }) => {
   })
 
   useSubscription(EVENTS_DELETED, {
-    onSubscriptionData: async e => {
+    onSubscriptionData: e => {
       if (hold) return
       const ids = e?.subscriptionData?.data?.eventsDeleted
       if (ids) {
-        const newMap = Object.assign({}, map)
+        const newMap = { ...map }
         for (const id of ids) {
           delete newMap[id]
         }
@@ -120,17 +118,17 @@ const EventProvider = ({ children }) => {
     if (!map) return parsed
     return parsed
       ?.filter(p => {
-        const classes = filterOptions.classes
+        const { classes } = filterOptions
         if (classes.length <= 0) return true
         return someExist(map[p.id]?.resourceids, classes.map(c => c.value))
       })
       ?.filter(p => {
-        const grades = filterOptions.grades
+        const { grades } = filterOptions
         if (grades.length <= 0) return true
         return someExist(map[p.id]?.grades, grades.map(c => c.value))
       })
       ?.filter(p => {
-        const tags = filterOptions.tags
+        const { tags } = filterOptions
         if (tags.length <= 0) return true
         return someExist(map[p.id].tags.map(t => t.name), filterOptions.tags.map(t => t.value))
       })
@@ -181,8 +179,8 @@ const EventProvider = ({ children }) => {
         mutation: CREATE_EVENTS, variables, fetchPolicy: 'no-cache'
       })
       if (data?.createEvents) {
-        const newMap = Object.assign({}, map)
-        for (let e of data.createEvents) {
+        const newMap = { ...map }
+        for (const e of data.createEvents) {
           newMap[e.id] = formFieldParse(e)
         }
         setMap(newMap)
@@ -226,7 +224,7 @@ const EventProvider = ({ children }) => {
       })
       if (data?.deleteEvents) {
         const newMap = map
-        for (let id of data.deleteEvents) {
+        for (const id of data.deleteEvents) {
           delete newMap[id]
         }
         setMap(newMap)
@@ -250,7 +248,7 @@ const EventProvider = ({ children }) => {
       })
       if (data.forceDeleteEvents) {
         const newMap = map
-        for (let id of ids) {
+        for (const id of ids) {
           delete newMap[id]
         }
         setMap(newMap)
@@ -275,8 +273,8 @@ const EventProvider = ({ children }) => {
       })
       const ids = data?.assignEventsToGroup?.map(e => e.id)
       if (ids) {
-        const newMap = Object.assign({}, map)
-        for (let id of ids) {
+        const newMap = { ...map }
+        for (const id of ids) {
           newMap[id] = formFieldParse({ ...map[id], group: values.group })
         }
         setMap(newMap)
@@ -298,8 +296,8 @@ const EventProvider = ({ children }) => {
       })
       const ids = data?.assignPublishDateToEvents?.map(e => e.id)
       if (ids) {
-        const newMap = Object.assign({}, map)
-        for (let id of ids) {
+        const newMap = { ...map }
+        for (const id of ids) {
           newMap[id] = { ...map[id], publishDate: variables.publishDate }
         }
         setMap(newMap)

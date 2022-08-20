@@ -24,7 +24,7 @@ const Form = ({ onSubmit, initialValues, formId }) => {
     <Stack direction='horizontal'>
       <div style={{ width: '100%', marginRight: 15 }}>
         <Input id='inPersonLength' title={t('inperson-length')} type='number' {...register('inPersonLength')} />
-        {errors.inPersonLength&& <Error>{t(errors.inPersonLength.message)}</Error>}
+        {errors.inPersonLength && <Error>{t(errors.inPersonLength.message)}</Error>}
       </div>
       <div style={{ width: '100%' }}>
         <Input id='remoteLength' title={t('remote-length')} type='number' {...register('remoteLength')} />

@@ -14,7 +14,7 @@ const Info = () => {
 
   return (
     <>
-      {event?.tags?.map((t, i) => <Badge key={i} bg="primary">{t.name}</Badge>)}
+      {event?.tags?.map((t, i) => <Badge key={i} bg='primary'>{t.name}</Badge>)}
       <P>
         <Title>{t('description')}: </Title>
         <div style={{ marginLeft: 10 }}>
@@ -49,7 +49,7 @@ const Info = () => {
         <Title>{t('event-on-offer')}: </Title>
         {event.inPersonVisit ? t('in-inperson') : <></>}
         {event.inPersonVisit && event.remoteVisit && t('and-remote')}
-        {event.remoteVisit && !event.inPersonVisit? t('in-remote') : <></>}
+        {event.remoteVisit && !event.inPersonVisit ? t('in-remote') : <></>}
       </P>
       <P>
         <Title>{t('event-date')}: </Title>

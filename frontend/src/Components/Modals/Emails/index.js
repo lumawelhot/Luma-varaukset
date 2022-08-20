@@ -17,7 +17,7 @@ const Emails = ({ show, close, template }) => {
   if (!template) return <></>
 
   return (
-    <Modal show={show} backdrop="static" size="lg" onHide={close} scrollable={true}>
+    <Modal show={show} backdrop='static' size='lg' onHide={close} scrollable={true}>
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         <Modal.Title>{t('email-template')}</Modal.Title>
       </Modal.Header>

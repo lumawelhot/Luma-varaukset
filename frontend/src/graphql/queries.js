@@ -181,6 +181,48 @@ export const CREATE_VISIT = gql`
     }
   }
 `
+
+export const MODIFY_VISIT = gql`
+  ${VISIT_FIELDS}
+  mutation modifyVisit(
+    $visit: ID!
+    $clientName: String
+    $schoolName: String
+    $schoolLocation: String
+    $clientEmail: String
+    $clientPhone: String
+    $grade: String
+    $participants: Int
+    $inPersonVisit: Boolean
+    $remoteVisit: Boolean
+    $extras: [ID]
+    $remotePlatform: String
+    $customFormData: String
+    $language: String
+    $dataUseAgreement: Boolean
+    ) {
+    modifyVisit(
+      visit: $visit
+      clientName: $clientName
+      schoolName: $schoolName
+      schoolLocation: $schoolLocation
+      clientEmail: $clientEmail
+      clientPhone: $clientPhone
+      grade: $grade
+      participants: $participants
+      inPersonVisit: $inPersonVisit
+      remoteVisit: $remoteVisit
+      dataUseAgreement: $dataUseAgreement
+      extras: $extras
+      remotePlatform: $remotePlatform
+      customFormData: $customFormData
+      language: $language
+    ) {
+      ...VisitFields
+    }
+  }
+`
+
 export const FIND_VISIT = gql`
   ${VISIT_FIELDS}
   query findVisit($id: ID!) {

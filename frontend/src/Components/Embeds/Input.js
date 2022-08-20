@@ -56,8 +56,8 @@ export const Select = (rest) => {
       placeholder=''
       options={rest?.options?.slice(0, max + additional)}
       value={rest.value}
-      className="basic-multi-select"
-      classNamePrefix="select"
+      className='basic-multi-select'
+      classNamePrefix='select'
       onMenuOpen={rest.onClick}
       isClearable={true}
       isSearchable={true}

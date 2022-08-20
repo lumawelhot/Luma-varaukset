@@ -14,23 +14,20 @@ import MiscProvider from './MiscProvider'
 import UserProvider from './UserProvider'
 import VisitProvider from './VisitProvider'
 
-const LumaContext = ({ children }) => {
-
-  return (
-    <UserProvider>
-      <EventProvider>
-        <GroupProvider>
-          <VisitProvider>
-            <FormProvider>
-              <MiscProvider>
-                {children}
-              </MiscProvider>
-            </FormProvider>
-          </VisitProvider>
-        </GroupProvider>
-      </EventProvider>
-    </UserProvider>
-  )
-}
+const LumaContext = ({ children }) => (
+  <UserProvider>
+    <EventProvider>
+      <GroupProvider>
+        <VisitProvider>
+          <FormProvider>
+            <MiscProvider>
+              {children}
+            </MiscProvider>
+          </FormProvider>
+        </VisitProvider>
+      </GroupProvider>
+    </EventProvider>
+  </UserProvider>
+)
 
 export default LumaContext

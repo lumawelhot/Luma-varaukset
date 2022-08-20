@@ -1,6 +1,6 @@
 import { useApolloClient } from '@apollo/client'
 import React, { useState } from 'react'
-import { VISITS, CANCEL_VISIT, FIND_VISIT, CREATE_VISIT } from '../graphql/queries'
+import { VISITS, CANCEL_VISIT, FIND_VISIT, CREATE_VISIT, MODIFY_VISIT } from '../graphql/queries'
 import { VisitContext } from '.'
 
 const VisitProvider = ({ children }) => {
@@ -19,9 +19,11 @@ const VisitProvider = ({ children }) => {
 
   const fetch = async () => {
     if (fetched) return
-    const { data } = await client.query({ query: VISITS, fetchPolicy: 'no-cache' })
-    setFetched(true)
-    setVisits(data?.getVisits?.map(v => formFieldParse(v)))
+    try {
+      const { data } = await client.query({ query: VISITS, fetchPolicy: 'no-cache' })
+      setFetched(true)
+      setVisits(data?.getVisits?.map(v => formFieldParse(v)))
+    } catch (err) { undefined }
   }
 
   const evict = () => {
@@ -50,7 +52,7 @@ const VisitProvider = ({ children }) => {
     const found = visits?.filter(v => v.id === id)
     if (found && found[0]) {
       setVisit(found[0])
-      return true
+      return found[0]
     }
     try {
       const { data } = await client.query({
@@ -62,6 +64,7 @@ const VisitProvider = ({ children }) => {
         const parsedVisit = { ...data.findVisit, customFormData: JSON.parse(data.findVisit.customFormData) }
         setVisit(parsedVisit)
         setVisits(visits.concat(parsedVisit))
+        return parsedVisit
       }
     } catch (err) { console.log(err) }
     return false
@@ -84,6 +87,24 @@ const VisitProvider = ({ children }) => {
     return undefined
   }
 
+  const modify = async variables => {
+    try {
+      const { data } = await client.mutate({
+        mutation: MODIFY_VISIT,
+        variables,
+        fetchPolicy: 'no-cache'
+      })
+      const modified = data?.modifyVisit
+      if (modified) {
+        setVisits(visits.map(v => v.id === modified.id
+          ? { ...modified, customFormData: JSON.parse(modified?.customFormData) }
+          : v ))
+        if (visit.id === modified.id) setVisit({ ...modified, customFormData: JSON.parse(modified?.customFormData) })
+        return modified
+      }
+    } catch (err) { console.log(err) }
+  }
+
   return (
     <VisitContext.Provider
       value={{
@@ -93,6 +114,7 @@ const VisitProvider = ({ children }) => {
         remove,
         current: visit,
         find,
+        modify,
         book
       }}
     >

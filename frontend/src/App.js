@@ -10,7 +10,6 @@ import EventList from './components/Pages/EventList'
 import GroupList from './components/Pages/GroupList'
 import UserList from './components/Pages/UserList'
 import VisitList from './components/Pages/VisitList'
-import { default as VisitPage } from './components/Pages/Visit'
 import Visit from './components/Modals/Visit'
 import Configs from './components/Pages/Configs'
 import ExtraList from './components/Pages/ExtraList'
@@ -22,6 +21,7 @@ import { useNavigate } from 'react-router-dom'
 import FormList from './components/Pages/FormList'
 import Root from './Root'
 import { useEvents, useUser } from './hooks/api'
+import Submission from './components/Modals/Visit/Submission'
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false)
@@ -50,21 +50,21 @@ const App = () => {
         <Routes>
           <Route path='/' element={<LumaCalendar />} />
           <Route path='/:id' element={<>
-            <VisitPage />
+            <Submission />
             <LumaCalendar />
           </>} />
           <Route path='/visits' element={!user && <Root />} />
           <Route path='/visits/:id' element={<>
-            {user ? <VisitPage /> : <Navigate to={window.location.href.split('/visits')[1]} />}
+            {user ? <Submission /> : <Navigate to={window.location.href.split('/visits')[1]} />}
           </>}/>
           <Route path='/users' element={user?.isAdmin ? <UserList /> : <Root />} />
-          <Route path="/events" element={user ? <EventList /> : <Root />} />
-          <Route path="/groups" element={user ? <GroupList /> : <Root />} />
-          <Route path="/configs" element={user ? <Configs></Configs> : <Root />} />
-          <Route path="/configs/:page" element={user ? <Configs /> : <Root />} />
-          <Route path="/extras" element={user ? <ExtraList /> : <Root />} />
-          <Route path="/forms" element={user ? <FormList /> : <Root />} />
-          <Route path="/visit" element={<>
+          <Route path='/events' element={user ? <EventList /> : <Root />} />
+          <Route path='/groups' element={user ? <GroupList /> : <Root />} />
+          <Route path='/configs' element={user ? <Configs></Configs> : <Root />} />
+          <Route path='/configs/:page' element={user ? <Configs /> : <Root />} />
+          <Route path='/extras' element={user ? <ExtraList /> : <Root />} />
+          <Route path='/forms' element={user ? <FormList /> : <Root />} />
+          <Route path='/visit' element={<>
             <Visit>
               {user && !event?.disabled && !event?.booked &&
                 <>

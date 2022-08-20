@@ -87,6 +87,22 @@ const validPassword = async (password, hash) => {
   }
 }
 
+const formValidate = ({ fields }) => {
+  const parsedFields = JSON.parse(fields)
+  const names = new Set()
+  for (const field of parsedFields) {
+    if (names.has(field.name)) throw new UserInputError('Field names should be unique')
+    names.add(field.name)
+    if (field?.options) {
+      const optionNames = new Set()
+      for (const option of field.options) {
+        if (optionNames.has(option.text)) throw new UserInputError('Option names should be unique')
+        optionNames.add(option.text)
+      }
+    }
+  }
+}
+
 module.exports = {
   authorized,
   isAdmin,
@@ -97,5 +113,6 @@ module.exports = {
   extraValidate,
   createVisitValidate,
   eventModifiable,
-  eventModifiableAndSlot
+  eventModifiableAndSlot,
+  formValidate
 }

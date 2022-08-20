@@ -6,7 +6,7 @@ const uuid = require('uuid')
 
 const { Transaction, User, Tag, Extra, Form, Event, Group, Visit, Email } = require('../db')
 
-const { authorized, isAdmin, eventValidate, userValidate, notCurrentUser, validPassword, extraValidate, createVisitValidate, eventModifiable, eventModifiableAndSlot } = require('../utils/validation')
+const { authorized, isAdmin, eventValidate, userValidate, notCurrentUser, validPassword, extraValidate, createVisitValidate, eventModifiable, eventModifiableAndSlot, formValidate } = require('../utils/validation')
 const { calcAvailableTimes, calcFromVisitTimes, slotFromDate } = require('../utils/calculator')
 const { sendWelcomes, sendCancellation } = require('../utils/mailer/mailSender')
 const { PubSub } = require('graphql-subscriptions')
@@ -15,23 +15,23 @@ const pubsub = new PubSub()
 
 const resolvers = {
   Query: {
-    getUsers: isAdmin(async () => await User.find()),
-    getEvent: async (root, args) => await Event.findById(args.id, expandEvents),
+    getUsers: isAdmin(() => User.find()),
+    getEvent: (root, args) => Event.findById(args.id, expandEvents),
     getEvents: async (root, args, { currentUser }) => {
-      if (args.ids) return await Event.findByIds(args.ids, expandEvents)
+      if (args.ids) return Event.findByIds(args.ids, expandEvents)
       const events = await Event.FindByDays(currentUser?.isAdmin ? 90 : 0, expandEvents)
       return currentUser ? events : events
         .filter(e => !e.publishDate || new Date() >= new Date(e.publishDate))
         .map(e => e.group?.disabled ? { ...e, availableTimes: [] } : e)
     },
-    getTags: async () => await Tag.find(),
-    getVisits: authorized(async () => await Visit.find({}, expandVisits)),
-    getEmailTemplates: isAdmin(async () => await Email.find()),
-    getGroups: authorized(async () => await Group.find({}, expandGroups)),
-    findVisit: async (root, args) => await Visit.findById(args.id, expandVisits),
+    getTags: () => Tag.find(),
+    getVisits: authorized(() => Visit.find({}, expandVisits)),
+    getEmailTemplates: isAdmin(() => Email.find()),
+    getGroups: authorized(() => Group.find({}, expandGroups)),
+    findVisit: (root, args) => Visit.findById(args.id, expandVisits),
     me: (root, args, context) => context.currentUser,
-    getExtras: async () => await Extra.find(),
-    getForms: async () => await Form.find(),
+    getExtras: () => Extra.find(),
+    getForms: () => Form.find(),
   },
   Visit: {
     startTime: (data) => new Date(data.startTime).toISOString(),
@@ -44,21 +44,21 @@ const resolvers = {
     publishDate: (event) => event.publishDate ? new Date(event.publishDate).toISOString() : null
   },
   Mutation: {
-    createGroup: authorized(async (root, args) => await Group.Insert(args)),
-    modifyGroup: authorized(async (root, args) => await Group.Update(args.id, args, expandGroups)),
+    createGroup: authorized((root, args) => Group.Insert(args)),
+    modifyGroup: authorized((root, args) => Group.Update(args.id, args, expandGroups)),
     deleteGroups: authorized(async (root, args) => {
       const groups = await Group.findByIds(args.ids)
-      for (let group of groups) {
-        for (let id of group.events) {
+      for (const group of groups) {
+        for (const id of group.events) {
           await Event.update(id, { disabled: true })
         }
       }
       return Group.remove(args.ids)
     }),
     assignPublishDateToEvents: authorized(async (root, args) => {
-      let returnedEvents = []
+      const returnedEvents = []
       const events = await Event.findByIds(args.events)
-      for (let event of events) {
+      for (const event of events) {
         returnedEvents.push(await Event.update(event.id, {
           publishDate: args.publishDate ? new Date(args.publishDate) : undefined
         }))
@@ -66,9 +66,9 @@ const resolvers = {
       return returnedEvents
     }),
     assignEventsToGroup: authorized(async (root, args) => {
-      let events = []
+      const events = []
       const [session, eventInst, groupInst] = Transaction.construct(Event, Group)
-      for (let id of args.events) {
+      for (const id of args.events) {
         const event = await eventInst.findById(id)
         if (event && (!event.group || event.group.toString() !== args.group.toString())) {
           await groupInst.DeltaUpdate(event.group, {
@@ -87,18 +87,18 @@ const resolvers = {
     }),
     updateEmail: isAdmin(async (root, args) => {
       const email = await Email.findOne({ name: args.name })
-      return await Email.update(email.id, args)
+      return Email.update(email.id, args)
     }),
     updateUser: isAdmin(async (root, args, { currentUser }) => {
       userValidate(args)
       args.isAdmin !== true && notCurrentUser(currentUser, args.user)
       const passwordHash = args.password && await bcrypt.hash(args.password, 10 /* salt */)
-      return await User.update(args.user, { ...args, passwordHash })
+      return User.update(args.user, { ...args, passwordHash })
     }),
     createUser: isAdmin(async (root, args) => {
       userValidate(args)
       const passwordHash = await bcrypt.hash(args.password, 10 /* salt */)
-      return await User.insert({ ...args, passwordHash })
+      return User.insert({ ...args, passwordHash })
     }),
     login: async (root, args) => {
       const user = await User.findOne({ username: args.username })
@@ -116,7 +116,7 @@ const resolvers = {
 
       const events = []
 
-      for (let date of args.dates) {
+      for (const date of args.dates) {
         const [start, end] = slotFromDate(date, args.start, args.end)
         const event = await eventInst.insert({
           ...args,
@@ -180,7 +180,7 @@ const resolvers = {
 
       const [session, eventInst, groupInst] = Transaction.construct(Event, Group)
 
-      if (!event.group || event.group.toString() !== args.group.toString()) {
+      if (!event.group || event.group.toString() !== args.group?.toString()) {
         await groupInst.DeltaUpdate(event.group, {
           visitCount: - event.visits.length,
           events: { filter: event.id }
@@ -244,6 +244,10 @@ const resolvers = {
       await session.commit()
       return visit
     },
+    modifyVisit: authorized((root, args) => Visit.update(args.visit, {
+      ...args,
+      customFormData: args.customFormData ? JSON.parse(args.customFormData) : null
+    }, expandVisits)),
     cancelVisit: async (root, args) => {
       const [session, eventInst, groupInst, visitInst] = Transaction.construct(Event, Group, Visit)
 
@@ -292,13 +296,13 @@ const resolvers = {
       pubsub.publish('EVENT_MODIFIED', { eventModified: event })
       return danglingVisit
     },
-    createExtra: authorized(async (root, args) => {
+    createExtra: authorized((root, args) => {
       extraValidate(args)
-      return await Extra.insert(args)
+      return Extra.insert(args)
     }),
-    modifyExtra: authorized(async (root, args) => await Extra.update(args.id, args)),
-    deleteExtras: authorized(async (root, args) => await Extra.remove(args.ids)),
-    deleteEvents: authorized(async (root, args) => {
+    modifyExtra: authorized((root, args) => Extra.update(args.id, args)),
+    deleteExtras: authorized((root, args) => Extra.remove(args.ids)),
+    deleteEvents: authorized((root, args) => {
       const events = Event.remove(args.ids)
       pubsub.publish('EVENTS_DELETED', { eventsDeleted: args.ids })
       return events
@@ -320,13 +324,19 @@ const resolvers = {
       pubsub.publish('EVENTS_DELETED', { eventsDeleted: args.events })
       return events
     }),
-    deleteUsers: isAdmin(async (root, args, { currentUser }) => {
+    deleteUsers: isAdmin((root, args, { currentUser }) => {
       if (args.ids.includes(currentUser.id)) throw new UserInputError('One of the users cannot be removed')
       return User.remove(args.ids)
     }),
-    createForm: authorized(async (root, args) => await Form.insert({ ...args, fields: JSON.parse(args.fields) })),
-    updateForm: authorized(async (root, args) => await Form.update(args.id, { ...args, fields: JSON.parse(args.fields) })),
-    deleteForms: authorized(async (root, args) => await Form.remove(args.ids))
+    createForm: authorized((root, args) => {
+      formValidate(args)
+      return Form.insert({ ...args, fields: JSON.parse(args.fields) })
+    }),
+    updateForm: authorized((root, args) => {
+      formValidate(args)
+      return Form.update(args.id, { ...args, fields: JSON.parse(args.fields) })
+    }),
+    deleteForms: authorized((root, args) => Form.remove(args.ids))
   },
   Subscription: {
     eventModified: { subscribe: () => pubsub.asyncIterator(['EVENT_MODIFIED']) },

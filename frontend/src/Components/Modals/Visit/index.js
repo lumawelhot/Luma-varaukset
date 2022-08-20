@@ -5,14 +5,14 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import { BOOKING_TIME } from '../../../config'
 import { Button } from '../../Embeds/Button'
 import Timer from '../../Embeds/Timer'
-import { combineEvent } from '../../../helpers/parse'
+import { combineEvent, parseVisitSubmission } from '../../../helpers/parse'
 import Form from './Form'
 import Info from './Info'
 import Status from './Status'
 import Steps, { Step } from 'rc-steps'
 import { CheckIcon } from '@chakra-ui/icons'
-import { error, success } from '../../../helpers/toasts'
 import { useEvents, useUser, useVisits } from '../../../hooks/api'
+import { notifier } from '../../../helpers/notifier'
 
 const Visit = ({ children }) => {
   const { t } = useTranslation()
@@ -49,38 +49,23 @@ const Visit = ({ children }) => {
   }
 
   const handleSubmit = async values => {
-    const fieldValues = Object.fromEntries(Object.entries(values)
-      .filter(e => e[0].includes('custom-'))
-      .map(e => [Number(e[0].split('-')[1]), e[1]]))
-    const otherRemote = values.otherRemotePlatformOption
-    const type = values.visitType
-    const customFormData = JSON.stringify(values.customFormData?.map((c, i) => {
-      return { ...c, value: fieldValues[i] }
-    }))
-    const inPersonVisit = type === 'inperson' ? true : false
-    const remoteVisit = type === 'remote' ? true : false
-    const remotePlatform = otherRemote?.length ? otherRemote : values.remotePlatform
     const variables = {
-      ...values,
+      ...parseVisitSubmission(values),
       event: event.id,
       token: token,
-      inPersonVisit,
-      remoteVisit,
-      customFormData,
-      remotePlatform
     }
     increment()
     const result = await book(variables)
+    notifier.createVisit(result)
+    setStatus(result ? true : false)
     if (result?.event) {
       setVisit(result)
       const found = find(result.event.id)
       cacheModify(combineEvent(result, found))
-      success(t('notify-booking-success'))
-    } else error(t('notify-booking-failed'))
-    setStatus(result ? true : false)
+    }
   }
 
-  const handleRemove = async () => {
+  const handleRemove = () => {
     if (confirm(t('remove-event-confirm'))) {
       const result = remove(event.id)
       if (result) close()
@@ -88,12 +73,13 @@ const Visit = ({ children }) => {
   }
 
   if (!event) return <Navigate to='/' />
+  const available = !event?.unAvailable && !event?.disabled && !event?.booked && !event.locked && !event?.group?.disabled
 
   return (
     <Modal
       show={true}
-      backdrop="static"
-      size="lg"
+      backdrop='static'
+      size='lg'
       onHide={close}
       scrollable={true}
     >
@@ -101,7 +87,7 @@ const Visit = ({ children }) => {
         <Modal.Title>{event.title}</Modal.Title>
       </Modal.Header>
       <Modal.Header style={{ display: 'inline' }}>
-        {(event?.disabled || event?.booked || event?.locked || event.unAvailable || event?.group?.disabled) ? <Modal.Title
+        {!available ? <Modal.Title
           style={{ color: 'brown', fontWeight: 'bold' }}
         >{t('cannot-be-booked')}</Modal.Title> :
           <Steps current={phase}>
@@ -113,7 +99,7 @@ const Visit = ({ children }) => {
       <Modal.Body>
         {phase === 0 && <Info />}
         <div className={phase === 1 ? 'show-visitform' : 'hide-visitform'}>
-          {<Form formId={formId} show={!showInfo} onSubmit={handleSubmit} />}
+          {<Form formId={formId} show={!showInfo} onSubmit={handleSubmit} event={event} />}
           {showInfo && <Info />}
         </div>
         {phase >= 2 && <Status status={status} visit={visit}/>}
@@ -124,7 +110,7 @@ const Visit = ({ children }) => {
             {user && event?.visits?.length === 0 &&
             <Button onClick={handleRemove}>{t('delete-event')}</Button>}
             {children}
-            {!event?.unAvailable && !event?.disabled && !event?.booked && !event.locked && !event?.group?.disabled && (
+            {available && (
               <Button className='active' onClick={async () => {
                 increment()
                 const token = await lock(event.id)

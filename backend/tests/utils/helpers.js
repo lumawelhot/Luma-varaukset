@@ -5,9 +5,7 @@ const Event = require('../../models/event')
 const Group = require('../../models/group')
 const Visit = require('../../models/visit')
 
-const dateByHours = (hours) => {
-  return set(new Date(), { hours, minutes: 0, seconds: 0, milliseconds: 0 })
-}
+const dateByHours = (hours) => set(new Date(), { hours, minutes: 0, seconds: 0, milliseconds: 0 })
 
 const timeConfig = { minutes: 0, seconds: 0, milliseconds: 0 }
 
@@ -18,16 +16,12 @@ const timeSlotByDay = (days, hours) => {
   return [startTime, endTime]
 }
 
-const timeByDaysAndHours = (days, hours) => {
-  return addDays(set(new Date(), { hours, ...timeConfig }), days).toISOString()
-}
+const timeByDaysAndHours = (days, hours) => addDays(set(new Date(), { hours, ...timeConfig }), days).toISOString()
 
 const assignDates = (events, visits) => {
   events = events.map(event => {
-    let start
-    let end
-    start = timeByDaysAndHours(event.fromNow, 9)
-    end = timeByDaysAndHours(event.fromNow, 14)
+    const start = timeByDaysAndHours(event.fromNow, 9)
+    const end = timeByDaysAndHours(event.fromNow, 14)
     if (event.visits && event.visits.length > 0) {
       visits = visits.map(v => {
         if (event.visits.includes(v.id)) {

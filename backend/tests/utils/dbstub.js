@@ -153,9 +153,7 @@ const dbStub = (sandbox, db, model, encoder) => {
     object = populate(object, expand)
     return format(object, encoder)
   })
-  sandbox.stub(model, 'instance').callsFake(() => {
-    return model
-  })
+  sandbox.stub(model, 'instance').callsFake(() => model)
   sandbox.stub(model, 'findByIds').callsFake((ids, expand) => {
     if (!ids) return undefined
     const objects = db.filter(u => ids.includes(u.id))
@@ -167,11 +165,10 @@ const dbStub = (sandbox, db, model, encoder) => {
 
 const usersStub = sandbox => dbStub(sandbox, dbusers, User, 'user')
 const eventsStub = sandbox => {
-  sandbox.stub(Event, 'FindByDays').callsFake((days, expand) => {
-    return events.filter(e => new Date(e.end) >= sub(new Date(), { days }))
-      .map(u => populate(u, expand))
-      .map(u => format(u, 'event'))
-  })
+  sandbox.stub(Event, 'FindByDays').callsFake((days, expand) => events
+    .filter(e => new Date(e.end) >= sub(new Date(), { days }))
+    .map(u => populate(u, expand))
+    .map(u => format(u, 'event')))
   return dbStub(sandbox, events, Event, 'event')
 }
 
@@ -196,9 +193,9 @@ const emailsStub = sandbox => dbStub(sandbox, dbemails, Email, 'email')
 const formsStub = sandbox => dbStub(sandbox, dbforms, Form, 'form')
 const groupsStub = sandbox => {
   const _DeltaUpdate = Group.DeltaUpdate
-  sandbox.stub(Group, 'DeltaUpdate').callsFake(async (id, delta, expand, args) => {
+  sandbox.stub(Group, 'DeltaUpdate').callsFake((id, delta, expand, args) => {
     const _id = id === null ? null : typeof id === 'object' ? id.id : id
-    return await _DeltaUpdate(_id, delta, expand, args, Group)
+    return _DeltaUpdate(_id, delta, expand, args, Group)
   })
   return dbStub(sandbox, dbgroups, Group, 'group')
 }

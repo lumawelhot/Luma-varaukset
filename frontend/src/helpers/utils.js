@@ -7,7 +7,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import * as XLSX from 'xlsx'
 import { parseCSV } from './parse'
 
-export const plugins =  [
+export const plugins = [
   timeGridPlugin,
   dayGridPlugin,
   interactionPlugin,
@@ -31,3 +31,11 @@ export const getCSV = (visits, findEvent) => {
 
 export const multipleExist = (arr, values) => values?.every(v => arr?.includes(v))
 export const someExist = (arr, values) => values?.some(v => arr?.includes(v))
+
+export const exec = fn => () => {
+  const _exec = async () => {
+    const result = await fn()
+    return result
+  }
+  _exec()
+}

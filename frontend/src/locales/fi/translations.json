@@ -318,5 +318,9 @@
   "disabled": "Piilotettu",
   "unpublished": "Julkaisematon",
   "invalid-syntax": "Virheellinen syöte",
-  "invalid-email": "Virheellinen sähköpostiosoite"
+  "invalid-email": "Virheellinen sähköpostiosoite",
+
+  "notify-modify-visit-success": "Varauksen muokkaaminen onnistui",
+  "notify-modify-visit-failed": "Varauksen muokkaaminen epäonnistui",
+  "visit-details": "Varauksen tiedot"
 }

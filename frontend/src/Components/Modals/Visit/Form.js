@@ -8,30 +8,26 @@ import { Checkbox, Radio, RadioGroup, CheckboxGroup } from '../../Embeds/Button'
 import { TimePicker } from '../../Embeds/Picker'
 import { add, format, set } from 'date-fns'
 import { VisitValidation } from '../../../helpers/validate'
-import { useEvents, useForms } from '../../../hooks/api'
+import { useForms } from '../../../hooks/api'
 import { visitInitialValues } from '../../../helpers/initialvalues'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { exec } from '../../../helpers/utils'
 
-const Form = ({ formId, show, onSubmit }) => {
-  const { current: event } = useEvents()
+const Form = ({ formId, show, onSubmit, event, visit }) => {
   const { fetch } = useForms()
   const { t } = useTranslation()
 
-  useEffect(() => {
-    const exec = () => fetch()
-    exec()
-  }, [])
+  useEffect(exec(fetch), [])
 
   if (!event) return <></>
   const form = event?.customForm
 
   const { control, register, handleSubmit, formState: { errors }, setValue, watch, getValues } = useForm({
-    resolver: yupResolver(VisitValidation(form)),
-    defaultValues: visitInitialValues(event),
+    resolver: !visit ? yupResolver(VisitValidation(form)) : undefined,
+    defaultValues: visitInitialValues(event, visit),
     mode: 'onTouched'
   })
-
 
   const totalDuration = (args) => {
     const values = { ...getValues(), ...args }
@@ -44,6 +40,14 @@ const Form = ({ formId, show, onSubmit }) => {
     }, event.duration)
     return duration
   }
+
+  useEffect(() => {
+    form?.fields && form?.fields?.map((field, j) => {
+      const values = Object.fromEntries(getValues().customFormData.map(f => [f.name, f.value]))
+      setValue(`custom-${j}`, values[field.name])
+      return undefined
+    })
+  }, [])
 
   return (
     <form id={formId} onSubmit={handleSubmit(onSubmit)} className={show ? 'visible' : 'hidden'}>
@@ -91,7 +95,7 @@ const Form = ({ formId, show, onSubmit }) => {
       <Input id='clientEmail' title={required(t('client-email'))} {...register('clientEmail')} />
       {errors.clientEmail && <Error>{t(errors.clientEmail.message)}</Error>}
 
-      <Input id='verifyEmail' title={required(t('verify-email'))} {...register('verifyEmail')} />
+      {!visit && <Input id='verifyEmail' title={required(t('verify-email'))} {...register('verifyEmail')} />}
       {errors.verifyEmail && <Error>{t(errors.verifyEmail.message)}</Error>}
 
       <Input id='clientPhone' title={required(t('client-phone'))} {...register('clientPhone')} />
@@ -119,7 +123,7 @@ const Form = ({ formId, show, onSubmit }) => {
         </Checkbox>)}
       </>} />
 
-      <Stack direction='col'>
+      {!visit && <Stack direction='col'>
         <Title>{required(`${t('start-and-timeslot')} ${format(new Date(event.start), 'HH:mm')} - ${format(new Date(event.end), 'HH:mm')})`)}</Title>
         <Stack direction='horizontal'>
           <TimePicker
@@ -128,7 +132,7 @@ const Form = ({ formId, show, onSubmit }) => {
             value={watch('startTime')}
             hideHours={hour => hour < 8 || hour > 17}
             hideMinutes={minute => minute % 5 !== 0}
-            onChange={async v => {
+            onChange={v => {
               const startTime = set(new Date(v), { seconds: 0, milliseconds: 0 })
               setValue('startTime', startTime)
               const duration = totalDuration()
@@ -139,41 +143,41 @@ const Form = ({ formId, show, onSubmit }) => {
           <span style={{ fontSize: 15, marginTop: 8, marginLeft: 10 }}>{` – ${format(watch('endTime'), 'HH:mm')}`}</span>
         </Stack>
         {(errors.startTime) && <Error>{t(errors.startTime.message)}</Error>}
-      </Stack>
+      </Stack>}
 
       <Title />
       <Stack direction='col'>
-        <Checkbox {...register('privacyPolicy')} >
+        {!visit && <Checkbox {...register('privacyPolicy')} >
           {required(<span>{t('accept-privacy-policy1')} <a
             className='default'
-            href="https://www2.helsinki.fi/fi/tiedekasvatus/tietosuojailmoitus-opintokaynnit"
-            target="_blank"
-            rel="noreferrer"
+            href='https://www2.helsinki.fi/fi/tiedekasvatus/tietosuojailmoitus-opintokaynnit'
+            target='_blank'
+            rel='noreferrer'
           >{t('privacy-policy')}</a> {t('accept-privacy-policy2')}</span>)}
-        </Checkbox>
+        </Checkbox>}
         {errors.privacyPolicy && <Error>{t(errors.privacyPolicy.message)}</Error>}
         <Checkbox {...register('dataUseAgreement')} >
           {t('accept-data-use')}
         </Checkbox>
-        <Checkbox {...register('remoteVisitGuidelines')} >
+        {!visit && <Checkbox {...register('remoteVisitGuidelines')} >
           {required(<span>{t('accept-instructions1')} <a
             className='default'
-            href="https://www.helsinki.fi/fi/tiedekasvatus/opettajille-ja-opetuksen-tueksi/opintokaynnit-ja-lainattavat-tarvikkeet"
-            target="_blank"
-            rel="noreferrer"
+            href='https://www.helsinki.fi/fi/tiedekasvatus/opettajille-ja-opetuksen-tueksi/opintokaynnit-ja-lainattavat-tarvikkeet'
+            target='_blank'
+            rel='noreferrer'
           >{t('instructions')}</a> {t('accept-instructions2')}</span>)}
-        </Checkbox>
+        </Checkbox>}
         {errors.remoteVisitGuidelines && <Error>{t(errors.remoteVisitGuidelines.message)}</Error>}
       </Stack>
 
       {form?.fields && form?.fields?.map((field, j) => {
-        const type = field.type
+        const { type } = field
         return <div key={j}>
           <Title>{field?.validation?.required ? required(field.name) : field.name}</Title>
           {type === 'text' && <Input id={j} {...register(`custom-${j}`)}/>}
           {type === 'radio' && <RadioGroup name={`custom-${j}`} control={control} render={<>
             {field.options.map((o, i) => <Radio key={i} value={o.text.toString()} >{o.text}</Radio>)}
-          </>}/>}
+          </>} />}
           {type === 'checkbox' && <CheckboxGroup name={`custom-${j}`} control={control} render={<>
             {field.options.map((o, i) => <Checkbox key={i} value={o.text.toString()} >{o.text}</Checkbox>)}
           </>} />}

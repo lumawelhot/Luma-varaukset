@@ -4,52 +4,36 @@ import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Button, Radio } from '../../Embeds/Button'
 import { eventInit } from '../../../helpers/initialvalues'
-import { error, success } from '../../../helpers/toasts'
 import { useEvents } from '../../../hooks/api'
 import Form from './Form'
+import { notifier } from '../../../helpers/notifier'
+import { parseEventSubmission } from '../../../helpers/parse'
 
-const Event = ({ show, close, initialValues=eventInit, options, modify }) => {
+const Event = ({ show, close, initialValues = eventInit, options, modify }) => {
   const [type, setType] = useState(modify ? 'modify' : 'create')
   const { add, modify : mod, current: event } = useEvents()
   const { t } = useTranslation()
   const formId = useId()
 
-  const getArguments = values => {
-    const { tags, resourceids, grades, remotePlatforms, group, extras, customForm, dates } = values
-    return {
-      ...values,
-      dates: dates.map(d => new Date(d.date).toISOString()),
-      tags: tags.map(t => t.label),
-      resourceids: resourceids.map(r => Number(r)),
-      grades: grades.map(g => Number(g)),
-      remotePlatforms: remotePlatforms.map(r => Number(r)),
-      group: group?.value ? group.value : (modify ? '' : null),
-      extras,
-      customForm: customForm?.value ? customForm.value : null
-    }
-  }
-
   const handleModify = async values => {
-    const modified = await mod({ ...getArguments(values), event: event.id })
-    if (modified) {
-      success(t('notify-event-modify-success'))
-      close()
-    } else error(t('notify-event-modify-failed'))
+    const variables = parseEventSubmission(values)
+    const modified = await mod({ ...variables, event: event.id })
+    notifier.modifyEvent(modified)
+    if (modified) close()
   }
 
   const handleAdd = async values => {
-    const added = await add(getArguments(values))
-    if (added) {
-      success(t('notify-event-add-success'))
-      close()
-    } else error(t('notify-event-add-failed'))
+    const variables = parseEventSubmission(values)
+    const added = await add(variables)
+    notifier.createEvent(added)
+    if (added) close()
   }
 
   return (
     <Modal
       show={show}
-      backdrop="static"
-      size="lg"
+      backdrop='static'
+      size='lg'
       onHide={close}
       scrollable={true}
     >
