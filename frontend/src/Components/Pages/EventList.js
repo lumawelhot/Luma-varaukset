@@ -28,13 +28,13 @@ const EventList = () => {
 
   const events = useMemo(() => all
     ?.filter(p => {
-      const classes = filterOptions.classes
+      const { classes } = filterOptions
       if (classes.length <= 0) return true
       return someExist(find(p.id)?.resourceids, classes.map(c => c.value))
     })
     ?.filter(p => {
-      const start = filterOptions.range.start
-      const end = filterOptions.range.end
+      const { start } = filterOptions.range
+      const { end } = filterOptions.range
       return (new Date(p.start) < (end ? end : new Date(TIME_VALUE_LARGE))) &&
         ((start ? start : new Date(0)) < new Date(p.start))
     })
@@ -58,21 +58,21 @@ const EventList = () => {
 
   const handleDelete = e => {
     const selectedEvents = e.checked.map(v => events[v])
-    const reset = e.reset
+    const { reset } = e
     setSelected({ selected: selectedEvents, type: 'delete', reset })
     setShowForms(true)
   }
 
   const handleSetPublish = e => {
     const selectedEvents = e.checked.map(v => events[v])
-    const reset = e.reset
+    const { reset } = e
     setSelected({ selected: selectedEvents, type: 'publish', reset })
     setShowForms(true)
   }
 
   const handleAddToGroup = e => {
     const selectedEvents = e.checked.map(v => events[v])
-    const reset = e.reset
+    const { reset } = e
     setSelected({ selected: selectedEvents, type: 'group', reset })
     setShowForms(true)
   }

@@ -26,7 +26,7 @@ const Login = ({ show, close }) => {
 
   return (
 
-    <Modal show={show} onHide={close} backdrop="static">
+    <Modal show={show} onHide={close} backdrop='static'>
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         <Modal.Title>{t('login-header')}</Modal.Title>
       </Modal.Header>

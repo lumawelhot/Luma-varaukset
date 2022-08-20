@@ -26,14 +26,14 @@ const Status = ({ status, visit }) => {
   )
 
   if(!status) return (
-    <Alert variant="danger">
+    <Alert variant='danger'>
       <Alert.Heading>{t('booking-failed-header')}</Alert.Heading>
       <p>{t('booking-failed-text')}</p>
     </Alert>
   )
 
   return (
-    <Alert variant="success">
+    <Alert variant='success'>
       <Alert.Heading>{t('booking-success-header')}</Alert.Heading>
       <p>{t('booking-success-text')}</p>
       <div style={{ marginLeft: -10, marginTop: 20 }}>

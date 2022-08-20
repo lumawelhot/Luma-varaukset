@@ -15,8 +15,8 @@ class User extends Common {
 class Event extends Common {
   constructor(session) { super(getModel('event'), encoders.event, session) }
   instance(session) { return new Event(session) }
-  async FindByDays(days, expand) {
-    return await this.find({ end: { $gt: sub(new Date(), { days }) } }, expand)
+  FindByDays(days, expand) {
+    return this.find({ end: { $gt: sub(new Date(), { days }) } }, expand)
   }
 }
 
@@ -32,10 +32,10 @@ class Group extends Common {
     const group = await this.findById(id)
     const maxCount = (group.visitCount <= args.maxCount) ? args.maxCount : group.maxCount
     const disabled = maxCount <= (args.visitCount ? args.visitCount : group.visitCount)
-    return await this.update(id, { ...args, maxCount, disabled }, expand)
+    return this.update(id, { ...args, maxCount, disabled }, expand)
   }
-  async Insert(args, expand) {
-    return await this.insert({
+  Insert(args, expand) {
+    return this.insert({
       ...args,
       visitCount: 0,
       events: [],
@@ -52,7 +52,7 @@ class Group extends Common {
       throw new UserInputError('Max number of visits exceeded')
     }
     const disabled = group.disabled || visitCount >= group.maxCount
-    let events = group.events
+    let { events } = group
     if (delta.events?.concat && !events.includes(delta.events.concat)) {
       events = events.concat(delta.events.concat)
     }

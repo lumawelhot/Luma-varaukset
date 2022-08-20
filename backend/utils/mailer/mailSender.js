@@ -52,7 +52,7 @@ const sendAlert = async (name, days) => {
     failed: []
   }
 
-  for (let visit of visits) {
+  for (const visit of visits) {
     try {
       if (visit.status) {
         await mailer.sendMail({
@@ -110,13 +110,9 @@ const send = async (visit, event, name) => {
   }
 }
 
-const sendReminder = async () => {
-  return await sendAlert('reminder', 1)
-}
+const sendReminder = () => sendAlert('reminder', 1)
 
-const sendThanks = async () => {
-  return await sendAlert('thanks', 0)
-}
+const sendThanks = () => sendAlert('thanks', 0)
 
 const sendWelcomes = async (visit, event) => {
   await send(visit, event, 'welcome')

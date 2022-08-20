@@ -28,7 +28,7 @@ const server = new ApolloServer({
   introspection: true,
   playground: {
     endpoint: graphQLEndpoint,
-    subscriptionEndpoint: graphQLEndpoint + '/ws'
+    subscriptionEndpoint: `${graphQLEndpoint }/ws`
   },
   context: async ({ req }) => {
     const auth = req ? req.headers.authorization : null
@@ -60,7 +60,7 @@ server.start().then(() => {
 
 const wsServer = new WebSocketServer({
   server: httpServer,
-  path: server.graphqlPath + '/ws',
+  path: `${server.graphqlPath }/ws`,
 })
 useServer({ schema }, wsServer)
 

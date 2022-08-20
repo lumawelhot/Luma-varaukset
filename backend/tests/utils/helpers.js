@@ -52,8 +52,6 @@ const assignDates = (events, visits) => {
   return [events, visits]
 }
 
-
-
 module.exports = {
   dateByHours,
   timeSlotByDay,

@@ -55,7 +55,7 @@ const LumaCalendar = () => {
 
   const handleDrop = (item) => {
     const found = find(item.event._def.publicId)
-    const delta = item.delta.milliseconds + 86400000 * item.delta.days
+    const delta = item.delta.milliseconds + (86400000 * item.delta.days)
     const event = {
       ...found,
       eventStart: new Date(new Date(found.start).getTime() + delta),
@@ -94,7 +94,7 @@ const LumaCalendar = () => {
         reset={unSelectAll}
       />
       <CalendarMenu ref={calendarRef} />
-      <div id="eventPopover"></div>
+      <div id='eventPopover'></div>
       {showEvent && <Event
         show={showEvent}
         close={handleClose}

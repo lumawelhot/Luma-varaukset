@@ -1,6 +1,6 @@
 // TODO: For now we are using "services/staticdata", we probably should fix this so static data does not influence to tests
 // TODO: We should test populating objects
-const expect = require('chai').expect
+const { expect } = require('chai')
 const { initializeDB } = require('../../services/dbsetup')
 const { User, Extra, Transaction } = require('../../db')
 
@@ -9,7 +9,7 @@ const getExistingObject = async (Model) => {
   return objects[Math.floor(Math.random() * objects.length)]
 }
 
-beforeEach(async () => await initializeDB())
+beforeEach(() => initializeDB())
 
 describe('Common.js', () => {
 
@@ -110,7 +110,7 @@ describe('Common.js', () => {
 
   // remove
   it('existing extra by id is removed', async () => {
-    const id = (await Extra.findOne({ name: 'Opiskelijan elämää' })).id
+    const { id } = await Extra.findOne({ name: 'Opiskelijan elämää' })
     const extrasBefore = await Extra.find()
     const ids = await Extra.remove(id)
     const extras = await Extra.find()
@@ -131,7 +131,7 @@ describe('Common.js', () => {
   })
 
   it('existing extras by ids are not removed if there is an invalid id', async () => {
-    const id = (await Extra.findOne({ name: 'Opiskelijan elämää' })).id
+    const { id } = await Extra.findOne({ name: 'Opiskelijan elämää' })
     const extrasBefore = await Extra.find()
     const ids = await Extra.remove([id, 'invalid'])
     const extras = await Extra.find()

@@ -11,7 +11,7 @@ const Extra = ({ show, close, handle, title, initialValues }) => {
   }
 
   return (
-    <Modal show={show} backdrop="static" onHide={close} scrollable={true} >
+    <Modal show={show} backdrop='static' onHide={close} scrollable={true} >
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>

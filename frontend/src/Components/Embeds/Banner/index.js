@@ -22,9 +22,9 @@ const Banner = ({ show }) => {
           <BannerText>
             {t('banner-text1')}
             <BannerLink
-              href="https://www.helsinki.fi/fi/tiedekasvatus/opettajille-ja-opetuksen-tueksi/opintokaynnit-ja-lainattavat-tarvikkeet"
-              target="_blank"
-              rel="noreferrer"
+              href='https://www.helsinki.fi/fi/tiedekasvatus/opettajille-ja-opetuksen-tueksi/opintokaynnit-ja-lainattavat-tarvikkeet'
+              target='_blank'
+              rel='noreferrer'
             >
               {t('banner-text2')}.
             </BannerLink>

@@ -24,7 +24,7 @@ const Group = ({ show, close, handle, title, initialValues }) => {
   return (
     <Modal
       show={show}
-      backdrop="static"
+      backdrop='static'
       onHide={close}
       scrollable={true}
     >

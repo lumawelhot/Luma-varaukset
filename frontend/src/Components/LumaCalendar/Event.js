@@ -17,10 +17,9 @@ const Event = ({ content }) => {
 
   const isSelected = selected.includes(event.id)
   const props = content.event._def.extendedProps
-  const disabled = event.disabled
+  const { disabled } = event
   const groupFull = event?.group?.disabled
-  const locked = props.locked
-  const booked = props.booked
+  const { locked, booked } = props
   const view = content.view.type
   const published = event?.publishDate ? new Date() >= new Date(event.publishDate) : true
   const passed = !disabled && !booked && props.unAvailable
@@ -48,7 +47,7 @@ const Event = ({ content }) => {
         {event.tags.map((t, i) => <Badge
           style={{ marginRight: 5, marginLeft: 0, fontSize: 11 }}
           key={i}
-          bg="info"
+          bg='info'
         >{t.name}</Badge>)}
         <ul style={{ marginTop: 5, listStyle: 'none' }}>
           {event.resourceids.map((r, i) => <li key={i}>

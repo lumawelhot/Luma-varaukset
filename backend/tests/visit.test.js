@@ -1,5 +1,5 @@
 const sinon = require('sinon')
-const expect = require('chai').expect
+const { expect } = require('chai')
 const { createTestClient } = require('./utils/client')
 const { CREATE_VISIT, VISITS, FIND_VISIT, CANCEL_VISIT } = require('./graphql/queries')
 const { employeeServer, customerServer } = require('./utils/server')
@@ -16,7 +16,7 @@ let serverCustomer
 
 let session
 let sandbox
-beforeEach(async () => {
+beforeEach(() => {
   serverEmployee = employeeServer()
   serverCustomer = customerServer()
   sandbox = sinon.createSandbox()
@@ -29,7 +29,7 @@ beforeEach(async () => {
   session = transactionStub(sandbox)
 })
 
-afterEach(async () => {
+afterEach(() => {
   sandbox.restore()
 })
 

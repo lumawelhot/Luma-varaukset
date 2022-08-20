@@ -37,47 +37,43 @@ const Picker = styled(UPicker)`
   }
 `
 
-export const TimePicker = React.forwardRef((rest, ref) => {
-  return <div>
-    <Title>{rest.title}</Title>
-    <Picker
-      ref={ref}
-      selected={rest.value}
-      showTimeSelect
-      showTimeSelectOnly
-      timeIntervals={5}
-      filterTime={(time) => {
-        if (rest.hideHours) {
-          const hours = new Date(time).getHours()
-          return !rest.hideHours(hours)
-        }
-        return true
-      }}
-      timeCaption='Time'
-      locale='fi'
-      dateFormat='H:mm'
-      { ...rest}
-      title={undefined}
-    />
-  </div>
-})
+export const TimePicker = React.forwardRef((rest, ref) => <div>
+  <Title>{rest.title}</Title>
+  <Picker
+    ref={ref}
+    selected={rest.value}
+    showTimeSelect
+    showTimeSelectOnly
+    timeIntervals={5}
+    filterTime={(time) => {
+      if (rest.hideHours) {
+        const hours = new Date(time).getHours()
+        return !rest.hideHours(hours)
+      }
+      return true
+    }}
+    timeCaption='Time'
+    locale='fi'
+    dateFormat='H:mm'
+    { ...rest}
+    title={undefined}
+  />
+</div>)
 
-export const DatePicker = React.forwardRef((rest, ref) => {
-  return <div>
-    <Title>{rest.title}</Title>
-    <Picker
-      ref={ref}
-      isClearable={rest.cleanable}
-      filterDate={(date) => {
-        const day = getDay(date)
-        return day !== 0 && day !== 6
-      }}
-      dateFormat='P'
-      locale='fi'
-      cleanable={rest?.cleanable ? true : false}
-      { ...rest }
-      selected={rest.value}
-      title={undefined}
-    />
-  </div>
-})
+export const DatePicker = React.forwardRef((rest, ref) => <div>
+  <Title>{rest.title}</Title>
+  <Picker
+    ref={ref}
+    isClearable={rest.cleanable}
+    filterDate={(date) => {
+      const day = getDay(date)
+      return day !== 0 && day !== 6
+    }}
+    dateFormat='P'
+    locale='fi'
+    cleanable={rest?.cleanable ? true : false}
+    { ...rest }
+    selected={rest.value}
+    title={undefined}
+  />
+</div>)

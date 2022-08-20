@@ -47,12 +47,10 @@ const calcAvailableTimes = (availableTimes, visit, waitingTime, duration) => {
   const ranges = availableTimes.map(a => [new Date(a.startTime).getTime(), new Date(a.endTime).getTime()])
   const range = [new Date(visit.startTime).getTime(), new Date(visit.endTime).getTime()]
   const newAvailableTimes = split(ranges, range, waitingTime * 60000)
-  return newAvailableTimes.filter(f => f[1] - f[0] >= duration * 60000).map(a => {
-    return {
-      startTime: parseDate(a[0]),
-      endTime: parseDate(a[1])
-    }
-  })
+  return newAvailableTimes.filter(f => f[1] - f[0] >= duration * 60000).map(a => ({
+    startTime: parseDate(a[0]),
+    endTime: parseDate(a[1])
+  }))
 }
 
 // Calculate new available times from current visit times and event time
@@ -60,12 +58,10 @@ const calcFromVisitTimes = (visitTimes, event, waitingTime, duration) => {
   const ranges = visitTimes.map(a => [new Date(a.startTime).getTime(), new Date(a.endTime).getTime()])
   const range = [new Date(event.startTime).getTime(), new Date(event.endTime).getTime()]
   const newAvailableTimes = diff(ranges, range, waitingTime * 60000)
-  return newAvailableTimes.filter(f => f[1] - f[0] >= duration * 60000).map(a => {
-    return {
-      startTime: parseDate(a[0]),
-      endTime: parseDate(a[1])
-    }
-  })
+  return newAvailableTimes.filter(f => f[1] - f[0] >= duration * 60000).map(a => ({
+    startTime: parseDate(a[0]),
+    endTime: parseDate(a[1])
+  }))
 }
 
 // Check that new timeslot that fits with visit times
@@ -103,7 +99,7 @@ const checkTimeslot = (argsStart, argsEnd) => {
   const start = new Date(argsStart)
   const end = new Date(argsEnd)
   const [startHours, ] = new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', timeZone: 'Europe/Helsinki' }).format(start).split('.')
-  const [endHours, endMinutes]  =  new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', timeZone: 'Europe/Helsinki' }).format(end).split('.')
+  const [endHours, endMinutes] = new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', timeZone: 'Europe/Helsinki' }).format(end).split('.')
   if (Number(startHours) < 8) return true
   if (Number(endHours) > 17 || (Number(endHours) === 17 && Number(endMinutes) !== 0)) return true
   if (start.getTime() >= end.getTime()) return true

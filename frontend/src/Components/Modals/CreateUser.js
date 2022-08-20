@@ -35,7 +35,7 @@ const CreateUser = ({ show, close }) => {
   }
 
   return (
-    <Modal show={show} onHide={close} backdrop="static" scrollable={true}>
+    <Modal show={show} onHide={close} backdrop='static' scrollable={true}>
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         <Modal.Title>{t('create-user-header')}</Modal.Title>
       </Modal.Header>

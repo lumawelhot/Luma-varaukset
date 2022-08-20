@@ -1,5 +1,5 @@
 const sinon = require('sinon')
-const expect = require('chai').expect
+const { expect } = require('chai')
 const { createTestClient } = require('./utils/client')
 const { GET_EMAIL_TEMPLATES, UPDATE_EMAIL } = require('./graphql/queries')
 const { adminServer, employeeServer } = require('./utils/server')
@@ -10,7 +10,7 @@ let serverAdmin
 let serverEmployee
 
 let sandbox
-beforeEach(async () => {
+beforeEach(() => {
   serverAdmin = adminServer()
   serverEmployee = employeeServer()
   sandbox = sinon.createSandbox()

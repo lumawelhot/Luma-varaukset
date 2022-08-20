@@ -1,16 +1,12 @@
 const createTestClient = (server) => {
-  const query = async args => {
-    return await server.executeOperation({
-      ...args,
-      query: args.query,
-    })
-  }
-  const mutate = async args => {
-    return await server.executeOperation({
-      ...args,
-      query: args.mutation
-    })
-  }
+  const query = args => server.executeOperation({
+    ...args,
+    query: args.query,
+  })
+  const mutate = args => server.executeOperation({
+    ...args,
+    query: args.mutation
+  })
   return { query, mutate }
 }
 

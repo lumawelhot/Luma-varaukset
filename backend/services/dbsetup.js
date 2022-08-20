@@ -36,7 +36,7 @@ const initializeDB = async () => {
 
 const unlockEvents = async () => {
   const events = await Event.find()
-  for (let event of events) {
+  for (const event of events) {
     await Event.update(event.id, { reserved: null })
   }
   console.log('event reservations unlocked')

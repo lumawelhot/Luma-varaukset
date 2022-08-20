@@ -1,11 +1,13 @@
 require('dotenv').config()
 
-const PORT = process.env.PORT
-const SECRET = process.env.SECRET
-const EMAILHOST = process.env.EMAILHOST
-const EMAILUSER = process.env.EMAILUSER
-const EMAILPASSWORD = process.env.EMAILPASSWORD
-const EMAILPORT = process.env.EMAILPORT
+const {
+  PORT,
+  SECRET,
+  EMAILHOST,
+  EMAILUSER,
+  EMAILPASSWORD,
+  EMAILPORT
+} = process.env
 
 const HOST_URI = process.env.NODE_ENV === 'production'
   ? process.env.HOST_URI : 'http://localhost:3000'

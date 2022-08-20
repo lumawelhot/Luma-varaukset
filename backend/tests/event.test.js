@@ -1,5 +1,5 @@
 const sinon = require('sinon')
-const expect = require('chai').expect
+const { expect } = require('chai')
 const { createTestClient } = require('./utils/client')
 const { EVENTS, CREATE_EVENTS, FORCE_DELETE_EVENTS, TAGS, EVENT, MODIFY_EVENT, DISABLE_EVENT, ENABLE_EVENT, LOCK_EVENT, ASSIGN_PUBLISH_DATE_TO_EVENTS } = require('./graphql/queries')
 const { adminServer, employeeServer, customerServer } = require('./utils/server')
@@ -16,7 +16,7 @@ let serverCustomer
 
 let sandbox
 let session
-beforeEach(async () => {
+beforeEach(() => {
   serverAdmin = adminServer()
   serverEmployee = employeeServer()
   serverCustomer = customerServer()
@@ -248,7 +248,7 @@ describe('As an employee I', () => {
     expect(data.disableEvent).to.deep.equal({ id: '1', disabled: true })
   })
 
-  it('can enable an event', async  () => {
+  it('can enable an event', async () => {
     const { mutate } = createTestClient(serverEmployee)
     const { errors, data } = await mutate({
       mutation: ENABLE_EVENT,
@@ -335,7 +335,7 @@ describe('As a customer I', () => {
     expect(data.disableEvent).to.be.null
   })
 
-  it('cannot enable an event', async  () => {
+  it('cannot enable an event', async () => {
     const { mutate } = createTestClient(serverCustomer)
     const { errors, data } = await mutate({
       mutation: ENABLE_EVENT,

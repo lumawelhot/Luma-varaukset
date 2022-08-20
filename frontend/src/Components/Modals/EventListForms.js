@@ -63,7 +63,7 @@ const EventListForms = ({ selected, type, show, close, reset }) => {
   return (
     <Modal
       show={show}
-      backdrop="static"
+      backdrop='static'
       onHide={close}
     >
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>

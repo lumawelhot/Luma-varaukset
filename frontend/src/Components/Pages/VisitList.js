@@ -28,7 +28,7 @@ const VisitList = () => {
 
   const visits = useMemo(() => all
     ?.filter(p => {
-      const classes = filterOptions.classes
+      const { classes } = filterOptions
       if (classes.length <= 0) return true
       return someExist(find(p?.event?.id)?.resourceids, classes.map(c => c.value))
     })

@@ -22,8 +22,8 @@ const Filter = ({ show, close }) => {
   return (
     <Modal
       show={show}
-      backdrop="static"
-      size="lg"
+      backdrop='static'
+      size='lg'
       onHide={close}
       scrollable={true}
     >
@@ -62,7 +62,7 @@ const Filter = ({ show, close }) => {
         <Title>{t('another-sort-options')}</Title>
         <Stack style={{ marginLeft: 3 }} direction='horizontal'>
           <Checkbox isChecked={filterOptions.showUnavailable} onChange={e => {
-            const checked = e.target.checked
+            const { checked } = e.target
             setFilterOptions({ ...filterOptions, showUnavailable: checked })
           }} style={{ marginRight: 15 }}>{t('show-unavailable')}</Checkbox>
         </Stack>

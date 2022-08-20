@@ -89,7 +89,7 @@ const GroupList = () => {
         initialValues={group ? {
           name: group.name,
           maxCount: String(group.maxCount)
-        }: groupInit}
+        } : groupInit}
       />}
     </>
   )

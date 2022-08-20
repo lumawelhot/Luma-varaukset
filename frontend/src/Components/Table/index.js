@@ -91,7 +91,7 @@ const Table = ({ checkboxed, columns, data, component, nosort, initialState }) =
                         isCheked ? setChecked(checked.concat(row.id))
                           : setChecked(checked.filter(c => c !== row.id))
                       }}
-                    />: <></>}
+                    /> : <></>}
                   </Td>}
                   {row.cells.map((cell, j) => (
                     <Td

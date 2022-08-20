@@ -26,11 +26,11 @@ const ExtraList = () => {
     exec()
   }, [misc])
 
-  const handleRemove = async ids => await misc.removeExtras(ids)
+  const handleRemove = ids => misc.removeExtras(ids)
 
   const extras = useMemo(() => misc?.extras
     ?.filter(p => {
-      const classes = filterOptions.classes
+      const { classes } = filterOptions
       if (classes.length <= 0) return true
       return someExist(p?.classes, classes.map(c => c.value))
     })

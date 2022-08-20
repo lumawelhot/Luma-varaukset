@@ -26,26 +26,14 @@ export const useEvict = () => {
   return { evict }
 }
 
-export const useEvents = () => {
-  return useContext(EventContext)
-}
+export const useEvents = () => useContext(EventContext)
 
-export const useVisits = () => {
-  return useContext(VisitContext)
-}
+export const useVisits = () => useContext(VisitContext)
 
-export const useGroups = () => {
-  return useContext(GroupContext)
-}
+export const useGroups = () => useContext(GroupContext)
 
-export const useForms = () => {
-  return useContext(FormContext)
-}
+export const useForms = () => useContext(FormContext)
 
-export const useUser = () => {
-  return useContext(UserContext)
-}
+export const useUser = () => useContext(UserContext)
 
-export const useMisc = () => {
-  return useContext(MiscContext)
-}
+export const useMisc = () => useContext(MiscContext)

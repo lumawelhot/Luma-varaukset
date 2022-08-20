@@ -10,7 +10,7 @@ const CSV = () => {
   const { t } = useTranslation()
 
   return <>
-    <Button onClick={async () => {
+    <Button onClick={() => {
       getCSV(all, find)
     }}>{t('get-csv')}</Button>
   </>

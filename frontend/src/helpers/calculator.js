@@ -39,22 +39,18 @@ export const calcAvailableTimes = (availableTimes, visit, waitingTime, duration)
   const ranges = availableTimes.map(a => [new Date(a.startTime).getTime(), new Date(a.endTime).getTime()])
   const range = [new Date(visit.startTime).getTime(), new Date(visit.endTime).getTime()]
   const newAvailableTimes = split(ranges, range, waitingTime * 60000)
-  return newAvailableTimes.filter(f => f[1] - f[0] >= duration * 60000).map(a => {
-    return {
-      startTime: new Date(a[0]),
-      endTime: new Date(a[1])
-    }
-  })
+  return newAvailableTimes.filter(f => f[1] - f[0] >= duration * 60000).map(a => ({
+    startTime: new Date(a[0]),
+    endTime: new Date(a[1])
+  }))
 }
 
 export const calcFromVisitTimes = (visitTimes, event, waitingTime, duration) => {
   const ranges = visitTimes.map(a => [new Date(a.startTime).getTime(), new Date(a.endTime).getTime()])
   const range = [new Date(event.startTime).getTime(), new Date(event.endTime).getTime()]
   const newAvailableTimes = diff(ranges, range, waitingTime * 60000)
-  return newAvailableTimes.filter(f => f[1] - f[0] >= duration * 60000).map(a => {
-    return {
-      startTime: new Date(a[0]),
-      endTime: new Date(a[1])
-    }
-  })
+  return newAvailableTimes.filter(f => f[1] - f[0] >= duration * 60000).map(a => ({
+    startTime: new Date(a[0]),
+    endTime: new Date(a[1])
+  }))
 }

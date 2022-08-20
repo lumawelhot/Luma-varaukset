@@ -29,19 +29,22 @@ jobs:
       - name: Run Jest tests
         run: npm run test -- --coverage --watchAll=false --collectCoverageFrom="src/components/**/*js"
         working-directory: frontend
+      - name: Run eslint
+        run: npm run lint
+        working-directory: frontend
       - uses: codecov/codecov-action@v1
         with:
           flags: frontend # optional
           name: codecov-umbrella # optional
-      - name: Start backend for Cypress
-        run: cd ../backend && nohup npm run cypress &
-        env:
-          EMAILHOST: smtp.ethereal.email
-          EMAILUSER: clarabelle.terry@ethereal.email
-          EMAILPASSWORD: ${{secrets.EMAILPASSWORD}}
-          EMAILPORT: 587
-          SECRET: ${{ secrets.SECRET }}
-          PORT: 3001
+      #- name: Start backend for Cypress
+      #  run: cd ../backend && nohup npm run cypress &
+      #  env:
+      #    EMAILHOST: smtp.ethereal.email
+      #    EMAILUSER: clarabelle.terry@ethereal.email
+      #    EMAILPASSWORD: ${{secrets.EMAILPASSWORD}}
+      #    EMAILPORT: 587
+      #    SECRET: ${{ secrets.SECRET }}
+      #    PORT: 3001
       #- name: Cypress run
       #  uses: cypress-io/github-action@v2
       #  with:
@@ -74,8 +77,8 @@ jobs:
       - name: Run eslint
         run: npm run lint
         working-directory: backend
-      - name: Run backend Jest tests
-        run: npm run test -- --coverage --detectOpenHandles=false
+      - name: Run backend Mocha tests
+        run: npm run test
         working-directory: backend
         env:
           #MONGODB_TEST_URI: ${{secrets.MONGODB_TEST_URI}}

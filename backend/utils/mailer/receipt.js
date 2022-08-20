@@ -6,7 +6,7 @@ const u = (field) => field === undefined ? '' : field
 const scienceClasses = data => {
   if (!data) return ''
   let html = ''
-  for (let d of data) {
+  for (const d of data) {
     html += `<div>${u(CLASSES[d - 1])}</div>`
   }
   return html
@@ -21,7 +21,7 @@ const gridContainer = (name, value) => `
 
 const containerContent = (names, values) => {
   let containerHtml = ''
-  for (let i in names) {
+  for (const i in names) {
     containerHtml += gridContainer(names[i], values[i])
   }
   return containerHtml
@@ -30,12 +30,12 @@ const containerContent = (names, values) => {
 const customFormHtml = data => {
   if (!data) return ''
   let html = ''
-  for (let d of data) {
+  for (const d of data) {
     if (typeof d.value === 'string') {
       html += gridContainer(d.name, d.value)
     } else if (Array.isArray(d.value)) {
       let selectedHtml = ''
-      for (let v of d.value) {
+      for (const v of d.value) {
         selectedHtml += `<div>${v}</div>`
       }
       html += gridContainer(d.name, selectedHtml)
@@ -85,7 +85,7 @@ const bookingInfo = (event, visit) => `
 </body>
 `
 
-const getNotifyHtml= (visit, event) => {
+const getNotifyHtml = (visit, event) => {
   try {
     return bookingInfo(
       containerContent(
