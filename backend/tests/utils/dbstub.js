@@ -11,7 +11,6 @@ const dbforms = require('../db/forms.json')
 const dbgroups = require('../db/groups.json')
 const { Transaction, User, Event, Visit, Tag, Extra, Email, Form, Group } = require('../../db')
 const encoders = require('../../db/encoders')
-const { sub } = require('date-fns')
 const { assignDates, models } = require('./helpers')
 const format = (args, encoder) => encoders[encoder].decode(encoders[encoder].encode(args))
 const someExist = (a, b) => b?.some(v => a?.some(u => u[0] === v[0] && u[1] === v[1]))
@@ -164,25 +163,15 @@ const dbStub = (sandbox, db, model, encoder) => {
 }
 
 const usersStub = sandbox => dbStub(sandbox, dbusers, User, 'user')
-const eventsStub = sandbox => {
-  sandbox.stub(Event, 'FindByDays').callsFake((days, expand) => events
-    .filter(e => new Date(e.end) >= sub(new Date(), { days }))
-    .map(u => populate(u, expand))
-    .map(u => format(u, 'event')))
-  return dbStub(sandbox, events, Event, 'event')
-}
+const eventsStub = sandbox => dbStub(sandbox, events, Event, 'event')
 
 const visitsStub = sandbox => dbStub(sandbox, visits, Visit, 'visit')
 const tagsStub = sandbox => {
   sandbox.stub(Tag, 'Insert').callsFake(async tags => {
     const foundTags = dbtags.filter(t => tags.includes(t.name))
-    const foundTagNames = foundTags.map(t => t.name)
-    const newTags = []
-    for (const tag of tags) {
-      if (!foundTagNames.includes(tag)) {
-        newTags.push(await Tag.insert({ name: tag }))
-      }
-    }
+    const newTags = await Promise.all(tags
+      .filter(t => !foundTags.map(t => t.name).includes(t))
+      .map(t => Tag.insert({ name: t })))
     dbtags = foundTags.concat(newTags)
     return foundTags.concat(newTags)
   })

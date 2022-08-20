@@ -1,13 +1,14 @@
 const sinon = require('sinon')
 const { expect } = require('chai')
 const { createTestClient } = require('./utils/client')
-const { EVENTS, CREATE_EVENTS, FORCE_DELETE_EVENTS, TAGS, EVENT, MODIFY_EVENT, DISABLE_EVENT, ENABLE_EVENT, LOCK_EVENT, ASSIGN_PUBLISH_DATE_TO_EVENTS } = require('./graphql/queries')
+const { EVENTS, CREATE_EVENTS, FORCE_DELETE_EVENTS, TAGS, EVENT, MODIFY_EVENT, DISABLE_EVENT, ENABLE_EVENT, LOCK_EVENT, ASSIGN_PUBLISH_DATE_TO_EVENTS, VISITS } = require('./graphql/queries')
 const { adminServer, employeeServer, customerServer } = require('./utils/server')
 const { eventsStub, groupsStub, transactionStub, extrasStub, usersStub, visitsStub, tagsStub } = require('./utils/dbstub')
 const { PubSub } = require('graphql-subscriptions')
 const { eventsInTheFuture, eventTooEarly, eventTooLate, eventStartAfterEnd, modifyDetails } = require('./db/data')
 const dbevents = require('./db/events.json')
 const dbtags = require('./db/tags.json')
+const dbvisits = require('./db/visits.json')
 const { timeByDaysAndHours } = require('./utils/helpers')
 
 let serverAdmin
@@ -41,6 +42,12 @@ const getEvents = async () => {
   return res.data.getEvents
 }
 
+const getVisits = async () => {
+  const { query } = createTestClient(serverAdmin)
+  const res = await query({ query: VISITS })
+  return res.data.getVisits
+}
+
 const getEvent = async id => {
   const { query } = createTestClient(serverAdmin)
   const res = await query({ query: EVENT, variables: { id } })
@@ -66,10 +73,12 @@ describe('As an admin I', () => {
 
   it('can force delete events with valid password', async () => {
     const { mutate } = createTestClient(serverAdmin)
+    expect((await getVisits()).length).to.equal(dbvisits.length)
     const { data, errors } = await mutate({
       mutation: FORCE_DELETE_EVENTS,
       variables: { events: ['4', '7'], password: 'admin-password' }
     })
+    expect((await getVisits()).length).to.equal(dbvisits.length - 2)
     expect(errors).to.be.undefined
     expect(data.forceDeleteEvents.map(e => e.id)).to.deep.equal(['4', '7'])
     await getEvents()
@@ -88,14 +97,6 @@ describe('As an admin I', () => {
 })
 
 describe('As an employee I', () => {
-
-  it('can get only events in the future', async () => {
-    const { query } = createTestClient(serverEmployee)
-    const { data, errors } = await query({ query: EVENTS })
-    expect(errors).to.be.undefined
-    expect(data.getEvents.map(e => e.id)).to.deep.equal(dbevents
-      .filter(e => e.fromNow >= 0).map(e => e.id))
-  })
 
   it('can get events by ids', async () => {
     const { query } = createTestClient(serverEmployee)
@@ -120,7 +121,6 @@ describe('As an employee I', () => {
     const committedEvents = Object.entries(session.committed)
       .filter(e => e[0] === `${e[1].id}-Event`).map(e => e[1])
     const group = session.committed[`${eventsInTheFuture.group}-Group`]
-
     expect(errors).to.be.undefined
     events.forEach(event => {
       expect(event.extras.map(e => e.id)).to.deep.equal(eventsInTheFuture.extras)
@@ -293,6 +293,14 @@ describe('As an employee I', () => {
 })
 
 describe('As a customer I', () => {
+
+  it('can get only events in the future', async () => {
+    const { query } = createTestClient(serverCustomer)
+    const { data, errors } = await query({ query: EVENTS })
+    expect(errors).to.be.undefined
+    expect(data.getEvents.map(e => e.id)).to.deep.equal(dbevents
+      .filter(e => e.fromNow >= 0).map(e => e.id))
+  })
 
   // ----- CREATE EVENTS
 

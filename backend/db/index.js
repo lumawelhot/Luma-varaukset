@@ -1,5 +1,4 @@
 const { UserInputError } = require('apollo-server-express')
-const { sub } = require('date-fns')
 const Common = require('./common')
 const encoders = require('./encoders')
 
@@ -15,9 +14,6 @@ class User extends Common {
 class Event extends Common {
   constructor(session) { super(getModel('event'), encoders.event, session) }
   instance(session) { return new Event(session) }
-  FindByDays(days, expand) {
-    return this.find({ end: { $gt: sub(new Date(), { days }) } }, expand)
-  }
 }
 
 class Visit extends Common {
@@ -107,11 +103,7 @@ class Transaction {
   }
   static construct(...args) {
     const session = new Transaction()
-    const connections = []
-    for (const connection of args) {
-      connections.push(connection.instance(session))
-    }
-    return [session, ...connections]
+    return [session, ...args.map(c => c.instance(session))]
   }
   async commit() {
     const entries = Object.entries(this.instances)

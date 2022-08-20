@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 const bcrypt = require('bcrypt')
 const { Event, User, Tag, Extra, Email } = require('../db')
 const mongoose = require('mongoose')

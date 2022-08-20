@@ -1,5 +1,6 @@
 // NOTE: Do not return any Date objects, return ISOStrings instead.
 const { set } = require('date-fns')
+const { MINUTE, EARLIEST_START_HOURS, LATEST_END_HOURS } = require('../config')
 
 // --------------------- HELPERS
 const parseDate = date => set(new Date(date), { seconds: 0, milliseconds: 0 }).toISOString()
@@ -46,8 +47,8 @@ const diff = (ranges, range, divider) => {
 const calcAvailableTimes = (availableTimes, visit, waitingTime, duration) => {
   const ranges = availableTimes.map(a => [new Date(a.startTime).getTime(), new Date(a.endTime).getTime()])
   const range = [new Date(visit.startTime).getTime(), new Date(visit.endTime).getTime()]
-  const newAvailableTimes = split(ranges, range, waitingTime * 60000)
-  return newAvailableTimes.filter(f => f[1] - f[0] >= duration * 60000).map(a => ({
+  const newAvailableTimes = split(ranges, range, waitingTime * MINUTE)
+  return newAvailableTimes.filter(f => f[1] - f[0] >= duration * MINUTE).map(a => ({
     startTime: parseDate(a[0]),
     endTime: parseDate(a[1])
   }))
@@ -57,8 +58,8 @@ const calcAvailableTimes = (availableTimes, visit, waitingTime, duration) => {
 const calcFromVisitTimes = (visitTimes, event, waitingTime, duration) => {
   const ranges = visitTimes.map(a => [new Date(a.startTime).getTime(), new Date(a.endTime).getTime()])
   const range = [new Date(event.startTime).getTime(), new Date(event.endTime).getTime()]
-  const newAvailableTimes = diff(ranges, range, waitingTime * 60000)
-  return newAvailableTimes.filter(f => f[1] - f[0] >= duration * 60000).map(a => ({
+  const newAvailableTimes = diff(ranges, range, waitingTime * MINUTE)
+  return newAvailableTimes.filter(f => f[1] - f[0] >= duration * MINUTE).map(a => ({
     startTime: parseDate(a[0]),
     endTime: parseDate(a[1])
   }))
@@ -100,8 +101,8 @@ const checkTimeslot = (argsStart, argsEnd) => {
   const end = new Date(argsEnd)
   const [startHours, ] = new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', timeZone: 'Europe/Helsinki' }).format(start).split('.')
   const [endHours, endMinutes] = new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', timeZone: 'Europe/Helsinki' }).format(end).split('.')
-  if (Number(startHours) < 8) return true
-  if (Number(endHours) > 17 || (Number(endHours) === 17 && Number(endMinutes) !== 0)) return true
+  if (Number(startHours) < EARLIEST_START_HOURS) return true
+  if (Number(endHours) > LATEST_END_HOURS || (Number(endHours) === LATEST_END_HOURS && Number(endMinutes) !== 0)) return true
   if (start.getTime() >= end.getTime()) return true
   return false
 }

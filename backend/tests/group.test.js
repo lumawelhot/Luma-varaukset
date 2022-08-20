@@ -95,8 +95,7 @@ describe('As an employee I', () => {
 
   it('can assign a group to multiple events', async () => {
     const { mutate } = createTestClient(serverEmployee)
-    const oldGroupIds = []
-    for (const e of ['10', '7']) oldGroupIds.push((await getEvent(e)).group.id)
+    const oldGroupIds = (await Promise.all(['10', '7'].map(e => getEvent(e)))).map(e => e.group.id)
     const { errors, data } = await mutate({
       mutation: ASSIGN_EVENTS_TO_GROUP,
       variables: {

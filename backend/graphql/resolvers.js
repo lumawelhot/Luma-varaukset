@@ -19,8 +19,9 @@ const resolvers = {
     getEvent: (root, args) => Event.findById(args.id, expandEvents),
     getEvents: async (root, args, { currentUser }) => {
       if (args.ids) return Event.findByIds(args.ids, expandEvents)
-      const events = await Event.FindByDays(currentUser?.isAdmin ? 90 : 0, expandEvents)
+      const events = await Event.find({}, expandEvents)
       return currentUser ? events : events
+        .filter(e => new Date() <= new Date(e.start))
         .filter(e => !e.publishDate || new Date() >= new Date(e.publishDate))
         .map(e => e.group?.disabled ? { ...e, availableTimes: [] } : e)
     },
@@ -47,8 +48,7 @@ const resolvers = {
     createGroup: authorized((root, args) => Group.Insert(args)),
     modifyGroup: authorized((root, args) => Group.Update(args.id, args, expandGroups)),
     deleteGroups: authorized(async (root, args) => {
-      const groups = await Group.findByIds(args.ids)
-      await Promise.all(groups.reduce((r, g) => r
+      await Promise.all((await Group.findByIds(args.ids)).reduce((r, g) => r
         .concat(g.events.map(id => Event.update(id, { disabled: true }))), []))
       return Group.remove(args.ids)
     }),
@@ -59,24 +59,23 @@ const resolvers = {
       })))
     }),
     assignEventsToGroup: authorized(async (root, args) => {
-      const events = []
       const [session, eventInst, groupInst] = Transaction.construct(Event, Group)
-      for (const id of args.events) {
-        const event = await eventInst.findById(id)
-        if (event && (!event.group || event.group.toString() !== args.group.toString())) {
-          await groupInst.DeltaUpdate(event.group, {
-            visitCount: - event.visits.length,
-            events: { filter: event.id }
-          })
-          if (args.group) await groupInst.DeltaUpdate(args.group, {
-            visitCount: event.visits.length,
-            events: { concat: event.id }
-          })
-          events.push(await eventInst.update(event.id, { group: args.group ? args.group : null }))
-        }
+      const events = []
+      const _events = await eventInst.findByIds(args.events)
+        .filter(e => !e.group || e.group.toString() !== args.group.toString())
+      for (const event of _events) {
+        await groupInst.DeltaUpdate(event.group, {
+          visitCount: - event.visits.length,
+          events: { filter: event.id }
+        })
+        if (args.group) await groupInst.DeltaUpdate(args.group, {
+          visitCount: event.visits.length,
+          events: { concat: event.id }
+        })
+        events.push(eventInst.update(event.id, { group: args.group ? args.group : null }))
       }
       await session.commit()
-      return events
+      return Promise.all(events)
     }),
     updateEmail: isAdmin(async (root, args) => {
       const email = await Email.findOne({ name: args.name })
@@ -85,12 +84,12 @@ const resolvers = {
     updateUser: isAdmin(async (root, args, { currentUser }) => {
       userValidate(args)
       args.isAdmin !== true && notCurrentUser(currentUser, args.user)
-      const passwordHash = args.password && await bcrypt.hash(args.password, 10 /* salt */)
+      const passwordHash = args.password && await bcrypt.hash(args.password, config.SALT)
       return User.update(args.user, { ...args, passwordHash })
     }),
     createUser: isAdmin(async (root, args) => {
       userValidate(args)
-      const passwordHash = await bcrypt.hash(args.password, 10 /* salt */)
+      const passwordHash = await bcrypt.hash(args.password, config.SALT)
       return User.insert({ ...args, passwordHash })
     }),
     login: async (root, args) => {
@@ -300,17 +299,16 @@ const resolvers = {
     forceDeleteEvents: isAdmin(async (root, args, { currentUser }) => {
       const user = await User.findOne({ username: currentUser.username })
       await validPassword(args.password, user.passwordHash)
-      const events = []
-      for (const id of args.events) {
-        const event = await Event.findById(id)
-        await Visit.remove(event.visits)
-        !!event.group && await Group.DeltaUpdate(event.group, {
-          visitCount: - event.visits.length,
-          events: { filter: event.id }
-        })
-        await Event.remove(event.id)
-        events.push(event)
-      }
+      const events = await Promise.all((await Event.findByIds(args.events))
+        .map(async event => {
+          await Visit.remove(event.visits)
+          await Group.DeltaUpdate(event.group, {
+            visitCount: - event.visits.length,
+            events: { filter: event.id }
+          })
+          await Event.remove(event.id)
+          return event
+        }))
       pubsub.publish('EVENTS_DELETED', { eventsDeleted: args.events })
       return events
     }),

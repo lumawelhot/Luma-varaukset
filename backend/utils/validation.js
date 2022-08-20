@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 const { AuthenticationError, UserInputError } = require('apollo-server-express')
 const { checkTimeslot, validTimeSlot, calcTimeSlot } = require('./calculator')
 const { differenceInDays, differenceInHours } = require('date-fns')

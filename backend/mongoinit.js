@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 const User = require('./models/user')
 const Email = require('./models/email')
+const config = require('./config')
 
 const ADMIN_USERNAME = process.argv[2]
 const ADMIN_PASSWORD = process.argv[3]
@@ -57,7 +58,7 @@ const createAdmin = async () => {
   await User.deleteMany({})
   const userObject = new User({
     username: ADMIN_USERNAME,
-    passwordHash: await bcrypt.hash(ADMIN_PASSWORD, 10),
+    passwordHash: await bcrypt.hash(ADMIN_PASSWORD, config.SALT),
     isAdmin: true,
   })
   await userObject.save()

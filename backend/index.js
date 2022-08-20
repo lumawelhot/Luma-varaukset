@@ -1,6 +1,6 @@
 const httpServer = require('./app')
 const config = require('./config')
-const PORT = config.PORT || 3001
+const { PORT } = config
 
 const cron = require('node-cron')
 const { sendReminder, sendThanks } = require('./utils/mailer/mailSender')

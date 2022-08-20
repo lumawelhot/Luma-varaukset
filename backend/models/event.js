@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 
-const arrayLimit = (val) => val.length > 0
+const arrayLimit = (val) => !!val.length
 const eventSchema = mongoose.Schema({
   title: {
     type: String,
