@@ -25,13 +25,17 @@ const populate = (inst, models) => {
 const execPopulate = async (inst, models) => {
   if (!models) return inst
   if (Array.isArray(models)) {
+    const promises = []
     for (const model of models) {
-      await inst.populate(model)
+      promises.push(inst.populate(model))
     }
+    await Promise.all(promises)
   }
+  const promises = []
   for (const [model, options] of Object.entries(models)) {
-    await inst.populate(model, options)
+    promises.push(inst.populate(model, options))
   }
+  await Promise.all(promises)
   return inst
 }
 

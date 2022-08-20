@@ -48,22 +48,15 @@ const resolvers = {
     modifyGroup: authorized((root, args) => Group.Update(args.id, args, expandGroups)),
     deleteGroups: authorized(async (root, args) => {
       const groups = await Group.findByIds(args.ids)
-      for (const group of groups) {
-        for (const id of group.events) {
-          await Event.update(id, { disabled: true })
-        }
-      }
+      await Promise.all(groups.reduce((r, g) => r
+        .concat(g.events.map(id => Event.update(id, { disabled: true }))), []))
       return Group.remove(args.ids)
     }),
     assignPublishDateToEvents: authorized(async (root, args) => {
-      const returnedEvents = []
       const events = await Event.findByIds(args.events)
-      for (const event of events) {
-        returnedEvents.push(await Event.update(event.id, {
-          publishDate: args.publishDate ? new Date(args.publishDate) : undefined
-        }))
-      }
-      return returnedEvents
+      return Promise.all(events.map(e => Event.update(e.id, {
+        publishDate: args.publishDate ? new Date(args.publishDate) : undefined
+      })))
     }),
     assignEventsToGroup: authorized(async (root, args) => {
       const events = []
@@ -110,15 +103,13 @@ const resolvers = {
       eventValidate(args)
       const [session, eventInst, groupInst] = Transaction.construct(Event, Group)
 
-      let group = await groupInst.findById(args.group)
+      const group = await groupInst.findById(args.group)
       const tags = await Tag.Insert(args.tags)
       const extras = await Extra.findByIds(args.extras)
 
-      const events = []
-
-      for (const date of args.dates) {
+      const events = await Promise.all(args.dates.map(date => {
         const [start, end] = slotFromDate(date, args.start, args.end)
-        const event = await eventInst.insert({
+        return eventInst.insert({
           ...args,
           start,
           end,
@@ -128,10 +119,9 @@ const resolvers = {
           tags,
           group: group ? group.id : null
         }, expandEvents)
+      }))
 
-        group = await groupInst.update(group?.id, { events: group?.events?.concat(event.id) })
-        events.push(event)
-      }
+      await groupInst.update(group?.id, { events: group?.events?.concat(events.map(e => e.id)) })
       await session.commit()
       pubsub.publish('EVENTS_MODIFIED', { eventsModified: events
         .filter(e => !e.publishDate || new Date() >= e.publishDate) })

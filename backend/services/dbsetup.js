@@ -22,23 +22,19 @@ const initializeDB = async () => {
   const extras = require('./staticdata/extras.json')
   const emails = require('./staticdata/emails.json')
   const events = require('./staticdata/events.json')
-  users.forEach(async user => User.insert({
+  await Promise.all(users.map(async user => User.insert({
     ...user,
     passwordHash: await bcrypt.hash(user.password, 10)
   }))
-  extras.forEach(extra => Extra.insert(extra))
-  emails.forEach(email => Email.insert(email))
-  for (const event of events) {
-    await createEvent(event)
-    await createEvent(event)
-  }
+    .concat(extras.map(e => Extra.insert(e)))
+    .concat(emails.map(e => Email.insert(e)))
+    .concat(events.map(event => createEvent(event)))
+    .concat(events.map(event => createEvent(event))))
 }
 
 const unlockEvents = async () => {
   const events = await Event.find()
-  for (const event of events) {
-    await Event.update(event.id, { reserved: null })
-  }
+  await Promise.all(events.map(e => Event.update(e.id, { reserved: null })))
   console.log('event reservations unlocked')
 }
 

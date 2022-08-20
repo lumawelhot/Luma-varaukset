@@ -74,17 +74,13 @@ class Extra extends Common {
 class Tag extends Common {
   constructor(session) { super(getModel('tag'), encoders.tag, session) }
   instance(session) { return new Tag(session) }
-  // Defined here but includes old design. Deprecate this later.
   async Insert(tags) {
-    const foundTags = await this.find({ name: { $in: tags } })
-    const foundTagNames = foundTags.map(t => t.name)
-    const newTags = []
-    for (const tag of tags) {
-      if (!foundTagNames.includes(tag)) {
-        newTags.push(await this.insert({ name: tag }))
-      }
-    }
-    return foundTags.concat(newTags)
+    const _tags = await this.find({ name: { $in: tags } })
+    const result = (await Promise.allSettled(tags.map(t => this.insert({ name: t }))))
+      .filter(t => t.status === 'fulfilled')
+      .map(t => t.value)
+      .concat(_tags)
+    return result
   }
 }
 
@@ -128,14 +124,10 @@ class Transaction {
         throw new Error(err)
       }
     }
-    for (const [, inst] of entries) {
-      try {
-        await inst.save()
-      } catch (err) {
-        console.error(inst)
-        console.error(err)
-        throw new Error(err)
-      }
+    try {
+      await Promise.all(entries.map(e => e[1].save()))
+    } catch (err) {
+      console.error(err)
     }
   }
 }

@@ -47,66 +47,53 @@ const sendAlert = async (name, days) => {
       $lt: end.toISOString()
     }
   }, expandVisits)
-  const report = {
-    success: [],
-    failed: []
-  }
-
-  for (const visit of visits) {
-    try {
-      if (visit.status) {
-        await mailer.sendMail({
-          from: 'Luma-Varaukset <noreply@helsinki.fi>',
-          to: visit.clientEmail,
-          subject: mail.subject,
-          text: fillStringWithValues(mail.text, getDetails(visit, visit.event)),
-          html: fillStringWithValues(mail.html, getDetails(visit, visit.event))
-        })
-        mail.ad.forEach(recipient => {
-          mailer.sendMail({
-            from: 'Luma-Varaukset <noreply@helsinki.fi>',
-            to: recipient,
-            subject: mail.adSubject,
-            text: fillStringWithValues(mail.adText, getDetails(visit, visit.event))
-          })
-        })
-        report.success.push(visit)
-      } else {
-        report.failed.push(visit)
-      }
-    } catch (error) {
-      console.log(error)
-      report.failed.push(visit)
-    }
-  }
-  return report
-}
-
-const send = async (visit, event, name) => {
-  try {
-    if (process.env.NODE_ENV !== 'test') {
-      const mail = await Email.findOne({ name })
-      await mailer.sendMail({
+  const promises = visits.reduce((result, visit) => {
+    if (visit.status) {
+      result.push(mailer.sendMail({
         from: 'Luma-Varaukset <noreply@helsinki.fi>',
         to: visit.clientEmail,
         subject: mail.subject,
-        text: fillStringWithValues(mail.text, getDetails(visit, event)),
-        html: fillStringWithValues(mail.html, getDetails(visit, event))
-      })
-      mail.ad.forEach(recipient => {
-        mailer.sendMail({
-          from: 'Luma-Varaukset <noreply@helsinki.fi>',
-          to: recipient,
-          subject: mail.adSubject,
-          text: fillStringWithValues(mail.adText, getDetails(visit, event)),
-          html: getNotifyHtml(visit, event)
-        }).catch(err => {
-          console.log('\x1b[31m%s\x1b[0m', 'ERROR:', err.message)
-        })
-      })
+        text: fillStringWithValues(mail.text, getDetails(visit, visit.event)),
+        html: fillStringWithValues(mail.html, getDetails(visit, visit.event))
+      }))
+      mail.ad.forEach(recipient => result.push(mailer.sendMail({
+        from: 'Luma-Varaukset <noreply@helsinki.fi>',
+        to: recipient,
+        subject: mail.adSubject,
+        text: fillStringWithValues(mail.adText, getDetails(visit, visit.event))
+      })))
     }
+    return result
+  }, [])
+  try {
+    await Promise.all(promises)
   } catch (err) {
-    throw new Error('Failed to send messages')
+    console.log(err)
+  }
+}
+
+const send = async (visit, event, name) => {
+  if (process.env.NODE_ENV !== 'test') {
+    const mail = await Email.findOne({ name })
+    const promises = [mailer.sendMail({
+      from: 'Luma-Varaukset <noreply@helsinki.fi>',
+      to: visit.clientEmail,
+      subject: mail.subject,
+      text: fillStringWithValues(mail.text, getDetails(visit, event)),
+      html: fillStringWithValues(mail.html, getDetails(visit, event))
+    })]
+    mail.ad.forEach(recipient => promises.push(mailer.sendMail({
+      from: 'Luma-Varaukset <noreply@helsinki.fi>',
+      to: recipient,
+      subject: mail.adSubject,
+      text: fillStringWithValues(mail.adText, getDetails(visit, event)),
+      html: getNotifyHtml(visit, event)
+    })))
+    try {
+      await Promise.all(promises)
+    } catch (err) {
+      console.log(err)
+    }
   }
 }
 

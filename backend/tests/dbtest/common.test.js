@@ -1,15 +1,12 @@
 // TODO: For now we are using "services/staticdata", we probably should fix this so static data does not influence to tests
 // TODO: We should test populating objects
 const { expect } = require('chai')
-const { initializeDB } = require('../../services/dbsetup')
 const { User, Extra, Transaction } = require('../../db')
 
 const getExistingObject = async (Model) => {
   const objects = await Model.find()
   return objects[Math.floor(Math.random() * objects.length)]
 }
-
-beforeEach(() => initializeDB())
 
 describe('Common.js', () => {
 
@@ -156,6 +153,24 @@ describe('Transaction', () => {
     expect((await User.find()).map(u => u.id)).to.include(user.id)
   })
 
+  it('a new user is added after a commit', async () => {
+    const session = new Transaction()
+    session.instances['invalid'] = { validateSync: () => { throw new Error('validation error')} }
+    const _User = User.instance(session)
+    const user = await _User.insert({
+      username: 'NewUser',
+      passwordHash: 'hash',
+      isAdmin: false
+    })
+    expect((await User.find()).map(u => u.id)).to.not.include(user.id)
+    try {
+      await session.commit()
+    } catch (err) {
+      expect(err.message).to.equal('validation error')
+    }
+    expect((await User.find()).map(u => u.id)).to.not.include(user.id)
+  })
+
   it('a user is updated after a commit', async () => {
     const session = new Transaction()
     const _User = User.instance(session)
@@ -164,6 +179,22 @@ describe('Transaction', () => {
     expect((await User.findById(object.id)).username).to.not.equal(user.username)
     await session.commit()
     expect((await User.findById(object.id)).username).to.equal(user.username)
+  })
+
+  it('a user is not updated after a commit if committing fails', async () => {
+    const session = new Transaction()
+    session.instances['invalid'] = { validateSync: () => { throw new Error('validation error')} }
+    const _User = User.instance(session)
+    const object = await getExistingObject(User)
+    const user = await _User.update(object.id, { username: 'UpdatedUsername' })
+    expect((await User.findById(object.id)).username).to.not.equal(user.username)
+    try {
+      await session.commit()
+    } catch (err) {
+      expect(err.message).to.equal('validation error')
+    }
+    expect((await User.findById(object.id)).username).to.not.equal(user.username)
+    expect((await User.findById(object.id)).username).to.equal(object.username)
   })
 
   it('findById returns an updated instance before a commit', async () => {
