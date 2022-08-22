@@ -3,24 +3,24 @@ import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../Embeds/Button'
 import { useForm } from 'react-hook-form'
-import { useEvict, useUser } from '../../hooks/api'
-import { error } from '../../helpers/toasts'
+import { useEvict } from '../../hooks/api'
 import { Input } from '../Embeds/Input'
+import { useUsers } from '../../hooks/cache'
+import { notifier } from '../../helpers/notifier'
 
 const Login = ({ show, close }) => {
   const { t } = useTranslation()
   const formId = useId()
-  const { login, fetch } = useUser()
+  const { login } = useUsers()
   const { evict } = useEvict()
   const { register, handleSubmit, reset } = useForm()
   const onSubmit = async values => {
-    const token = await login(values)
-    if (token) {
-      localStorage.setItem('app-token', token)
-      fetch()
+    const success = await login(values)
+    notifier.login(success)
+    if (success) {
       evict()
       close()
-    } else error(t('notify-login-failed'))
+    }
     reset({ username: '', password: '' })
   }
 

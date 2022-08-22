@@ -4,9 +4,11 @@ import { Alert } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../../Embeds/Button'
 import { useNavigate } from 'react-router-dom'
+import { useVisits } from '../../../hooks/cache'
 
-const Status = ({ status, visit }) => {
+const Status = ({ status }) => {
   const { t } = useTranslation()
+  const { current: visit } = useVisits()
   const navigate = useNavigate()
 
   const toVisitPage = () => {

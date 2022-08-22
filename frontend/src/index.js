@@ -28,6 +28,7 @@ import fi from 'date-fns/locale/fi'
 
 import { createClient } from 'graphql-ws'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+import Cache from './Cache'
 
 registerLocale('fi', fi)
 
@@ -85,8 +86,10 @@ root.render(
       <Router basename={`/${basename}`}>
         <LumaContext>
           <ChakraProvider>
-            <App />
-            <ToastContainer />
+            <Cache>
+              <App />
+              <ToastContainer />
+            </Cache>
           </ChakraProvider>
         </LumaContext>
       </Router>

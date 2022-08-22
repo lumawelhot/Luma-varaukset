@@ -7,20 +7,18 @@ import { Button } from '../Embeds/Button'
 import CreateUser from '../Modals/CreateUser'
 import { userInit } from '../../helpers/initialvalues'
 import ModifyUser from '../Modals/ModifyUser'
-import { useUser } from '../../hooks/api'
+import { exec } from '../../helpers/utils'
+import { useUsers } from '../../hooks/cache'
 
 const UserList = () => {
   const { t } = useTranslation()
   const [showAdd, setShowAdd] = useState(false)
   const [showModify, setShowModify] = useState(false)
   const [selected, setSelected] = useState()
-  const userContext = useUser()
-  useEffect(() => {
-    const exec = () => userContext.fetchAll()
-    exec()
-  }, [userContext])
+  const { all, current, fetchAll, remove } = useUsers()
+  useEffect(exec(fetchAll), [current])
 
-  const users = useMemo(() => userContext?.all?.
+  const users = useMemo(() => all?.
     map(u => ({
       id: u.id,
       username: u.username,
@@ -29,13 +27,13 @@ const UserList = () => {
         setSelected({ ...u, isAdmin: String(u.isAdmin) })
         setShowModify(true)
       }}>{t('modify-user')}</Button>,
-      nocheck : u.username === userContext?.current?.username ? true : false
+      nocheck : u.username === current?.username ? true : false
     }))
-  , [userContext.all, userContext.current, t])
+  , [all, current, t])
 
   const handleRemove = e => {
     if (confirm('remove-user-confirm')) {
-      userContext.remove(e.checked.map(i => users[i].id))
+      remove(e.checked.map(i => users[i].id))
       e.reset()
     }
   }

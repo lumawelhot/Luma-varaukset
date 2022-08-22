@@ -5,17 +5,17 @@ import { useTranslation } from 'react-i18next'
 import { Button, Radio } from '../Embeds/Button'
 import { Error, required } from '../Embeds/Title'
 import { ModifyUserValidation } from '../../helpers/validate'
-import { error, success } from '../../helpers/toasts'
-import { useUser } from '../../hooks/api'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from '../Embeds/Input'
 import { RadioGroup } from '../Embeds/Button'
+import { useUsers } from '../../hooks/cache'
+import { notifier } from '../../helpers/notifier'
 
 const ModifyUser = ({ show, close, initialValues }) => {
   const { t } = useTranslation()
   const formId = useId()
-  const { current: user, modify } = useUser()
+  const { current: user, modify } = useUsers()
   const [modifyPassword, setModifyPassword] = useState(false)
   const { control, register, handleSubmit, formState: { errors }, watch } = useForm({
     resolver: yupResolver(ModifyUserValidation),
@@ -23,10 +23,9 @@ const ModifyUser = ({ show, close, initialValues }) => {
   })
 
   const onSubmit = async values => {
-    if (await modify({ ...values, user: values.id })) {
-      success(t('notify-user-modify-success'))
-      close()
-    } else error(t('notify-user-modify-error'))
+    const result = await modify({ ...values, user: values.id })
+    notifier.modifyUser(result)
+    if (result) close()
   }
 
   return (

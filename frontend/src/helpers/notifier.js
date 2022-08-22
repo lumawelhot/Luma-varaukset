@@ -1,5 +1,19 @@
-import { error, success } from './toasts'
+import { toast } from 'react-toastify'
 import { t } from '../i18n'
+
+const config = {
+  position: 'bottom-left',
+  autoClose: 4000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: 'colored'
+}
+
+const success = message => toast.success(message, config)
+const error = message => toast.error(message, config)
 
 export const notifier = {
   modifyVisit: r => r
@@ -16,5 +30,21 @@ export const notifier = {
     : error(t('notify-event-modify-failed')),
   createForm: r => r
     ? success(t('notify-form-add-success'))
-    : error(t('notify-form-add-failed'))
+    : error(t('notify-form-add-failed')),
+  createUser: r => r
+    ? success(t('notify-user-create-success'))
+    : error(t('notify-user-create-failed')),
+  modifyForm: r => r
+    ? success(t('notify-form-modify-success'))
+    : error(t('notify-form-modify-failed')),
+  login: r => r ? undefined : error(t('notify-login-failed')),
+  modifyUser: r => r
+    ? success(t('notify-user-modify-success'))
+    : error(t('notify-user-modify-error')),
+  modifyGroup: r => r
+    ? success(t('notify-group-modify-success'))
+    : error(t('notify-group-modify-failed')),
+  addGroup: r => r
+    ? success(t('notify-group-create-success'))
+    : error(t('notify-group-create-failed'))
 }

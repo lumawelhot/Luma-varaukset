@@ -43,6 +43,7 @@ class Group extends Common {
   async DeltaUpdate(id, delta, expand, args, stub) {
     if (!id) return
     const group = stub ? await stub.findById(id) : await this.findById(id)
+    if (!group) return
     const visitCount = group.visitCount + delta.visitCount
     if (group.maxCount < visitCount) {
       throw new UserInputError('Max number of visits exceeded')

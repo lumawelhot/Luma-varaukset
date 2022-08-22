@@ -11,8 +11,9 @@ import Info from './Info'
 import Status from './Status'
 import Steps, { Step } from 'rc-steps'
 import { CheckIcon } from '@chakra-ui/icons'
-import { useEvents, useUser, useVisits } from '../../../hooks/api'
+import { useEvents } from '../../../hooks/api'
 import { notifier } from '../../../helpers/notifier'
+import { useUsers, useVisits } from '../../../hooks/cache'
 
 const Visit = ({ children }) => {
   const { t } = useTranslation()
@@ -22,10 +23,9 @@ const Visit = ({ children }) => {
   const [status, setStatus] = useState()
   const [timer, setTimer] = useState()
   const [token, setToken] = useState()
-  const [visit, setVisit] = useState()
-  const { book } = useVisits()
+  const { add } = useVisits()
   const { cacheModify, find, remove, lock, unlock, current: event } = useEvents()
-  const { current: user } = useUser()
+  const { current: user } = useUsers()
   const navigate = useNavigate()
 
   const getTitle = (current) => {
@@ -55,11 +55,10 @@ const Visit = ({ children }) => {
       token: token,
     }
     increment()
-    const result = await book(variables)
+    const result = await add(variables)
     notifier.createVisit(result)
     setStatus(result ? true : false)
     if (result?.event) {
-      setVisit(result)
       const found = find(result.event.id)
       cacheModify(combineEvent(result, found))
     }
@@ -102,7 +101,7 @@ const Visit = ({ children }) => {
           {<Form formId={formId} show={!showInfo} onSubmit={handleSubmit} event={event} />}
           {showInfo && <Info />}
         </div>
-        {phase >= 2 && <Status status={status} visit={visit}/>}
+        {phase >= 2 && <Status status={status}/>}
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }} >
         <div style={{ lineHeight: 3, marginBottom: -5 }}>

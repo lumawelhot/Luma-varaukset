@@ -5,35 +5,24 @@
 import { useContext } from 'react'
 import {
   EventContext,
-  UserContext,
-  VisitContext,
-  GroupContext,
   MiscContext,
-  FormContext
 } from '../context'
+import { useUsers, useVisits } from './cache'
 
 export const useEvict = () => {
-  const user = useContext(UserContext)
-  const visits = useContext(VisitContext)
   const events = useContext(EventContext)
+  const users = useUsers()
+  const visits = useVisits()
 
   const evict = () => {
-    user.evict()
     visits.evict()
     events.evict()
+    users.evict()
   }
 
   return { evict }
 }
 
 export const useEvents = () => useContext(EventContext)
-
-export const useVisits = () => useContext(VisitContext)
-
-export const useGroups = () => useContext(GroupContext)
-
-export const useForms = () => useContext(FormContext)
-
-export const useUser = () => useContext(UserContext)
 
 export const useMisc = () => useContext(MiscContext)

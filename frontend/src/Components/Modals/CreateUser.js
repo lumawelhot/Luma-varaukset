@@ -9,16 +9,16 @@ import { CreateUserValidation } from '../../helpers/validate'
 import { userInit } from '../../helpers/initialvalues'
 import { useForm } from 'react-hook-form'
 import { required } from '../Embeds/Title'
-import { error, success } from '../../helpers/toasts'
-import { useUser } from '../../hooks/api'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from '../Embeds/Input'
 import { RadioGroup } from '../Embeds/Button'
+import { useUsers } from '../../hooks/cache'
+import { notifier } from '../../helpers/notifier'
 
 const CreateUser = ({ show, close }) => {
   const { t } = useTranslation()
   const formId = useId()
-  const { add } = useUser()
+  const { add } = useUsers()
   const { control, register, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: yupResolver(CreateUserValidation),
     defaultValues: userInit,
@@ -26,11 +26,9 @@ const CreateUser = ({ show, close }) => {
   })
 
   const onSubmit = async values => {
-    const { username, password, isAdmin } = values
-    if (await add({ username, password, isAdmin: isAdmin === 'true' })) {
-      success(t('notify-user-create-success'))
-      close()
-    } else error(t('notify-user-create-failed'))
+    const result = await add(values)
+    notifier.createUser(result)
+    if (result) close()
     reset(userInit)
   }
 

@@ -3,16 +3,15 @@ import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../../Embeds/Button'
 import { customformInit } from '../../../helpers/initialvalues'
-import { error, success } from '../../../helpers/toasts'
-import { useForms } from '../../../hooks/api'
 import Form from './Form'
 import { notifier } from '../../../helpers/notifier'
+import { useForms } from '../../../hooks/cache'
 
 const CustomForm = ({ show, close, initialValues = customformInit, modify }) => {
   const { t } = useTranslation()
   const formId = useId()
   const [onModify, setOnModify] = useState()
-  const { add, modify: mod } = useForms()
+  const { add, modify: _modify } = useForms()
 
   const handleAddForm = async values => {
     const status = await add({ ...values })
@@ -21,11 +20,9 @@ const CustomForm = ({ show, close, initialValues = customformInit, modify }) => 
   }
 
   const handleModifyForm = async values => {
-    const status = await mod({ ...values, id: initialValues.id })
-    if (status) {
-      success(t('notify-form-modify-success'))
-      close()
-    } else error(t('notify-form-modify-failed'))
+    const status = await _modify({ ...values, id: initialValues.id })
+    notifier.modifyForm(status)
+    if (status) close()
   }
 
   const onSubmit = v => modify ? handleModifyForm(v) : handleAddForm(v)

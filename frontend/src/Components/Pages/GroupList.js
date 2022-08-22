@@ -6,46 +6,35 @@ import Table from '../Table'
 import { Button } from '../Embeds/Button'
 import Group from '../Modals/Group'
 import { groupInit } from '../../helpers/initialvalues'
-import { error, success } from '../../helpers/toasts'
-import { useGroups } from '../../hooks/api'
+import { exec } from '../../helpers/utils'
+import { notifier } from '../../helpers/notifier'
+import { useGroups } from '../../hooks/cache'
 
 const GroupList = () => {
   const { t } = useTranslation()
-  const groupContext = useGroups()
+  const { fetchAll, modify, add, remove, all } = useGroups()
   const [showAdd, setShowAdd] = useState()
   const [showModify, setShowModify] = useState()
   const [group, setGroup] = useState()
-  useEffect(() => {
-    const exec = () => groupContext.fetch()
-    exec()
-  }, [])
+  useEffect(exec(fetchAll), [])
 
   const modifyGroup = async values => {
     const { id, name, maxCount } = values
-    const status = await groupContext.modify({
-      id,
-      name,
-      maxCount: Number(maxCount)
-    })
-    if (status) success(t('notify-group-modify-success'))
-    else error(t('notify-group-modify-failed'))
+    const status = await modify({ id, name, maxCount: Number(maxCount) })
+    notifier.modifyGroup(status)
     return status
   }
 
   const addGroup = async values => {
     const { name, maxCount } = values
-    const status = await groupContext.add({
-      name,
-      maxCount: Number(maxCount)
-    })
-    if (status) success(t('notify-group-create-success'))
-    else error(t('notify-group-create-failed'))
+    const status = await add({ name, maxCount: Number(maxCount) })
+    notifier.addGroup(status)
     return status
   }
 
-  const handleRemove = (ids) => groupContext.remove(ids)
+  const handleRemove = ids => remove(ids)
 
-  const groups = useMemo(() => groupContext?.all?.map(g => ({
+  const groups = useMemo(() => all?.map(g => ({
     id: g.id,
     name: g.name,
     maxCount: g.maxCount,
@@ -56,7 +45,7 @@ const GroupList = () => {
       setGroup(g)
       setShowModify(true)
     }}>{t('modify')}</Button>
-  })), [groupContext.all, t])
+  })), [all, t])
 
   const columns = useMemo(groupColumns, [t])
 

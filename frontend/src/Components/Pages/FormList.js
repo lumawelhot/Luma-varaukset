@@ -5,19 +5,17 @@ import Table from '../Table'
 import { formColumns } from '../../helpers/columns'
 import { Button } from '../Embeds/Button'
 import CustomForm from '../Modals/CustomForm'
-import { useForms } from '../../hooks/api'
+import { useForms } from '../../hooks/cache'
+import { exec } from '../../helpers/utils'
 
 const FormList = () => {
   const { t } = useTranslation()
-  const { all, fetch, remove } = useForms()
+  const { all, fetchAll, remove } = useForms()
   const [showAdd, setShowAdd] = useState()
   const [showModify, setShowModify] = useState()
   const [selectedForm, setSelectedForm] = useState()
 
-  useEffect(() => {
-    const exec = () => fetch()
-    exec()
-  }, [])
+  useEffect(exec(fetchAll), [])
 
   const forms = useMemo(() => all
     ?.map(f => ({

@@ -8,23 +8,19 @@ import { useNavigate } from 'react-router-dom'
 import { CLASSES } from '../../config'
 import { Badge } from '../Embeds/Badge'
 import { Select } from '../Embeds/Input'
-import { someExist } from '../../helpers/utils'
+import { exec, someExist } from '../../helpers/utils'
 import Clipboard from '../Embeds/Clipboard'
-import { useEvents, useVisits } from '../../hooks/api'
+import { useEvents } from '../../hooks/api'
+import { useVisits } from '../../hooks/cache'
 
 const VisitList = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { all, fetch } = useVisits()
+  const { all, fetchAll } = useVisits()
   const { find } = useEvents()
-  const [filterOptions, setFilterOptions] = useState({
-    classes: [],
-  })
+  const [filterOptions, setFilterOptions] = useState({ classes: [] })
 
-  useEffect(() => {
-    const exec = () => fetch()
-    exec()
-  }, [])
+  useEffect(exec(fetchAll), [])
 
   const visits = useMemo(() => all
     ?.filter(p => {

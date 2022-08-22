@@ -1,9 +1,9 @@
 import React from 'react'
 import { Navigate } from 'react-router-dom'
-import { useUser } from './hooks/api'
+import { useUsers } from './hooks/cache'
 
 const Root = () => {
-  const { current: user } = useUser()
+  const { current: user } = useUsers()
 
   if (user === undefined) return <></>
 

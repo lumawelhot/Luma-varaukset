@@ -5,20 +5,18 @@ import { Button } from '../../Embeds/Button'
 import { useNavigate, useParams } from 'react-router-dom'
 import CSV from './CSV'
 import Emails from './Emails'
-import { useUser, useVisits } from '../../../hooks/api'
+import { useUsers, useVisits } from '../../../hooks/cache'
+import { exec } from '../../../helpers/utils'
 
 const Configs = () => {
   const { t } = useTranslation()
-  const { fetch } = useVisits()
-  const { current: user } = useUser()
+  const { fetchAll } = useVisits()
+  const { current: user } = useUsers()
   const { page } = useParams()
   const navigate = useNavigate()
   const title = page ? page : 'csv'
 
-  useEffect(() => {
-    const exec = () => fetch()
-    exec()
-  }, [])
+  useEffect(exec(fetchAll), [])
 
   return (
     <>

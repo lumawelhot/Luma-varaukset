@@ -15,10 +15,11 @@ import { useTranslation } from 'react-i18next'
 import { default as EventSelectAction } from '../Modals/EventListForms'
 import { someExist } from '../../helpers/utils'
 import Title from '../Embeds/Title'
-import { useEvents, useMisc, useUser } from '../../hooks/api'
+import { useEvents, useMisc } from '../../hooks/api'
+import { useUsers } from '../../hooks/cache'
 
 const LumaCalendar = () => {
-  const { current: user } = useUser()
+  const { current: user } = useUsers()
   const {
     all: events,
     set,

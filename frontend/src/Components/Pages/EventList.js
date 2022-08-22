@@ -13,12 +13,13 @@ import { DatePicker } from '../Embeds/Picker'
 import Title from '../Embeds/Title'
 import { Badge } from '../Embeds/Badge'
 import EventListForms from '../Modals/EventListForms'
-import { useEvents, useUser } from '../../hooks/api'
+import { useEvents } from '../../hooks/api'
+import { useUsers } from '../../hooks/cache'
 
 const EventList = () => {
   const { t } = useTranslation()
   const { all, find } = useEvents()
-  const { current: user } = useUser()
+  const { current: user } = useUsers()
   const [showForms, setShowForms] = useState(false)
   const [selected, setSelected] = useState()
   const [filterOptions, setFilterOptions] = useState({

@@ -2,7 +2,8 @@ import React from 'react'
 import { getCSV } from '../../../helpers/utils'
 import { Button } from '../../Embeds/Button'
 import { useTranslation } from 'react-i18next'
-import { useEvents, useVisits } from '../../../hooks/api'
+import { useEvents } from '../../../hooks/api'
+import { useVisits } from '../../../hooks/cache'
 
 const CSV = () => {
   const { all } = useVisits()

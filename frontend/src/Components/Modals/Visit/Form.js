@@ -8,17 +8,17 @@ import { Checkbox, Radio, RadioGroup, CheckboxGroup } from '../../Embeds/Button'
 import { TimePicker } from '../../Embeds/Picker'
 import { add, format, set } from 'date-fns'
 import { VisitValidation } from '../../../helpers/validate'
-import { useForms } from '../../../hooks/api'
 import { visitInitialValues } from '../../../helpers/initialvalues'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { exec } from '../../../helpers/utils'
+import { useForms } from '../../../hooks/cache'
 
 const Form = ({ formId, show, onSubmit, event, visit }) => {
-  const { fetch } = useForms()
+  const { fetchAll } = useForms()
   const { t } = useTranslation()
 
-  useEffect(exec(fetch), [])
+  useEffect(exec(fetchAll), [])
 
   if (!event) return <></>
   const form = event?.customForm

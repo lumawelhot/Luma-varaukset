@@ -9,24 +9,23 @@ import { DatePicker, TimePicker } from '../../Embeds/Picker'
 import { Checkbox } from '../../Embeds/Table'
 import Title, { Error, required } from '../../Embeds/Title'
 import { IconButton, CheckboxGroup } from '../../Embeds/Button'
-import { someExist } from '../../../helpers/utils'
+import { exec, someExist } from '../../../helpers/utils'
 import Table from '../../Table'
 import { eventDateColumns } from '../../../helpers/columns'
 import { DeleteIcon } from '@chakra-ui/icons'
 import { EventValidation } from '../../../helpers/validate'
-import { useForms, useGroups, useMisc } from '../../../hooks/api'
+import { useMisc } from '../../../hooks/api'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
+import { useExtras, useForms, useGroups } from '../../../hooks/cache'
 
 const Form = ({ formId, onSubmit, initialValues, type }) => {
   const { t } = useTranslation()
-  const { extras, tags, fetchTags, fetchExtras } = useMisc()
-  const { all: forms, fetch: fetchForms } = useForms()
-  const { all: groups, fetch: fetchGroups } = useGroups()
-  useEffect(() => {
-    const exec = () => fetchExtras()
-    exec()
-  }, [])
+  const { all: extras, fetchAll: fetchExtras } = useExtras()
+  const { tags, fetchTags } = useMisc()
+  const { all: forms, fetchAll: fetchForms } = useForms()
+  const { all: groups, fetchAll: fetchGroups } = useGroups()
+  useEffect(exec(fetchExtras), [])
 
   const { control, register, handleSubmit, formState: { errors }, setValue, watch, getValues } = useForm({
     resolver: yupResolver(EventValidation),

@@ -4,24 +4,25 @@ import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '../../Embeds/Button'
-import { useEvents, useUser, useVisits } from '../../../hooks/api'
+import { useEvents } from '../../../hooks/api'
 import Details from './Details'
 import Form from './Form'
 import { exec } from '../../../helpers/utils'
 import { parseVisitSubmission } from '../../../helpers/parse'
 import { notifier } from '../../../helpers/notifier'
+import { useUsers, useVisits } from '../../../hooks/cache'
 
 const Submission = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { current: visit, find, remove, fetch, modify } = useVisits()
+  const { current: visit, find, remove, fetchAll, modify } = useVisits()
   const { find : findEvent } = useEvents()
-  const { current: user } = useUser()
+  const { current: user } = useUsers()
   const [page, setPage] = useState('details')
   const { id } = useParams()
   const formId = useId()
   useEffect(exec(async () => {
-    await fetch()
+    await fetchAll()
     await find(id)
   }), [])
 

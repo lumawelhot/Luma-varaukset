@@ -6,11 +6,12 @@ import { Button, Link } from '../Embeds/Button'
 import { Input, Select } from '../Embeds/Input'
 import { DatePicker, TimePicker } from '../Embeds/Picker'
 import Title from '../Embeds/Title'
-import { useEvents, useGroups } from '../../hooks/api'
+import { useEvents } from '../../hooks/api'
+import { useGroups } from '../../hooks/cache'
 
 const EventListForms = ({ selected, type, show, close, reset }) => {
   const { forceRemove, assignToGroup, setPublish } = useEvents()
-  const { fetch, all: groups } = useGroups()
+  const { fetchAll, all: groups } = useGroups()
   const [showSelected, setShowSelected] = useState(false)
   const [password, setPassword] = useState('')
   const [publishDate, setPublishDate] = useState(new Date())
@@ -100,7 +101,7 @@ const EventListForms = ({ selected, type, show, close, reset }) => {
           {selected?.length > 0 && <>
             <Select
               isMulti={false}
-              onClick={fetch}
+              onClick={fetchAll}
               onChange={e => setGroup(groups?.find(g => g.id === e.value))}
               options={groups?.map(g => ({ value: g.id, label: g.name }))}
             />

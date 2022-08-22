@@ -9,26 +9,21 @@ import { Button } from '../Embeds/Button'
 import Extra from '../Modals/Extra'
 import { extraInit } from '../../helpers/initialvalues'
 import { Select } from '../Embeds/Input'
-import { someExist } from '../../helpers/utils'
-import { useMisc } from '../../hooks/api'
+import { exec, someExist } from '../../helpers/utils'
+import { useExtras } from '../../hooks/cache'
 
 const ExtraList = () => {
   const { t } = useTranslation()
-  const misc = useMisc()
+  const { fetchAll, all, add, modify, remove } = useExtras()
   const [modalType, setModalType] = useState()
   const [extra, setExtra] = useState()
-  const [filterOptions, setFilterOptions] = useState({
-    classes: [],
-  })
+  const [filterOptions, setFilterOptions] = useState({ classes: [] })
 
-  useEffect(() => {
-    const exec = () => misc.fetchExtras()
-    exec()
-  }, [misc])
+  useEffect(exec(fetchAll), [])
 
-  const handleRemove = ids => misc.removeExtras(ids)
+  const handleRemove = ids => remove(ids)
 
-  const extras = useMemo(() => misc?.extras
+  const extras = useMemo(() => all
     ?.filter(p => {
       const { classes } = filterOptions
       if (classes.length <= 0) return true
@@ -50,7 +45,7 @@ const ExtraList = () => {
           setModalType('modify')
         }}>{t('modify')}</Button>
     }))
-  , [misc.extras, filterOptions, t])
+  , [all, filterOptions, t])
 
   const columns = useMemo(extraColumns, [t])
 
@@ -70,7 +65,7 @@ const ExtraList = () => {
       <Table checkboxed data={extras} columns={columns} component={e => (<>
         <Button onClick={() => setModalType('create')}>{t('create')}</Button>
         {e.checked.length > 0 && <Button onClick={() => {
-          const ids = e.checked.map(c => misc.extras[Number(c)].id) // WHY misc.extras ??
+          const ids = e.checked.map(c => all[Number(c)].id) // WHY misc.extras ??
           handleRemove(ids)
           e.reset()
         }}>{t('remove-selected')}</Button>}
@@ -78,14 +73,14 @@ const ExtraList = () => {
       <Extra
         show={modalType === 'create'}
         close={() => setModalType()}
-        handle={misc.addExtra}
+        handle={add}
         initialValues={extraInit}
         title={t('create-extra')}
       />
       <Extra
         show={modalType === 'modify'}
         close={() => setModalType()}
-        handle={v => misc.modifyExtra({ ...v, id: extra.id })}
+        handle={v => modify({ ...v, id: extra.id })}
         initialValues={extra ? {
           name: extra.name,
           inPersonLength: String(extra.inPersonLength),
