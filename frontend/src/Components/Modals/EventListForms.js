@@ -6,8 +6,7 @@ import { Button, Link } from '../Embeds/Button'
 import { Input, Select } from '../Embeds/Input'
 import { DatePicker, TimePicker } from '../Embeds/Picker'
 import Title from '../Embeds/Title'
-import { useEvents } from '../../hooks/api'
-import { useGroups } from '../../hooks/cache'
+import { useGroups, useEvents } from '../../hooks/cache'
 
 const EventListForms = ({ selected, type, show, close, reset }) => {
   const { forceRemove, assignToGroup, setPublish } = useEvents()

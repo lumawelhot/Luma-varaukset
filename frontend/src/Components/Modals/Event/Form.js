@@ -14,10 +14,9 @@ import Table from '../../Table'
 import { eventDateColumns } from '../../../helpers/columns'
 import { DeleteIcon } from '@chakra-ui/icons'
 import { EventValidation } from '../../../helpers/validate'
-import { useMisc } from '../../../hooks/api'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
-import { useExtras, useForms, useGroups } from '../../../hooks/cache'
+import { useExtras, useForms, useGroups, useMisc } from '../../../hooks/cache'
 
 const Form = ({ formId, onSubmit, initialValues, type }) => {
   const { t } = useTranslation()

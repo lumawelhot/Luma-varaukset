@@ -5,15 +5,14 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import { BOOKING_TIME } from '../../../config'
 import { Button } from '../../Embeds/Button'
 import Timer from '../../Embeds/Timer'
-import { combineEvent, parseVisitSubmission } from '../../../helpers/parse'
+import { /* combineEvent, */ parseVisitSubmission } from '../../../helpers/parse'
 import Form from './Form'
 import Info from './Info'
 import Status from './Status'
 import Steps, { Step } from 'rc-steps'
 import { CheckIcon } from '@chakra-ui/icons'
-import { useEvents } from '../../../hooks/api'
 import { notifier } from '../../../helpers/notifier'
-import { useUsers, useVisits } from '../../../hooks/cache'
+import { useUsers, useVisits, useEvents } from '../../../hooks/cache'
 
 const Visit = ({ children }) => {
   const { t } = useTranslation()
@@ -24,7 +23,7 @@ const Visit = ({ children }) => {
   const [timer, setTimer] = useState()
   const [token, setToken] = useState()
   const { add } = useVisits()
-  const { cacheModify, find, remove, lock, unlock, current: event } = useEvents()
+  const { remove, lock, unlock, current: event } = useEvents()
   const { current: user } = useUsers()
   const navigate = useNavigate()
 
@@ -58,10 +57,6 @@ const Visit = ({ children }) => {
     const result = await add(variables)
     notifier.createVisit(result)
     setStatus(result ? true : false)
-    if (result?.event) {
-      const found = find(result.event.id)
-      cacheModify(combineEvent(result, found))
-    }
   }
 
   const handleRemove = () => {

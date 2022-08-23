@@ -4,17 +4,15 @@ import { emailColumns } from '../../../helpers/columns'
 import Table from '../../Table'
 import { default as EmailModal } from '../../Modals/Emails'
 import { useTranslation } from 'react-i18next'
-import { useMisc } from '../../../hooks/api'
+import { useMisc } from '../../../hooks/cache'
+import { exec } from '../../../helpers/utils'
 
 const Emails = () => {
   const { fetchEmails, emails } = useMisc()
   const [template, setTemplate] = useState()
   const { t } = useTranslation()
 
-  useEffect(() => {
-    const exec = () => fetchEmails()
-    exec()
-  }, [])
+  useEffect(exec(fetchEmails), [])
 
   const templates = useMemo(() => emails
     ?.map(e => ({

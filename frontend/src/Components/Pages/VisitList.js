@@ -10,8 +10,7 @@ import { Badge } from '../Embeds/Badge'
 import { Select } from '../Embeds/Input'
 import { exec, someExist } from '../../helpers/utils'
 import Clipboard from '../Embeds/Clipboard'
-import { useEvents } from '../../hooks/api'
-import { useVisits } from '../../hooks/cache'
+import { useVisits, useEvents } from '../../hooks/cache'
 
 const VisitList = () => {
   const { t } = useTranslation()

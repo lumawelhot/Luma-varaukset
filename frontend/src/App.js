@@ -20,19 +20,21 @@ import { eventInitWithValues } from './helpers/initialvalues'
 import { useNavigate } from 'react-router-dom'
 import FormList from './components/Pages/FormList'
 import Root from './Root'
-import { useEvents } from './hooks/api'
 import Submission from './components/Modals/Visit/Submission'
-import { useUsers } from './hooks/cache'
+import { useUsers, useEvents } from './hooks/cache'
 import { exec } from './helpers/utils'
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false)
   const [showEvent, setShowEvent] = useState(false)
   const { current: user, fetch } = useUsers()
-  const { current: event, enable, disable } = useEvents()
+  const { current: event, enable, disable, fetchAll } = useEvents()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  useEffect(exec(fetch), [user])
+  useEffect(exec(async () => {
+    await fetch()
+    await fetchAll()
+  }), [user])
 
   return (
     <>
@@ -63,7 +65,7 @@ const App = () => {
           <Route path='/users' element={user?.isAdmin ? <UserList /> : <Root />} />
           <Route path='/events' element={user ? <EventList /> : <Root />} />
           <Route path='/groups' element={user ? <GroupList /> : <Root />} />
-          <Route path='/configs' element={user ? <Configs></Configs> : <Root />} />
+          <Route path='/configs' element={user ? <Configs /> : <Root />} />
           <Route path='/configs/:page' element={user ? <Configs /> : <Root />} />
           <Route path='/extras' element={user ? <ExtraList /> : <Root />} />
           <Route path='/forms' element={user ? <FormList /> : <Root />} />

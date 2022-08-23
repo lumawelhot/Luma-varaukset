@@ -4,7 +4,7 @@ import { Badge } from '../../Embeds/Badge'
 import { LANG_MAP, CLASSES, GRADES } from '../../../config'
 import { format } from 'date-fns'
 import { Title, Text, Li, Ul, P } from '../../Embeds/Info'
-import { useEvents } from '../../../hooks/api'
+import { useEvents } from '../../../hooks/cache'
 
 const Info = () => {
   const { t } = useTranslation()

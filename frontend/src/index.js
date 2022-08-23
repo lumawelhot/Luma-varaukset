@@ -1,6 +1,6 @@
+/* eslint-disable no-unused-vars */
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { BrowserRouter as Router } from 'react-router-dom'
 import './i18n'
@@ -18,7 +18,6 @@ import {
 } from '@apollo/client'
 
 import { getMainDefinition } from '@apollo/client/utilities'
-import LumaContext from './context'
 import { ChakraProvider } from '@chakra-ui/react'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -29,6 +28,7 @@ import fi from 'date-fns/locale/fi'
 import { createClient } from 'graphql-ws'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import Cache from './Cache'
+import App from './App'
 
 registerLocale('fi', fi)
 
@@ -84,14 +84,12 @@ root.render(
   <ApolloProvider client={client}>
     <React.StrictMode>
       <Router basename={`/${basename}`}>
-        <LumaContext>
-          <ChakraProvider>
-            <Cache>
-              <App />
-              <ToastContainer />
-            </Cache>
-          </ChakraProvider>
-        </LumaContext>
+        <ChakraProvider>
+          <Cache>
+            <App />
+            <ToastContainer />
+          </Cache>
+        </ChakraProvider>
       </Router>
     </React.StrictMode>
   </ApolloProvider>

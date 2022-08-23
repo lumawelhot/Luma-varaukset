@@ -144,3 +144,10 @@ export const parseEventSubmission = values => {
     customForm: customForm?.value ? customForm.value : null
   }
 }
+
+export const parseFormFields = data => {
+  const form = data?.customForm
+  return { ...data, customForm: {
+    ...form, fields: typeof form?.fields === 'string' ? JSON.parse(form.fields) : form?.fields
+  } }
+}

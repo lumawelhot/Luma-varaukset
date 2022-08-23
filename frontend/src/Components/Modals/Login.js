@@ -3,9 +3,8 @@ import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../Embeds/Button'
 import { useForm } from 'react-hook-form'
-import { useEvict } from '../../hooks/api'
 import { Input } from '../Embeds/Input'
-import { useUsers } from '../../hooks/cache'
+import { useUsers, useEvict } from '../../hooks/cache'
 import { notifier } from '../../helpers/notifier'
 
 const Login = ({ show, close }) => {

@@ -4,13 +4,12 @@ import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '../../Embeds/Button'
-import { useEvents } from '../../../hooks/api'
 import Details from './Details'
 import Form from './Form'
 import { exec } from '../../../helpers/utils'
 import { parseVisitSubmission } from '../../../helpers/parse'
 import { notifier } from '../../../helpers/notifier'
-import { useUsers, useVisits } from '../../../hooks/cache'
+import { useUsers, useVisits, useEvents } from '../../../hooks/cache'
 
 const Submission = () => {
   const { t } = useTranslation()

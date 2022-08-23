@@ -6,18 +6,12 @@ import { Select } from '../Embeds/Input'
 import { CLASSES, GRADES } from '../../config'
 import { CheckboxGroup } from '@chakra-ui/react'
 import Title from '../Embeds/Title'
-import { useEvents, useMisc } from '../../hooks/api'
+import { useEvents, useMisc } from '../../hooks/cache'
 
 const Filter = ({ show, close }) => {
   const { t } = useTranslation()
-  const {
-    tags,
-    fetchTags
-  } = useMisc()
-  const {
-    filterOptions,
-    setFilterOptions,
-  } = useEvents()
+  const { tags, fetchTags } = useMisc()
+  const { filterOptions, setFilterOptions } = useEvents()
 
   return (
     <Modal

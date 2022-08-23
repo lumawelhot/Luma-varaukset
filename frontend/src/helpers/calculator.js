@@ -40,8 +40,8 @@ export const calcAvailableTimes = (availableTimes, visit, waitingTime, duration)
   const range = [new Date(visit.startTime).getTime(), new Date(visit.endTime).getTime()]
   const newAvailableTimes = split(ranges, range, waitingTime * 60000)
   return newAvailableTimes.filter(f => f[1] - f[0] >= duration * 60000).map(a => ({
-    startTime: new Date(a[0]),
-    endTime: new Date(a[1])
+    startTime: new Date(a[0]).toISOString(),
+    endTime: new Date(a[1]).toISOString()
   }))
 }
 

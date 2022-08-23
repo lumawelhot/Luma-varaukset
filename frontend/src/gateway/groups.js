@@ -1,46 +1,25 @@
-import { client } from '..'
 import { CREATE_GROUP, DELETE_GROUPS, GROUPS, MODIFY_GROUP } from '../graphql/queries'
+import { mutate, query } from './connector'
 
-export const fetchAll = async () => {
-  try {
-    const { data: { getGroups } } = await client.query({
-      query: GROUPS,
-      fetchPolicy: 'no-cache'
-    })
-    return getGroups
-  } catch (err) { undefined }
-}
+export const fetchAll = () => query({
+  query: GROUPS,
+  field: 'getGroups'
+})
 
-export const add = async variables => {
-  try {
-    const { data: { createGroup } } = await client.mutate({
-      mutation: CREATE_GROUP,
-      variables,
-      fetchPolicy: 'no-cache'
-    })
-    return createGroup
-  } catch (err) { undefined }
-}
+export const add = variables => mutate({
+  mutation: CREATE_GROUP,
+  variables,
+  field: 'createGroup'
+})
 
-export const remove = async ids => {
-  try {
-    const { data: { deleteGroups } } = await client.mutate({
-      mutation: DELETE_GROUPS,
-      variables: { ids },
-      fetchPolicy: 'no-cache'
-    })
-    return deleteGroups
-  } catch (err) { undefined }
-  return false
-}
+export const modify = variables => mutate({
+  mutation: MODIFY_GROUP,
+  variables,
+  field: 'modifyGroup'
+})
 
-export const modify = async variables => {
-  try {
-    const { data: { modifyGroup } } = await client.mutate({
-      mutation: MODIFY_GROUP,
-      variables,
-      fetchPolicy: 'no-cache'
-    })
-    return modifyGroup
-  } catch (err) { undefined }
-}
+export const remove = ids => mutate({
+  mutation: DELETE_GROUPS,
+  variables: { ids },
+  field: 'deleteGroups'
+})

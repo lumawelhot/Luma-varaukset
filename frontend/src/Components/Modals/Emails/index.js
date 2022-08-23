@@ -2,7 +2,7 @@ import React, { useId } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../../Embeds/Button'
-import { useMisc } from '../../../hooks/api'
+import { useMisc } from '../../../hooks/cache'
 import Form from './Form'
 
 const Emails = ({ show, close, template }) => {

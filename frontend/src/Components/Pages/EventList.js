@@ -13,8 +13,7 @@ import { DatePicker } from '../Embeds/Picker'
 import Title from '../Embeds/Title'
 import { Badge } from '../Embeds/Badge'
 import EventListForms from '../Modals/EventListForms'
-import { useEvents } from '../../hooks/api'
-import { useUsers } from '../../hooks/cache'
+import { useUsers, useEvents } from '../../hooks/cache'
 
 const EventList = () => {
   const { t } = useTranslation()

@@ -1,64 +1,43 @@
-import { client } from '..'
 import { VISITS, CANCEL_VISIT, FIND_VISIT, CREATE_VISIT, MODIFY_VISIT } from '../graphql/queries'
+import { mutate, query } from './connector'
 
-export const fetchAll = async () => {
-  try {
-    const { data: { getVisits } } = await client.query({
-      query: VISITS,
-      fetchPolicy: 'no-cache'
-    })
-    return getVisits.map(v => {
-      const data = v?.customFormData
-      return {
-        ...v,
-        customFormData: typeof data === 'string' ? JSON.parse(data) : data
-      }
-    })
-  } catch (err) { undefined }
-}
+export const fetchAll = async () => (await query({
+  query: VISITS,
+  field: 'getVisits'
+})).map(v => {
+  const data = v?.customFormData
+  return { ...v, customFormData: typeof data === 'string' ? JSON.parse(data) : data }
+})
 
 export const add = async variables => {
-  try {
-    const { data: { createVisit } } = await client.mutate({
-      mutation: CREATE_VISIT,
-      variables,
-      fetchPolicy: 'no-cache'
-    })
-    return { ...createVisit, customFormData: JSON.parse(createVisit?.customFormData) }
-  } catch (err) { undefined }
-}
-
-export const remove = async id => {
-  try {
-    const { data: { cancelVisit } } = await client.mutate({
-      mutation: CANCEL_VISIT,
-      variables: { id },
-      fetchPolicy: 'no-cache'
-    })
-    return cancelVisit
-  } catch (err) { undefined }
-  return false
+  const visit = await mutate({
+    mutation: CREATE_VISIT,
+    variables,
+    field: 'createVisit'
+  })
+  if (visit) return { ...visit, customFormData: JSON.parse(visit?.customFormData) }
 }
 
 export const modify = async variables => {
-  try {
-    const { data: { modifyVisit } } = await client.mutate({
-      mutation: MODIFY_VISIT,
-      variables,
-      fetchPolicy: 'no-cache'
-    })
-    return { ...modifyVisit, customFormData: JSON.parse(modifyVisit?.customFormData) }
-  } catch (err) { undefined }
+  const visit = await mutate({
+    mutation: MODIFY_VISIT,
+    variables,
+    field: 'modifyVisit'
+  })
+  if (visit) return { ...visit, customFormData: JSON.parse(visit?.customFormData) }
 }
 
+export const remove = id => mutate({
+  mutation: CANCEL_VISIT,
+  variables: { id },
+  field: 'cancelVisit'
+})
+
 export const fetch = async id => {
-  try {
-    const { data: { findVisit } } = await client.query({
-      query: FIND_VISIT,
-      variables: { id },
-      fetchPolicy: 'no-cache'
-    })
-    return { ...findVisit, customFormData: JSON.parse(findVisit?.customFormData) }
-  } catch (err) { console.log(err) }
-  return false
+  const visit = await mutate({
+    mutation: FIND_VISIT,
+    variables: { id },
+    field: 'findVisit'
+  })
+  if (visit) return { ...visit, customFormData: JSON.parse(visit?.customFormData) }
 }

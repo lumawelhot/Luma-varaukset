@@ -39,3 +39,23 @@ export const exec = fn => () => {
   }
   _exec()
 }
+
+export const addOrUpdateById = (current, values) => {
+  const modified = { ...current }
+  if (Array.isArray(values)) {
+    values.forEach(v => {
+      modified[v.id] = v
+    })
+  } else modified[values.id] = values
+  return modified
+}
+
+export const deleteByIds = (current, ids) => {
+  const modified = { ...current }
+  if (Array.isArray(ids)) {
+    ids.forEach(id => {
+      delete modified[id]
+    })
+  } else delete modified[ids]
+  return modified
+}

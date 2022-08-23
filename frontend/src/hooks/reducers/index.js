@@ -1,20 +1,46 @@
 import { useReducer } from 'react'
+import { parseEvent } from '../../helpers/parse'
+import { addOrUpdateById, deleteByIds, someExist } from '../../helpers/utils'
 import classified from './classified'
+// WARNING: avoid updating state in a loop, it may be a huge performance loss
+// If you need looping then modify actions so you can update multiple things at once
 
 const crud = dispatch => ({
-  set: all => dispatch({ type: 'set', all }),
-  add: add => dispatch({ type: 'add', add }),
-  modify: modify => dispatch({ type: 'modify', modify }),
-  remove: ids => dispatch({ type: 'remove', ids }),
+  _set: all => dispatch({ type: 'set', all }),
+  _add: add => dispatch({ type: 'add', add }),
+  _modify: modify => dispatch({ type: 'modify', modify }),
+  _remove: ids => dispatch({ type: 'remove', ids }),
 })
+
+export const userMiscReducer = () => {
+  const init = { emails: [], tags: [] }
+  const [state, dispatch] = useReducer((state, action) => {
+    switch (action.type) {
+      case 'setTags':
+        return { ...state, tags: action.tags }
+      case 'setEmails':
+        return { ...state, emails: action.emails }
+      case 'modifyEmail':
+        return { ...state, emails: state.emails
+          .map(e => e.name === action.email.name ? action.email : e) }
+      default:
+        return { ...state }
+    }
+  }, init)
+  return [state, {
+    _setTags: tags => dispatch({ type: 'setTags', tags }),
+    _setEmails: emails => dispatch({ type: 'setEmails', emails }),
+    _modifyEmail: email => dispatch({ type: 'modifyEmail', email })
+  }]
+}
 
 export const useUserReducer = () => {
   const init = { current: undefined, all: [] }
   const [state, dispatch] = useReducer(classified, init)
   return [state, {
     ...crud(dispatch),
-    current: current => dispatch({ type: 'current', current }),
-    evict: () => dispatch({ type: 'evict', init })
+    _current: current => dispatch({ type: 'current', current }),
+    _evict: () => dispatch({ type: 'evict', init })
   }]
 }
 
@@ -41,20 +67,61 @@ export const useVisitReducer = () => {
   const [state, dispatch] = useReducer(classified, init)
   return [state, {
     ...crud(dispatch),
-    current: current => {
+    _current: current => {
       console.log(current)
       const r = dispatch({ type: 'current', current })
       console.log(r)
       return r
     },
-    evict: () => dispatch({ type: 'evict', init })
+    _evict: () => dispatch({ type: 'evict', init })
   }]
 }
 
 export const useEventReducer = () => {
-  const init = { current: undefined, all: [] }
-  const [state, dispatch] = useReducer(classified, init)
+  const init = {
+    current: undefined,
+    all: {},
+    parsed: [],
+    fetched: false,
+  }
+  const [state, dispatch] = useReducer((state, action) => {
+    switch (action.type) {
+      case 'set':
+        return { ...state, all: action.all, fetched: true }
+      case 'setParsed':
+        return { ...state, parsed: action.parsed, fetched: true }
+      case 'current':
+        return { ...state, current: action.current }
+      case 'add':
+        return { ...state, all: addOrUpdateById(state.all, action.add) }
+      case 'addParsed':
+        return { ...state, parsed: state.parsed.concat(action.add) }
+      case 'modify':
+        return { ...state, all: addOrUpdateById(state.all, action.modify) }
+      case 'modifyParsed':
+        return {
+          ...state,
+          parsed: state.parsed.filter(p => p.id !== action.modify.id)
+            .concat(parseEvent(action.modify))
+        }
+      case 'remove':
+        return { ...state, all: deleteByIds(state.all, action.remove) }
+      case 'removeParsed':
+        return { ...state, parsed: state.parsed.filter(p => !someExist([p.id], action.remove)) }
+      case 'evict':
+        return action.init
+      default:
+        return { ...state }
+    }
+  }, init)
+
   return [state, {
-    ...crud(dispatch)
+    ...crud(dispatch),
+    _current: current => dispatch({ type: 'current', current }),
+    _setParsed: parsed => dispatch({ type: 'setParsed', parsed }),
+    _addParsed: add => dispatch({ type: 'addParsed', add }),
+    _removeParsed: remove => dispatch({ type: 'removeParsed', remove }),
+    _modifyParsed: modify => dispatch({ type: 'modifyParsed', modify }),
+    _evict: () => dispatch({ type: 'evict', init })
   }]
 }

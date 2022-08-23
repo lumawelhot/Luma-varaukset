@@ -5,7 +5,7 @@ import { BsEyeSlashFill } from 'react-icons/bs'
 import { FaLock } from 'react-icons/fa'
 import { CLASSES, LANGUAGE_SHORT } from '../../config'
 import { Badge } from '../Embeds/Badge'
-import { useEvents } from '../../hooks/api'
+import { useEvents } from '../../hooks/cache'
 
 const Event = ({ content }) => {
   const { find, selected } = useEvents()
