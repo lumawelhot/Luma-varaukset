@@ -1,6 +1,5 @@
 import { differenceInDays, differenceInHours, format } from 'date-fns'
 import { BOOKING_FAILS_DAYS_REMAINING, BOOKING_FAILS_HOURS_REMAINING, CLASSES, PLATFORMS } from '../config'
-import { calcAvailableTimes } from './calculator'
 
 export const parseEvent = (event) => event
   ?.availableTimes.map(timeSlot => ({
@@ -61,14 +60,6 @@ export const parseTags = tags => tags.map(t => ({
 }))
 
 export const parseExtras = extras => extras.map(e => e.id)
-
-export const combineEvent = (visit, event) => ({
-  ...{
-    ...event,
-    visits: [...event.visits, visit]
-  },
-  availableTimes: calcAvailableTimes(event.availableTimes, visit, event.waitingTime, event.duration)
-})
 
 export const parseCSV = (visit, event) => {
   const parsed = {}

@@ -13,7 +13,7 @@ import { useEventModified, useEventsDeleted, useEventsModified } from './subscri
 import { addDays, set } from 'date-fns'
 import { FIRST_EVENT_AFTER_DAYS } from '../config'
 
-// Add this thing if of some reason state updates weirdly
+// Add this thing if for some reason state updates weirdly
 // const delay = (time = 10) => new Promise(resolve => setTimeout(() => resolve(true), time))
 
 const crud = (state, gateway, actions) => {

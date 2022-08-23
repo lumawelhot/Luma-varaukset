@@ -61,7 +61,7 @@ const resolvers = {
     assignEventsToGroup: authorized(async (root, args) => {
       const [session, eventInst, groupInst] = Transaction.construct(Event, Group)
       const events = []
-      const _events = await eventInst.findByIds(args.events)
+      const _events = (await eventInst.findByIds(args.events))
         .filter(e => !e.group || e.group.toString() !== args.group.toString())
       for (const event of _events) {
         await groupInst.DeltaUpdate(event.group, {

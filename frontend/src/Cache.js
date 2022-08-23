@@ -16,7 +16,7 @@ import {
   useMiscService,
   useUserService,
   useVisitService
-} from './hooks/service'
+} from './hooks/services'
 
 export const LumaContext = React.createContext()
 
@@ -33,8 +33,8 @@ const Cache = ({ children }) => {
   }
   // Why we are defining services this way?
   // We don't want to prevent services to use other parts of the cache
-  // Still for example avoid using "visitReducer" in "events" service
-  const service = {
+  // Still for example avoid using "visitReducer" in "events" service because it breaks modularity
+  const services = {
     users: useUserService({ userReducer: reducers.userReducer, reducers }),
     groups: useGroupService({ groupReducer: reducers.groupReducer, reducers }),
     forms: useFormService({ formReducer: reducers.formReducer, reducers }),
@@ -45,7 +45,7 @@ const Cache = ({ children }) => {
   }
 
   return (
-    <LumaContext.Provider value={{ service }}>
+    <LumaContext.Provider value={{ services }}>
       {children}
     </LumaContext.Provider>
   )
