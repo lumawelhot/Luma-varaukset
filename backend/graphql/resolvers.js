@@ -273,7 +273,6 @@ const resolvers = {
       const extras = await Extra.find({ _id: { $in: args.extras } })
 
       const events = []
-
       for (let d of args.dates) {
         const date = new Date(d)
         const startTime = new Date(args.start)
