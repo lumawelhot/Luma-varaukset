@@ -94,7 +94,7 @@ export const EventValidation = () => Yup.object().shape({
     is: inPersonVisit => !inPersonVisit,
     then: Yup.bool().oneOf([true], t('atleast-one-visittype'))
   }),
-  inPersonVisit: Yup.bool().when('removeVisit', {
+  inPersonVisit: Yup.bool().when('remoteVisit', {
     is: remoteVisit => !remoteVisit,
     then: Yup.bool().oneOf([true], t('atleast-one-visittype'))
   }),
@@ -124,7 +124,7 @@ export const EventValidation = () => Yup.object().shape({
   end: Yup.date()
     .required(t('fill-field'))
     .typeError(t('invalid-time')),
-})
+}, [['inPersonVisit', 'remoteVisit']])
 
 export const CustomFormValidation = () => Yup.object().shape({
   name: Yup.string().required(t('fill-field')),
