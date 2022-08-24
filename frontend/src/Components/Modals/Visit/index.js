@@ -115,7 +115,7 @@ const Visit = ({ children }) => {
           </>}
           {phase === 1 && <>
             <Button id='visit-form-media' onClick={() => setShowInfo(!showInfo)}>{showInfo ? t('show-visit-form') : t('show-info')}</Button>
-            <Button form={formId} type='submit' className='active'>{t('book-visit-submit')}</Button>
+            <Button id='book' form={formId} type='submit' className='active'>{t('book-visit-submit')}</Button>
           </>}
           {phase === 2 && status === false && <Button onClick={toForm}>{t('back-to-form')}</Button>}
           {phase === 2 && <Button className='active' onClick={close}>{t('book-visit-close')}</Button>}

@@ -79,7 +79,7 @@ export const useUserService = ({ userReducer }) => {
       if (token) localStorage.setItem('app-token', token)
       return !!token
     },
-    fetch: async () => !state.current && _current(await fetch()),
+    fetch: async () => state.current === undefined && _current(await fetch()),
     evict: () => _evict()
   }
 }

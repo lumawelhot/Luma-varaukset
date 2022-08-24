@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // Required script to initialize the database for the first time.
 // Not intended to be used for other purposes.
 

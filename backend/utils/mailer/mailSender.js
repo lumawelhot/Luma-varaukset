@@ -4,6 +4,7 @@ const config = require('../../config')
 const { getNotifyHtml, u, scienceClasses } = require('./receipt')
 const { Email, Visit } = require('../../db')
 const { expandVisits } = require('../../db/expand')
+const logger = require('../../logger')
 
 const fillStringWithValues = (str, replace) => {
   let newString = str
@@ -68,31 +69,31 @@ const sendAlert = async (name, days) => {
   try {
     await Promise.all(promises)
   } catch (err) {
-    console.log(err)
+    logger.error(`Transport error: ${err.message}`)
   }
 }
 
 const send = async (visit, event, name) => {
   if (process.env.NODE_ENV !== 'test') {
     const mail = await Email.findOne({ name })
-    const promises = [mailer.sendMail({
+    await mailer.sendMail({
       from: 'Luma-Varaukset <noreply@helsinki.fi>',
       to: visit.clientEmail,
       subject: mail.subject,
       text: fillStringWithValues(mail.text, getDetails(visit, event)),
       html: fillStringWithValues(mail.html, getDetails(visit, event))
-    })]
-    mail.ad.forEach(recipient => promises.push(mailer.sendMail({
+    })
+    const promises = mail.ad.map(recipient => mailer.sendMail({
       from: 'Luma-Varaukset <noreply@helsinki.fi>',
       to: recipient,
       subject: mail.adSubject,
       text: fillStringWithValues(mail.adText, getDetails(visit, event)),
       html: getNotifyHtml(visit, event)
-    })))
+    }))
     try {
       await Promise.all(promises)
     } catch (err) {
-      console.log(err)
+      logger.error(`Employee transport error: ${err.message}`)
     }
   }
 }

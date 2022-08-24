@@ -68,7 +68,7 @@ const Event = ({ content }) => {
       overlay={popover()}
       delay={500}
     >
-      <div style={{ overflow: 'hidden' }}>
+      <div className='event-overlay' style={{ overflow: 'hidden' }}>
         <span
           className='fc-list-event-dot'
           style={{ borderColor: content.borderColor }}
@@ -84,7 +84,7 @@ const Event = ({ content }) => {
       overlay={popover()}
       delay={700}
     >
-      <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+      <div className='event-overlay' style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
         <div>
           {!locked && showEvent() && <BsEyeSlashFill
             size={15}

@@ -4,7 +4,7 @@ import { mutate, query } from './connector'
 export const fetchAll = async () => (await query({
   query: VISITS,
   field: 'getVisits'
-})).map(v => {
+}))?.map(v => {
   const data = v?.customFormData
   return { ...v, customFormData: typeof data === 'string' ? JSON.parse(data) : data }
 })

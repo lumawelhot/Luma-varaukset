@@ -78,5 +78,19 @@
     "disabled": false,
     "locked": false,
     "tags": ["Ohjelmointi"]
+  },
+  {
+    "title": "Booked",
+    "desc": "kuvaus",
+    "resourceids": [3],
+    "grades": [1, 2],
+    "inPersonVisit": true,
+    "remoteVisit": false,
+    "waitingTime": 15,
+    "extras": [],
+    "duration": 30,
+    "disabled": false,
+    "locked": false,
+    "tags": ["Ohjelmointi"]
   }
 ]

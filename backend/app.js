@@ -12,6 +12,7 @@ const { ApolloServer } = require('apollo-server-express')
 const { createServer } = require('http')
 const { makeExecutableSchema } = require('@graphql-tools/schema')
 const httpServer = createServer(app)
+const logger = require('./logger')
 
 const { WebSocketServer } = require('ws')
 const { useServer } = require('graphql-ws/lib/use/ws')
@@ -24,6 +25,7 @@ const graphQLEndpoint = process.env.PUBLIC_URL?.includes('staging') ? '/luma-var
 
 const server = new ApolloServer({
   schema,
+  cache: 'bounded',
   introspection: true,
   csrfPrevention: true,
   playground: {
@@ -44,11 +46,16 @@ const server = new ApolloServer({
     }
   },
   formatError: (err) => {
-    if (process.env.NODE_ENV !== 'production') {
-      // These are helpful for debugging.
-      console.log('\x1b[31m%s\x1b[0m', 'ERROR:', `${err.message}.`, '\x1b[36mPath:\x1b[0m', err.path)
-      return Error('Internal Server Error')
-    }
+    // Logging in production could be usefull
+    // Be carefull when logging, do not log user details
+    // Do not log database errors
+    /* const isDev = process.env.NODE_ENV !== 'production'
+    if (isDev || (
+      !err.message.includes('alidation') &&
+      !err.message.includes('model')
+    )) logger.error(`Error: "${err.message}", Path: "${err.path}"`) */
+    logger.debug(`Error: "${err.message}", Path: "${err.path}"`)
+    return Error('Internal Server Error')
   }
 })
 server.start().then(() => server.applyMiddleware({ app }))
@@ -61,6 +68,12 @@ useServer({ schema }, wsServer)
 
 // Setup MongoDB
 require('./services/dbsetup')
+
+// Ensure that this cannot run on production environment
+if (process.env.NODE_ENV === 'e2e') {
+  const initE2E = require('./tests/utils/initE2E')
+  initE2E(app)
+}
 
 // These are not probably needed, consider to remove:
 app.use(cors())

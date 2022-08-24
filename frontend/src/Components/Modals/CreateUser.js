@@ -1,4 +1,3 @@
-/* eslint-disable no-unreachable */
 import React, { useId } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'

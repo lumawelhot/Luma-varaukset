@@ -1,4 +1,5 @@
 const { UserInputError } = require('apollo-server-express')
+const logger = require('../logger')
 const Common = require('./common')
 const encoders = require('./encoders')
 
@@ -111,16 +112,15 @@ class Transaction {
     for (const [, inst] of entries) {
       const err = inst.validateSync()
       if (err) {
-        console.log('\x1b[31m%s\x1b[0m', err.message)
-        console.log('\x1b[31m%s\x1b[0m', 'FAILED TO COMMIT INSTANCES')
-        // Throw an error if validation fails
+        logger.error('FAILED TO COMMIT INSTANCES')
         throw new Error(err)
       }
     }
     try {
       await Promise.all(entries.map(e => e[1].save()))
     } catch (err) {
-      console.error(err)
+      logger.critical(err.message)
+      logger.critical('A CRITICAL ERROR OCCURED DURING COMMIT')
     }
   }
 }

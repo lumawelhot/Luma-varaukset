@@ -11,13 +11,13 @@ import { parseEventSubmission } from '../../../helpers/parse'
 
 const Event = ({ show, close, initialValues = eventInit, options, modify }) => {
   const [type, setType] = useState(modify ? 'modify' : 'create')
-  const { add, modify : mod, current: event } = useEvents()
+  const { add, modify : _modify, current: event } = useEvents()
   const { t } = useTranslation()
   const formId = useId()
 
   const handleModify = async values => {
     const variables = parseEventSubmission(values)
-    const modified = await mod({ ...variables, event: event.id })
+    const modified = await _modify({ ...variables, event: event.id })
     notifier.modifyEvent(modified)
     if (modified) close()
   }

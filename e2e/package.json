@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "test": "cypress run",
+    "start": "cypress open"
+  },
+  "dependencies": {
+    "cypress": "^10.6.0",
+    "date-fns": "^2.29.2"
+  }
+}

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useId } from 'react'
 import { Button } from '../Embeds/Button'
 import { Modal, ModalHeader } from 'react-bootstrap'

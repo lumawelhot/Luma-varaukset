@@ -1,4 +1,3 @@
-/* eslint-disable no-magic-numbers */
 require('dotenv').config()
 
 const {

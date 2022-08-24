@@ -39,7 +39,7 @@
         "after":true
       }
     ],
-    "no-console":0,
+    "no-console": "error",
     "react/prop-types":0,
     "camelcase":[
       "error",
@@ -96,10 +96,6 @@
     "constructor-super": "error",
     "for-direction": "error",
     "no-await-in-loop": "warn",
-    "no-eval": "error",
-    "no-magic-numbers": ["warn", {
-      "ignoreArrayIndexes": true,
-      "ignore": [0, 1]
-    }]
+    "no-eval": "error"
   }
 }

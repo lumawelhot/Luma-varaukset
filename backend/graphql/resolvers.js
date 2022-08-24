@@ -11,6 +11,7 @@ const { calcAvailableTimes, calcFromVisitTimes, slotFromDate } = require('../uti
 const { sendWelcomes, sendCancellation } = require('../utils/mailer/mailSender')
 const { PubSub } = require('graphql-subscriptions')
 const { expandEvents, expandGroups, expandVisits, expandVisitTimes } = require('../db/expand')
+const logger = require('../logger')
 const pubsub = new PubSub()
 
 const resolvers = {
@@ -147,7 +148,7 @@ const resolvers = {
           const unLocked = await Event.update(event.id, { reserved: null })
           pubsub.publish('EVENT_MODIFIED', { eventModified: unLocked })
         } catch (err) {
-          console.log('\x1b[31m%s\x1b[0m', 'ERROR:', err.message)
+          logger.error(err.message)
         }
       }, config.EVENT_LOCK_DURATION, event)
 
