@@ -13,6 +13,4 @@ export const Text = styled.span`
 `
 export const Li = styled.li`font-size: 15px;`
 export const Ul = styled.ul`margin-left: 25px;`
-export const P = styled.div`
-  margin: 1em;
-`
+export const P = styled.div`margin: 1em;`

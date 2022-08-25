@@ -118,11 +118,11 @@ export const extraColumns = () => [
   },
   {
     Header: t('length-inperson'),
-    accessor: 'inPerson'
+    accessor: 'inPersonLength'
   },
   {
     Header: t('length-remote'),
-    accessor: 'remote'
+    accessor: 'remoteLength'
   },
   ...CLASSES.map(c => ({
     Header: c.short,

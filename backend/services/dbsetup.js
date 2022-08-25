@@ -1,6 +1,6 @@
 /* eslint-disable no-magic-numbers */
 const bcrypt = require('bcrypt')
-const { Event, User, Tag, Extra, Email, Visit, Group } = require('../db')
+const { Event, User, Tag, Extra, Email, Visit, Group, Form } = require('../db')
 const mongoose = require('mongoose')
 const { addBusinessDays, set } = require('date-fns')
 const logger = require('../logger')
@@ -25,6 +25,7 @@ const initializeDB = async () => {
   const emails = require('./staticdata/emails.json')
   const events = require('./staticdata/events.json')
   const groups = require('./staticdata/groups.json')
+  const forms = require('./staticdata/forms.json')
   await Promise.all(users.map(async user => User.insert({
     ...user,
     passwordHash: await bcrypt.hash(user.password, 10)
@@ -33,7 +34,8 @@ const initializeDB = async () => {
     .concat(emails.map(e => Email.insert(e)))
     .concat(events.map(event => createEvent(event)))
     .concat(events.map(event => createEvent(event)))
-    .concat(groups.map(group => Group.Insert(group))))
+    .concat(groups.map(group => Group.Insert(group)))
+    .concat(forms.map(f => ({ ...f, fields: JSON.parse(f.fields) })).map(form => Form.insert(form))))
   const booked = await Event.find({ title: 'Booked' })
   await Promise.all(booked.map(event => Visit.insert({
     event: event.id,

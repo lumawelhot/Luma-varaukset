@@ -7,37 +7,30 @@ import { Button } from '../Embeds/Button'
 import CustomForm from '../Modals/CustomForm'
 import { useForms } from '../../hooks/cache'
 import { exec } from '../../helpers/utils'
+import { customformInit } from '../../helpers/initialvalues'
 
 const FormList = () => {
   const { t } = useTranslation()
   const { all, fetchAll, remove } = useForms()
-  const [showAdd, setShowAdd] = useState()
-  const [showModify, setShowModify] = useState()
-  const [selectedForm, setSelectedForm] = useState()
-
+  const [form, setForm] = useState()
   useEffect(exec(fetchAll), [])
 
   const forms = useMemo(() => all
     ?.map(f => ({
-      id: f.id,
-      name: f.name,
-      modifyButton: <Button onClick={() => {
-        setSelectedForm(f)
-        setShowModify(true)
-      }}>{t('modify-form')}</Button>
+      ...f,
+      modifyButton: <Button onClick={() => setForm(f)}>{t('modify-form')}</Button>
     }))
   , [all, t])
-
   const columns = useMemo(formColumns, [t])
 
   if (!forms) return <></>
-  const fields = selectedForm?.fields
+  const fields = form?.fields
 
   return (
     <>
       <Heading as='h1' style={{ paddingBottom: 30 }}>{t('forms')}</Heading>
       <Table checkboxed data={forms} columns={columns} component={e => (<>
-        <Button onClick={() => setShowAdd(true)}>{t('add-new-form')}</Button>
+        <Button onClick={() => setForm(null)}>{t('add-new-form')}</Button>
         {e.checked.length > 0 && <Button onClick={() => {
           const ids = e.checked.map(v => all[Number(v)].id)
           if (confirm(t('remove-forms-confirm'))) {
@@ -46,17 +39,12 @@ const FormList = () => {
           }
         }}>{t('delete-custom-forms')}</Button>}
       </>)} />
-      {showAdd && <CustomForm
-        show={showAdd}
-        close={() => setShowAdd(false)}
-      />}
-      {showModify && <CustomForm
-        modify
-        show={showModify}
-        close={() => setShowModify(false)}
-        initialValues={{ ...selectedForm, fields: typeof fields === 'string'
-          ? JSON.parse(fields) : fields
-        }}
+      {form !== undefined && <CustomForm
+        close={() => setForm()}
+        type={form === null ? 'create' : 'modify'}
+        initialValues={form === null ? customformInit
+          : { ...form, fields: typeof fields === 'string' ? JSON.parse(fields) : fields }
+        }
       />}
     </>
   )

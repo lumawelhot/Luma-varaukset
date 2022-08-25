@@ -1,4 +1,4 @@
-import React, { useId } from 'react'
+import React, { useId, useState } from 'react'
 import { Button } from '../Embeds/Button'
 import { Modal, ModalHeader } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
@@ -7,26 +7,43 @@ import { Error, required } from '../Embeds/Title'
 import { Input } from '../Embeds/Input'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useGroups } from '../../hooks/cache'
+import { notifier } from '../../helpers/notifier'
 
-const Group = ({ show, close, handle, title, initialValues }) => {
+const Group = ({ close, initialValues, type }) => {
   const { t } = useTranslation()
   const formId = useId()
+  const { modify, add } = useGroups()
+  const [show, setShow] = useState(true)
+
+  const closeModal = () => {
+    setShow(false)
+    setTimeout(close, 300)
+  }
+
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(GroupValidation),
     defaultValues: initialValues
   })
 
-  const onSubmit = async values => {
-    if(await handle(values)) close()
+  const handleAddGroup = async values => {
+    const status = await add({ ...values })
+    notifier.addGroup(status)
+    if (status) closeModal()
   }
 
+  const handleModifyGroup = async values => {
+    const status = await modify({ id: initialValues.id, ...values })
+    notifier.modifyGroup(status)
+    if (status) closeModal()
+  }
+
+  const _modify = type === 'modify'
+  const onSubmit = v => _modify ? handleModifyGroup(v) : handleAddGroup(v)
+  const title = _modify ? t('create-group') : t('modify-group')
+
   return (
-    <Modal
-      show={show}
-      backdrop='static'
-      onHide={close}
-      scrollable={true}
-    >
+    <Modal show={show} backdrop='static' onHide={closeModal} scrollable={true}>
       <ModalHeader style={{ backgroundColor: '#f5f5f5' }} closeButton>
         <Modal.Title>{title}</Modal.Title>
       </ModalHeader>

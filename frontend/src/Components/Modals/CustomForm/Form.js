@@ -53,7 +53,7 @@ const Form = (({ initialValues, setOnModify, onModify, onSubmit, formId }) => {
     ?.map((f, i) => ({
       id: i,
       name: f.name,
-      required: f.validation.required ? t('yes') : t('no'),
+      required: f?.validation?.required ? t('yes') : t('no'),
       type: t(f.type),
       optionButtons: <div style={{ whiteSpace: 'nowrap' }}>
         <IconButton

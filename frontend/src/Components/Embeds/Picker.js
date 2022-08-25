@@ -1,12 +1,11 @@
 /* eslint-disable react/display-name */
 import React from 'react'
-import { default as UPicker } from 'react-datepicker'
+import { default as _Picker } from 'react-datepicker'
 import Title from './Title'
 import styled from 'styled-components'
 import { getDay } from 'date-fns'
 
-
-const Picker = styled(UPicker)`
+const Picker = styled(_Picker)`
   box-sizing: border-box;
   margin: 0;
   font-family: inherit;

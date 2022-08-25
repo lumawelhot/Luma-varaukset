@@ -1,6 +1,17 @@
 import { gql } from '@apollo/client'
 
+export const EXTRA_FIELDS = gql`
+  fragment ExtraFields on Extra {
+    id
+    name
+    classes
+    remoteLength
+    inPersonLength
+  }
+`
+
 export const EVENT_FIELDS = gql`
+  ${EXTRA_FIELDS}
   fragment EventFields on Event {
     id
     title
@@ -26,13 +37,7 @@ export const EVENT_FIELDS = gql`
       startTime
       endTime
     }
-    extras {
-      id
-      name
-      classes
-      remoteLength
-      inPersonLength
-    }
+    extras { ...ExtraFields }
     duration
     customForm {
       id
@@ -52,6 +57,7 @@ export const EVENT_FIELDS = gql`
 `
 
 export const VISIT_FIELDS = gql`
+  ${EXTRA_FIELDS}
   fragment VisitFields on Visit {
     id
     clientName
@@ -66,13 +72,7 @@ export const VISIT_FIELDS = gql`
       end
       resourceids
     }
-    extras {
-      id
-      name
-      classes
-      remoteLength
-      inPersonLength
-    }
+    extras { ...ExtraFields }
     grade
     startTime
     endTime

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "Summamutikan lomake",
+    "fields": "[{\"name\":\"Kysymys 2\",\"type\":\"text\",\"validation\":{\"required\":true}},{\"name\":\"Kysymys test 123\",\"type\":\"checkbox\",\"validation\":{\"required\":true},\"options\":[{\"value\":0,\"text\":\"option-1-mod\"},{\"value\":1,\"text\":\"option-2\"},{\"value\":2,\"text\":\"bonus\"}]},{\"name\":\"Kysymys 3\",\"type\":\"radio\",\"validation\":{\"required\":true},\"options\":[{\"value\":0,\"text\":\"option-1\"},{\"value\":1,\"text\":\"option-2\"}]},{\"name\":\"Kysymys\",\"type\":\"checkbox\",\"validation\":{\"required\":true},\"options\":[{\"value\":0,\"text\":\"option-1\"},{\"value\":1,\"text\":\"option-2\"}]}]"
+  },
+  {
+    "name": "Gadolinin lomake",
+    "fields": "[{\"name\":\"Kysymys 2\",\"type\":\"text\",\"validation\":{\"required\":true}},{\"name\":\"Kysymys test 123\",\"type\":\"checkbox\",\"validation\":{\"required\":true},\"options\":[{\"value\":0,\"text\":\"option-1-mod\"},{\"value\":1,\"text\":\"option-2\"},{\"value\":2,\"text\":\"bonus\"}]},{\"name\":\"Kysymys 3\",\"type\":\"radio\",\"validation\":{\"required\":true},\"options\":[{\"value\":0,\"text\":\"option-1\"},{\"value\":1,\"text\":\"option-2\"}]},{\"name\":\"Kysymys\",\"type\":\"checkbox\",\"validation\":{\"required\":true},\"options\":[{\"value\":0,\"text\":\"option-1\"},{\"value\":1,\"text\":\"option-2\"}]}]"
+  }
+]

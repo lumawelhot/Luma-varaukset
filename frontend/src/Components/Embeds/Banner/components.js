@@ -1,39 +1,32 @@
 import styled from 'styled-components'
 
 export const BannerProvider = styled.div`
-  margin-top: ${props => props.show ? '0' : '-200px' };
+  max-height: ${props => props.show ? '300px' : '0' };
   ${({ show }) => !show && `
-    height: 0px !important;
-    overflow: hidden;
+    max-height: 0px !important;
+    transition: max-height 0.5s ease-out !important;
   `}
   background-color: #0479a5;
+  overflow: hidden;
   width: 100%;
-  min-height: 200px;
   padding-right: 20px;
-  padding-bottom: 20px;
-  z-index: 10;
-  transition: margin-top 0.5s linear;
-  position: relative;
+  transition: max-height 0.5s ease-in;
 `
 
 export const BannerImage = styled.img`
   height: 160px;
   margin: 20px;
-  position: absolute;
+  width: 160px;
   @media (max-width: 500px) {
     display: none;
   }
 `
 
 export const BannerTextBox = styled.div`
-  margin-left: 220px;
   padding-top: 20px;
   margin-right: 80px;
+  padding-bottom: 5px;
   color: #dedede;
-  ${({ show }) => !show && `
-    visibility: hidden;
-    display: none;
-  `}
   @media (max-width: 500px) {
     margin-left: 20px;
   }

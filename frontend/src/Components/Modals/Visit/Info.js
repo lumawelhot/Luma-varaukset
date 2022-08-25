@@ -33,12 +33,12 @@ const Info = () => {
           {event?.resourceids?.map((r, i) => <Li key={i}>{CLASSES[r - 1]?.label}</Li>)}
         </Ul>
       </P>
-      <P>
+      {!!event.extras.length && <P>
         <Title>{t('available-extras')}: </Title>
         <Ul>
           {event?.extras?.map(extra => <Li key={extra.name}>{extra.name}</Li>) }
         </Ul>
-      </P>
+      </P>}
       <P>
         <Title>{t('available-grades')}: </Title>
         <Ul>

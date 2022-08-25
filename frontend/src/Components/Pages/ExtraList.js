@@ -14,8 +14,7 @@ import { useExtras } from '../../hooks/cache'
 
 const ExtraList = () => {
   const { t } = useTranslation()
-  const { fetchAll, all, add, modify, remove } = useExtras()
-  const [modalType, setModalType] = useState()
+  const { fetchAll, all, remove } = useExtras()
   const [extra, setExtra] = useState()
   const [filterOptions, setFilterOptions] = useState({ classes: [] })
 
@@ -30,23 +29,16 @@ const ExtraList = () => {
       return someExist(p?.classes, classes.map(c => c.value))
     })
     ?.map(e => ({
-      id: e.id,
-      name: e.name,
-      inPerson: e.inPersonLength,
-      remote: e.remoteLength,
+      ...e,
       ...CLASSES.reduce((s, c) => {
         s[c.short] = e?.classes?.includes(c.value)
           ? <BsCheck2Circle size={18}/> : ''
         return s
       }, {}),
       modifyButton: <Button
-        onClick={() => {
-          setExtra(e)
-          setModalType('modify')
-        }}>{t('modify')}</Button>
+        onClick={() => setExtra(e)}>{t('modify')}</Button>
     }))
   , [all, filterOptions, t])
-
   const columns = useMemo(extraColumns, [t])
 
   if (!extras) return <></>
@@ -63,32 +55,20 @@ const ExtraList = () => {
         />
       </div>
       <Table checkboxed data={extras} columns={columns} component={e => (<>
-        <Button onClick={() => setModalType('create')}>{t('create')}</Button>
+        <Button onClick={() => setExtra(null)}>{t('create')}</Button>
         {e.checked.length > 0 && <Button onClick={() => {
           const ids = e.checked.map(c => all[Number(c)].id) // WHY misc.extras ??
           handleRemove(ids)
           e.reset()
         }}>{t('remove-selected')}</Button>}
       </>)} />
-      <Extra
-        show={modalType === 'create'}
-        close={() => setModalType()}
-        handle={add}
-        initialValues={extraInit}
-        title={t('create-extra')}
-      />
-      <Extra
-        show={modalType === 'modify'}
-        close={() => setModalType()}
-        handle={v => modify({ ...v, id: extra.id })}
+      {extra !== undefined && <Extra
+        close={() => setExtra()}
+        type={extra === null ? 'create' : 'modify'}
         initialValues={extra ? {
-          name: extra.name,
-          inPersonLength: String(extra.inPersonLength),
-          remoteLength: String(extra.remoteLength),
-          classes: extra.classes.map(c => String(c))
+          ...extra, classes: extra.classes.map(c => String(c))
         } : extraInit}
-        title={t('modify-extra')}
-      />
+      />}
     </>
   )
 }

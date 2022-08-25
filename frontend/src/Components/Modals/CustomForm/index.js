@@ -2,35 +2,41 @@ import React, { useId, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../../Embeds/Button'
-import { customformInit } from '../../../helpers/initialvalues'
 import Form from './Form'
 import { notifier } from '../../../helpers/notifier'
 import { useForms } from '../../../hooks/cache'
 
-const CustomForm = ({ show, close, initialValues = customformInit, modify }) => {
+const CustomForm = ({ close, initialValues, type }) => {
   const { t } = useTranslation()
   const formId = useId()
+  const [show, setShow] = useState(true)
   const [onModify, setOnModify] = useState()
-  const { add, modify: _modify } = useForms()
+  const { add, modify } = useForms()
+
+  const closeModal = () => {
+    setShow(false)
+    setTimeout(close, 300)
+  }
 
   const handleAddForm = async values => {
     const status = await add({ ...values })
     notifier.createForm(status)
-    if (status) close()
+    if (status) closeModal()
   }
 
   const handleModifyForm = async values => {
-    const status = await _modify({ ...values, id: initialValues.id })
+    const status = await modify({ ...values, id: initialValues.id })
     notifier.modifyForm(status)
-    if (status) close()
+    if (status) closeModal()
   }
 
-  const onSubmit = v => modify ? handleModifyForm(v) : handleAddForm(v)
+  const _modify = type === 'modify'
+  const onSubmit = v => _modify ? handleModifyForm(v) : handleAddForm(v)
 
   return (
-    <Modal show={show} backdrop='static' size='lg' onHide={close} scrollable={true} >
+    <Modal show={show} backdrop='static' size='lg' onHide={closeModal} scrollable={true} >
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
-        <Modal.Title>{modify ? t('modify-form') : t('create-form')}</Modal.Title>
+        <Modal.Title>{_modify ? t('modify-form') : t('create-form')}</Modal.Title>
       </Modal.Header>
       <Modal.Body style={{ minHeight: 400 }}>
         <Form
@@ -45,8 +51,8 @@ const CustomForm = ({ show, close, initialValues = customformInit, modify }) => 
         <div style={{ lineHeight: 3, marginBottom: -5 }}>
           {!onModify && <Button form='custom-add' type='submit'>{t('add-form-field')}</Button>}
           {onModify && <Button form='custom-modify' type='submit'>{t('modify-form-field')}</Button>}
-          {!modify && <Button form={formId} type='submit' className='active'>{t('create-custom-form')}</Button>}
-          {modify && <Button form={formId} type='submit' className='active'>{t('modify-custom-form')}</Button>}
+          {!_modify && <Button form={formId} type='submit' className='active'>{t('create-custom-form')}</Button>}
+          {_modify && <Button form={formId} type='submit' className='active'>{t('modify-custom-form')}</Button>}
         </div>
       </Modal.Footer>
     </Modal>

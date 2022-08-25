@@ -6,7 +6,7 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "docker": "cross-env NODE_ENV=docker nodemon index.js",
-    "cypress": "cross-env NODE_ENV=e2e node index.js",
+    "cypress": "cross-env NODE_ENV=e2e nodemon index.js",
     "build:ui": "rm -rf build && cd ../frontend && npm run build --prod && cp -r build ../backend",
     "lint": "eslint .",
     "test": "cross-env NODE_ENV=test mocha 'tests/index.js' --timeout 60000",

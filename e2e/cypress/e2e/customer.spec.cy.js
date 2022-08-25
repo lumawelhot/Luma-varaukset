@@ -51,4 +51,11 @@ describe('As a customer I can', () => {
     cy.contains('Scratch').should('not.exist')
   })
 
+  it('change language', () => {
+    cy.visit('http://localhost:3000')
+    cy.contains('EN').click()
+    cy.contains('Month')
+    cy.contains('Hide')
+  })
+
 })

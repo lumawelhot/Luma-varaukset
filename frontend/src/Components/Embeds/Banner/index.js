@@ -14,8 +14,8 @@ const Banner = ({ show }) => {
   const { t, i18n } = useTranslation()
 
   return (
-    <>
-      <BannerProvider show={show}>
+    <BannerProvider show={show}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <BannerImage src='/luma-flower.svg' show={show} />
         <BannerTextBox show={show}>
           <BannerTitle>{t('banner-title')}</BannerTitle>
@@ -25,9 +25,7 @@ const Banner = ({ show }) => {
               href='https://www.helsinki.fi/fi/tiedekasvatus/opettajille-ja-opetuksen-tueksi/opintokaynnit-ja-lainattavat-tarvikkeet'
               target='_blank'
               rel='noreferrer'
-            >
-              {t('banner-text2')}.
-            </BannerLink>
+            >{t('banner-text2')}</BannerLink>
             {t('banner-text3')}
           </BannerText>
           <div style={{ marginLeft: -10, marginTop: 5 }}>
@@ -36,8 +34,8 @@ const Banner = ({ show }) => {
             <Button className='active' onClick={() => i18n.changeLanguage('en-US')}>EN</Button>
           </div>
         </BannerTextBox>
-      </BannerProvider>
-    </>
+      </div>
+    </BannerProvider>
   )
 }
 

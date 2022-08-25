@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client'
-import { EVENT_FIELDS, VISIT_FIELDS } from './fragments'
+import { EVENT_FIELDS, EXTRA_FIELDS, VISIT_FIELDS } from './fragments'
 
 export const LOGIN = gql`
   mutation login($username: String!, $password: String!) {
@@ -41,9 +41,7 @@ export const EVENTS = gql`
   query getEvents($ids: [ID]) {
     getEvents(
       ids: $ids
-    ) {
-      ...EventFields
-    }
+    ) { ...EventFields }
   }
 `
 
@@ -52,9 +50,7 @@ export const EVENT = gql`
   query getEvent($id: ID!) {
     getEvent(
       id: $id
-    ) {
-      ...EventFields
-    }
+    ) { ...EventFields }
   }
 `
 
@@ -70,9 +66,7 @@ export const TAGS = gql`
 export const VISITS = gql`
   ${VISIT_FIELDS}
   query getVisits {
-    getVisits {
-      ...VisitFields
-    }
+    getVisits { ...VisitFields }
   }
 `
 
@@ -129,9 +123,7 @@ export const CREATE_EVENTS = gql`
       group: $group
       publishDate: $publishDate
       languages: $languages
-    ) {
-      ...EventFields
-    }
+    ) { ...EventFields }
   }
 `
 
@@ -176,9 +168,7 @@ export const CREATE_VISIT = gql`
       token: $token
       customFormData: $customFormData
       language: $language
-    ) {
-      ...VisitFields
-    }
+    ) { ...VisitFields }
   }
 `
 
@@ -217,18 +207,14 @@ export const MODIFY_VISIT = gql`
       remotePlatform: $remotePlatform
       customFormData: $customFormData
       language: $language
-    ) {
-      ...VisitFields
-    }
+    ) { ...VisitFields }
   }
 `
 
 export const FIND_VISIT = gql`
   ${VISIT_FIELDS}
   query findVisit($id: ID!) {
-    findVisit(id: $id) {
-      ...VisitFields
-    }
+    findVisit(id: $id) { ...VisitFields }
   }
 `
 
@@ -241,18 +227,14 @@ export const CANCEL_VISIT = gql`
 `
 
 export const EXTRAS = gql`
+  ${EXTRA_FIELDS}
   query getExtras {
-    getExtras {
-      id
-      name
-      classes
-      remoteLength
-      inPersonLength
-    }
+    getExtras { ...ExtraFields }
   }
 `
 
 export const CREATE_EXTRA = gql`
+  ${EXTRA_FIELDS}
   mutation createExtra(
       $name: String!
       $classes: [Int]!
@@ -264,17 +246,12 @@ export const CREATE_EXTRA = gql`
       classes: $classes
       remoteLength: $remoteLength
       inPersonLength: $inPersonLength
-    ) {
-      id
-      name
-      classes
-      remoteLength
-      inPersonLength
-    }
+    ) { ...ExtraFields }
   }
 `
 
 export const MODIFY_EXTRA = gql`
+  ${EXTRA_FIELDS}
   mutation moidfyExtra(
       $id: ID!
       $name: String!
@@ -288,13 +265,7 @@ export const MODIFY_EXTRA = gql`
       classes: $classes
       remoteLength: $remoteLength
       inPersonLength: $inPersonLength
-    ) {
-      id
-      name
-      classes
-      remoteLength
-      inPersonLength
-    }
+    ) { ...ExtraFields }
   }
 `
 
@@ -367,9 +338,7 @@ export const MODIFY_EVENT = gql`
       group: $group
       publishDate: $publishDate
       languages: $languages
-    ) {
-      ...EventFields
-    }
+    ) { ...EventFields }
   }
 `
 
