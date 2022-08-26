@@ -18,5 +18,6 @@ afterEach(async () => {
 describe('Access interface', () => {
 
   require('./common.test')
+  require('./transaction.test')
 
 })

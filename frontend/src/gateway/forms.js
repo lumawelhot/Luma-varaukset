@@ -4,7 +4,7 @@ import { mutate, query } from './connector'
 export const fetchAll = async () => (await query({
   query: GET_ALL_FORMS,
   field: 'getForms'
-})).map(f => ({ ...f, fields: JSON.parse(f.fields) }))
+}))?.map(f => ({ ...f, fields: JSON.parse(f.fields) }))
 
 export const add = variables => mutate({
   mutation: CREATE_FORM,

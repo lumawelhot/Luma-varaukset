@@ -9,28 +9,14 @@ const replace = (a, b) => {
 
 const populate = (inst, models) => {
   if (!models) return inst
-  if (Array.isArray(models)) {
-    for (const model of models) {
-      inst.populate(model)
-    }
-  }
   for (const [model, options] of Object.entries(models)) {
     inst.populate(model, options)
   }
   return inst
 }
 
-// Some technical debt but maybe it is easier to separate populate and execPopulate
-// execPopulate should use promises but populate should not
 const execPopulate = async (inst, models) => {
   if (!models) return inst
-  if (Array.isArray(models)) {
-    const promises = []
-    for (const model of models) {
-      promises.push(inst.populate(model))
-    }
-    await Promise.all(promises)
-  }
   const promises = []
   for (const [model, options] of Object.entries(models)) {
     promises.push(inst.populate(model, options))
@@ -38,7 +24,6 @@ const execPopulate = async (inst, models) => {
   await Promise.all(promises)
   return inst
 }
-
 // -------------------------------------------
 
 // This class is a db access interface,

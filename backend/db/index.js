@@ -3,9 +3,7 @@ const logger = require('../logger')
 const Common = require('./common')
 const encoders = require('./encoders')
 
-const getModel = modelName => process.env.NODE_ENV !== 'test'
-  ? require(`../models/${modelName}`)
-  : require(`../models/${modelName}`) // TODO: for testing this class add test dir path
+const getModel = modelName => require(`../models/${modelName}`)
 
 class User extends Common {
   constructor(session) { super(getModel('user'), encoders.user, session) }
@@ -26,6 +24,7 @@ class Group extends Common {
   constructor(session) { super(getModel('group'), encoders.group, session) }
   instance(session) { return new Group(session) }
   async Update(id, args, expand) {
+    if (!id) return
     const group = await this.findById(id)
     const maxCount = (group.visitCount <= args.maxCount) ? args.maxCount : group.maxCount
     const disabled = maxCount <= (args.visitCount ? args.visitCount : group.visitCount)

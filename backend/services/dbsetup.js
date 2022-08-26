@@ -37,6 +37,8 @@ const initializeDB = async () => {
     .concat(groups.map(group => Group.Insert(group)))
     .concat(forms.map(f => ({ ...f, fields: JSON.parse(f.fields) })).map(form => Form.insert(form))))
   const booked = await Event.find({ title: 'Booked' })
+  const extra1 = await Extra.find({ name: 'Opiskelijan elämää' })
+  const extra2 = await Extra.find({ name: 'Tieteenalan esittely' })
   await Promise.all(booked.map(event => Visit.insert({
     event: event.id,
     clientEmail: 'ivalo.opettaja@alppilankoulu.fi',
@@ -57,6 +59,12 @@ const initializeDB = async () => {
     startTime: new Date(event.start),
     endTime: new Date(event.end)
   })))
+  const visits = await Visit.find({ clientName: 'Ivalon Opettaja' })
+  await Event.update(booked[0].id, {
+    extras: [extra1[0], extra2[0]],
+    visits: visits,
+    title: 'Booked extras'
+  })
 }
 
 const unlockEvents = async () => {

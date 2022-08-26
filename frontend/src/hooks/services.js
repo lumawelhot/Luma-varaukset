@@ -22,7 +22,7 @@ const crud = (state, gateway, actions) => {
 
   return {
     all: state.all,
-    fetchAll: async () => !state.all.length && _set(await fetchAll()),
+    fetchAll: async () => !state.all?.length && _set(await fetchAll()),
     add: async variables => {
       const result = await add(variables)
       if (result) _add(result)
@@ -75,7 +75,8 @@ export const useUserService = ({ userReducer }) => {
     ...crud(state, userGate, actions),
     current: state.current,
     login: async variables => {
-      const { value: token } = await login(variables)
+      _current(null)
+      const token = (await login(variables))?.value
       if (token) localStorage.setItem('app-token', token)
       return !!token
     },

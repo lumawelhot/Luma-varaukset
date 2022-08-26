@@ -1,12 +1,6 @@
-// TODO: For now we are using "services/staticdata", we probably should fix this so static data does not influence to tests
-// TODO: We should test populating objects
 const { expect } = require('chai')
-const { User, Extra, Transaction } = require('../../db')
-
-const getExistingObject = async (Model) => {
-  const objects = await Model.find()
-  return objects[Math.floor(Math.random() * objects.length)]
-}
+const { Transaction, User, Extra, Event, Group } = require('../../db')
+const { getExistingObject } = require('../utils/helpers')
 
 describe('Common.js', () => {
 
@@ -105,6 +99,11 @@ describe('Common.js', () => {
     expect(user).to.be.undefined
   })
 
+  it('update returns undefined if undefined id is given', async () => {
+    const user = await User.update(undefined, { username: 'UpdatedUsername' })
+    expect(user).to.be.undefined
+  })
+
   // remove
   it('existing extra by id is removed', async () => {
     const { id } = await Extra.findOne({ name: 'Opiskelijan elämää' })
@@ -138,72 +137,136 @@ describe('Common.js', () => {
 
 })
 
-describe('Transaction', () => {
+describe('Populate', () => {
 
-  it('a new user is added after a commit', async () => {
-    const session = new Transaction()
-    const _User = User.instance(session)
-    const user = await _User.insert({
-      username: 'NewUser',
-      passwordHash: 'hash',
-      isAdmin: false
+  // populate
+  it('event is expanded by correct extra fields', async () => {
+    const event = await Event.findOne({ title: 'Booked extras' }, {
+      extras: { name: 1, classes: 1, inPersonLength: 1 }
     })
-    expect((await User.find()).map(u => u.id)).to.not.include(user.id)
-    await session.commit()
-    expect((await User.find()).map(u => u.id)).to.include(user.id)
-  })
-
-  it('a new user is added after a commit', async () => {
-    const session = new Transaction()
-    session.instances['invalid'] = { validateSync: () => { throw new Error('validation error')} }
-    const _User = User.instance(session)
-    const user = await _User.insert({
-      username: 'NewUser',
-      passwordHash: 'hash',
-      isAdmin: false
+    event.extras.forEach(e => {
+      expect(e.remoteLength).to.be.undefined
+      expect(e.inPersonLength).to.not.be.undefined
     })
-    expect((await User.find()).map(u => u.id)).to.not.include(user.id)
-    try {
-      await session.commit()
-    } catch (err) {
-      expect(err.message).to.equal('validation error')
-    }
-    expect((await User.find()).map(u => u.id)).to.not.include(user.id)
+    expect(event.extras.map(e => ({
+      name: e.name, classes: e.classes, inPersonLength: e.inPersonLength
+    }))).to.deep.equal([
+      {
+        name: 'Opiskelijan elämää',
+        classes: [ 1, 2, 4, 5 ],
+        inPersonLength: 10
+      },
+      {
+        name: 'Tieteenalan esittely',
+        classes: [ 1, 2, 3 ],
+        inPersonLength: 10
+      }
+    ])
   })
 
-  it('a user is updated after a commit', async () => {
-    const session = new Transaction()
-    const _User = User.instance(session)
-    const object = await getExistingObject(User)
-    const user = await _User.update(object.id, { username: 'UpdatedUsername' })
-    expect((await User.findById(object.id)).username).to.not.equal(user.username)
-    await session.commit()
-    expect((await User.findById(object.id)).username).to.equal(user.username)
+  // execPopulate
+  it('event is populated with correct extra fields when updated', async () => {
+    const { id } = await Event.findOne({ title: 'Booked extras' })
+    const event = await Event.update(id, { title: 'Modified' }, {
+      extras: { classes: 1 }
+    })
+    event.extras.forEach(e => {
+      expect(e.name).to.be.undefined
+      expect(e.remoteLength).to.be.undefined
+      expect(e.inPersonLength).to.be.undefined
+    })
+    expect(event.extras.map(e => ({
+      classes: e.classes
+    }))).to.deep.equal([{ classes: [ 1, 2, 4, 5 ] }, { classes: [ 1, 2, 3 ] }])
   })
 
-  it('a user is not updated after a commit if committing fails', async () => {
-    const session = new Transaction()
-    session.instances['invalid'] = { validateSync: () => { throw new Error('validation error')} }
-    const _User = User.instance(session)
-    const object = await getExistingObject(User)
-    const user = await _User.update(object.id, { username: 'UpdatedUsername' })
-    expect((await User.findById(object.id)).username).to.not.equal(user.username)
-    try {
-      await session.commit()
-    } catch (err) {
-      expect(err.message).to.equal('validation error')
-    }
-    expect((await User.findById(object.id)).username).to.not.equal(user.username)
-    expect((await User.findById(object.id)).username).to.equal(object.username)
+})
+
+describe('Group', () => {
+  let id
+  let object
+  beforeEach(async () => {
+    object = await Group.findOne({ name: 'Opiskelijan elämää' })
+    id = object.id
   })
 
-  it('findById returns an updated instance before a commit', async () => {
-    const session = new Transaction()
-    const _User = User.instance(session)
-    const object = await getExistingObject(User)
-    const user = await _User.update(object.id, { username: 'UpdatedUsername' })
-    expect((await _User.findById(object.id)).username).to.equal(user.username)
-    expect((await User.findById(object.id)).username).to.not.equal(user.username)
+  describe('DeltaUpdate', () => {
+    it('returns undefined if undefined id is given', async () => {
+      const group = await Group.DeltaUpdate(undefined, { name: 'hello world' })
+      expect(group).to.be.undefined
+    })
+
+    it('visit count updates properly if max number of visits is not exceeded', async () => {
+      expect((await Group.DeltaUpdate(id, { visitCount: 3 })).visitCount).to.equal(3)
+      expect((await Group.DeltaUpdate(id, { visitCount: 1 })).visitCount).to.equal(4)
+      expect((await Group.DeltaUpdate(id, { visitCount: 1 })).visitCount).to.equal(5)
+    })
+
+    it('a group remain enabled if maximum number of visits is not reached', async () => {
+      const group = await Group.DeltaUpdate(id, { visitCount: 4 })
+      expect(group.visitCount).to.equal(4)
+      expect(group.disabled).to.be.false
+    })
+
+    it('a group is disabled if number of visits is the same as the number of visits', async () => {
+      const group = await Group.DeltaUpdate(id, { visitCount: 5 })
+      expect(group.visitCount).to.equal(5)
+      expect(group.disabled).to.be.true
+    })
+
+    it('updating fails and error is thrown if max number of visits exceeds', async () => {
+      try {
+        await Group.DeltaUpdate(id, { visitCount: 6 })
+      } catch (err) {
+        expect(err.message).to.equal('Max number of visits exceeded')
+      }
+      const group = await Group.findById(id)
+      expect(group.visitCount).to.equal(0)
+      expect(group.disabled).to.be.false
+    })
+
+    it('returns original group if returnOriginal option is given', async () => {
+      const group = await Group.DeltaUpdate(id, { visitCount: 2, returnOriginal: true })
+      expect(group).to.deep.equal(object)
+    })
+
+    it('if a group is disabled then it cannot be enabled', async () => {
+      await Group.DeltaUpdate(id, { visitCount: 5 })
+      const group = await Group.DeltaUpdate(id, { visitCount: -3 })
+      expect(group.disabled).to.be.true
+      expect(group.visitCount).to.equal(2)
+    })
+
+  })
+
+  describe('Update', () => {
+
+    it('updating with undefined id results undefined', async () => {
+      const group = await Group.Update(undefined, { visitCount: 2 })
+      expect(group).to.be.undefined
+    })
+
+    it('values are updated correctly if max number of visits is not exceeded', async () => {
+      const group = await Group.Update(id, { visitCount: 3, name: 'New name', maxCount: 4 })
+      expect(group.name).to.equal('New name')
+      expect(group.maxCount).to.equal(4)
+      expect(group.visitCount).to.equal(3)
+      expect(group.disabled).to.equal(false)
+    })
+
+    it('visit count can be larger than max count', async () => {
+      const group = await Group.Update(id, { visitCount: 4, name: 'New name', maxCount: 3 })
+      expect(group.name).to.equal('New name')
+      expect(group.maxCount).to.equal(3)
+      expect(group.visitCount).to.equal(4)
+      expect(group.disabled).to.equal(true)
+    })
+
+    it('disabled group can be re-enabled', async () => {
+      expect((await Group.Update(id, { visitCount: 4, maxCount: 4 })).disabled).to.be.true
+      expect((await Group.Update(id, { maxCount: 5 })).disabled).to.be.false
+    })
+
   })
 
 })

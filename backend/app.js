@@ -16,6 +16,7 @@ const logger = require('./logger')
 
 const { WebSocketServer } = require('ws')
 const { useServer } = require('graphql-ws/lib/use/ws')
+const rateLimit = require('express-rate-limit')
 
 const resolvers = require('./graphql/resolvers')
 const typeDefs = require('./graphql/typeDefs')
@@ -81,7 +82,15 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
-app.use(express.static('build'))
-app.get('*', (req, res) => res.sendFile(path.resolve('build', 'index.html'))) // This is needed for React Router in frontend!
+if (process.env.NODE_ENV === 'production') {
+  app.use(rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 300, // Limit each IP to 200 requests per `window` (here, per 15 minutes)
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  }))
+  app.use(express.static('build'))
+  app.get('*', (req, res) => res.sendFile(path.resolve('build', 'index.html'))) // This is needed for React Router in frontend!
+}
 
 module.exports = httpServer

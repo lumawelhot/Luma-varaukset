@@ -52,11 +52,17 @@ const assignDates = (events, visits) => {
   return [events, visits]
 }
 
+const getExistingObject = async (Model) => {
+  const objects = await Model.find()
+  return objects[Math.floor(Math.random() * objects.length)]
+}
+
 module.exports = {
   dateByHours,
   timeSlotByDay,
   assignDates,
   timeByDaysAndHours,
+  getExistingObject,
   models: {
     User,
     Event,

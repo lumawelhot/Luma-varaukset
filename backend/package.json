@@ -24,6 +24,7 @@
     "date-fns-tz": "^1.1.6",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "express-rate-limit": "^6.5.2",
     "graphql": "^15.5.0",
     "graphql-subscriptions": "^1.2.1",
     "graphql-ws": "^5.9.1",
@@ -45,7 +46,8 @@
       "db/encoders.js",
       "node_modules",
       "utils/mailer",
-      "config.js"
+      "config.js",
+      "logger.js"
     ]
   },
   "devDependencies": {
