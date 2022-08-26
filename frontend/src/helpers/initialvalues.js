@@ -91,16 +91,13 @@ export const eventInitWithValues = ({
   } : ''
 })
 
+// This parse function is not ideal, should be refactored. A lot of potential bugs.
 export const visitInitialValues = (event, visit = {}) => {
   const {
-    clientName,
-    schoolName,
-    schoolLocation,
-    clientEmail,
-    clientPhone,
-    grade,
-    participants,
-    dataUseAgreement,
+    inPersonVisit,
+    language,
+    remotePlatform,
+    remoteVisit
   } = visit
   let values = {}
   if (visit.customFormData) {
@@ -111,24 +108,15 @@ export const visitInitialValues = (event, visit = {}) => {
     if (f.type === 'checkbox') return { name: f.name, value: value ? value : [] }
     else return { name: f.name, value: value ? value : '' }
   })
+  const extras = visit.extras?.map(e => e.id)
   return {
-    clientName: clientName ? clientName : '',
-    schoolName: schoolName ? schoolName : '',
-    schoolLocation: schoolLocation ? schoolLocation : '',
-    clientEmail: clientEmail ? clientEmail : '',
-    verifyEmail: '',
-    clientPhone: clientPhone ? clientPhone : '',
-    grade: grade ? grade : '',
-    participants: participants ? participants : '',
-    privacyPolicy: false,
-    remoteVisitGuidelines: false,
-    dataUseAgreement: dataUseAgreement ? dataUseAgreement : false,
-    language: event?.languages[0],
-    otherRemotePlatformOption: '',
-    extras: [],
+    ...visit,
+    language: language ? language : event.languages[0],
+    extras: extras ? extras : [],
+    remotePlatform: remotePlatform ? remotePlatform : '',
     startTime: new Date(event.start),
     endTime: add(new Date(event.start), { minutes: event.duration }),
-    visitType: event.inPersonVisit ? 'inperson' : 'remote',
+    visitType: inPersonVisit ? 'inperson' : remoteVisit ? 'remote' : undefined,
     fields: [],
     customFormData,
     eventTimes: {

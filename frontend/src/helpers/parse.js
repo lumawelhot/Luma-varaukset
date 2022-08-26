@@ -117,7 +117,8 @@ export const parseVisitSubmission = values => {
     inPersonVisit,
     remoteVisit,
     customFormData,
-    remotePlatform
+    remotePlatform,
+    participants: Number(values.participants)
   }
 }
 

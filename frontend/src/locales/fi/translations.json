@@ -325,5 +325,6 @@
   "visit-details": "Varauksen tiedot",
 
   "show-email-info": "Ohjeet",
-  "show-email-form": "Näytä lomake"
+  "show-email-form": "Näytä lomake",
+  "invalid-participants": "Virheellinen osallistujamäärä"
 }

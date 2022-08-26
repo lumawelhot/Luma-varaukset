@@ -26,7 +26,8 @@ const LumaCalendar = () => {
     find,
     current,
     filterOptions,
-    select, selected,
+    select,
+    selected,
     removeSelected,
     unSelectAll
   } = useEvents()
@@ -67,10 +68,7 @@ const LumaCalendar = () => {
 
   const handleDateSelect = info => {
     if (!user) return
-    setDragValues({
-      start: info.start,
-      end: info.end
-    })
+    setDragValues({ start: info.start, end: info.end })
     const calApi = calendarRef.current.getApi()
     calApi.unselect()
   }

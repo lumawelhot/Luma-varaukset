@@ -102,15 +102,15 @@ const Form = ({ formId, show, onSubmit, event, visit }) => {
       {errors.clientPhone && <Error>{t(errors.clientPhone.message)}</Error>}
 
       <Stack direction='horizontal'>
-        <div style={{ width: '100%', marginRight: 15 }}>
+        <div style={{ width: '70%', marginRight: 15 }}>
           <Input id='grade' title={required(t('grade'))} {...register('grade')} />
-          {errors.grade && <Error>{t(errors.grade.message)}</Error>}
         </div>
         <div>
           <Input id='participants' type='number' title={required(t('participants'))} {...register('participants')} />
-          {errors.participants && <Error>{t(errors.participants.message)}</Error>}
         </div>
       </Stack>
+      {errors.grade && <Error>{t(errors.grade.message)}</Error>}
+      {!errors.grade && errors.participants && <Error>{t('invalid-participants')}</Error>}
 
       <CheckboxGroup name='extras' control={control} onChange={v => {
         const duration = totalDuration({ extras: v })
@@ -156,9 +156,9 @@ const Form = ({ formId, show, onSubmit, event, visit }) => {
           >{t('privacy-policy')}</a> {t('accept-privacy-policy2')}</span>)}
         </Checkbox>}
         {errors.privacyPolicy && <Error>{t(errors.privacyPolicy.message)}</Error>}
-        <Checkbox {...register('dataUseAgreement')} >
+        {!visit && <Checkbox {...register('dataUseAgreement')} >
           {t('accept-data-use')}
-        </Checkbox>
+        </Checkbox>}
         {!visit && <Checkbox {...register('remoteVisitGuidelines')} >
           {required(<span>{t('accept-instructions1')} <a
             className='default'

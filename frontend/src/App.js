@@ -71,18 +71,14 @@ const App = () => {
           <Route path='/forms' element={user ? <FormList /> : <Root />} />
           <Route path='/visit' element={<>
             <Visit>
-              {user && !event?.disabled && !event?.booked &&
-                <>
-                  <Button onClick={() => disable(event.id)}>{t('disable')}</Button>
-                  <Button onClick={() => {
-                    setShowEvent(true)
-                    navigate('/')
-                  }}>{t('modify-event')}</Button>
-                </>
-              }
-              {user && event?.disabled &&
-                <Button onClick={() => enable(event.id)}>{t('enable')}</Button>
-              }
+              {user && !event?.disabled && !event?.booked && <>
+                <Button onClick={() => disable(event.id)}>{t('disable')}</Button>
+                <Button onClick={() => {
+                  setShowEvent(true)
+                  navigate('/')
+                }}>{t('modify-event')}</Button>
+              </>}
+              {user && event?.disabled && <Button onClick={() => enable(event.id)}>{t('enable')}</Button>}
             </Visit>
             <LumaCalendar />
           </>} />

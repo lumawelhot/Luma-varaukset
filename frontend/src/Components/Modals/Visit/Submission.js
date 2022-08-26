@@ -39,6 +39,7 @@ const Submission = () => {
 
   const modifyVisit = async values => {
     const variables = parseVisitSubmission(values)
+    console.log(values)
     const result = await modify({ visit: visit.id, ...variables })
     notifier.modifyVisit(result)
     if (result) setPage('details')

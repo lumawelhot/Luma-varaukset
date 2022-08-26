@@ -25,7 +25,7 @@ describe('As a admin I can', () => {
     cy.get('.modal-footer > .sc-dkzDqf').click()
     cy.contains('Käyttäjän muokkaaminen onnistui')
     cy.contains('Alice')
-  })
+  })  
 
   it('can remove a user', () => {
     cy.visit('http://localhost:3000')
@@ -44,7 +44,7 @@ describe('As a admin I can', () => {
     cy.get('#subject').clear().type('Kiitokset osallistumisestasi vierailuun')
     cy.get('#text').clear().type('Kiitoskäynnin aihe')
     cy.get('#html').clear().type('<div>Kiitoskäynnin aihe</div>')
-    cy.get('.modal-footer > .sc-dkzDqf').click()
+    cy.get('.modal-footer > .active').click()
     cy.contains('Kiitokset osallistumisestasi vierailuun')
     cy.contains('tr', 'Kiitokset osallistumisestasi vierailuun').find('button').click()
   })
