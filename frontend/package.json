@@ -47,6 +47,8 @@
     "eject": "react-scripts eject",
     "serve": "serve build",
     "lint": "eslint .",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
     "bs": "npm run build && serve build"
   },
   "eslintConfig": {
@@ -68,8 +70,8 @@
     ]
   },
   "devDependencies": {
-    "cypress": "^10.4.0",
     "eslint": "^8.22.0",
+    "cypress": "^10.6.0",
     "serve": "^13.0.2"
   }
 }
