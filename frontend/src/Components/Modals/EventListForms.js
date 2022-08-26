@@ -17,27 +17,26 @@ const EventListForms = ({ selected, type, show, close, reset }) => {
   const [group, setGroup] = useState()
   const { t } = useTranslation()
 
+  const ids = selected.map(s => s.id)
+
   const handleSetGroup = async () => {
-    const ids = selected.map(s => s.id)
     if (await assignToGroup({ events: ids, group })) {
-      reset()
       close()
+      reset()
     }
   }
 
   const handleSetPublish = async () => {
-    const ids = selected.map(s => s.id)
     if (await setPublish({ events: ids, publishDate: publishDate.toISOString() })) {
-      reset()
       close()
+      reset()
     }
   }
 
   const handleDelete = async () => {
-    const ids = selected.map(s => s.id)
     if (await forceRemove({ events: ids, password })) {
-      reset()
       close()
+      reset()
     }
   }
 
@@ -61,11 +60,7 @@ const EventListForms = ({ selected, type, show, close, reset }) => {
   }
 
   return (
-    <Modal
-      show={show}
-      backdrop='static'
-      onHide={close}
-    >
+    <Modal show={show} backdrop='static' onHide={close}>
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         {type === 'group' && <Modal.Title>{t('add-events-to-group')}</Modal.Title>}
         {type === 'delete' && <Modal.Title>{t('delete-events-confirm')}</Modal.Title>}
@@ -82,31 +77,23 @@ const EventListForms = ({ selected, type, show, close, reset }) => {
             onChange={v => setPublishDate(v)}
             hideMinutes={minute => minute % 5 !== 0}
           />
-          {getEvents()}
         </>}
         {type === 'delete' && <>
           <p style={{ color: 'red', fontSize: 18, fontWeight: 'bold' }}>{t('delete-confirm-warning')}</p>
-          {selected?.length > 0 && <>
-            <Input
-              title={t('password')}
-              type='password'
-              onChange={e => setPassword(e.target.value)}
-              value={password}
-            />
-            {getEvents()}
-          </>}
+          {selected?.length > 0 && <Input
+            title={t('password')}
+            type='password'
+            onChange={e => setPassword(e.target.value)}
+            value={password}
+          />}
         </>}
-        {type === 'group' && <>
-          {selected?.length > 0 && <>
-            <Select
-              isMulti={false}
-              onClick={fetchAll}
-              onChange={e => setGroup(groups?.find(g => g.id === e.value))}
-              options={groups?.map(g => ({ value: g.id, label: g.name }))}
-            />
-            {getEvents()}
-          </>}
-        </>}
+        {type === 'group' && selected?.length > 0 && <Select
+          isMulti={false}
+          onClick={fetchAll}
+          onChange={e => setGroup(groups?.find(g => g.id === e.value))}
+          options={groups?.map(g => ({ value: g.id, label: g.name }))}
+        />}
+        {getEvents()}
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>
         {type === 'group' && <Button onClick={handleSetGroup}>{t('set-group')}</Button>}

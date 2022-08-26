@@ -5,7 +5,7 @@ import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai'
 import { multipleExist, someExist } from '../../helpers/utils'
 import Pagination from './Pagination'
 
-const Table = ({ checkboxed, columns, data, component, nosort, initialState }) => {
+const Table = ({ columns, data, initialState, component, checkboxed, nosort }) => {
   const [checked, setChecked] = useState([])
   const [nochecked, setNochecked] = useState([])
 
@@ -123,6 +123,7 @@ const Table = ({ checkboxed, columns, data, component, nosort, initialState }) =
         />
       </Container>
       <Container style={{ marginTop: 10, marginBottom: 20 }}>
+        {/* Define here variables and functions you want table component to return for use */}
         {component && component({
           checked,
           reset: () => setChecked([])

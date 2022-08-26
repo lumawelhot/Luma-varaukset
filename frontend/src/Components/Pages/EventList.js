@@ -6,74 +6,43 @@ import { eventColumns, eventInitialState } from '../../helpers/columns'
 import { format } from 'date-fns'
 import { Button } from '../Embeds/Button'
 import { Select } from '../Embeds/Input'
-import { CLASSES, TIME_VALUE_LARGE } from '../../config'
-import { someExist } from '../../helpers/utils'
+import { CLASSES } from '../../config'
 import { Stack } from 'react-bootstrap'
 import { DatePicker } from '../Embeds/Picker'
 import Title from '../Embeds/Title'
 import { Badge } from '../Embeds/Badge'
 import EventListForms from '../Modals/EventListForms'
 import { useUsers, useEvents } from '../../hooks/cache'
+import { useEventListFilter } from '../../hooks/filter'
 
 const EventList = () => {
   const { t } = useTranslation()
-  const { all, find } = useEvents()
+  const { all } = useEvents()
   const { current: user } = useUsers()
   const [showForms, setShowForms] = useState(false)
   const [selected, setSelected] = useState()
-  const [filterOptions, setFilterOptions] = useState({
-    classes: [],
-    range: { start: undefined, end: new Date() }
-  })
 
-  const events = useMemo(() => all
-    ?.filter(p => {
-      const { classes } = filterOptions
-      if (classes.length <= 0) return true
-      return someExist(find(p.id)?.resourceids, classes.map(c => c.value))
-    })
-    ?.filter(p => {
-      const { start } = filterOptions.range
-      const { end } = filterOptions.range
-      return (new Date(p.start) < (end ? end : new Date(TIME_VALUE_LARGE))) &&
-        ((start ? start : new Date(0)) < new Date(p.start))
-    })
+  const [filtered, filterOptions, setFilterOptions] = useEventListFilter({ all })
+  const events = useMemo(() => filtered
     ?.map(e => ({
-      id: e.id, // deprecated ??
+      id: e.id,
       title: e.title,
-      resources: e?.resourceids
-        ?.map((t, i) => <Badge key={i} style={{
-          backgroundColor: CLASSES[Number(t) - 1]?.color,
-          marginBottom: 2,
-          marginTop: 2,
-          fontSize: 13
-        }}>{CLASSES[Number(t) - 1]?.label}</Badge>),
+      resources: e?.resourceids?.map((t, i) => <Badge key={i} style={{
+        backgroundColor: CLASSES[Number(t) - 1]?.color,
+        marginBottom: 2,
+        marginTop: 2,
+        fontSize: 13
+      }}>{CLASSES[Number(t) - 1]?.label}</Badge>),
       date: format(new Date(e.start), 'd.M.y'),
       time: <span>{format(new Date(e.start), 'HH:mm')} - {format(new Date(e.end), 'HH:mm')}</span>,
       group: e?.group?.name,
       visitCount: e?.visits?.length,
       publishDate: e.publishDate ? format(new Date(e.publishDate), 'H:mm, d.M.y') : null
     }))
-  , [all, filterOptions, t])
+  , [filtered, t])
 
-  const handleDelete = e => {
-    const selectedEvents = e.checked.map(v => events[v])
-    const { reset } = e
-    setSelected({ selected: selectedEvents, type: 'delete', reset })
-    setShowForms(true)
-  }
-
-  const handleSetPublish = e => {
-    const selectedEvents = e.checked.map(v => events[v])
-    const { reset } = e
-    setSelected({ selected: selectedEvents, type: 'publish', reset })
-    setShowForms(true)
-  }
-
-  const handleAddToGroup = e => {
-    const selectedEvents = e.checked.map(v => events[v])
-    const { reset } = e
-    setSelected({ selected: selectedEvents, type: 'group', reset })
+  const handle = ({ checked, reset, type }) => {
+    setSelected({ selected: checked.map(v => events[v]), type, reset })
     setShowForms(true)
   }
 
@@ -113,14 +82,14 @@ const EventList = () => {
       <Table checkboxed data={events} columns={columns} initialState={eventInitialState} component={e => {
         if (e?.checked.length === 0) return <></>
         return <>
-          <Button onClick={() => handleAddToGroup(e)}>{t('add-event-to-group')}</Button>
-          <Button onClick={() => handleSetPublish(e)}>{t('set-publishdate')}</Button>
-          {user.isAdmin && <Button onClick={() => handleDelete(e)}>{t('delete-events')}</Button>}
+          <Button onClick={() => handle({ ...e, type: 'group' })}>{t('add-event-to-group')}</Button>
+          <Button onClick={() => handle({ ...e, type: 'publish' })}>{t('set-publishdate')}</Button>
+          {user.isAdmin && <Button onClick={() => handle({ ...e, type: 'delete' })}>{t('delete-events')}</Button>}
         </>
       }} />
       {showForms && <EventListForms
         show={showForms}
-        close={() => setShowForms(false)}
+        close={() => setShowForms()}
         {...selected}
       />}
     </>

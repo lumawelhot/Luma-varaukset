@@ -322,5 +322,8 @@
 
   "notify-modify-visit-success": "Varauksen muokkaaminen onnistui",
   "notify-modify-visit-failed": "Varauksen muokkaaminen epäonnistui",
-  "visit-details": "Varauksen tiedot"
+  "visit-details": "Varauksen tiedot",
+
+  "show-email-info": "Ohjeet",
+  "show-email-form": "Näytä lomake"
 }

@@ -75,8 +75,9 @@ const resolvers = {
         })
         events.push(eventInst.update(event.id, { group: args.group ? args.group : null }))
       }
+      await Promise.all(events)
       await session.commit()
-      return Promise.all(events)
+      return events
     }),
     updateEmail: isAdmin(async (root, args) => {
       const email = await Email.findOne({ name: args.name })

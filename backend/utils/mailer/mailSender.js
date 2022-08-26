@@ -111,23 +111,3 @@ const sendCancellation = async (visit, event) => {
 }
 
 module.exports = { sendReminder, sendThanks, sendWelcomes, sendCancellation }
-
-/*
-<div>/link/r</div>
-<div>/event-title/r</div>
-<div>/event-desc/r</div>
-<div>/event-resources/r</div>
-<div>/event-date/r</div>
-<div>/event-start/r</div>
-<div>/event-end/r</div>
-<div>/event-type/r</div>
-<div>/client-name/r</div>
-<div>/client-phone/r</div>
-<div>/client-email/r</div>
-<div>/school-name/r</div>
-<div>/school-location/r</div>
-<div>/grade/r</div>
-<div>/participants/r</div>
-<div>/data-use-agreement/r</div>
-<div>/language/r</div>
-*/

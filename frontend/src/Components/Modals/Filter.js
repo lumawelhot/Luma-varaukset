@@ -14,13 +14,7 @@ const Filter = ({ show, close }) => {
   const { filterOptions, setFilterOptions } = useEvents()
 
   return (
-    <Modal
-      show={show}
-      backdrop='static'
-      size='lg'
-      onHide={close}
-      scrollable={true}
-    >
+    <Modal show={show} backdrop='static' size='lg' onHide={close} scrollable={true}>
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         <Modal.Title>{t('filter')}</Modal.Title>
       </Modal.Header>
