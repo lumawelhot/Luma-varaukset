@@ -46,5 +46,5 @@ export const notifier = {
     : error(t('notify-group-modify-failed')),
   addGroup: r => r
     ? success(t('notify-group-create-success'))
-    : error(t('notify-group-create-failed'))
+    : error(t('notify-group-create-failed')),
 }

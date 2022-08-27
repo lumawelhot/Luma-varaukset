@@ -43,7 +43,6 @@ export const Button = styled.button`
 export const MenuButton = styled(Button)`
   margin: 0;
 `
-
 export const Checkbox = styled(ChakraCheckbox)`border-color: darkgrey;`
 export const Radio = styled(ChakraRadio)`border-color: darkgrey !important;`
 

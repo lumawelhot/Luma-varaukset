@@ -25,7 +25,7 @@ describe('As a admin I can', () => {
     cy.get('.modal-footer > .sc-dkzDqf').click()
     cy.contains('Käyttäjän muokkaaminen onnistui')
     cy.contains('Alice')
-  })  
+  })
 
   it('can remove a user', () => {
     cy.visit('http://localhost:3000')

@@ -7,7 +7,6 @@ import './i18n'
 import { setContext } from 'apollo-link-context'
 import 'react-datepicker/dist/react-datepicker.css'
 import 'rc-steps/assets/index.css'
-import 'react-datepicker/dist/react-datepicker.css'
 
 import {
   ApolloClient,

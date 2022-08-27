@@ -45,6 +45,7 @@ export const customformInit = {
   fields: []
 }
 
+// refactoring ???
 export const eventInitWithValues = ({
   title,
   duration,
@@ -91,37 +92,19 @@ export const eventInitWithValues = ({
   } : ''
 })
 
-// This parse function is not ideal, should be refactored. A lot of potential bugs.
 export const visitInitialValues = (event, visit = {}) => {
-  const {
-    inPersonVisit,
-    language,
-    remotePlatform,
-    remoteVisit
-  } = visit
-  let values = {}
-  if (visit.customFormData) {
-    values = Object.fromEntries(visit.customFormData.map(f => [f.name, f.value]))
-  }
-  const customFormData = event?.customForm?.fields?.map(f => {
-    const value = values[f.name] ? values[f.name] : undefined
-    if (f.type === 'checkbox') return { name: f.name, value: value ? value : [] }
-    else return { name: f.name, value: value ? value : '' }
-  })
-  const extras = visit.extras?.map(e => e.id)
+  const { inPersonVisit, language, remoteVisit } = visit
+  const data = visit?.customFormData?.map(f => [f.name, f.value])
+  const values = data ? Object.fromEntries(data) : {}
+  const customFormData = event?.customForm?.fields?.map(({ type, name }) =>
+    ({ name, value: values[name] || (type === 'checkbox' ? [] : '') }))
   return {
     ...visit,
-    language: language ? language : event.languages[0],
-    extras: extras ? extras : [],
-    remotePlatform: remotePlatform ? remotePlatform : '',
+    language: language || event.languages[0],
+    extras: visit.extras?.map(e => e.id) || [],
     startTime: new Date(event.start),
     endTime: add(new Date(event.start), { minutes: event.duration }),
     visitType: inPersonVisit ? 'inperson' : remoteVisit ? 'remote' : undefined,
-    fields: [],
     customFormData,
-    eventTimes: {
-      start: new Date(event.start),
-      end: new Date(event.end)
-    }
   }
 }

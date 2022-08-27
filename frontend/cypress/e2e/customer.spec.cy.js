@@ -3,9 +3,10 @@ describe('As a customer I can', () => {
   beforeEach(() => {
     cy.request('http://localhost:3001/reset')
   })
-  
+
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
   afterEach(() => cy.wait(1000))
-  
+
   it('book an event', () => {
     cy.visit('http://localhost:3000')
     cy.contains('Kuukausi').click()
@@ -29,7 +30,7 @@ describe('As a customer I can', () => {
 
   it('cancel an event', () => {
     cy.request('http://localhost:3001/testdata').then(r => {
-      const visits = r.body.visits
+      const { visits } = r.body
       cy.visit(`http://localhost:3000/${visits[0].id}/`)
       cy.contains('Peru vierailu')
       cy.get('.modal-footer > .sc-dkzDqf').click()

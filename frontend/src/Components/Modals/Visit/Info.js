@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Badge } from '../../Embeds/Badge'
+import { Badge } from '../../Embeds/Utils'
 import { LANG_MAP, CLASSES, GRADES } from '../../../config'
 import { format } from 'date-fns'
 import { Title, Text, Li, Ul, P } from '../../Embeds/Info'
@@ -33,7 +33,7 @@ const Info = () => {
           {event?.resourceids?.map((r, i) => <Li key={i}>{CLASSES[r - 1]?.label}</Li>)}
         </Ul>
       </P>
-      {!!event.extras.length && <P>
+      {!!event?.extras?.length && <P>
         <Title>{t('available-extras')}: </Title>
         <Ul>
           {event?.extras?.map(extra => <Li key={extra.name}>{extra.name}</Li>) }

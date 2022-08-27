@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { BsEyeSlashFill } from 'react-icons/bs'
 import { FaLock } from 'react-icons/fa'
 import { CLASSES, LANGUAGE_SHORT } from '../../config'
-import { Badge } from '../Embeds/Badge'
+import { Badge } from '../Embeds/Utils'
 import { useEvents } from '../../hooks/cache'
 
 const Event = ({ content }) => {

@@ -4,6 +4,8 @@ import Title from './Title'
 import styled, { css } from 'styled-components'
 import { default as ReactSelect } from 'react-select'
 import Creatable from 'react-select/creatable'
+import { default as _Picker } from 'react-datepicker'
+import { getDay } from 'date-fns'
 
 const base = css`
   overflow: visible;
@@ -23,14 +25,18 @@ const base = css`
   }
 `
 
-const InputBase = styled.input`${() => base}`
-const TextAreaBase = styled.textarea`${() => base}
+const _Input = styled.input`${() => base}`
+const _TextArea = styled.textarea`${() => base}
   min-height: 100px;
 `
 
+const Picker = styled(_Picker)`${() => base}`
+
+// ----------------------------------------------------------------------
+
 export const Input = React.forwardRef((rest, ref) => <>
   <Title>{rest.title}</Title>
-  <InputBase
+  <_Input
     { ...rest }
     title={undefined}
     ref={ref}
@@ -40,13 +46,12 @@ export const Input = React.forwardRef((rest, ref) => <>
 
 export const TextArea = React.forwardRef((rest, ref) => <>
   <Title>{rest.title}</Title>
-  <TextAreaBase { ...rest } ref={ref}/>
+  <_TextArea { ...rest } ref={ref}/>
 </>)
 
 export const Select = (rest) => {
   const [additional, setAdditional] = useState(0)
   const max = rest.max ? rest.max : 1000000000
-
   const Renderer = rest.creatable ? Creatable : ReactSelect
 
   return <>
@@ -73,3 +78,44 @@ export const Select = (rest) => {
     />
   </>
 }
+
+export const TimePicker = React.forwardRef((rest, ref) => <div>
+  <Title>{rest.title}</Title>
+  <Picker
+    ref={ref}
+    selected={rest.value}
+    showTimeSelect
+    showTimeSelectOnly
+    timeIntervals={5}
+    filterTime={(time) => {
+      if (rest.hideHours) {
+        const hours = new Date(time).getHours()
+        return !rest.hideHours(hours)
+      }
+      return true
+    }}
+    timeCaption='Time'
+    locale='fi'
+    dateFormat='H:mm'
+    { ...rest}
+    title={undefined}
+  />
+</div>)
+
+export const DatePicker = React.forwardRef((rest, ref) => <div>
+  <Title>{rest.title}</Title>
+  <Picker
+    ref={ref}
+    isClearable={rest.cleanable}
+    filterDate={(date) => {
+      const day = getDay(date)
+      return day !== 0 && day !== 6
+    }}
+    dateFormat='P'
+    locale='fi'
+    cleanable={rest?.cleanable ? true : false}
+    { ...rest }
+    selected={rest.value}
+    title={undefined}
+  />
+</div>)

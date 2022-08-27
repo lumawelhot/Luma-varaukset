@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import React from 'react'
-import { Checkbox as CB } from '@chakra-ui/react'
+import { Checkbox as _CheckBox } from '@chakra-ui/react'
 
 export const Container = styled.div`
   max-width: 100%;
@@ -50,7 +50,7 @@ export const Td = (rest) => (
 
 export const Pagination = styled.div``
 
-export const Checkbox = styled(CB)`
+export const Checkbox = styled(_CheckBox)`
   border-color: rgb(150, 150, 150);
   margin-top: 4px;
   margin-right: -20px;

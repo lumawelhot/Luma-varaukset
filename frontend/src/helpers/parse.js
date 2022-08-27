@@ -126,14 +126,14 @@ export const parseEventSubmission = values => {
   const { tags, resourceids, grades, remotePlatforms, group, extras, customForm, dates } = values
   return {
     ...values,
-    dates: dates.map(d => new Date(d.date).toISOString()),
-    tags: tags.map(t => t.label),
-    resourceids: resourceids.map(r => Number(r)),
-    grades: grades.map(g => Number(g)),
-    remotePlatforms: remotePlatforms.map(r => Number(r)),
-    group: group?.value ? group.value : null,
+    dates: dates?.map(d => new Date(d.date).toISOString()),
+    tags: tags?.map(t => t.label),
+    resourceids: resourceids?.map(r => Number(r)),
+    grades: grades?.map(g => Number(g)),
+    remotePlatforms: remotePlatforms?.map(r => Number(r)),
+    group: group?.value || null,
     extras,
-    customForm: customForm?.value ? customForm.value : null
+    customForm: customForm?.value || null
   }
 }
 

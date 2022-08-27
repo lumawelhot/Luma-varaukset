@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { BOOKING_TIME } from '../../../config'
 import { Button } from '../../Embeds/Button'
-import Timer from '../../Embeds/Timer'
+import { Timer } from '../../Embeds/Utils'
 import { parseVisitSubmission } from '../../../helpers/parse'
 import Form from './Form'
 import Info from './Info'
@@ -48,21 +48,19 @@ const Visit = ({ children }) => {
   }
 
   const handleSubmit = async values => {
-    const variables = {
+    increment()
+    const result = await add({
       ...parseVisitSubmission(values),
       event: event.id,
       token: token,
-    }
-    increment()
-    const result = await add(variables)
+    })
     notifier.createVisit(result)
     setStatus(result ? true : false)
   }
 
-  const handleRemove = () => {
+  const handleRemove = async () => {
     if (confirm(t('remove-event-confirm'))) {
-      const result = remove(event.id)
-      if (result) close()
+      if (await remove(event.id)) close()
     }
   }
 

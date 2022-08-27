@@ -2,11 +2,10 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { MenuButton } from './Embeds/Button'
-import { useEvict } from '../hooks/cache'
+import { useEvict, useUsers } from '../hooks/cache'
 import { Container } from 'react-bootstrap'
 import Event from './Modals/Event'
 import Banner from './Embeds/Banner'
-import { useUsers } from '../hooks/cache'
 
 const Menu = () => {
   const { current: user } = useUsers()

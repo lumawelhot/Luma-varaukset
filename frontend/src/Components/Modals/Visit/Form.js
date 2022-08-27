@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react'
 import { Stack } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { Input } from '../../Embeds/Input'
+import { Input, TimePicker } from '../../Embeds/Input'
 import Title, { Error, required } from '../../Embeds/Title'
 import { PLATFORMS } from '../../../config'
 import { Checkbox, Radio, RadioGroup, CheckboxGroup } from '../../Embeds/Button'
-import { TimePicker } from '../../Embeds/Picker'
 import { add, format, set } from 'date-fns'
 import { VisitValidation } from '../../../helpers/validate'
 import { visitInitialValues } from '../../../helpers/initialvalues'
@@ -118,7 +117,7 @@ const Form = ({ formId, show, onSubmit, event, visit }) => {
         setValue('endTime', endTime)
       }} render={<>
         {event?.extras?.length > 0 && <Title>{t('chooose-extras')}</Title>}
-        {event?.extras.map(e => <Checkbox key={e.id} value={e.id} >
+        {event?.extras?.map(e => <Checkbox key={e.id} value={e.id} >
           {`${e.name} (${t('length-inperson-min')} ${e.inPersonLength} ${t('length-remote-min')} ${e.remoteLength} ${t('min')})`}
         </Checkbox>)}
       </>} />

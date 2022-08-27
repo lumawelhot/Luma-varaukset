@@ -6,9 +6,8 @@ import { Error } from '../../Embeds/Title'
 import { Stack } from 'react-bootstrap'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
-import { CheckboxGroup } from '../../Embeds/Button'
+import { CheckboxGroup, Checkbox } from '../../Embeds/Button'
 import { CLASSES } from '../../../config'
-import { Checkbox } from '../../Embeds/Button'
 
 const Form = ({ onSubmit, initialValues, formId }) => {
   const { t } = useTranslation()

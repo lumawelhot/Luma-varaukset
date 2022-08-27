@@ -2,6 +2,7 @@ import { format } from 'date-fns'
 
 describe('As an employee I can', () => {
   const date = new Date()
+  // eslint-disable-next-line no-mixed-operators
   date.setDate(date.getDate() + ((7 - date.getDay()) % 7 + 1) % 7 + 8)
 
   beforeEach(() => {
@@ -32,6 +33,7 @@ describe('As an employee I can', () => {
     cy.get('#title').clear().type('Muokattu vierailu')
     cy.get('#desc').clear().type('Vierailun uskomaton kuvaus')
     cy.get('.modal-footer > .sc-dkzDqf').click()
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1000)
     cy.contains('Muokattu vierailu').click()
     cy.contains('Vierailun uskomaton kuvaus')

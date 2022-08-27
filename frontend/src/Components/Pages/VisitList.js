@@ -6,10 +6,9 @@ import { format } from 'date-fns'
 import Table from '../Table'
 import { useNavigate } from 'react-router-dom'
 import { CLASSES } from '../../config'
-import { Badge } from '../Embeds/Badge'
+import { Badge, Clipboard } from '../Embeds/Utils'
 import { Select } from '../Embeds/Input'
 import { exec, someExist } from '../../helpers/utils'
-import Clipboard from '../Embeds/Clipboard'
 import { useVisits, useEvents } from '../../hooks/cache'
 
 const VisitList = () => {
