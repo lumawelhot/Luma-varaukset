@@ -118,6 +118,12 @@ const slotFromDate = (date, start, end) => {
   ]
 }
 
+const helsinkiZoneOffset = () => {
+  const today = new Date()
+  const helsinkiHours = Number(new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', timeZone: 'Europe/Helsinki' }).format(today).split('.')[0])
+  return today.getHours() - helsinkiHours
+}
+
 module.exports = {
   findRange,
   calcAvailableTimes,
@@ -129,5 +135,6 @@ module.exports = {
   sort,
   checkTimeslot,
   slotFromDate,
-  parseDate
+  parseDate,
+  helsinkiZoneOffset
 }

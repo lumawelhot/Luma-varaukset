@@ -158,7 +158,7 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
             title={required(t('start-time'))}
             onChange={v => setValue('start', v)}
           />
-          {errors.start && <Error>{t(errors.start)}</Error>}
+          {errors.start && <Error>{t(errors.start.message)}</Error>}
         </div>
         <div style={{ width: '100%', marginRight: type === 'create' ? 15 : 0 }}>
           <TimePicker
@@ -168,7 +168,7 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
             title={required(t('end-time'))}
             onChange={v => setValue('end', v)}
           />
-          {errors.end && <Error>{t(errors.end)}</Error>}
+          {errors.end && <Error>{t(errors.end.message)}</Error>}
         </div>
         {type === 'create' && <div style={{ width: '100%', paddingRight: 2, paddingBottom: 2 }}>
           <Input id='waitingTime' title={required(t('waiting-time-visits'))} type='number' {...register('waitingTime')} />

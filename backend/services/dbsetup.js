@@ -4,9 +4,10 @@ const { Event, User, Tag, Extra, Email, Visit, Group, Form } = require('../db')
 const mongoose = require('mongoose')
 const { addBusinessDays, set } = require('date-fns')
 const logger = require('../logger')
+const { helsinkiZoneOffset } = require('../utils/calculator')
 
 const createEvent = async event => {
-  const randomHours = Math.floor(Math.random() * 5)
+  const randomHours = Math.floor(Math.random() * 5) + helsinkiZoneOffset()
   const randomDays = Math.floor(Math.random() * 10)
   const start = addBusinessDays(set(new Date(), { hours: 8 + randomHours, minutes: 0, seconds: 0, milliseconds: 0 }), 10 + randomDays).toISOString()
   const end = addBusinessDays(set(new Date(), { hours: 10 + randomHours, minutes: 0, seconds: 0, milliseconds: 0 }), 10 + randomDays).toISOString()

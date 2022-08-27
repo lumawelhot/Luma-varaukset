@@ -1,4 +1,5 @@
 const { addDays, set } = require('date-fns')
+const { helsinkiZoneOffset } = require('../../utils/calculator')
 const times = { minutes: 0, seconds: 0, milliseconds: 0 }
 
 const commonDetails = {
@@ -37,18 +38,18 @@ const eventsInTheFuture = {
     addDays(new Date(), 14).toISOString(),
     addDays(new Date(), 21).toISOString()
   ],
-  start: set(new Date(), { hours: 10, ...times }).toISOString(),
-  end: set(new Date(), { hours: 13, ...times }).toISOString()
+  start: set(new Date(), { hours: 10 + helsinkiZoneOffset(), ...times }).toISOString(),
+  end: set(new Date(), { hours: 13 + helsinkiZoneOffset(), ...times }).toISOString()
 }
 const eventsInTheFutureDates = [
-  (set(addDays(new Date(), 14), { hours: 10, ...times })).toISOString(),
-  (set(addDays(new Date(), 21), { hours: 10, ...times })).toISOString(),
+  (set(addDays(new Date(), 14), { hours: 10 + helsinkiZoneOffset(), ...times })).toISOString(),
+  (set(addDays(new Date(), 21), { hours: 10 + helsinkiZoneOffset(), ...times })).toISOString(),
 ]
 
 const getTimeByHours = (startHours, endHours) => ({
   dates: [ addDays(new Date(), 21).toISOString() ],
-  start: set(new Date(), { hours: startHours, ...times }).toISOString(),
-  end: set(new Date(), { hours: endHours, ...times }).toISOString()
+  start: set(new Date(), { hours: startHours + helsinkiZoneOffset(), ...times }).toISOString(),
+  end: set(new Date(), { hours: endHours + helsinkiZoneOffset(), ...times }).toISOString()
 })
 
 const eventTooEarly = { ...commonDetails, ...getTimeByHours(7, 10) }
