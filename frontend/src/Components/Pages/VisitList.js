@@ -44,7 +44,6 @@ const VisitList = () => {
       created: v.created ? format(new Date(v.created), 'd.M.y - HH:mm') : ''
     }))
   , [all, filterOptions, t])
-
   const columns = useMemo(visitColumns, [t])
 
   if (!visits) return <></>
