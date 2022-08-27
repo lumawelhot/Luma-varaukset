@@ -16,7 +16,6 @@ import ExtraList from './components/Pages/ExtraList'
 import { useTranslation } from 'react-i18next'
 import { Button } from './components/Embeds/Button'
 import Event from './components/Modals/Event'
-import { eventInitWithValues } from './helpers/initialvalues'
 import FormList from './components/Pages/FormList'
 import Root from './Root'
 import Submission from './components/Modals/Visit/Submission'
@@ -38,16 +37,11 @@ const App = () => {
   return (
     <>
       <Login show={showLogin} close={() => setShowLogin(false)} />
-      <Event
-        show={showEvent}
+      {showEvent && <Event
         close={() => setShowEvent(false)}
         modify
-        initialValues={event ? eventInitWithValues({
-          ...event,
-          eventStart: new Date(event.start),
-          eventEnd: new Date(event.end)
-        }) : undefined}
-      />
+        initialValues={event}
+      />}
       <Menu />
       <Container style={{ marginTop: 30 }}>
         {user && window.location.href.includes('/visits') && <VisitList />}

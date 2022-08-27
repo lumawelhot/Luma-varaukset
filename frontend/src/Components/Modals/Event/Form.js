@@ -16,6 +16,7 @@ import { EventValidation } from '../../../helpers/validate'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
 import { useExtras, useForms, useGroups, useMisc } from '../../../hooks/cache'
+import { eventInitialValues } from '../../../helpers/initialvalues'
 
 const Form = ({ formId, onSubmit, initialValues, type }) => {
   const { t } = useTranslation()
@@ -27,7 +28,7 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
 
   const { control, register, handleSubmit, formState: { errors }, setValue, watch, getValues } = useForm({
     resolver: yupResolver(EventValidation),
-    defaultValues: { ...initialValues, dates: [] },
+    defaultValues: eventInitialValues(initialValues),
     mode: 'onTouched'
   })
 
@@ -40,7 +41,7 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
     if (!found) setValue('dates', watch('dates').concat({ date }))
   }
 
-  useEffect(() => updateDates({ start: initialValues.start }), [])
+  useEffect(() => updateDates({ start: watch('start') }), [])
   const eventColumns = useMemo(eventDateColumns, [])
 
   const dateData = useMemo(() => watch('dates')
@@ -171,7 +172,7 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
         </div>
         {type === 'create' && <div style={{ width: '100%', paddingRight: 2, paddingBottom: 2 }}>
           <Input id='waitingTime' title={required(t('waiting-time-visits'))} type='number' {...register('waitingTime')} />
-          {errors.waitingTime && <Error>{t(errors.waitingTime)}</Error>}
+          {errors.waitingTime && <Error>{t(errors.waitingTime.message)}</Error>}
         </div>}
       </Stack>
       <Select

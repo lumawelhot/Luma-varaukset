@@ -1,5 +1,6 @@
-import { add, set } from 'date-fns'
+import { add } from 'date-fns'
 import { parseExtras, parseTags } from './parse'
+import { todayByHours } from './utils'
 
 export const extraInit = {
   name: '',
@@ -20,77 +21,55 @@ export const groupInit = {
   maxCount: ''
 }
 
-export const eventInit = {
-  title: '',
-  group: '',
-  duration: 60,
-  tags: [],
-  languages: ['fi'],
-  grades: [],
-  resourceids: [],
-  extras: [],
-  waitingTime: 15,
-  desc: '',
-  start: set(new Date(), { seconds: 0, milliseconds: 0, minutes: 0, hours: 8 }),
-  end: set(new Date(), { seconds: 0, milliseconds: 0, minutes: 0, hours: 16 }),
-  inPersonVisit: true,
-  remoteVisit: true,
-  remotePlatforms: ['1', '2', '3'],
-  publishDate: null,
-  customForm: null,
-}
-
 export const customformInit = {
   name: '',
   fields: []
 }
 
 // refactoring ???
-export const eventInitWithValues = ({
-  title,
-  duration,
-  tags,
-  languages,
-  grades,
-  resourceids,
-  desc,
-  eventEnd,
-  eventStart,
-  inPersonVisit,
-  remoteVisit,
-  remotePlatforms,
-  otherRemotePlatformOption,
-  extras,
-  publishDate,
-  customForm,
-  group
-}) => ({
-  ...eventInit,
-  title: title ? title : '',
-  duration: duration ? duration : 60,
-  tags: tags ? parseTags(tags) : [],
-  languages: languages ? languages : [],
-  grades: grades ? grades.map(g => String(g)) : [],
-  resourceids: resourceids ? resourceids.map(r => String(r)) : [],
-  desc: desc ? desc : '',
-  start: eventStart,
-  end: eventEnd,
-  inPersonVisit,
-  remoteVisit,
-  remotePlatforms: remotePlatforms ? remotePlatforms.map(r => String(r)) : [],
-  otherRemotePlatformOption: otherRemotePlatformOption ? otherRemotePlatformOption : '',
-  extras: extras ? parseExtras(extras) : [],
-  publishDate: publishDate ? new Date(publishDate) : null,
-  customForm: customForm ? {
-    value: customForm.id,
-    label: customForm.name,
-    fields: customForm.fields
-  } : null,
-  group: group ? {
-    value: group.id,
-    label: group.name
-  } : ''
-})
+export const eventInitialValues = (event = {}) => {
+  const {
+    duration,
+    tags,
+    languages,
+    grades,
+    resourceids,
+    start,
+    end,
+    inPersonVisit,
+    remoteVisit,
+    remotePlatforms,
+    extras,
+    publishDate,
+    customForm,
+    group,
+    waitingTime
+  } = event
+
+  return {
+    ...event,
+    waitingTime: waitingTime || 15,
+    duration: duration || 60,
+    tags: tags ? parseTags(tags) : [],
+    languages: languages || ['fi'],
+    grades: grades?.map(g => String(g)) || [],
+    resourceids: resourceids?.map(r => String(r)) || [],
+    start: start ? new Date(start) : todayByHours(8),
+    end: end ? new Date(end) : todayByHours(16),
+    inPersonVisit: inPersonVisit !== undefined ? inPersonVisit : true,
+    remoteVisit: remoteVisit !== undefined ? remoteVisit : true,
+    remotePlatforms: remotePlatforms?.map(r => String(r)) || ['1', '2', '3'],
+    extras: extras ? parseExtras(extras) : [],
+    publishDate: publishDate ? new Date(publishDate) : null,
+    customForm: customForm ? {
+      value: customForm.id,
+      label: customForm.name,
+      fields: customForm.fields
+    } : null,
+    group: group ? { value: group.id, label: group.name } : '',
+    dates: []
+  }
+}
 
 export const visitInitialValues = (event, visit = {}) => {
   const { inPersonVisit, language, remoteVisit } = visit

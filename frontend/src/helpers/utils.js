@@ -6,6 +6,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import * as XLSX from 'xlsx'
 import { parseCSV } from './parse'
+import { set } from 'date-fns'
 
 export const plugins = [
   timeGridPlugin,
@@ -59,3 +60,6 @@ export const deleteByIds = (current, ids) => {
   } else delete modified[ids]
   return modified
 }
+
+export const todayByHours = hours =>
+  set(new Date(), { seconds: 0, milliseconds: 0, minutes: 0, hours })

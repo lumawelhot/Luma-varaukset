@@ -9,7 +9,6 @@ import { default as LumaEvent } from './Event'
 import { CALENDAR_SETTINGS } from '../../config'
 import CalendarMenu from './Menu'
 import { calendarEvents } from '../../helpers/parse'
-import { eventInit, eventInitWithValues } from '../../helpers/initialvalues'
 import { Button } from '../Embeds/Button'
 import { useTranslation } from 'react-i18next'
 import { default as EventSelectAction } from '../Modals/EventListForms'
@@ -24,7 +23,6 @@ const LumaCalendar = () => {
     set,
     parsed,
     find,
-    current,
     filterOptions,
     select,
     selected,
@@ -32,8 +30,7 @@ const LumaCalendar = () => {
     unSelectAll
   } = useEvents()
   const { calendarOptions, setCalendarOptions } = useMisc()
-  const [showEvent, setShowEvent] = useState()
-  const [dragValues, setDragValues] = useState()
+  const [event, setEvent] = useState()
   const [actionType, setActionType] = useState()
   const calendarRef = useRef()
   const navigate = useNavigate()
@@ -49,26 +46,19 @@ const LumaCalendar = () => {
     view: item.view.type
   })
 
-  const handleClose = () => {
-    setShowEvent(false)
-    setDragValues(undefined)
-  }
-
   const handleDrop = (item) => {
     const found = find(item.event._def.publicId)
     const delta = item.delta.milliseconds + (86400000 * item.delta.days)
-    const event = {
+    setEvent({ type: 'dropped', value: {
       ...found,
-      eventStart: new Date(new Date(found.start).getTime() + delta),
-      eventEnd: new Date(new Date(found.end).getTime() + delta),
-    }
-    set(event)
-    setShowEvent(true)
+      start: new Date(new Date(found.start).getTime() + delta),
+      end: new Date(new Date(found.end).getTime() + delta),
+    } })
   }
 
   const handleDateSelect = info => {
     if (!user) return
-    setDragValues({ start: info.start, end: info.end })
+    setEvent({ type: 'drag', value: { start: info.start, end: info.end } })
     const calApi = calendarRef.current.getApi()
     calApi.unselect()
   }
@@ -93,17 +83,11 @@ const LumaCalendar = () => {
       />
       <CalendarMenu ref={calendarRef} />
       <div id='eventPopover'></div>
-      {showEvent && <Event
-        show={showEvent}
-        close={handleClose}
-        options initialValues={eventInitWithValues(current)}
+      {event && <Event
+        close={() => setEvent()}
+        options={event.type === 'dropped'}
+        initialValues={event.value}
       />}
-      {dragValues && <Event
-        show={true}
-        close={handleClose}
-        initialValues={{
-          ...eventInit, ...dragValues
-        }} />}
       <FullCalendar
         ref={calendarRef}
         locale={getLocale()}

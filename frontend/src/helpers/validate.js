@@ -117,7 +117,8 @@ export const EventValidation = Yup.object().shape({
   resourceids: Yup.array().min(1, t('atleast-one-resourceid')),
   waitingTime: Yup.number()
     .min(0, t('too-small'))
-    .required(t('fill-field')),
+    .required(t('fill-field'))
+    .typeError('invalid-syntax'),
   start: Yup.date()
     .test((value, handler) => {
       const end = handler?.parent?.end

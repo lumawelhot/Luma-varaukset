@@ -52,7 +52,7 @@ const Menu = () => {
             setShowBanner(!showBanner)
           }}>{showBanner ? t('hide') : t('show')}</MenuButton>
         </div>
-        <Event show={showEvent} close={() => setShowEvent(false)} />
+        {showEvent && <Event close={() => setShowEvent(false)} />}
       </Container>
     </div>
   )
