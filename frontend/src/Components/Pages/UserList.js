@@ -4,16 +4,12 @@ import { useTranslation } from 'react-i18next'
 import Table from '../Table'
 import { userColumns } from '../../helpers/columns'
 import { Button } from '../Embeds/Button'
-import CreateUser from '../Modals/CreateUser'
-import { userInit } from '../../helpers/initialvalues'
-import ModifyUser from '../Modals/ModifyUser'
 import { exec } from '../../helpers/utils'
 import { useUsers } from '../../hooks/cache'
+import User from '../Modals/User'
 
 const UserList = () => {
   const { t } = useTranslation()
-  const [showAdd, setShowAdd] = useState(false)
-  const [showModify, setShowModify] = useState(false)
   const [selected, setSelected] = useState()
   const { all, current, fetchAll, remove } = useUsers()
   useEffect(exec(fetchAll), [current])
@@ -25,7 +21,6 @@ const UserList = () => {
       privileges: u.isAdmin ? t('admin') : t('employee'),
       options: <Button onClick={() => {
         setSelected({ ...u, isAdmin: String(u.isAdmin) })
-        setShowModify(true)
       }}>{t('modify-user')}</Button>,
       nocheck : u.username === current?.username ? true : false
     }))
@@ -46,20 +41,15 @@ const UserList = () => {
     <>
       <Heading as='h1' style={{ paddingBottom: 30 }}>{t('users')}</Heading>
       <Table checkboxed data={users} columns={columns} component={e => (<>
-        <Button onClick={() => setShowAdd(true)}>{t('create-user')}</Button>
+        <Button onClick={() => setSelected(null)}>{t('create-user')}</Button>
         {e.checked.length > 0 && <Button onClick={() => handleRemove(e)}>
           {t('remove-chosen')}
         </Button>}
       </>)}/>
-      <CreateUser
-        show={showAdd}
-        close={() => setShowAdd(false)}
-        initialValues={userInit}
-      />
-      {showModify && <ModifyUser
-        show={showModify}
-        close={() => setShowModify(false)}
-        initialValues={selected ? { ...selected, password: '' } : userInit}
+      {selected !== undefined && <User
+        close={() => setSelected()}
+        type={selected === null ? 'create' : 'modify'}
+        initialValues={selected && { ...selected, password: '' }}
       />}
     </>
   )
