@@ -38,7 +38,7 @@ export const exec = fn => () => {
     const result = await fn()
     return result
   }
-  _exec()
+  return _exec()
 }
 
 export const addOrUpdateById = (current, values) => {

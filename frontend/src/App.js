@@ -37,11 +37,7 @@ const App = () => {
   return (
     <>
       {showLogin && <Login close={() => setShowLogin(false)} />}
-      {showEvent && <Event
-        close={() => setShowEvent(false)}
-        modify
-        initialValues={event}
-      />}
+      {showEvent && <Event close={() => setShowEvent(false)} modify initialValues={event} />}
       <Menu />
       <Container>
         {user && window.location.href.includes('/visits') && <VisitList />}
