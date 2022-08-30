@@ -98,7 +98,7 @@ export const IconButton = styled(IButton)`
 RadioGroup.propTypes = {
   name: PropTypes.string.isRequired,
   control: PropTypes.object.isRequired,
-  title: PropTypes.string,
+  title: PropTypes.node,
   render: PropTypes.node.isRequired,
   onChange: PropTypes.func
 }
@@ -106,7 +106,7 @@ RadioGroup.propTypes = {
 CheckboxGroup.propTypes = {
   name: PropTypes.string.isRequired,
   control: PropTypes.object.isRequired,
-  title: PropTypes.string,
+  title: PropTypes.node,
   render: PropTypes.node.isRequired,
   onChange: PropTypes.func
 }

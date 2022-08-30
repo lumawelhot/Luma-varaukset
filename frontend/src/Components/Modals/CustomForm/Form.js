@@ -171,6 +171,6 @@ Form.propTypes = {
   formId: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
   initialValues: PropTypes.object,
-  onModify: PropTypes.bool.isRequired,
-  setOnModify: PropTypes.func.isRequired
+  onModify: PropTypes.bool,
+  setOnModify: PropTypes.func
 }

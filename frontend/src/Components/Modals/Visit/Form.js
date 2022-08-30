@@ -193,6 +193,6 @@ Form.propTypes = {
   formId: PropTypes.string.isRequired,
   show: PropTypes.bool.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  event: PropTypes.object.isRequired,
-  visit: PropTypes.object.isRequired
+  event: PropTypes.object,
+  visit: PropTypes.object
 }
