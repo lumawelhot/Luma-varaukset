@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export const BannerProvider = styled.div`
-  max-height: ${props => props.show ? '300px' : '0' };
+  max-height: ${({ show }) => show ? '300px' : '0' };
   ${({ show }) => !show && `
     max-height: 0px !important;
     transition: max-height 0.5s ease-out !important;

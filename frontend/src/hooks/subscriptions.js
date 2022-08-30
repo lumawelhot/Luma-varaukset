@@ -1,6 +1,6 @@
 import { useSubscription } from '@apollo/client'
 import { EVENTS_DELETED, EVENTS_MODIFIED, EVENT_MODIFIED } from '../graphql/queries'
-import * as eventGate from '../gateway/events'
+import { eventGate } from '../gateway/endpoints'
 import { parseFormFields } from '../helpers/parse'
 
 const addOrModify = (event, actions) => {

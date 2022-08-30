@@ -29,7 +29,6 @@ const production = createLogger({
   level: 'info',
   transports: [
     new transports.Console(),
-    //new transports.File({ filename: 'logs/dump.log', maxsize: 10 * 1024 * 1024, maxFiles: 10 })
   ],
 })
 
