@@ -6,23 +6,24 @@ import { FaLock } from 'react-icons/fa'
 import { CLASSES, LANGUAGE_SHORT } from '../../config'
 import { Badge } from '../Embeds/Utils'
 import { useEvents } from '../../hooks/cache'
+import PropTypes from 'prop-types'
 
 const Event = ({ content }) => {
-  const { find, selected } = useEvents()
+  const { findEvent, selected } = useEvents()
   const { t } = useTranslation()
-  const event = find(content.event._def.publicId)
+  const event = findEvent(content.event._def.publicId)
   const unavailableColor = '#bd4047'
 
   if (!event) return <></>
 
   const isSelected = selected.includes(event.id)
-  const props = content.event._def.extendedProps
+  const details = content.event._def.extendedProps
   const { disabled } = event
   const groupFull = event?.group?.disabled
-  const { locked, booked } = props
+  const { locked, booked } = details
   const view = content.view.type
   const published = event?.publishDate ? new Date() >= new Date(event.publishDate) : true
-  const passed = !disabled && !booked && props.unAvailable
+  const passed = !disabled && !booked && details.unAvailable
 
   const getTimeRange = () => {
     const start = new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', timeZone: 'Europe/Helsinki' }).format(new Date(event.start))
@@ -63,11 +64,7 @@ const Event = ({ content }) => {
   )
 
   if (view === 'dayGridMonth') return (
-    <OverlayTrigger
-      placement='top'
-      overlay={popover()}
-      delay={500}
-    >
+    <OverlayTrigger placement='auto-start' overlay={popover()} delay={700}>
       <div className='event-overlay' style={{ overflow: 'hidden' }}>
         <span
           className='fc-list-event-dot'
@@ -79,11 +76,7 @@ const Event = ({ content }) => {
   )
 
   return (
-    <OverlayTrigger
-      placement='top'
-      overlay={popover()}
-      delay={700}
-    >
+    <OverlayTrigger placement='top-start' overlay={popover()} delay={700}>
       <div className='event-overlay' style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
         <div>
           {!locked && showEvent() && <BsEyeSlashFill
@@ -108,3 +101,7 @@ const Event = ({ content }) => {
 }
 
 export default Event
+
+Event.propTypes = {
+  content: PropTypes.object.isRequired
+}

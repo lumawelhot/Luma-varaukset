@@ -3,14 +3,14 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../../Embeds/Button'
 import { useNavigate, useParams } from 'react-router-dom'
-import CSV from './CSV'
 import Emails from './Emails'
-import { useUsers, useVisits } from '../../../hooks/cache'
-import { exec } from '../../../helpers/utils'
+import { useEvents, useUsers, useVisits } from '../../../hooks/cache'
+import { exec, getCSV } from '../../../helpers/utils'
 
 const Configs = () => {
   const { t } = useTranslation()
-  const { fetchAll } = useVisits()
+  const { all, fetchAll } = useVisits()
+  const { findEvent } = useEvents()
   const { current: user } = useUsers()
   const { page } = useParams()
   const navigate = useNavigate()
@@ -32,7 +32,7 @@ const Configs = () => {
         </Button>}
       </div>
       <div style={{ marginLeft: -10, marginTop: 50 }}>
-        {title === 'csv' && <CSV />}
+        {title === 'csv' && <Button onClick={() => getCSV(all, findEvent)}>{t('get-csv')}</Button>}
         {user?.isAdmin && title === 'emails' && <Emails />}
       </div>
     </>

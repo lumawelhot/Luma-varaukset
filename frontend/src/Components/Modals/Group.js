@@ -1,4 +1,4 @@
-import React, { useId, useState } from 'react'
+import React, { useId } from 'react'
 import { Button } from '../Embeds/Button'
 import { Modal, ModalHeader } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
@@ -9,17 +9,14 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useGroups } from '../../hooks/cache'
 import { notifier } from '../../helpers/notifier'
+import { useCloseModal } from '../../hooks/utils'
+import PropTypes from 'prop-types'
 
 const Group = ({ close, initialValues, type }) => {
   const { t } = useTranslation()
   const formId = useId()
   const { modify, add } = useGroups()
-  const [show, setShow] = useState(true)
-
-  const closeModal = () => {
-    setShow(false)
-    setTimeout(close, 300)
-  }
+  const [show, closeModal] = useCloseModal(close)
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(GroupValidation),
@@ -63,3 +60,9 @@ const Group = ({ close, initialValues, type }) => {
 }
 
 export default Group
+
+Group.propTypes = {
+  close: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
+  initialValues: PropTypes.object
+}

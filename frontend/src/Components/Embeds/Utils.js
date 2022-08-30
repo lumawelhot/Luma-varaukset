@@ -3,6 +3,7 @@ import { useClipboard } from '@chakra-ui/react'
 import React from 'react'
 import { CopyIcon, CheckIcon } from '@chakra-ui/icons'
 import Countdown from 'react-countdown'
+import PropTypes from 'prop-types'
 
 export const Badge = styled.span`
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
@@ -47,3 +48,13 @@ export const Timer = ({ seconds }) => <Countdown
     </span>
   }}
 />
+
+Clipboard.propTypes = {
+  text: PropTypes.string,
+  content: PropTypes.node,
+  style: PropTypes.object
+}
+
+Timer.propTypes = {
+  seconds: PropTypes.number.isRequired
+}

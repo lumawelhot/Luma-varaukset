@@ -36,14 +36,14 @@ const App = () => {
 
   return (
     <>
-      <Login show={showLogin} close={() => setShowLogin(false)} />
+      {showLogin && <Login close={() => setShowLogin(false)} />}
       {showEvent && <Event
         close={() => setShowEvent(false)}
         modify
         initialValues={event}
       />}
       <Menu />
-      <Container style={{ marginTop: 30 }}>
+      <Container>
         {user && window.location.href.includes('/visits') && <VisitList />}
         <Routes>
           <Route path='/' element={<LumaCalendar />} />
@@ -76,9 +76,7 @@ const App = () => {
             <LumaCalendar />
           </>} />
         </Routes>
-        {!user &&
-          <FcKey className='login-icon' onClick={() => setShowLogin(true)} />
-        }
+        {!user && <FcKey className='login-icon' onClick={() => setShowLogin(true)} />}
       </Container>
     </>
   )

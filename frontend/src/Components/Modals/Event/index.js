@@ -7,18 +7,15 @@ import { useEvents } from '../../../hooks/cache'
 import Form from './Form'
 import { notifier } from '../../../helpers/notifier'
 import { parseEventSubmission } from '../../../helpers/parse'
+import { useCloseModal } from '../../../hooks/utils'
+import PropTypes from 'prop-types'
 
 const Event = ({ close, initialValues, options, modify }) => {
   const [type, setType] = useState(modify ? 'modify' : 'create')
-  const [show, setShow] = useState(true)
+  const [show, closeModal] = useCloseModal(close)
   const { add, modify : _modify } = useEvents()
   const { t } = useTranslation()
   const formId = useId()
-
-  const closeModal = () => {
-    setShow(false)
-    setTimeout(close, 300)
-  }
 
   const handleModify = async values => {
     const variables = parseEventSubmission(values)
@@ -68,3 +65,10 @@ const Event = ({ close, initialValues, options, modify }) => {
 }
 
 export default Event
+
+Event.propTypes = {
+  close: PropTypes.func.isRequired,
+  initialValues: PropTypes.object,
+  options: PropTypes.bool,
+  modify: PropTypes.bool
+}

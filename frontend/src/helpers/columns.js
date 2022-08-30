@@ -167,6 +167,7 @@ export const formFieldColumns = () => [
 export const eventDateColumns = () => [
   {
     Header: t('event-date'),
+    // eslint-disable-next-line react/prop-types
     Cell: ({ cell }) => <div style={{ fontWeight: 'bold', marginTop: 7 }}>{cell.value}</div>,
     accessor: 'date',
     sortType: dateSort,

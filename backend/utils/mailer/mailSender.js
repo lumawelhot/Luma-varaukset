@@ -16,7 +16,6 @@ const fillStringWithValues = (str, replace) => {
   }
 }
 
-
 const getDetails = (visit, event) => [
   { name: 'link', value: visit?.id ? `${config.HOST_URI}/${visit.id}` : '' },
   { name: 'event-title', value: u(event?.title) },

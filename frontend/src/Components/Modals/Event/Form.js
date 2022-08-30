@@ -17,6 +17,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
 import { useExtras, useForms, useGroups, useMisc } from '../../../hooks/cache'
 import { eventInitialValues } from '../../../helpers/initialvalues'
+import PropTypes from 'prop-types'
 
 const Form = ({ formId, onSubmit, initialValues, type }) => {
   const { t } = useTranslation()
@@ -213,3 +214,10 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
 }
 
 export default Form
+
+Form.propTypes = {
+  formId: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  initialValues: PropTypes.object,
+  type: PropTypes.string.isRequired
+}

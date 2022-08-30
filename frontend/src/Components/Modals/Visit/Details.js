@@ -4,6 +4,7 @@ import { CLASSES, PLATFORMS } from '../../../config'
 import { Heading } from '@chakra-ui/react'
 import { format } from 'date-fns'
 import { useTranslation } from 'react-i18next'
+import PropTypes from 'prop-types'
 
 const Details = ({ visit, event }) => {
   const { t } = useTranslation()
@@ -21,16 +22,12 @@ const Details = ({ visit, event }) => {
     </P>
     <P>
       <Title>{t('science-class')}: </Title>
-      <Ul>
-        {visit?.event?.resourceids?.map((r, i) => <Li key={i}>{CLASSES[r - 1]?.label}</Li>)}
-      </Ul>
+      <Ul>{visit?.event?.resourceids?.map((r, i) => <Li key={i}>{CLASSES[r - 1]?.label}</Li>)}</Ul>
     </P>
-    {visit.extras.length
-      ? <P>
+    {visit.extras.length ?
+      <P>
         <Title>{t('extras')}: </Title>
-        <Ul>
-          {visit.extras?.map(extra => <Li key={extra.name}>{extra.name}</Li>) }
-        </Ul>
+        <Ul>{visit.extras?.map(extra => <Li key={extra.name}>{extra.name}</Li>) }</Ul>
       </P>
       : null}
     <P>
@@ -101,3 +98,8 @@ const Details = ({ visit, event }) => {
 }
 
 export default Details
+
+Details.propTypes = {
+  event: PropTypes.object.isRequired,
+  visit: PropTypes.object.isRequired
+}

@@ -13,6 +13,7 @@ import { CustomFormValidation } from '../../../helpers/validate'
 import { useForm } from 'react-hook-form'
 import { Input } from '../../Embeds/Input'
 import { DEFAULT_FIELD_VALUES } from '../../../config'
+import PropTypes from 'prop-types'
 
 const Form = (({ initialValues, setOnModify, onModify, onSubmit, formId }) => {
   const { t } = useTranslation()
@@ -165,3 +166,11 @@ const Form = (({ initialValues, setOnModify, onModify, onSubmit, formId }) => {
 })
 
 export default Form
+
+Form.propTypes = {
+  formId: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  initialValues: PropTypes.object,
+  onModify: PropTypes.bool.isRequired,
+  setOnModify: PropTypes.func.isRequired
+}

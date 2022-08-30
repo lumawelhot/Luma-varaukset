@@ -44,13 +44,13 @@ export const useEventListFilter = ({ all }) => {
     classes: [],
     range: { start: undefined, end: new Date() }
   })
-  const { find } = useEvents()
+  const { findEvent } = useEvents()
 
   const filtered = useMemo(() => all
     ?.filter(p => {
       const { classes } = filterOptions
       if (classes.length <= 0) return true
-      return someExist(find(p.id)?.resourceids, classes.map(c => c.value))
+      return someExist(findEvent(p.id)?.resourceids, classes.map(c => c.value))
     })
     ?.filter(p => {
       const { start } = filterOptions.range

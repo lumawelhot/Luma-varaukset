@@ -8,6 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
 import { CheckboxGroup, Checkbox } from '../../Embeds/Button'
 import { CLASSES } from '../../../config'
+import PropTypes from 'prop-types'
 
 const Form = ({ onSubmit, initialValues, formId }) => {
   const { t } = useTranslation()
@@ -38,3 +39,9 @@ const Form = ({ onSubmit, initialValues, formId }) => {
 }
 
 export default Form
+
+Form.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  formId: PropTypes.string.isRequired,
+  initialValues: PropTypes.object
+}

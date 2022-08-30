@@ -13,13 +13,14 @@ import Steps, { Step } from 'rc-steps'
 import { CheckIcon } from '@chakra-ui/icons'
 import { notifier } from '../../../helpers/notifier'
 import { useUsers, useVisits, useEvents } from '../../../hooks/cache'
+import PropTypes from 'prop-types'
 
 const Visit = ({ children }) => {
   const { t } = useTranslation()
   const formId = useId()
   const [phase, setPhase] = useState(0)
   const [showInfo, setShowInfo] = useState(false)
-  const [status, setStatus] = useState()
+  const [status, setStatus] = useState(false)
   const [timer, setTimer] = useState()
   const [token, setToken] = useState()
   const { add } = useVisits()
@@ -124,3 +125,7 @@ const Visit = ({ children }) => {
 }
 
 export default Visit
+
+Visit.propTypes = {
+  children: PropTypes.node
+}

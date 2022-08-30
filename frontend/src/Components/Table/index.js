@@ -4,6 +4,7 @@ import { Table as List, Thead, Tbody, Tr, Th, Td, Container, Checkbox } from '..
 import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai'
 import { multipleExist, someExist } from '../../helpers/utils'
 import Pagination from './Pagination'
+import PropTypes from 'prop-types'
 
 const Table = ({ columns, data, initialState, component, checkboxed, nosort }) => {
   const [checked, setChecked] = useState([])
@@ -134,3 +135,12 @@ const Table = ({ columns, data, initialState, component, checkboxed, nosort }) =
 }
 
 export default Table
+
+Table.propTypes = {
+  columns: PropTypes.array.isRequired,
+  data: PropTypes.array.isRequired,
+  initialState: PropTypes.object,
+  component: PropTypes.func,
+  checkboxed: PropTypes.bool,
+  nosort: PropTypes.bool
+}

@@ -6,26 +6,30 @@ import { useForm } from 'react-hook-form'
 import { Input } from '../Embeds/Input'
 import { useUsers, useEvict } from '../../hooks/cache'
 import { notifier } from '../../helpers/notifier'
+import { useCloseModal } from '../../hooks/utils'
+import PropTypes from 'prop-types'
 
-const Login = ({ show, close }) => {
+const Login = ({ close }) => {
   const { t } = useTranslation()
   const formId = useId()
   const { login } = useUsers()
   const { evict } = useEvict()
   const { register, handleSubmit, reset } = useForm()
+  const [show, closeModal] = useCloseModal(close)
+
   const onSubmit = async values => {
     const success = await login(values)
     notifier.login(success)
     if (success) {
       evict()
-      close()
+      closeModal()
     }
     reset({ username: '', password: '' })
   }
 
   return (
 
-    <Modal show={show} onHide={close} backdrop='static'>
+    <Modal show={show} onHide={closeModal} backdrop='static'>
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         <Modal.Title>{t('login-header')}</Modal.Title>
       </Modal.Header>
@@ -43,3 +47,7 @@ const Login = ({ show, close }) => {
 }
 
 export default Login
+
+Login.propTypes = {
+  close: PropTypes.func.isRequired
+}

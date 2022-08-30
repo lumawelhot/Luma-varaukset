@@ -12,6 +12,7 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { exec } from '../../../helpers/utils'
 import { useForms } from '../../../hooks/cache'
+import PropTypes from 'prop-types'
 
 const Form = ({ formId, show, onSubmit, event, visit }) => {
   const { fetchAll } = useForms()
@@ -41,10 +42,9 @@ const Form = ({ formId, show, onSubmit, event, visit }) => {
   }
 
   useEffect(() => {
-    form?.fields && form?.fields?.map((field, j) => {
-      const values = Object.fromEntries(getValues().customFormData.map(f => [f.name, f.value]))
+    form?.fields && form?.fields?.forEach((field, j) => {
+      const values = Object.fromEntries(getValues()?.customFormData?.map(f => [f.name, f.value]))
       setValue(`custom-${j}`, values[field.name])
-      return undefined
     })
   }, [])
 
@@ -53,7 +53,7 @@ const Form = ({ formId, show, onSubmit, event, visit }) => {
 
       {event?.languages.length > 1 && (
         <RadioGroup name='language' control={control} title={t('language')} render={<>
-          {event.languages.map((l, i) => <Radio key={i} value={l}>{t(l)}</Radio>)}
+          {event?.languages?.map((l, i) => <Radio key={i} value={l}>{t(l)}</Radio>)}
         </>}/>
       )}
 
@@ -188,3 +188,11 @@ const Form = ({ formId, show, onSubmit, event, visit }) => {
 }
 
 export default Form
+
+Form.propTypes = {
+  formId: PropTypes.string.isRequired,
+  show: PropTypes.bool.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  event: PropTypes.object.isRequired,
+  visit: PropTypes.object.isRequired
+}

@@ -11,6 +11,7 @@ import { Input } from '../Embeds/Input'
 import { Error, required } from '../Embeds/Title'
 import { Button as ChakraButton } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next'
+import PropTypes from 'prop-types'
 
 const RESOLVERS = { modify: ModifyUserValidation, create: CreateUserValidation }
 
@@ -84,3 +85,9 @@ const User = ({ close, type, initialValues }) => {
 }
 
 export default User
+
+User.propTypes = {
+  close: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
+  initialValues: PropTypes.object
+}

@@ -15,7 +15,7 @@ const VisitList = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { all, fetchAll } = useVisits()
-  const { find } = useEvents()
+  const { findEvent } = useEvents()
   const [filterOptions, setFilterOptions] = useState({ classes: [] })
 
   useEffect(exec(fetchAll), [])
@@ -24,7 +24,7 @@ const VisitList = () => {
     ?.filter(p => {
       const { classes } = filterOptions
       if (classes.length <= 0) return true
-      return someExist(find(p?.event?.id)?.resourceids, classes.map(c => c.value))
+      return someExist(findEvent(p?.event?.id)?.resourceids, classes.map(c => c.value))
     })
     ?.map(v => ({
       title: <span

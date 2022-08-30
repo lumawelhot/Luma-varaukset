@@ -5,21 +5,24 @@ import { Button } from '../../Embeds/Button'
 import { useMisc } from '../../../hooks/cache'
 import Form from './Form'
 import Info from './Info'
+import PropTypes from 'prop-types'
+import { useCloseModal } from '../../../hooks/utils'
 
-const Emails = ({ show, close, template }) => {
+const Emails = ({ close, template }) => {
   const [info, showInfo] = useState()
   const { modifyEmail } = useMisc()
+  const [show, closeModal] = useCloseModal(close)
   const { t } = useTranslation()
   const formId = useId()
 
   const handleModify = async values => {
-    if (await modifyEmail(values)) close()
+    if (await modifyEmail(values)) closeModal()
   }
 
   if (!template) return <></>
 
   return (
-    <Modal show={show} backdrop='static' size='lg' onHide={close} scrollable={true}>
+    <Modal show={show} backdrop='static' size='lg' onHide={closeModal} scrollable={true}>
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         <Modal.Title>{t('email-template')}</Modal.Title>
       </Modal.Header>
@@ -42,3 +45,8 @@ const Emails = ({ show, close, template }) => {
 }
 
 export default Emails
+
+Emails.propTypes = {
+  close: PropTypes.func.isRequired,
+  template: PropTypes.object.isRequired
+}

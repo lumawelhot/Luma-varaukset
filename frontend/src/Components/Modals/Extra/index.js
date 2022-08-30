@@ -1,20 +1,17 @@
-import React, { useId, useState } from 'react'
+import React, { useId } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { useExtras } from '../../../hooks/cache'
+import { useCloseModal } from '../../../hooks/utils'
 import { Button } from '../../Embeds/Button'
 import Form from './Form'
+import PropTypes from 'prop-types'
 
 const Extra = ({ close, initialValues, type }) => {
   const formId = useId()
   const { add, modify } = useExtras()
-  const [show, setShow] = useState(true)
+  const [show, closeModal] = useCloseModal(close)
   const { t } = useTranslation()
-
-  const closeModal = () => {
-    setShow(false)
-    setTimeout(close, 300)
-  }
 
   const handle = type === 'modify' ? modify : add
   const onSubmit = async values => {
@@ -39,3 +36,9 @@ const Extra = ({ close, initialValues, type }) => {
 }
 
 export default Extra
+
+Extra.propTypes = {
+  close: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
+  initialValues: PropTypes.object
+}

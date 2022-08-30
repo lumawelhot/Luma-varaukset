@@ -14,15 +14,15 @@ import { useUsers, useVisits, useEvents } from '../../../hooks/cache'
 const Submission = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { current: visit, find, remove, fetchAll, modify } = useVisits()
-  const { find : findEvent } = useEvents()
+  const { current: visit, findVisit, remove, fetchAll, modify } = useVisits()
+  const { findEvent } = useEvents()
   const { current: user } = useUsers()
   const [page, setPage] = useState('details')
   const { id } = useParams()
   const formId = useId()
   useEffect(exec(async () => {
     await fetchAll()
-    await find(id)
+    await findVisit(id)
   }), [])
 
   const toVisits = () => {

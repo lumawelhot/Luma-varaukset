@@ -17,33 +17,23 @@ const Info = () => {
       {event?.tags?.map((t, i) => <Badge key={i} bg='primary'>{t.name}</Badge>)}
       <P>
         <Title>{t('description')}: </Title>
-        <div style={{ marginLeft: 10 }}>
-          <Text>{event.desc}</Text>
-        </div>
+        <Text style={{ marginLeft: 10, display: 'block' }}>{event.desc}</Text>
       </P>
       <P>
         <Title>{t('languages')}: </Title>
-        <Ul>
-          {event?.languages?.map((l, i) => <Li key={i}>{t(LANG_MAP[l])}</Li>)}
-        </Ul>
+        <Ul>{event?.languages?.map((l, i) => <Li key={i}>{t(LANG_MAP[l])}</Li>)}</Ul>
       </P>
       <P>
         <Title>{t('science-class')}: </Title>
-        <Ul>
-          {event?.resourceids?.map((r, i) => <Li key={i}>{CLASSES[r - 1]?.label}</Li>)}
-        </Ul>
+        <Ul>{event?.resourceids?.map((r, i) => <Li key={i}>{CLASSES[r - 1]?.label}</Li>)}</Ul>
       </P>
       {!!event?.extras?.length && <P>
         <Title>{t('available-extras')}: </Title>
-        <Ul>
-          {event?.extras?.map(extra => <Li key={extra.name}>{extra.name}</Li>) }
-        </Ul>
+        <Ul>{event?.extras?.map(extra => <Li key={extra.name}>{extra.name}</Li>) }</Ul>
       </P>}
       <P>
         <Title>{t('available-grades')}: </Title>
-        <Ul>
-          {event?.grades?.map((g, i) => <Li key={i}>{t(GRADES[g - 1]?.label)}</Li>)}
-        </Ul>
+        <Ul>{event?.grades?.map((g, i) => <Li key={i}>{t(GRADES[g - 1]?.label)}</Li>)}</Ul>
       </P>
       <P>
         <Title>{t('event-on-offer')}: </Title>

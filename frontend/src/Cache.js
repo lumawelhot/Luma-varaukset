@@ -17,6 +17,7 @@ import {
   useUserService,
   useVisitService
 } from './hooks/services'
+import PropTypes from 'prop-types'
 
 export const LumaContext = React.createContext()
 
@@ -52,3 +53,7 @@ const Cache = ({ children }) => {
 }
 
 export default Cache
+
+Cache.propTypes = {
+  children: PropTypes.node.isRequired
+}

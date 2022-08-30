@@ -3,7 +3,7 @@ import { format } from 'date-fns'
 describe('As an employee I can', () => {
   const date = new Date()
   // eslint-disable-next-line no-mixed-operators
-  date.setDate(date.getDate() + ((7 - date.getDay()) % 7 + 1) % 7 + 8)
+  date.setDate(date.getDate() + ((7 - date.getDay()) % 7) % 7 + 8)
 
   beforeEach(() => {
     cy.request('http://localhost:3001/reset')

@@ -11,6 +11,7 @@ import {
 import { Controller } from 'react-hook-form'
 import Title from './Title'
 import { Stack } from 'react-bootstrap'
+import PropTypes from 'prop-types'
 
 export const Button = styled.button`
   align-items: center;
@@ -93,3 +94,19 @@ export const IconButton = styled(IButton)`
   margin-left: 5px;
   box-shadow: none !important;
 `
+
+RadioGroup.propTypes = {
+  name: PropTypes.string.isRequired,
+  control: PropTypes.object.isRequired,
+  title: PropTypes.string,
+  render: PropTypes.node.isRequired,
+  onChange: PropTypes.func
+}
+
+CheckboxGroup.propTypes = {
+  name: PropTypes.string.isRequired,
+  control: PropTypes.object.isRequired,
+  title: PropTypes.string,
+  render: PropTypes.node.isRequired,
+  onChange: PropTypes.func
+}

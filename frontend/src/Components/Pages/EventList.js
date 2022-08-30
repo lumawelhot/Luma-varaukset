@@ -86,11 +86,7 @@ const EventList = () => {
           {user.isAdmin && <Button onClick={() => handle({ ...e, type: 'delete' })}>{t('delete-events')}</Button>}
         </>
       }} />
-      {showForms && <EventListForms
-        show={showForms}
-        close={() => setShowForms()}
-        {...selected}
-      />}
+      {showForms && <EventListForms close={() => setShowForms(false)} {...selected} />}
     </>
   )
 }

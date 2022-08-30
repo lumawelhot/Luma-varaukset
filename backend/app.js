@@ -47,14 +47,6 @@ const server = new ApolloServer({
     }
   },
   formatError: (err) => {
-    // Logging in production could be usefull
-    // Be carefull when logging, do not log user details
-    // Do not log database errors
-    /* const isDev = process.env.NODE_ENV !== 'production'
-    if (isDev || (
-      !err.message.includes('alidation') &&
-      !err.message.includes('model')
-    )) logger.error(`Error: "${err.message}", Path: "${err.path}"`) */
     logger.debug(`Error: "${err.message}", Path: "${err.path}"`)
     return Error('Internal Server Error')
   }
@@ -85,7 +77,7 @@ app.use(cookieParser())
 if (process.env.NODE_ENV === 'production') {
   app.use(rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 300, // Limit each IP to 200 requests per `window` (here, per 15 minutes)
+    max: 300, // Limit each IP to 300 requests per `window` (here, per 15 minutes)
     standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   }))

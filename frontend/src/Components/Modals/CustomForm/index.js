@@ -5,18 +5,15 @@ import { Button } from '../../Embeds/Button'
 import Form from './Form'
 import { notifier } from '../../../helpers/notifier'
 import { useForms } from '../../../hooks/cache'
+import { useCloseModal } from '../../../hooks/utils'
+import PropTypes from 'prop-types'
 
 const CustomForm = ({ close, initialValues, type }) => {
   const { t } = useTranslation()
   const formId = useId()
-  const [show, setShow] = useState(true)
+  const [show, closeModal] = useCloseModal(close)
   const [onModify, setOnModify] = useState()
   const { add, modify } = useForms()
-
-  const closeModal = () => {
-    setShow(false)
-    setTimeout(close, 300)
-  }
 
   const handleAddForm = async values => {
     const status = await add({ ...values })
@@ -60,3 +57,9 @@ const CustomForm = ({ close, initialValues, type }) => {
 }
 
 export default CustomForm
+
+CustomForm.propTypes = {
+  close: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
+  initialValues: PropTypes.object
+}

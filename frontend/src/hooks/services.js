@@ -120,7 +120,7 @@ export const useVisitService = ({ visitReducer }) => {
       if (result) _modify({ ...state.all.find(v => v.id === result.id), status: false })
       return !!result
     },
-    find: async id => {
+    findVisit: async id => {
       const visit = state.all.find(v => v.id === id)
       if (visit) {
         _current(visit)
@@ -165,7 +165,7 @@ export const useEventService = ({ eventReducer }) => {
         return true
       }
     },
-    find: id => state.all[id],
+    findEvent: id => state.all[id],
     add: async variables => {
       const events = await eventGate.add(variables)
       if (events) {

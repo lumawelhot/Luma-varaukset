@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '../../Embeds/Button'
 import { useNavigate } from 'react-router-dom'
 import { useVisits } from '../../../hooks/cache'
+import PropTypes from 'prop-types'
 
 const Status = ({ status }) => {
   const { t } = useTranslation()
@@ -46,3 +47,7 @@ const Status = ({ status }) => {
 }
 
 export default Status
+
+Status.propTypes = {
+  status: PropTypes.bool.isRequired
+}

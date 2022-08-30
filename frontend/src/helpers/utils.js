@@ -61,9 +61,9 @@ export const deleteByIds = (current, ids) => {
   return modified
 }
 
-export const todayByHours = hours => {
+export const todayByHours = value => {
   const today = new Date()
   const helsinkiHours = Number(new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', timeZone: 'Europe/Helsinki' }).format(today).split('.')[0])
-  hours = hours + today.getHours() - helsinkiHours
+  const hours = value + today.getHours() - helsinkiHours
   return set(new Date(), { seconds: 0, milliseconds: 0, minutes: 0, hours })
 }

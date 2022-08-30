@@ -7,14 +7,17 @@ import { CLASSES, GRADES } from '../../config'
 import { CheckboxGroup } from '@chakra-ui/react'
 import Title from '../Embeds/Title'
 import { useEvents, useMisc } from '../../hooks/cache'
+import { useCloseModal } from '../../hooks/utils'
+import PropTypes from 'prop-types'
 
-const Filter = ({ show, close }) => {
+const Filter = ({ close }) => {
   const { t } = useTranslation()
   const { tags, fetchTags } = useMisc()
   const { filterOptions, setFilterOptions } = useEvents()
+  const [show, closeModal] = useCloseModal(close)
 
   return (
-    <Modal show={show} backdrop='static' size='lg' onHide={close} scrollable={true}>
+    <Modal show={show} backdrop='static' size='lg' onHide={closeModal} scrollable={true}>
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         <Modal.Title>{t('filter')}</Modal.Title>
       </Modal.Header>
@@ -56,10 +59,14 @@ const Filter = ({ show, close }) => {
         </Stack>
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>
-        <Button onClick={close}>{t('OK')}</Button>
+        <Button onClick={closeModal}>{t('OK')}</Button>
       </Modal.Footer>
     </Modal>
   )
 }
 
 export default Filter
+
+Filter.propTypes = {
+  close: PropTypes.func.isRequired,
+}

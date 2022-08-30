@@ -6,11 +6,14 @@ import { Button, Link } from '../Embeds/Button'
 import { Input, Select, DatePicker, TimePicker } from '../Embeds/Input'
 import Title from '../Embeds/Title'
 import { useGroups, useEvents } from '../../hooks/cache'
+import PropTypes from 'prop-types'
+import { useCloseModal } from '../../hooks/utils'
 
-const EventListForms = ({ selected, type, show, close, reset }) => {
+const EventListForms = ({ selected, type, close, reset }) => {
   const { forceRemove, assignToGroup, setPublish } = useEvents()
   const { fetchAll, all: groups } = useGroups()
   const [showSelected, setShowSelected] = useState(false)
+  const [show, closeModal] = useCloseModal(close)
   const [password, setPassword] = useState('')
   const [publishDate, setPublishDate] = useState(new Date())
   const [group, setGroup] = useState()
@@ -20,14 +23,14 @@ const EventListForms = ({ selected, type, show, close, reset }) => {
 
   const handleSetGroup = async () => {
     if (await assignToGroup({ events: ids, group })) {
-      close()
+      closeModal()
       reset()
     }
   }
 
   const handleSetPublish = async () => {
     if (await setPublish({ events: ids, publishDate: publishDate.toISOString() })) {
-      close()
+      closeModal()
       reset()
     }
   }
@@ -59,7 +62,7 @@ const EventListForms = ({ selected, type, show, close, reset }) => {
   }
 
   return (
-    <Modal show={show} backdrop='static' onHide={close}>
+    <Modal show={show} backdrop='static' onHide={closeModal}>
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         {type === 'group' && <Modal.Title>{t('add-events-to-group')}</Modal.Title>}
         {type === 'delete' && <Modal.Title>{t('delete-events-confirm')}</Modal.Title>}
@@ -104,3 +107,10 @@ const EventListForms = ({ selected, type, show, close, reset }) => {
 }
 
 export default EventListForms
+
+EventListForms.propTypes = {
+  close: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
+  selected: PropTypes.array.isRequired,
+  reset: PropTypes.func.isRequired
+}

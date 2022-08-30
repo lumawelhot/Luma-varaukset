@@ -28,11 +28,7 @@ const Emails = () => {
 
   return <>
     <Table nosort columns={columns} data={templates} />
-    <EmailModal
-      show={template ? true : false}
-      close={() => setTemplate()}
-      template={template}
-    />
+    {template && <EmailModal close={() => setTemplate()} template={template} />}
   </>
 }
 

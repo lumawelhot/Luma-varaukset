@@ -46,7 +46,7 @@ const CalendarMenu = React.forwardRef((_, ref) => {
 
   return (
     <div style={{ marginBottom: 30, justifyContent: 'space-between', display: 'flex', marginRight: -10, marginLeft: -10 }}>
-      <Filter show={showFilter} close={() => setShowFilter(false)} />
+      {showFilter && <Filter close={() => setShowFilter(false)} />}
       <ToggleMedia>
         <MonthMedia>
           <Button style={{ marginRight: 15 }} onClick={() => calApi?.today()}>{t('today')}</Button>

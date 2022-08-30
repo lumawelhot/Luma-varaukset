@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { BiChevronsLeft, BiChevronsRight, BiChevronLeft, BiChevronRight } from 'react-icons/bi'
 import { Select } from '../Embeds/Input'
 import { TABLE_PAGE_SIZE_OPTIONS } from '../../config'
+import PropTypes from 'prop-types'
 
 const Button = styled.button`
   font-size: 28px;
@@ -73,3 +74,16 @@ const Pagination = ({
 }
 
 export default Pagination
+
+Pagination.propTypes = {
+  canPreviousPage: PropTypes.bool.isRequired,
+  canNextPage: PropTypes.bool.isRequired,
+  pageOptions: PropTypes.array.isRequired,
+  pageCount: PropTypes.number.isRequired,
+  gotoPage: PropTypes.func.isRequired,
+  nextPage: PropTypes.func.isRequired,
+  previousPage: PropTypes.func.isRequired,
+  setPageSize: PropTypes.func.isRequired,
+  pageIndex: PropTypes.number.isRequired,
+  pageSize: PropTypes.number.isRequired,
+}

@@ -9,6 +9,7 @@ import {
   BannerTextBox,
   BannerTitle
 } from './components'
+import PropTypes from 'prop-types'
 
 const Banner = ({ show }) => {
   const { t, i18n } = useTranslation()
@@ -40,3 +41,7 @@ const Banner = ({ show }) => {
 }
 
 export default Banner
+
+Banner.propTypes = {
+  show: PropTypes.bool.isRequired
+}

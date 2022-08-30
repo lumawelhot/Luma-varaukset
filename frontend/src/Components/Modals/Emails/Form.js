@@ -7,6 +7,7 @@ import { DeleteIcon } from '@chakra-ui/icons'
 import { IconButton } from '../../Embeds/Button'
 import { useForm } from 'react-hook-form'
 import { Input, TextArea } from '../../Embeds/Input'
+import PropTypes from 'prop-types'
 
 const Form = ({ initialValues, formId, onSubmit }) => {
   const [address, setAdress] = useState('')
@@ -50,3 +51,9 @@ const Form = ({ initialValues, formId, onSubmit }) => {
 }
 
 export default Form
+
+Form.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  formId: PropTypes.string.isRequired,
+  initialValues: PropTypes.object
+}

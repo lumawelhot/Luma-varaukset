@@ -22,7 +22,7 @@ const LumaCalendar = () => {
     all: events,
     set,
     parsed,
-    find,
+    findEvent,
     filterOptions,
     select,
     selected,
@@ -47,7 +47,7 @@ const LumaCalendar = () => {
   })
 
   const handleDrop = (item) => {
-    const found = find(item.event._def.publicId)
+    const found = findEvent(item.event._def.publicId)
     const delta = item.delta.milliseconds + (86400000 * item.delta.days)
     setEvent({ type: 'dropped', value: {
       ...found,
@@ -74,13 +74,12 @@ const LumaCalendar = () => {
 
   return (
     <>
-      <EventSelectAction
-        show={actionType ? true : false}
+      {actionType && <EventSelectAction
         close={() => setActionType()}
         selected={events.filter(e => someExist([e.id], selected))}
         type={actionType}
         reset={unSelectAll}
-      />
+      />}
       <CalendarMenu ref={calendarRef} />
       <div id='eventPopover'></div>
       {event && <Event
@@ -101,9 +100,9 @@ const LumaCalendar = () => {
             select(event._def.publicId)
             return
           }
-          const props = event._def.extendedProps
+          const details = event._def.extendedProps
           if (set(event._def.publicId, {
-            booked: props.booked, start: props.eventStart, unAvailable: props.unAvailable
+            booked: details.booked, start: details.eventStart, unAvailable: details.unAvailable
           })) navigate('/visit')
         }}
         datesSet={handleView}
