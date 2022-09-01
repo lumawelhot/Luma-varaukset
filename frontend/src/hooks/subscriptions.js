@@ -1,5 +1,5 @@
 import { useSubscription } from '@apollo/client'
-import { EVENTS_DELETED, EVENTS_MODIFIED, EVENT_MODIFIED } from '../graphql/queries'
+import { EVENTS_DELETED, EVENTS_MODIFIED, EVENT_MODIFIED } from '../gateway/graphql/queries'
 import { eventGate } from '../gateway/endpoints'
 import { parseFormFields } from '../helpers/parse'
 

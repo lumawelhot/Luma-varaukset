@@ -1,5 +1,5 @@
 import { mutate, query } from './connector'
-import * as _Q from '../graphql/queries'
+import * as _Q from './graphql/queries'
 
 export const eventGate = {
   fetchAll: () => query(_Q.EVENTS, { field: 'getEvents' }),
