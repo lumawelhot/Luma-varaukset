@@ -69,13 +69,7 @@ const Visit = ({ children }) => {
   const available = !event?.unAvailable && !event?.disabled && !event?.booked && !event.locked && !event?.group?.disabled
 
   return (
-    <Modal
-      show={true}
-      backdrop='static'
-      size='lg'
-      onHide={close}
-      scrollable={true}
-    >
+    <Modal show={true} backdrop='static' size='lg' onHide={close} scrollable={true}>
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         <Modal.Title>{event.title}</Modal.Title>
       </Modal.Header>
@@ -91,7 +85,7 @@ const Visit = ({ children }) => {
       </Modal.Header>
       <Modal.Body>
         {phase === 0 && <Info />}
-        <div className={phase === 1 ? 'show-visitform' : 'hide-visitform'}>
+        <div className={phase === 1 ? 'visible' : 'hidden'}>
           {<Form formId={formId} show={!showInfo} onSubmit={handleSubmit} event={event} />}
           {showInfo && <Info />}
         </div>
