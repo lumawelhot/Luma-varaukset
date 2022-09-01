@@ -1,9 +1,9 @@
 import { client } from '..'
 
-export const query = async ({ query, variables, field }) => {
+export const query = async (gql, { variables, field }) => {
   try {
     const { data } = await client.query({
-      query,
+      query: gql,
       fetchPolicy: 'no-cache',
       variables
     })
@@ -11,10 +11,10 @@ export const query = async ({ query, variables, field }) => {
   } catch (err) { undefined }
 }
 
-export const mutate = async ({ mutation, variables, field }) => {
+export const mutate = async (gql, { variables, field }) => {
   try {
     const { data } = await client.mutate({
-      mutation,
+      mutation: gql,
       variables,
       fetchPolicy: 'no-cache',
     })

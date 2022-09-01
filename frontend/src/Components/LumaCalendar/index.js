@@ -69,6 +69,17 @@ const LumaCalendar = () => {
     calApi.changeView('timeGridDay', info.date)
   }
 
+  const handleClick = ({ event, jsEvent }) => {
+    if (user && jsEvent.ctrlKey) {
+      select(event._def.publicId)
+      return
+    }
+    const details = event._def.extendedProps
+    if (set(event._def.publicId, {
+      booked: details.booked, start: details.eventStart, unAvailable: details.unAvailable
+    })) navigate('/visit')
+  }
+
   // This is here because of bugs with prodcution build. Race conditions ??? Do not remove or create an alternative solution.
   calendarEvents(parsed, user)?.filter(e => !e.unAvailable || filterOptions.showUnavailable)
 
@@ -95,16 +106,7 @@ const LumaCalendar = () => {
         initialDate={calendarOptions.date}
         selectable={user}
         events={calendarEvents(parsed, user)?.filter(e => !e.unAvailable || filterOptions.showUnavailable)}
-        eventClick={({ event, jsEvent }) => {
-          if (user && jsEvent.ctrlKey) {
-            select(event._def.publicId)
-            return
-          }
-          const details = event._def.extendedProps
-          if (set(event._def.publicId, {
-            booked: details.booked, start: details.eventStart, unAvailable: details.unAvailable
-          })) navigate('/visit')
-        }}
+        eventClick={handleClick}
         datesSet={handleView}
         eventDrop={handleDrop}
         select={handleDateSelect}

@@ -16,11 +16,7 @@ const Form = ({ initialValues, formId, onSubmit }) => {
     defaultValues: initialValues
   })
 
-  return <form
-    id={formId}
-    onSubmit={handleSubmit(onSubmit)}
-    style={{ overflowX: 'hidden', padding: 3 }}
-  >
+  return <form id={formId} onSubmit={handleSubmit(onSubmit)}>
     <Input id='subject' title={t('subject')} {...register('subject')} />
     <TextArea id='text' title={t('text-content')} { ...register('text')} />
     <TextArea id='html' title={t('html-content')} { ...register('html')} />

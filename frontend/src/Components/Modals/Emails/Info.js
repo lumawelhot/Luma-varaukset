@@ -7,9 +7,7 @@ const Grid = styled.div`
   grid-template-columns: 300px auto;
   gap: 10px;
 `
-const Strong = styled.strong`
-  padding-right: 20px;
-`
+const Strong = styled.strong`padding-right: 20px;`
 
 const Info = () => <Grid>
   <Strong>Varauksen linkki:</Strong> <span>/link/r</span>
