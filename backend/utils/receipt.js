@@ -94,7 +94,7 @@ const getNotifyHtml= (visit, event) => {
           u(format(new Date(event.start), 'dd.MM.yy')),
           u(format(new Date(visit.startTime), 'HH:mm')),
           u(format(new Date(visit.endTime), 'HH:mm')),
-          u(visit.removeVisit ? 'Etävierailu' : 'Lähivierailu'),
+          u(visit.remoteVisit ? 'Etävierailu' : 'Lähivierailu'),
         ]
       ),
       containerContent(

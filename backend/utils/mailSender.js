@@ -15,7 +15,7 @@ const getDetails = (visit, event) => [
   { name: 'event-date', value: u(event?.start && format(new Date(event?.start), 'dd.MM.yy')) },
   { name: 'event-start', value: u(visit?.startTime && format(new Date(visit?.startTime), 'HH:mm')) },
   { name: 'event-end', value: u(visit?.endTime && format(new Date(visit?.endTime), 'HH:mm')) },
-  { name: 'event-type', value: u(visit?.removeVisit ? 'Etävierailu' : 'Lähivierailu') },
+  { name: 'event-type', value: u(visit?.remoteVisit ? 'Etävierailu' : 'Lähivierailu') },
   { name: 'client-name', value: u(visit?.clientName) },
   { name: 'client-phone', value: u(visit?.clientPhone) },
   { name: 'client-email', value: u(visit?.clientEmail) },
