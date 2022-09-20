@@ -1,6 +1,6 @@
 import { eventGate, extraGate, groupGate, userGate, visitGate, miscGate, formGate } from '../gateway/endpoints'
 import { parseEvent, parseFormFields } from '../helpers/parse'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { someExist } from '../helpers/utils'
 import { useEventFilter } from './filter'
 import { useEventModified, useEventsDeleted, useEventsModified } from './subscriptions'
@@ -145,8 +145,13 @@ export const useEventService = ({ eventReducer }) => {
     _modifyParsed(event)
   }
 
+  const getAll = useMemo(() => state.all && Object.values(state.all), [state.all])
+  const getParsed = useMemo(() =>
+    filtered.map(f => ({ ...f, selected: someExist([f.id], selected) }))
+  , [filtered, selected])
+
   return {
-    all: state.all ? Object.values(state.all) : undefined,
+    all: getAll,
     fetchAll: async () => {
       if (!state.fetched) {
         const events = await eventGate.fetchAll()
@@ -207,7 +212,7 @@ export const useEventService = ({ eventReducer }) => {
     current: state.current,
     filterOptions,
     setFilterOptions,
-    parsed: filtered.map(f => ({ ...f, selected: someExist([f.id], selected) })),
+    parsed: getParsed,
     evict: () => {
       _evict()
       setSelected([])

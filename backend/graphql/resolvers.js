@@ -12,6 +12,7 @@ const { sendWelcomes, sendCancellation } = require('../utils/mailer/mailSender')
 const { PubSub } = require('graphql-subscriptions')
 const { expandEvents, expandGroups, expandVisits, expandVisitTimes } = require('../db/expand')
 const logger = require('../logger')
+const { subDays } = require('date-fns')
 const pubsub = new PubSub()
 
 const resolvers = {
@@ -20,9 +21,8 @@ const resolvers = {
     getEvent: (root, args) => Event.findById(args.id, expandEvents),
     getEvents: async (root, args, { currentUser }) => {
       if (args.ids) return Event.findByIds(args.ids, expandEvents)
-      const events = await Event.find({}, expandEvents)
+      const events = await Event.FindByRange({ end: { after: subDays(new Date(), currentUser ? 90 : 0) } }, expandEvents)
       return currentUser ? events : events
-        .filter(e => new Date() <= new Date(e.start))
         .filter(e => !e.publishDate || new Date() >= new Date(e.publishDate))
         .map(e => e.group?.disabled ? { ...e, availableTimes: [] } : e)
     },

@@ -81,7 +81,7 @@ const LumaCalendar = () => {
   }
 
   // This is here because of bugs with prodcution build. Race conditions ??? Do not remove or create an alternative solution.
-  calendarEvents(parsed, user)?.filter(e => !e.unAvailable || filterOptions.showUnavailable)
+  calendarEvents(parsed, user)
 
   return (
     <>

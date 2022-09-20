@@ -7,8 +7,8 @@ const dateSort = (rowA, rowB, id) => {
   const _a = rowA.values[id]
   const _b = rowB.values[id]
   if (!_b) return -1
-  const a = parse(_a, 'd.M.y - HH:mm', new Date())
-  const b = parse(_b, 'd.M.y - HH:mm', new Date())
+  const a = parse(_a, `d.M.y${_a.includes(' - ') ? ' - HH:mm' : ''}`, new Date())
+  const b = parse(_b, `d.M.y${_b.includes(' - ') ? ' - HH:mm' : ''}`, new Date())
   if (b - a > 0) return 1
   if (a - b > 0) return -1
   return 0

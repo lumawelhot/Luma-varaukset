@@ -225,3 +225,8 @@ body {
   font-size: larger;
   font-weight: bold;
 }
+
+.fc-popover-body {
+  max-height: 100px;
+  overflow: scroll;
+}

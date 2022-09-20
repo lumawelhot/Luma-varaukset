@@ -20,7 +20,8 @@ const Visit = ({ children }) => {
   const formId = useId()
   const [phase, setPhase] = useState(0)
   const [showInfo, setShowInfo] = useState(false)
-  const [status, setStatus] = useState(false)
+  const [status, setStatus] = useState()
+  const [showModal, setShowModal] = useState(true)
   const [timer, setTimer] = useState()
   const [token, setToken] = useState()
   const { add } = useVisits()
@@ -45,7 +46,8 @@ const Visit = ({ children }) => {
   const close = () => {
     if (token) unlock(event.id)
     setToken()
-    navigate('/')
+    setShowModal(false)
+    setTimeout(() => navigate('/'), 300)
   }
 
   const handleSubmit = async values => {
@@ -69,7 +71,7 @@ const Visit = ({ children }) => {
   const available = !event?.unAvailable && !event?.disabled && !event?.booked && !event.locked && !event?.group?.disabled
 
   return (
-    <Modal show={true} backdrop='static' size='lg' onHide={close} scrollable={true}>
+    <Modal show={showModal} backdrop='static' size='lg' onHide={close} scrollable={true}>
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         <Modal.Title>{event.title}</Modal.Title>
       </Modal.Header>

@@ -13,6 +13,14 @@ class User extends Common {
 class Event extends Common {
   constructor(session) { super(getModel('event'), encoders.event, session) }
   instance(session) { return new Event(session) }
+  FindByRange(rule, expand) {
+    return this.find({
+      end: Object.fromEntries(Object.entries(rule.end).map(e => {
+        if (e[0] === 'after') return ['$gt', new Date(e[1])]
+        if (e[0] === 'before') return ['$lt', new Date(e[1])]
+      }))
+    }, expand)
+  }
 }
 
 class Visit extends Common {

@@ -113,7 +113,8 @@ class TransactionMock {
 
 const dbStub = (sandbox, db, model, encoder) => {
   sandbox.stub(model, 'find').callsFake((args, expand) =>
-    db.map(u => populate(u, expand)).map(u => format(u, encoder))
+    db.filter(u => args?.end ? new Date(args.end.$gt) < new Date(u.start) : true)
+      .map(u => populate(u, expand)).map(u => format(u, encoder))
   )
   sandbox.stub(model, 'insert').callsFake((args, expand) => {
     const object = unPopulate(
