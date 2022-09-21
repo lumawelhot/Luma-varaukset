@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react'
-import { exec } from '../../../helpers/utils'
+import React from 'react'
 import { useMisc } from '../../../hooks/cache'
 import PropTypes from 'prop-types'
 import Title, { required } from '../../Embeds/Title'
@@ -10,9 +9,7 @@ import { cancelInitialValues } from '../../../helpers/initialvalues'
 import { parseCancellation } from '../../../helpers/parse'
 
 const Cancellation = ({ formId, show, onSubmit }) => {
-  const { cancelForm: form, fetchCancelForm } = useMisc()
-
-  useEffect(exec(fetchCancelForm), [])
+  const { cancelForm: form } = useMisc()
 
   const { control, register, handleSubmit } = useForm({
     //resolver: !visit ? yupResolver(VisitValidation(form)) : undefined,

@@ -62,7 +62,7 @@ const EventListForms = ({ selected, type, close, reset }) => {
   }
 
   return (
-    <Modal show={show} backdrop='static' onHide={closeModal} scrollable={true}>
+    <Modal show={show} backdrop='static' onHide={closeModal}>
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         {type === 'group' && <Modal.Title>{t('add-events-to-group')}</Modal.Title>}
         {type === 'delete' && <Modal.Title>{t('delete-events-confirm')}</Modal.Title>}

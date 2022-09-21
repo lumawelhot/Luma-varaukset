@@ -21,10 +21,10 @@ export const groupInit = {
   maxCount: ''
 }
 
-export const customformInit = {
-  name: '',
+export const customformInit = isCancellation => ({
+  name: isCancellation ? 'cancellation' : '',
   fields: []
-}
+})
 
 // refactoring ???
 export const eventInitialValues = (event = {}) => {

@@ -11,6 +11,19 @@ const Details = ({ visit, event }) => {
   const remotePlatform = Number(visit.remotePlatform) - 1
 
   return <>
+    {visit.cancellation && <>
+      <Heading style={{ fontSize: 25 }}>{t('cancellation-details')}</Heading>
+      {!!visit.cancellation
+      && Array.isArray(visit.cancellation)
+      && visit.cancellation?.map((f,index) =>
+        <P key={index}>
+          <Title>{f.name}: </Title>
+          {Array.isArray(f.value) ? <Ul>
+            {f.value.map((o, i) => <Li key={i}>{o}</Li>)}
+          </Ul> : <Text>{f.value}</Text>}
+        </P>
+      )}
+    </>}
     <Heading style={{ fontSize: 25 }}>{visit.event.title}:</Heading>
     <P>
       <Title>{t('visit-language')}: </Title>

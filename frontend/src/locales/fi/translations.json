@@ -326,5 +326,11 @@
 
   "show-email-info": "Ohjeet",
   "show-email-form": "Näytä lomake",
-  "invalid-participants": "Virheellinen osallistujamäärä"
+  "invalid-participants": "Virheellinen osallistujamäärä",
+  "show-all": "Näytä kaikki",
+  "visit-cancelled": "Vierailu on peruttu",
+  "cancellation-details": "Peruutuksen tiedot",
+  "modify-cancellation-form": "Muokkaa peruutuslomaketta",
+  "create-cancellation-form": "Luo peruutuslomake",
+  "remove-cancellation-form": "Poista peruutuslomake"
 }

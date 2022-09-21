@@ -20,7 +20,12 @@ export const visitGate = {
   fetchAll: async () => (await query(_Q.VISITS, { field: 'getVisits' }))
     ?.map(v => {
       const data = v?.customFormData
-      return { ...v, customFormData: typeof data === 'string' ? JSON.parse(data) : data }
+      const cancellation = v?.cancellation
+      return {
+        ...v,
+        customFormData: typeof data === 'string' ? JSON.parse(data) : data,
+        cancellation: cancellation ? JSON.parse(cancellation) : cancellation
+      }
     }),
   add: async variables => {
     const visit = await mutate(_Q.CREATE_VISIT, { variables, field: 'createVisit' })
@@ -33,7 +38,12 @@ export const visitGate = {
   remove: (id, cancellation) => mutate(_Q.CANCEL_VISIT, { variables: { id, cancellation }, field: 'cancelVisit' }),
   fetch: async id => {
     const visit = await mutate(_Q.FIND_VISIT, { variables: { id }, field: 'findVisit' })
-    if (visit) return { ...visit, customFormData: JSON.parse(visit?.customFormData) }
+    const { cancellation } = visit
+    if (visit) return {
+      ...visit,
+      customFormData: JSON.parse(visit?.customFormData),
+      cancellation: cancellation ? JSON.parse(cancellation) : cancellation
+    }
   }
 }
 

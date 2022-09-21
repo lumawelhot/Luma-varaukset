@@ -112,7 +112,9 @@ const Form = (({ initialValues, setOnModify, onModify, onSubmit, formId }) => {
       fields: JSON.stringify(fields),
       name: v.name
     }))} style={{ overflowX: 'hidden', padding: 3 }}>
-      <Input id='name' title={required(t('form-name'))} {...register('name')} />
+      {watch('name') !== 'cancellation' &&
+        <Input id='name' title={required(t('form-name'))} {...register('name')} />
+      }
       {errors.name && <Error>{t(errors.name.message)}</Error>}
       <Table nosort data={fieldData} columns={fieldColumns} component={() => (<>
         <div style={{ height: 30 }}></div>

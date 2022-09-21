@@ -5,6 +5,8 @@ import { Button } from '../Embeds/Button'
 import { FaFilter } from 'react-icons/fa'
 import Filter from '../Modals/Filter'
 import styled from 'styled-components'
+import { useEvents } from '../../hooks/cache'
+import { BsEye } from 'react-icons/bs'
 
 const NavButton = styled(Button)`margin: 0; margin-left: -1px;`
 
@@ -31,7 +33,7 @@ const ToggleMedia = styled.span`
 `
 
 const ViewMedia = styled.span`
-  @media (max-width: 500px) {
+  @media (max-width: 550px) {
     display: none;
     visibility: hidden;
   }
@@ -43,6 +45,7 @@ const CalendarMenu = React.forwardRef((_, ref) => {
   const view = calApi?.view?.type
   const title = calApi?.currentDataManager?.data?.viewTitle
   const { t } = useTranslation()
+  const { filterOptions, setFilterOptions } = useEvents()
 
   return (
     <div style={{ marginBottom: 30, justifyContent: 'space-between', display: 'flex', marginRight: -10, marginLeft: -10 }}>
@@ -80,7 +83,14 @@ const CalendarMenu = React.forwardRef((_, ref) => {
           }}
           className={view === 'listMonth' ? 'active' : ''}
         >{t('agenda')}</NavButton>
-        <Button style={{ marginLeft: 15 }} onClick={() => setShowFilter(true)}>
+        <NavButton
+          style={{ marginLeft: 15 }}
+          className={filterOptions.showUnavailable ? 'active' : ''}
+          onClick={() => setFilterOptions({ ...filterOptions, showUnavailable: !filterOptions.showUnavailable })}
+        >
+          <BsEye />
+        </NavButton>
+        <Button onClick={() => setShowFilter(true)}>
           <FaFilter style={{ marginRight: 5 }} />
           {t('filter')}
         </Button>

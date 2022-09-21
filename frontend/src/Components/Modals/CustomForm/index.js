@@ -9,6 +9,7 @@ import { useCloseModal } from '../../../hooks/utils'
 import PropTypes from 'prop-types'
 
 const CustomForm = ({ close, initialValues, type }) => {
+  console.log(initialValues)
   const { t } = useTranslation()
   const formId = useId()
   const [show, closeModal] = useCloseModal(close)

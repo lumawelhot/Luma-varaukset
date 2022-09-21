@@ -105,7 +105,7 @@ const getNotifyHtml = (visit, event) => {
           u(format(new Date(event.start), 'dd.MM.yy')),
           u(format(new Date(visit.startTime), 'HH:mm')),
           u(format(new Date(visit.endTime), 'HH:mm')),
-          u(visit.removeVisit ? 'Etävierailu' : 'Lähivierailu'),
+          u(visit.remoteVisit ? 'Etävierailu' : 'Lähivierailu'),
         ]
       ),
       containerContent(
@@ -131,7 +131,7 @@ const getNotifyHtml = (visit, event) => {
           u(visit.dataUseAgreement ? 'Kyllä' : 'Ei'),
           u(visit.language === 'fi' ? 'Suomi' : (visit.language === 'en' ? 'Englanti' : 'Ruotsi'))
         ]
-      ) + u(customFormHtml(visit.customFormData)),
+      ) + u(customFormHtml(visit.customFormData)) + u(visit.cancellation),
     )
   } catch (err) {
     return `

@@ -74,9 +74,9 @@ export const parseCSV = (visit, event) => {
       'Event type': visit?.remoteVisit ? 'etäopetus' : 'lähiopetus',
       'Event language': visit?.language === 'en' ? 'englanti' : (visit?.language === 'sv' ? 'ruotsi' : 'suomi'),
       'Event grade': visit?.grade,
-      'Event cancelled': visit?.status ? 'false' : 'true',
       'Event group': event?.group,
       'Event science class': event?.resourceids?.map(r => CLASSES?.find(c => c?.value === r)?.label).join(', '),
+      'Event status': visit?.status ? 'Voimassa' : 'Peruttu',
       'Remote platform': Number.isNaN(platform) ? '' : (PLATFORMS
         ?.map((_, i) => i)?.includes(platform) ? PLATFORMS[platform] : event?.otherRemotePlatformOption),
       'Client name': visit?.clientName,
@@ -86,6 +86,10 @@ export const parseCSV = (visit, event) => {
       'School location': visit?.schoolLocation,
       'Data use agreement': visit?.dataUseAgreement ? 'true' : 'false',
       'Participants': visit?.participants,
+      'Reason for cancel': Array.isArray(visit?.cancellation) ? visit?.cancellation?.map(d => {
+        if (typeof d.value === 'string') return `${d.name}: "${d.value}"`
+        else if (Array.isArray(d.value)) return `${d.name}: "${d.value?.join(', ')}"`
+      })?.join(' // ') : '',
       'Custom form data': Array.isArray(visit?.customFormData) ? visit?.customFormData?.map(d => {
         if (typeof d.value === 'string') return `${d.name}: "${d.value}"`
         else if (Array.isArray(d.value)) return `${d.name}: "${d.value?.join(', ')}"`

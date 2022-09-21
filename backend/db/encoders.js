@@ -77,7 +77,7 @@ const visit = {
         grade: o.grade,
         participants: o.participants,
         extras: o.extras,
-        status: o.cancellation ? false : true,
+        status: o.cancellation !== undefined ? false : true,
         startTime: o.startTime,
         endTime: o.endTime,
         inPersonVisit: o.inPersonVisit,

@@ -281,9 +281,11 @@ const resolvers = {
           endTime: new Date(event.end)
         }, event.waitingTime, event.duration)
       })
-      const danglingVisit = await visitInst.update(visit.id, { cancellation: JSON.parse(args.cancellation) })
+      const danglingVisit = await visitInst.update(visit.id, {
+        cancellation: args.cancellation ? JSON.parse(args.cancellation) : null // do not return undefined
+      })
 
-      await sendCancellation(visit, event)
+      await sendCancellation(danglingVisit, event)
       await session.commit()
       if (danglingEvent) {
         pubsub.publish('EVENT_MODIFIED', { eventModified: danglingEvent })
