@@ -30,7 +30,7 @@ export const visitGate = {
     const visit = await mutate(_Q.MODIFY_VISIT, { variables, field: 'modifyVisit' })
     if (visit) return { ...visit, customFormData: JSON.parse(visit?.customFormData) }
   },
-  remove: id => mutate(_Q.CANCEL_VISIT, { variables: { id }, field: 'cancelVisit' }),
+  remove: (id, cancellation) => mutate(_Q.CANCEL_VISIT, { variables: { id, cancellation }, field: 'cancelVisit' }),
   fetch: async id => {
     const visit = await mutate(_Q.FIND_VISIT, { variables: { id }, field: 'findVisit' })
     if (visit) return { ...visit, customFormData: JSON.parse(visit?.customFormData) }
@@ -54,7 +54,11 @@ export const groupGate = {
 export const miscGate = {
   fetchTags: () => query(_Q.TAGS, { field: 'getTags' }),
   fetchEmails: () => query(_Q.GET_EMAIL_TEMPLATES, { field: 'getEmailTemplates' }),
-  modifyEmail: variables => mutate(_Q.UPDATE_EMAIL, { variables, field: 'updateEmail' })
+  modifyEmail: variables => mutate(_Q.UPDATE_EMAIL, { variables, field: 'updateEmail' }),
+  fetchCancelForm: async () => {
+    const form = await query(_Q.CANCEL_FORM, { field: 'getCancelForm' })
+    return form ? { ...form, fields: JSON.parse(form.fields) } : null
+  }
 }
 
 export const userGate = {
@@ -71,5 +75,5 @@ export const formGate = {
     ?.map(f => ({ ...f, fields: JSON.parse(f.fields) })),
   add: variables => mutate(_Q.CREATE_FORM, { variables, field: 'createForm' }),
   modify: variables => mutate(_Q.MODIFY_FORM, { variables, field: 'updateForm' }),
-  remove: ids => mutate(_Q.DELETE_FORMS, { variables: { ids }, field: 'deleteForms' })
+  remove: ids => mutate(_Q.DELETE_FORMS, { variables: { ids }, field: 'deleteForms' }),
 }

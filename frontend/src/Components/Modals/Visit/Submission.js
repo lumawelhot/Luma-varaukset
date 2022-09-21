@@ -6,10 +6,12 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '../../Embeds/Button'
 import Details from './Details'
 import Form from './Form'
+import Cancellation from './Cancellation'
 import { exec } from '../../../helpers/utils'
 import { parseVisitSubmission } from '../../../helpers/parse'
 import { notifier } from '../../../helpers/notifier'
 import { useUsers, useVisits, useEvents } from '../../../hooks/cache'
+import { useCloseModal } from '../../../hooks/utils'
 
 const Submission = () => {
   const { t } = useTranslation()
@@ -25,15 +27,16 @@ const Submission = () => {
     await findVisit(id)
   }), [])
 
-  const toVisits = () => {
+  const [show, closeModal] = useCloseModal(() => {
     if (window.location.href.includes('/visits')) navigate('/visits')
     else navigate('/')
-  }
+  })
 
-  const cancelVisit = () => {
+  const cancelVisit = values => {
+    console.log(values)
     if (confirm(t('cancel-confirm'))) {
-      remove(visit.id)
-      toVisits()
+      remove(visit.id, values)
+      closeModal()
     }
   }
 
@@ -48,26 +51,24 @@ const Submission = () => {
   if (!event && !visit) return <></>
 
   return (
-    <Modal
-      show={true}
-      backdrop='static'
-      size='lg'
-      onHide={toVisits}
-      scrollable={true}
-    >
+    <Modal show={show} backdrop='static' size='lg' onHide={closeModal} scrollable={true}>
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         <Modal.Title>{t('you-are-booked-visit')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {page === 'details' && <Details visit={visit} event={event} />}
         {page === 'modify' && <Form formId={formId} show={true} onSubmit={modifyVisit} event={event} visit={visit} />}
+        {page === 'cancellation' && <Cancellation formId={formId} show={true} onSubmit={cancelVisit} />}
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>
         {visit.status && <>
           {page !== 'details' && <Button onClick={() => setPage('details')}>{t('visit-details')}</Button>}
-          {user && page !== 'modify' && <Button onClick={() => setPage('modify')}>{t('modify')}</Button>}
-          {page !== 'modify' && <Button onClick={cancelVisit} className='active'>{t('cancel-visit')}</Button>}
-          {page === 'modify' && <Button form={formId} type='submit' className='active'>{t('modify')}</Button>}
+          {user && page !== 'modify' && page !== 'cancellation'
+            && <Button onClick={() => setPage('modify')}>{t('modify')}</Button>}
+          {page !== 'modify' && page !== 'cancellation' && <Button onClick={() => setPage('cancellation')} className='active'>{t('cancel-visit')}</Button>}
+          {page === 'cancellation' && <Button form={formId} type='submit' className='active'>{t('cancel-visit')}</Button>}
+          {page === 'modify'
+            && <Button form={formId} type='submit' className='active'>{t('modify')}</Button>}
         </>}
       </Modal.Footer>
     </Modal>

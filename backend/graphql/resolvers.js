@@ -21,7 +21,7 @@ const resolvers = {
     getEvent: (root, args) => Event.findById(args.id, expandEvents),
     getEvents: async (root, args, { currentUser }) => {
       if (args.ids) return Event.findByIds(args.ids, expandEvents)
-      const events = await Event.FindByRange({ end: { after: subDays(new Date(), currentUser ? 90 : 0) } }, expandEvents)
+      const events = await Event.FindByRange({ end: { after: subDays(new Date(), currentUser ? 90 : 0/* maybe just return 90 for all users */) } }, expandEvents)
       return currentUser ? events : events
         .filter(e => !e.publishDate || new Date() >= new Date(e.publishDate))
         .map(e => e.group?.disabled ? { ...e, availableTimes: [] } : e)
@@ -34,6 +34,10 @@ const resolvers = {
     me: (root, args, context) => context.currentUser,
     getExtras: () => Extra.find(),
     getForms: () => Form.find(),
+    getCancelForm: async () => {
+      const form = await Form.find({ name: 'cancellation' })
+      return form[0]
+    },
   },
   Visit: {
     startTime: (data) => new Date(data.startTime).toISOString(),
@@ -277,7 +281,7 @@ const resolvers = {
           endTime: new Date(event.end)
         }, event.waitingTime, event.duration)
       })
-      const danglingVisit = await visitInst.update(visit.id, { status: false })
+      const danglingVisit = await visitInst.update(visit.id, { cancellation: JSON.parse(args.cancellation) })
 
       await sendCancellation(visit, event)
       await session.commit()

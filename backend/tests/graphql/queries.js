@@ -192,8 +192,8 @@ const FIND_VISIT = gql`
 `
 
 const CANCEL_VISIT = gql`
-  mutation cancelVisit($id: ID!) {
-    cancelVisit(id: $id) {
+  mutation cancelVisit($id: ID!, $cancellation: String) {
+    cancelVisit(id: $id, cancellation: $cancellation) {
       id
     }
   }

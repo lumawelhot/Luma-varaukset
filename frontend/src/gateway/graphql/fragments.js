@@ -84,5 +84,6 @@ export const VISIT_FIELDS = gql`
     customFormData
     language
     created
+    cancellation
   }
 `

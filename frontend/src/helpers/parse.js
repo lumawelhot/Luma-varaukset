@@ -98,6 +98,14 @@ export const parseCSV = (visit, event) => {
   }
 }
 
+export const parseCancellation = values => {
+  // some technical debt here, this same thing defined below
+  const fieldValues = Object.fromEntries(Object.entries(values)
+    .filter(e => e[0].includes('custom-'))
+    .map(e => [Number(e[0].split('-')[1]), e[1]]))
+  return JSON.stringify(values.form.fields?.map((c, i) => ({ name: c.name, value: fieldValues[i] })))
+}
+
 export const parseVisitSubmission = values => {
   const fieldValues = Object.fromEntries(Object.entries(values)
     .filter(e => e[0].includes('custom-'))

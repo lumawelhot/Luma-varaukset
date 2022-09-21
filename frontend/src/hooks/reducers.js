@@ -46,6 +46,8 @@ export const userMiscReducer = () => {
       case 'modifyEmail':
         return { ...state, emails: state.emails
           .map(e => e.name === action.email.name ? action.email : e) }
+      case 'setCancelForm':
+        return { ...state, cancelForm: action.form ? action.form : null }
       default:
         return { ...state }
     }
@@ -53,7 +55,8 @@ export const userMiscReducer = () => {
   return [state, {
     _setTags: tags => dispatch({ type: 'setTags', tags }),
     _setEmails: emails => dispatch({ type: 'setEmails', emails }),
-    _modifyEmail: email => dispatch({ type: 'modifyEmail', email })
+    _modifyEmail: email => dispatch({ type: 'modifyEmail', email }),
+    _setCancelForm: form => dispatch({ type: 'setCancelForm', form })
   }]
 }
 

@@ -50,7 +50,6 @@ const typeDefs = gql`
     group: Group
     publishDate: String
     languages: [String]
-
   }
   type Visit {
     id: ID!
@@ -73,6 +72,7 @@ const typeDefs = gql`
     customFormData: String
     language: String
     created: String
+    cancellation: String
   }
   type Token {
     value: String!
@@ -110,6 +110,7 @@ const typeDefs = gql`
     getTags: [Tag]!
     getExtras: [Extra]!
     getForms: [Form]
+    getCancelForm: Form
     getEmailTemplates: [EmailTemplate]
     getGroups: [Group]
   }
@@ -252,7 +253,10 @@ const typeDefs = gql`
     enableEvent(
       event: ID!
     ): Event
-    cancelVisit(id: ID!): Visit
+    cancelVisit(
+      id: ID!
+      cancellation: String
+    ): Visit
     createExtra(
       name: String!
       classes: [Int]!

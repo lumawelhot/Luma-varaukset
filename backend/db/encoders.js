@@ -52,6 +52,7 @@ const event = {
         group: o.group,
         publishDate: o.publishDate,
         languages: o.languages,
+        cancellationForm: o.cancellationForm,
         locked: o.reserved ? true : false
       }
     } catch (err) {
@@ -76,7 +77,7 @@ const visit = {
         grade: o.grade,
         participants: o.participants,
         extras: o.extras,
-        status: o.status,
+        status: o.cancellation ? false : true,
         startTime: o.startTime,
         endTime: o.endTime,
         inPersonVisit: o.inPersonVisit,
@@ -85,6 +86,7 @@ const visit = {
         remotePlatform: o.remotePlatform,
         customFormData: o.customFormData ? JSON.stringify(o.customFormData) : null,
         language: o.language,
+        cancellation: o.cancellation ? JSON.stringify(o.cancellation) : null,
         created: o.created ? new Date(o.created).toISOString() : null
       }
     } catch (err) {

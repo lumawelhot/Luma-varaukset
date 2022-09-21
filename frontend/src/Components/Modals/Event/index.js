@@ -32,13 +32,7 @@ const Event = ({ close, initialValues, options, modify }) => {
   }
 
   return (
-    <Modal
-      show={show}
-      backdrop='static'
-      size='lg'
-      onHide={closeModal}
-      scrollable={true}
-    >
+    <Modal show={show} backdrop='static' size='lg' onHide={closeModal} scrollable={true}>
       <Modal.Header style={{ backgroundColor: '#f5f5f5' }} closeButton>
         <Modal.Title>{type === 'create' ? t('create') : t('modify')}</Modal.Title>
       </Modal.Header>

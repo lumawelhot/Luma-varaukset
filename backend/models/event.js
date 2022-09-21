@@ -97,6 +97,14 @@ const eventSchema = mongoose.Schema({
     type: [String],
     required: false,
     default: ['fi']
+  },
+  maxParticipants: {
+    type: Number,
+  },
+  cancellationForm: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Form',
+    required: false
   }
 })
 

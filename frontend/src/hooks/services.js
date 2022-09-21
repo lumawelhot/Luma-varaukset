@@ -37,8 +37,8 @@ const crud = (state, gateway, actions) => {
 
 export const useMiscService = ({ miscReducer/* , reducers */ }) => {
   const [state, actions] = miscReducer
-  const { fetchTags, fetchEmails, modifyEmail } = miscGate
-  const { _setTags, _setEmails, _modifyEmail } = actions
+  const { fetchTags, fetchEmails, modifyEmail, fetchCancelForm } = miscGate
+  const { _setTags, _setEmails, _modifyEmail, _setCancelForm } = actions
   const [calendarOptions, setCalendarOptions] = useState({
     view: 'timeGridWeek',
     date: addDays(set(new Date(), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }), FIRST_EVENT_AFTER_DAYS),
@@ -55,6 +55,8 @@ export const useMiscService = ({ miscReducer/* , reducers */ }) => {
       if (result) _modifyEmail(result)
       return !!result
     },
+    cancelForm: state.cancelForm,
+    fetchCancelForm: async () => state.cancelForm === undefined && _setCancelForm(await fetchCancelForm()),
     calendarOptions,
     setCalendarOptions
   }
@@ -109,8 +111,8 @@ export const useVisitService = ({ visitReducer }) => {
       }
       return result
     },
-    remove: async id => {
-      const result = await remove(id)
+    remove: async (id, formValues) => {
+      const result = await remove(id, formValues)
       if (result) _modify({ ...state.all.find(v => v.id === result.id), status: false })
       return !!result
     },

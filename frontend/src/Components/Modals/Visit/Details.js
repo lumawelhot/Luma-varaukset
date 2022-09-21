@@ -100,6 +100,6 @@ const Details = ({ visit, event }) => {
 export default Details
 
 Details.propTypes = {
-  event: PropTypes.object.isRequired,
-  visit: PropTypes.object.isRequired
+  event: PropTypes.object,
+  visit: PropTypes.object
 }

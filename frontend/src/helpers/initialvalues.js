@@ -87,3 +87,8 @@ export const visitInitialValues = (event, visit = {}) => {
     customFormData,
   }
 }
+
+export const cancelInitialValues = form => {
+  const { name, type } = form
+  return { name, value: type === 'checkbox' ? [] : '' }
+}
