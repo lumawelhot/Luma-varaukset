@@ -58,6 +58,7 @@ const event = {
         cancellationForm: o.cancellationForm,
         locked: o.reserved ? true : false,
         limits: typeof o.limits !== 'string' ? JSON.stringify(o.limits) : o.limits,
+        closedDays: o.closedDays
       }
     } catch (err) {
       throw new Error(`Failed to decode an event with id: "${o?.id}"`)

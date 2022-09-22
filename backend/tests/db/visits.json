@@ -15,7 +15,7 @@
     "remoteVisit": false,
     "schoolLocation": "Ivalo",
     "schoolName": "Ivalon koulu",
-    "status": false,
+    "cancellation": "[]",
     
     "startHours": 10
   },
@@ -35,7 +35,6 @@
     "remoteVisit": false,
     "schoolLocation": "Ivalo",
     "schoolName": "Ivalon koulu",
-    "status": true,
 
     "startHours": 11
   }

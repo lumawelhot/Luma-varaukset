@@ -335,5 +335,8 @@
   "remove-cancellation-form": "Poista peruutuslomake",
   "remote-max-participants": "Etä, max osallistujamäärä",
   "inperson-max-participants": "Lähi, max osallistujamäärä",
-  "max-participants": "Maksimi osallistujamäärä"
+  "max-participants": "Maksimi osallistujamäärä",
+  "closing-time": "Varausaika päättyy",
+  "closed-days": "Vuorokausia vierailun alkamiseen oltava vähintään",
+  "booking-time-end": "Erääntynyt"
 }

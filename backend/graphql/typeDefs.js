@@ -51,6 +51,7 @@ const typeDefs = gql`
     publishDate: String
     languages: [String]
     limits: String
+    closedDays: Int
   }
   type Visit {
     id: ID!
@@ -190,6 +191,7 @@ const typeDefs = gql`
       publishDate: String
       languages: [String]
       limits: String
+      closedDays: Int
     ): [Event]
     modifyEvent(
       event: ID!
@@ -212,6 +214,7 @@ const typeDefs = gql`
       publishDate: String
       languages: [String]
       limits: String
+      closedDays: Int
     ): Event
     createVisit(
       event: ID!

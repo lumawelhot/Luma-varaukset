@@ -58,7 +58,8 @@ const createVisitValidate = (args, event, currentUser) => {
   if (args.inPersonVisit && maxInPersonParticipants && args.participants > maxInPersonParticipants) {
     throw new UserInputError('Max number of participants exceeded')
   }
-  const afterDays = differenceInDays(new Date(event.start), new Date()) >= 14
+  const days = event.closedDays || 14
+  const afterDays = differenceInDays(new Date(event.start), new Date()) >= days
   const afterHours = differenceInHours(new Date(event.start), new Date()) >= 1
   const eventCanBeBooked = !currentUser ? afterDays : afterHours
   if (!eventCanBeBooked) throw new UserInputError('This event cannot be booked')

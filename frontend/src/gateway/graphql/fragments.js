@@ -54,6 +54,7 @@ export const EVENT_FIELDS = gql`
     publishDate
     languages
     limits
+    closedDays
   }
 `
 

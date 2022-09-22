@@ -103,6 +103,7 @@ export const CREATE_EVENTS = gql`
     $publishDate: String
     $languages: [String]
     $limits: String
+    $closedDays: Int
     ) {
     createEvents (
       title: $title,
@@ -125,6 +126,7 @@ export const CREATE_EVENTS = gql`
       publishDate: $publishDate
       languages: $languages
       limits: $limits
+      closedDays: $closedDays
     ) { ...EventFields }
   }
 `
@@ -322,6 +324,7 @@ export const MODIFY_EVENT = gql`
     $publishDate: String
     $languages: [String]
     $limits: String
+    $closedDays: Int
   ) {
     modifyEvent(
       event: $event
@@ -342,6 +345,7 @@ export const MODIFY_EVENT = gql`
       publishDate: $publishDate
       languages: $languages
       limits: $limits
+      closedDays: $closedDays
     ) { ...EventFields }
   }
 `

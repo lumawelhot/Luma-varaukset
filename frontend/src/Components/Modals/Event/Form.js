@@ -65,9 +65,15 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
 
       <TextArea id='desc' title={t('description')} {...register('desc')}/>
 
-      {type === 'create' && (
-        <Input id='duration' title={required(t('event-length-minutes'))} type='number' {...register('duration')} />)}
-      {errors.duration && <Error>{t(errors.duration.message)}</Error>}
+      <Stack style={{ overflow: 'auto' }} direction='horizontal'>
+        {type === 'create' && <div style={{ width: '100%', marginRight: 15 }}>
+          <Input id='duration' title={required(t('event-length-minutes'))} type='number' {...register('duration')} />
+        </div>}
+        {errors.duration && <Error>{t(errors.duration.message)}</Error>}
+        {<div style={{ width: '100%' }}>
+          <Input id='closedDays' title={t('closed-days')} type='number' {...register('closedDays')} />
+        </div>}
+      </Stack>
 
       <Select
         title={t('tags')}
@@ -102,11 +108,9 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
       <Stack style={{ overflow: 'auto' }} direction='horizontal'>
         {watch('remoteVisit') && <div style={{ width: '100%', marginRight: 15 }}>
           <Input id='remoteMaxParticipants' title={t('remote-max-participants')} type='number' {...register('remoteMaxParticipants')} />
-          {errors.waitingTime && <Error>{t(errors.waitingTime.message)}</Error>}
         </div>}
         {watch('inPersonVisit') && <div style={{ width: '100%', marginRight: type === 'create' ? 15 : 0 }}>
           <Input id='inPersonMaxParticipants' title={t('inperson-max-participants')} type='number' {...register('inPersonMaxParticipants')} />
-          {errors.waitingTime && <Error>{t(errors.waitingTime.message)}</Error>}
         </div>}
       </Stack>
 
@@ -187,6 +191,7 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
           {errors.waitingTime && <Error>{t(errors.waitingTime.message)}</Error>}
         </div>}
       </Stack>
+
       <Select
         title={t('group')}
         onClick={fetchGroups}
@@ -196,6 +201,7 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
         options={groups?.map(g => ({ value: g.id, label: g.name }))}
         onChange={v => setValue('group', v)}
       />
+
       <Select
         title={t('custom-forms')}
         onClick={fetchForms}
@@ -205,6 +211,7 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
         options={forms?.map(f => ({ value: f.id, label: f.name, fields: f.fields }))}
         onChange={v => setValue('customForm', v)}
       />
+
       <Title>{t('publish-date')}</Title>
       <Stack direction='horizontal' style={{ overflow: 'auto', marginTop: -10 }}>
         <div style={{ width: '100%', marginRight: 15 }}>

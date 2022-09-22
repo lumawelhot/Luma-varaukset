@@ -59,7 +59,12 @@ const VisitList = () => {
           options={CLASSES}
         />
       </div>
-      <Table data={visits} columns={columns} initialState={visitInitialState} />
+      <Table
+        data={visits}
+        columns={columns}
+        initialState={visitInitialState}
+        onClickRow={i => navigate(`/visits/${all[i]?.id}`)}
+      />
     </>
   )
 }

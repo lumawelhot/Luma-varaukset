@@ -45,6 +45,7 @@ export const eventInitialValues = (event = {}) => {
     group,
     waitingTime,
     limits,
+    closedDays
   } = event
 
   return {
@@ -62,6 +63,7 @@ export const eventInitialValues = (event = {}) => {
     remotePlatforms: remotePlatforms?.map(r => String(r)) || ['1', '2', '3'],
     extras: extras ? parseExtras(extras) : [],
     publishDate: publishDate ? new Date(publishDate) : null,
+    closedDays: closedDays || 14,
     customForm: customForm ? {
       value: customForm.id,
       label: customForm.name,

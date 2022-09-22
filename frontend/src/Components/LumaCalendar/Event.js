@@ -3,10 +3,11 @@ import { OverlayTrigger, Popover, PopoverHeader } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { BsEyeSlashFill } from 'react-icons/bs'
 import { FaLock } from 'react-icons/fa'
-import { CLASSES, LANGUAGE_SHORT } from '../../config'
+import { BOOKING_FAILS_DAYS_REMAINING, CLASSES, LANGUAGE_SHORT } from '../../config'
 import { Badge } from '../Embeds/Utils'
 import { useEvents } from '../../hooks/cache'
 import PropTypes from 'prop-types'
+import { differenceInDays } from 'date-fns'
 
 const Event = ({ content }) => {
   const { findEvent, selected } = useEvents()
@@ -24,6 +25,9 @@ const Event = ({ content }) => {
   const view = content.view.type
   const published = event?.publishDate ? new Date() >= new Date(event.publishDate) : true
   const passed = !disabled && !booked && details.unAvailable
+  const bookingTimeEnd = differenceInDays(
+    new Date(event.start), new Date()) < (event.closedDays || BOOKING_FAILS_DAYS_REMAINING
+  )
 
   const getTimeRange = () => {
     const start = new Intl.DateTimeFormat('fi-FI',{ timeStyle: 'short', timeZone: 'Europe/Helsinki' }).format(new Date(event.start))
@@ -86,6 +90,7 @@ const Event = ({ content }) => {
           {locked && <FaLock size={15} style={{ margin: 5, marginTop: 2, display: 'inline' }} />}
           <span>{booked ? <span style={{ color: unavailableColor, marginRight: 10 }}>{t('booked')}</span> : ''}</span>
           <span>{passed ? <span style={{ color: unavailableColor, marginRight: 10 }}>{t('passed')}</span> : ''}</span>
+          <span>{(!passed && bookingTimeEnd) ? <span style={{ color: unavailableColor, marginRight: 10 }}>{t('booking-time-end')}</span> : ''}</span>
           <span>{((disabled || groupFull) && !booked && !passed) ?
             <span style={{ color: unavailableColor, marginRight: 10 }}>{t('disabled')}</span>
             : ''}</span>

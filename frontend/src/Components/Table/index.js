@@ -6,7 +6,7 @@ import { multipleExist, someExist } from '../../helpers/utils'
 import Pagination from './Pagination'
 import PropTypes from 'prop-types'
 
-const Table = ({ columns, data, initialState, component, checkboxed, nosort }) => {
+const Table = ({ columns, data, initialState, component, checkboxed, nosort, onClickRow }) => {
   const [checked, setChecked] = useState([])
   const [nochecked, setNochecked] = useState([])
 
@@ -83,7 +83,10 @@ const Table = ({ columns, data, initialState, component, checkboxed, nosort }) =
             {page.map((row, i) => {
               prepareRow(row)
               return (
-                <Tr key={i} { ...row.getRowProps()}>
+                <Tr
+                  key={i}
+                  { ...row.getRowProps()}
+                >
                   {checkboxed && <Td>
                     {!row.original.nocheck ? <Checkbox
                       isChecked={checked.includes(row.id)}
@@ -94,17 +97,20 @@ const Table = ({ columns, data, initialState, component, checkboxed, nosort }) =
                       }}
                     /> : <></>}
                   </Td>}
-                  {row.cells.map((cell, j) => (
-                    <Td
+                  {row.cells.map((cell, j) => {
+                    const rowClick = cell.column.rowClick !== false && !!onClickRow
+                    return <Td
                       key={j}
                       last={row.cells.length === j + 1 ? 'true' : 'false'}
                       {...cell.getCellProps({
                         className: cell.column.collapse ? 'collapse' : ''
                       })}
+                      onClick={() => rowClick && onClickRow(row.id)}
+                      style={{ cursor: rowClick ? 'pointer' : 'initial' }}
                     >
                       {cell.render('Cell')}
                     </Td>
-                  ))}
+                  })}
                 </Tr>
               )
             })}
@@ -142,5 +148,6 @@ Table.propTypes = {
   initialState: PropTypes.object,
   component: PropTypes.func,
   checkboxed: PropTypes.bool,
-  nosort: PropTypes.bool
+  nosort: PropTypes.bool,
+  onClickRow: PropTypes.func
 }

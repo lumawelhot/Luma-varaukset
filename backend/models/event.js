@@ -105,6 +105,9 @@ const eventSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Form',
     required: false
+  },
+  closedDays: {
+    type: Number
   }
 })
 

@@ -92,7 +92,8 @@ export const visitColumns = () => [
   },
   {
     Header: '',
-    accessor: 'urlCopy'
+    accessor: 'urlCopy',
+    rowClick: false
   },
 ]
 

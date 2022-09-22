@@ -11,6 +11,7 @@ export const parseEvent = (event) => event
     resourceids: event.resourceids,
     title: event.title,
     locked: event.locked,
+    closedDays: event.closedDays
   })).concat(event?.visits.map(visit => ({
     id: event.id,
     start: new Date(visit.startTime),
@@ -19,7 +20,8 @@ export const parseEvent = (event) => event
     disabled: false,
     resourceids: event.resourceids,
     title: event.title,
-    locked: false
+    locked: false,
+    closedDays: event.closedDays
   })))
 
 const resourceColors = CLASSES.map(c => c.color)
@@ -27,8 +29,8 @@ const resourceColors = CLASSES.map(c => c.color)
 export const calendarEvents = (events, user) => events
   ?.filter(event => !(!user && event.disabled))
   ?.map(event => {
-    const { id, color, start, end, title, locked, selected } = event
-    const afterDays = differenceInDays(event.start, new Date()) >= BOOKING_FAILS_DAYS_REMAINING
+    const { id, color, start, end, title, locked, selected, closedDays } = event
+    const afterDays = differenceInDays(event.start, new Date()) >= (closedDays || BOOKING_FAILS_DAYS_REMAINING)
     const afterHours = differenceInHours(event.start, new Date()) >= BOOKING_FAILS_HOURS_REMAINING
     const booked = (!user && !afterDays) || (user && !afterHours) || event.booked
     const unAvailable = booked || event.disabled
@@ -142,6 +144,7 @@ export const parseEventSubmission = values => {
     dates,
     remoteMaxParticipants,
     inPersonMaxParticipants,
+    closedDays
   } = values
   return {
     ...values,
@@ -149,6 +152,7 @@ export const parseEventSubmission = values => {
     tags: tags?.map(t => t.label),
     resourceids: resourceids?.map(r => Number(r)),
     grades: grades?.map(g => Number(g)),
+    closedDays: Number(closedDays),
     remotePlatforms: remotePlatforms?.map(r => Number(r)),
     group: group?.value || null,
     extras,
