@@ -29,8 +29,9 @@ const containerContent = (names, values) => {
 
 const customFormHtml = data => {
   if (!data) return ''
+  const fields = typeof data === 'string' ? JSON.parse(data) : data
   let html = ''
-  for (const d of data) {
+  for (const d of fields) {
     if (typeof d.value === 'string') {
       html += gridContainer(d.name, d.value)
     } else if (Array.isArray(d.value)) {
@@ -131,7 +132,7 @@ const getNotifyHtml = (visit, event) => {
           u(visit.dataUseAgreement ? 'Kyllä' : 'Ei'),
           u(visit.language === 'fi' ? 'Suomi' : (visit.language === 'en' ? 'Englanti' : 'Ruotsi'))
         ]
-      ) + u(customFormHtml(visit.customFormData)) + u(visit.cancellation),
+      ) + u(customFormHtml(visit.customFormData)) + u(customFormHtml(visit.cancellation)),
     )
   } catch (err) {
     return `

@@ -152,3 +152,19 @@ export const EventValidation = Yup.object().shape({
 export const CustomFormValidation = Yup.object().shape({
   name: Yup.string().required(t('fill-field')),
 })
+
+// some technical debt here, the same defined abow
+export const CancelFormValidation = form => {
+  console.log(form)
+  const formFields = form?.fields ? Object.assign({}, ...Object.entries(form?.fields)
+    .filter(e => e[1].validation.required)
+    .map(e => {
+      const o = {}
+      o[`custom-${e[0]}`] = e[1].type === 'text'
+        ? Yup.string().required() : e[1].type === 'checkbox'
+          ? Yup.array().min(1, t('too-short')) : e[1].type === 'radio'
+            ? Yup.string().required() : undefined
+      return o
+    })) : {}
+  return Yup.object().shape({ ...formFields })
+}
