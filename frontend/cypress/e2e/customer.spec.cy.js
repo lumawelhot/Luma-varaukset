@@ -41,7 +41,7 @@ describe('As a customer I can', () => {
 
   it('filter events by sicence classes', () => {
     cy.visit('http://localhost:3000')
-    cy.get('[style="margin-left: 15px;"]').click()
+    cy.contains('Suodata').click()
     cy.get(':nth-child(4) > .select__control > .select__value-container > .select__input-container')
       .click().type('SUM{enter}')
     cy.get('.modal-footer > .sc-dkzDqf').click()

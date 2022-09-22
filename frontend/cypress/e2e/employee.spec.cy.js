@@ -20,7 +20,7 @@ describe('As an employee I can', () => {
     cy.get(':nth-child(21) > [style="width: 100%; margin-right: 15px;"]')
       .click().clear().type(format(date, 'dd.MM.yyyy'))
     cy.get('[style="margin-top: 40px;"] > .chakra-button').click()
-    cy.get('[style="overflow: auto;"] > :nth-child(1)')
+    cy.get(':nth-child(24) > :nth-child(1) > :nth-child(1)')
       .click().clear().type('10:00{enter}')
     cy.get('.modal-footer > .sc-dkzDqf').click()
     cy.contains('Ihmeellinen avaruus')
