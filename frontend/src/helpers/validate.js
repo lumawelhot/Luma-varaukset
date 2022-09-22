@@ -75,6 +75,19 @@ export const VisitValidation = form => {
       .required(t('fill-field')),
     participants: Yup.number()
       .min(1, t('too-small'))
+      .test((value, handler) => {
+        const limits = handler?.parent?.limits
+        const visitType = handler?.parent?.visitType
+        if (visitType === 'inperson' && Number(limits?.inPerson?.maxParticipants) < value) {
+          return handler.createError({
+            message: t('too-large')
+          })
+        } else if (visitType === 'remote' && Number(limits?.remote?.maxParticipants) < value) {
+          return handler.createError({
+            message: t('too-large')
+          })
+        } else return true
+      })
       .required(t('fill-field'))
       .typeError('invalid-syntax'),
     privacyPolicy: Yup.bool()

@@ -24,7 +24,10 @@ const user = {
 }
 
 const event = {
-  encode: o => o,
+  encode: o => ({
+    ...o,
+    limits: typeof o.limits === 'string' ? JSON.parse(o.limits) : o.limits
+  }),
   decode: o => {
     try {
       return {
@@ -53,7 +56,8 @@ const event = {
         publishDate: o.publishDate,
         languages: o.languages,
         cancellationForm: o.cancellationForm,
-        locked: o.reserved ? true : false
+        locked: o.reserved ? true : false,
+        limits: typeof o.limits !== 'string' ? JSON.stringify(o.limits) : o.limits,
       }
     } catch (err) {
       throw new Error(`Failed to decode an event with id: "${o?.id}"`)

@@ -11,6 +11,9 @@ const Info = () => {
   const { current: event } = useEvents()
 
   if (!event) return <></>
+  const { limits } = event
+  const remoteMax = limits?.remote?.maxParticipants
+  const inPersonMax = limits?.inPerson?.maxParticipants
 
   return (
     <>
@@ -57,6 +60,13 @@ const Info = () => {
         <Title>{t('length')}: </Title>
         <Text>{event.duration} {t('minutes')}</Text>
       </P>
+      {(remoteMax || inPersonMax) && <P>
+        <Title>{t('max-participants')}: </Title>
+        <Ul>
+          {remoteMax && <Li>{`${t('remote')}: ${remoteMax}`}</Li>}
+          {inPersonMax && <Li>{`${t('inperson')}: ${inPersonMax}`}</Li>}
+        </Ul>
+      </P>}
     </>
   )
 }

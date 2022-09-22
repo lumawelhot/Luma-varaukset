@@ -50,6 +50,7 @@ const typeDefs = gql`
     group: Group
     publishDate: String
     languages: [String]
+    limits: String
   }
   type Visit {
     id: ID!
@@ -188,6 +189,7 @@ const typeDefs = gql`
       group: ID
       publishDate: String
       languages: [String]
+      limits: String
     ): [Event]
     modifyEvent(
       event: ID!
@@ -209,6 +211,7 @@ const typeDefs = gql`
       group: ID
       publishDate: String
       languages: [String]
+      limits: String
     ): Event
     createVisit(
       event: ID!

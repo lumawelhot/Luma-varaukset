@@ -43,7 +43,8 @@ export const eventInitialValues = (event = {}) => {
     publishDate,
     customForm,
     group,
-    waitingTime
+    waitingTime,
+    limits,
   } = event
 
   return {
@@ -67,7 +68,9 @@ export const eventInitialValues = (event = {}) => {
       fields: customForm.fields
     } : null,
     group: group ? { value: group.id, label: group.name } : '',
-    dates: []
+    dates: [],
+    remoteMaxParticipants: limits?.remote?.maxParticipants,
+    inPersonMaxParticipants: limits?.inPerson?.maxParticipants
   }
 }
 
@@ -85,6 +88,7 @@ export const visitInitialValues = (event, visit = {}) => {
     endTime: add(new Date(event.start), { minutes: event.duration }),
     visitType: inPersonVisit ? 'inperson' : remoteVisit ? 'remote' : undefined,
     customFormData,
+    limits: event.limits,
   }
 }
 

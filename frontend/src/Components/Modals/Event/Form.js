@@ -99,6 +99,17 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
         </>}/>
       )}
 
+      <Stack style={{ overflow: 'auto' }} direction='horizontal'>
+        {watch('remoteVisit') && <div style={{ width: '100%', marginRight: 15 }}>
+          <Input id='remoteMaxParticipants' title={t('remote-max-participants')} type='number' {...register('remoteMaxParticipants')} />
+          {errors.waitingTime && <Error>{t(errors.waitingTime.message)}</Error>}
+        </div>}
+        {watch('inPersonVisit') && <div style={{ width: '100%', marginRight: type === 'create' ? 15 : 0 }}>
+          <Input id='inPersonMaxParticipants' title={t('inperson-max-participants')} type='number' {...register('inPersonMaxParticipants')} />
+          {errors.waitingTime && <Error>{t(errors.waitingTime.message)}</Error>}
+        </div>}
+      </Stack>
+
       <CheckboxGroup name='languages' title={required(t('choose-languages'))} control={control} render={<>
         {Object.keys(LANG_MAP).map(l => (
           <Checkbox key={l} value={l}>{t(LANG_MAP[l])}</Checkbox>

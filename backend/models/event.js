@@ -98,8 +98,8 @@ const eventSchema = mongoose.Schema({
     required: false,
     default: ['fi']
   },
-  maxParticipants: {
-    type: Number,
+  limits: {
+    type: mongoose.Schema.Types.Mixed,
   },
   cancellationForm: {
     type: mongoose.Schema.Types.ObjectId,

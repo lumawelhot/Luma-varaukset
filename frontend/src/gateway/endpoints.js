@@ -2,7 +2,7 @@ import { mutate, query } from './connector'
 import * as _Q from './graphql/queries'
 
 export const eventGate = {
-  fetchAll: () => query(_Q.EVENTS, { field: 'getEvents' }),
+  fetchAll: ids => query(_Q.EVENTS, { field: 'getEvents', variables: { ids } }),
   fetch: id => query(_Q.EVENT, { variables: { id }, field: 'getEvent' }),
   add: variables => mutate(_Q.CREATE_EVENTS, { variables, field: 'createEvents' }),
   modify: variables => mutate(_Q.MODIFY_EVENT, { variables, field: 'modifyEvent' }),

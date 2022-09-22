@@ -102,6 +102,7 @@ export const CREATE_EVENTS = gql`
     $group: ID,
     $publishDate: String
     $languages: [String]
+    $limits: String
     ) {
     createEvents (
       title: $title,
@@ -123,6 +124,7 @@ export const CREATE_EVENTS = gql`
       group: $group
       publishDate: $publishDate
       languages: $languages
+      limits: $limits
     ) { ...EventFields }
   }
 `
@@ -319,6 +321,7 @@ export const MODIFY_EVENT = gql`
     $group: ID
     $publishDate: String
     $languages: [String]
+    $limits: String
   ) {
     modifyEvent(
       event: $event
@@ -338,6 +341,7 @@ export const MODIFY_EVENT = gql`
       group: $group
       publishDate: $publishDate
       languages: $languages
+      limits: $limits
     ) { ...EventFields }
   }
 `

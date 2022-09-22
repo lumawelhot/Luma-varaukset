@@ -131,7 +131,18 @@ export const parseVisitSubmission = values => {
 }
 
 export const parseEventSubmission = values => {
-  const { tags, resourceids, grades, remotePlatforms, group, extras, customForm, dates } = values
+  const {
+    tags,
+    resourceids,
+    grades,
+    remotePlatforms,
+    group,
+    extras,
+    customForm,
+    dates,
+    remoteMaxParticipants,
+    inPersonMaxParticipants,
+  } = values
   return {
     ...values,
     dates: dates?.map(d => new Date(d.date).toISOString()),
@@ -141,13 +152,27 @@ export const parseEventSubmission = values => {
     remotePlatforms: remotePlatforms?.map(r => Number(r)),
     group: group?.value || null,
     extras,
-    customForm: customForm?.value || null
+    customForm: customForm?.value || null,
+    limits: JSON.stringify({
+      remote: {
+        maxParticipants: remoteMaxParticipants
+      },
+      inPerson: {
+        maxParticipants: inPersonMaxParticipants
+      }
+    })
   }
 }
 
+// not only for form fields, handles also parsing limits
 export const parseFormFields = data => {
   const form = data?.customForm
-  return { ...data, customForm: {
-    ...form, fields: typeof form?.fields === 'string' ? JSON.parse(form.fields) : form?.fields
-  } }
+  const limits = data?.limits
+  return {
+    ...data,
+    customForm: {
+      ...form, fields: typeof form?.fields === 'string' ? JSON.parse(form.fields) : form?.fields
+    },
+    limits: typeof limits === 'string' ? JSON.parse(limits) : limits
+  }
 }

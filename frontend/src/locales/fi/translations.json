@@ -332,5 +332,8 @@
   "cancellation-details": "Peruutuksen tiedot",
   "modify-cancellation-form": "Muokkaa peruutuslomaketta",
   "create-cancellation-form": "Luo peruutuslomake",
-  "remove-cancellation-form": "Poista peruutuslomake"
+  "remove-cancellation-form": "Poista peruutuslomake",
+  "remote-max-participants": "Etä, max osallistujamäärä",
+  "inperson-max-participants": "Lähi, max osallistujamäärä",
+  "max-participants": "Maksimi osallistujamäärä"
 }
