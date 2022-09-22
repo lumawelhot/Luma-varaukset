@@ -35,9 +35,10 @@ const Submission = () => {
     else navigate('/')
   })
 
-  const cancelVisit = values => {
+  const cancelVisit = async values => {
     if (confirm(t('cancel-confirm'))) {
-      remove(visit.id, values)
+      const result = await remove(visit.id, values)
+      notifier.cancelVisit(result)
       closeModal()
     }
   }

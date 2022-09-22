@@ -66,8 +66,13 @@ export const parseExtras = extras => extras.map(e => e.id)
 export const parseCSV = (visit, event) => {
   try {
     const platform = Number(visit?.remotePlatform) - 1
+    const status = visit?.status === false
+      ? 'Peruttu' : visit?.status === true
+        ? 'Varattu' : event?.group?.disabled
+          ? 'Kuului ryhmään, mutta ryhmä täynnä' : 'Varausaika päättyi'
+
     return {
-      'Event id': visit?.event?.id,
+      'Event id': visit?.event?.id || event?.id,
       'Event title': event?.title,
       'Event duration': event?.duration,
       'Event date': visit?.startTime ? format(new Date(visit?.startTime), 'd.M.yyyy') : '',
@@ -76,9 +81,9 @@ export const parseCSV = (visit, event) => {
       'Event type': visit?.remoteVisit ? 'etäopetus' : 'lähiopetus',
       'Event language': visit?.language === 'en' ? 'englanti' : (visit?.language === 'sv' ? 'ruotsi' : 'suomi'),
       'Event grade': visit?.grade,
-      'Event group': event?.group,
+      'Event group': event?.group?.name,
       'Event science class': event?.resourceids?.map(r => CLASSES?.find(c => c?.value === r)?.label).join(', '),
-      'Event status': visit?.status ? 'Voimassa' : 'Peruttu',
+      'Event status': status,
       'Remote platform': Number.isNaN(platform) ? '' : (PLATFORMS
         ?.map((_, i) => i)?.includes(platform) ? PLATFORMS[platform] : event?.otherRemotePlatformOption),
       'Client name': visit?.clientName,

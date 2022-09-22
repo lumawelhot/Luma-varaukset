@@ -9,8 +9,8 @@ import { exec, getCSV } from '../../../helpers/utils'
 
 const Configs = () => {
   const { t } = useTranslation()
-  const { all, fetchAll } = useVisits()
-  const { findEvent } = useEvents()
+  const { all: visits, fetchAll } = useVisits()
+  const { all: parsed, findEvent } = useEvents()
   const { current: user } = useUsers()
   const { page } = useParams()
   const navigate = useNavigate()
@@ -32,7 +32,7 @@ const Configs = () => {
         </Button>}
       </div>
       <div style={{ marginLeft: -10, marginTop: 50 }}>
-        {title === 'csv' && <Button onClick={() => getCSV(all, findEvent)}>{t('get-csv')}</Button>}
+        {title === 'csv' && <Button onClick={() => getCSV(visits, parsed, findEvent)}>{t('get-csv')}</Button>}
         {user?.isAdmin && title === 'emails' && <Emails />}
       </div>
     </>

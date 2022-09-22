@@ -78,11 +78,12 @@ export const VisitValidation = form => {
       .test((value, handler) => {
         const limits = handler?.parent?.limits
         const visitType = handler?.parent?.visitType
-        if (visitType === 'inperson' && Number(limits?.inPerson?.maxParticipants) < value) {
+        const { inPerson, remote } = limits
+        if (visitType === 'inperson' && inPerson.maxParticipants && Number(inPerson?.maxParticipants) < value) {
           return handler.createError({
             message: t('too-large')
           })
-        } else if (visitType === 'remote' && Number(limits?.remote?.maxParticipants) < value) {
+        } else if (visitType === 'remote' && remote.maxParticipants && Number(remote?.maxParticipants) < value) {
           return handler.createError({
             message: t('too-large')
           })

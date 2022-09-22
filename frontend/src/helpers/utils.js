@@ -16,14 +16,24 @@ export const plugins = [
   luxonPlugin
 ]
 
-export const getCSV = (visits, findEvent) => {
+export const getCSV = (visits, events, findEvent) => {
   try {
     const filteredVisits = visits
       ?.map(visit => {
         const event = findEvent(visit?.event?.id)
         return parseCSV(visit, event)
       })
-    const sheet = XLSX.utils.json_to_sheet(filteredVisits)
+    const nonBooked = events
+      ?.map(event => event.availableTimes?.map(a => ({
+        ...event,
+        startTime: new Date(a.startTime).toISOString(),
+        endTime: new Date(a.endTime).toISOString()
+      })))?.flat()
+      ?.map(event => parseCSV({
+        startTime: event.startTime,
+        endTime: event.endTime
+      }, event))
+    const sheet = XLSX.utils.json_to_sheet(filteredVisits.concat(nonBooked))
     const book = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(book, sheet, 'visits')
     XLSX.writeFile(book, 'visits.csv')

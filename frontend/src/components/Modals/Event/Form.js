@@ -208,7 +208,9 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
         isMulti={false}
         value={watch('customForm')}
         menuPlacement='top'
-        options={forms?.map(f => ({ value: f.id, label: f.name, fields: f.fields }))}
+        options={forms
+          ?.filter(f => f.name !== 'cancellation')
+          ?.map(f => ({ value: f.id, label: f.name, fields: f.fields }))}
         onChange={v => setValue('customForm', v)}
       />
 

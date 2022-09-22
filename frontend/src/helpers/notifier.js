@@ -47,4 +47,7 @@ export const notifier = {
   addGroup: r => r
     ? success(t('notify-group-create-success'))
     : error(t('notify-group-create-failed')),
+  cancelVisit: r => r
+    ? success(t('notify-visit-cancel-success'))
+    : error(t('notify-visit-cancel-failed')),
 }

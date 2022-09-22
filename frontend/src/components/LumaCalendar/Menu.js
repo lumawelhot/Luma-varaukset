@@ -6,7 +6,7 @@ import { FaFilter } from 'react-icons/fa'
 import Filter from '../Modals/Filter'
 import styled from 'styled-components'
 import { useEvents } from '../../hooks/cache'
-import { BsEye } from 'react-icons/bs'
+import { BsEye, BsEyeSlash } from 'react-icons/bs'
 
 const NavButton = styled(Button)`margin: 0; margin-left: -1px;`
 
@@ -85,15 +85,17 @@ const CalendarMenu = React.forwardRef((_, ref) => {
         >{t('agenda')}</NavButton>
         <NavButton
           style={{ marginLeft: 15 }}
-          className={filterOptions.showUnavailable ? 'active' : ''}
           onClick={() => setFilterOptions({ ...filterOptions, showUnavailable: !filterOptions.showUnavailable })}
         >
-          <BsEye />
+          {filterOptions.showUnavailable
+            ? <BsEye style={{ fontSize: 18 }} />
+            : <BsEyeSlash style={{ fontSize: 18 }} />
+          }
         </NavButton>
-        <Button onClick={() => setShowFilter(true)}>
+        <NavButton style={{ marginRight: 10 }} onClick={() => setShowFilter(true)}>
           <FaFilter style={{ marginRight: 5 }} />
           {t('filter')}
-        </Button>
+        </NavButton>
       </div>
     </div>
   )

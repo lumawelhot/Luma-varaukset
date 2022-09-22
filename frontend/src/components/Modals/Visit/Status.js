@@ -49,5 +49,5 @@ const Status = ({ status }) => {
 export default Status
 
 Status.propTypes = {
-  status: PropTypes.bool.isRequired
+  status: PropTypes.bool
 }

@@ -2,13 +2,14 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { MenuButton } from './Embeds/Button'
-import { useEvict, useUsers } from '../hooks/cache'
+import { useEvents, useEvict, useUsers } from '../hooks/cache'
 import { Container } from 'react-bootstrap'
 import Event from './Modals/Event'
 import Banner from './Embeds/Banner'
 
 const Menu = () => {
   const { current: user } = useUsers()
+  const { filterOptions, setFilterOptions } = useEvents()
   const [showEvent, setShowEvent] = useState()
   const [showBanner, setShowBanner] = useState(localStorage.getItem('hide-banner') !== 'false')
   const { evict } = useEvict()
@@ -17,6 +18,7 @@ const Menu = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('app-token')
+    setFilterOptions({ ...filterOptions, showUnavailable: false })
     evict()
   }
 

@@ -45,7 +45,7 @@ const customFormHtml = data => {
   return html
 }
 
-const bookingInfo = (event, visit) => `
+const bookingInfo = (event, visit, cancellation) => `
 <!DOCTYPE html>
 <body>
   <style>
@@ -71,6 +71,7 @@ const bookingInfo = (event, visit) => `
   <h1 id="header">
     Varauksen tiedot
   </h1>
+  ${cancellation}
   <h3 id="subheader">
     Vierailun tiedot:
   </h3>
@@ -132,7 +133,15 @@ const getNotifyHtml = (visit, event) => {
           u(visit.dataUseAgreement ? 'Kyllä' : 'Ei'),
           u(visit.language === 'fi' ? 'Suomi' : (visit.language === 'en' ? 'Englanti' : 'Ruotsi'))
         ]
-      ) + u(customFormHtml(visit.customFormData)) + u(customFormHtml(visit.cancellation)),
+      ) + u(customFormHtml(visit.customFormData)),
+      visit.cancellation ? `
+        <h3 id="subheader">
+          Peruutuksen tiedot:
+        </h3>
+        <div class="container">
+          ${u(customFormHtml(visit.cancellation))}
+        </div>
+      ` : ''
     )
   } catch (err) {
     return `

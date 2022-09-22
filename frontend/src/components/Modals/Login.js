@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '../Embeds/Button'
 import { useForm } from 'react-hook-form'
 import { Input } from '../Embeds/Input'
-import { useUsers, useEvict } from '../../hooks/cache'
+import { useUsers, useEvict, useEvents } from '../../hooks/cache'
 import { notifier } from '../../helpers/notifier'
 import { useCloseModal } from '../../hooks/utils'
 import PropTypes from 'prop-types'
@@ -15,6 +15,7 @@ const Login = ({ close }) => {
   const { login } = useUsers()
   const { evict } = useEvict()
   const { register, handleSubmit, reset } = useForm()
+  const { filterOptions, setFilterOptions } = useEvents()
   const [show, closeModal] = useCloseModal(close)
 
   const onSubmit = async values => {
@@ -22,6 +23,7 @@ const Login = ({ close }) => {
     notifier.login(success)
     if (success) {
       evict()
+      setFilterOptions({ ...filterOptions, showUnavailable: true })
       closeModal()
     }
     reset({ username: '', password: '' })

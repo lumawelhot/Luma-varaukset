@@ -338,5 +338,8 @@
   "max-participants": "Maksimi osallistujamäärä",
   "closing-time": "Varausaika päättyy",
   "closed-days": "Vuorokausia vierailun alkamiseen oltava vähintään",
-  "booking-time-end": "Erääntynyt"
+  "booking-time-end": "Erääntynyt",
+
+  "notify-visit-cancel-success": "Varauksen peruuminen onnistui",
+  "notify-visit-cancel-failed": "Varauksen peruuminen epäonnistui"
 }
