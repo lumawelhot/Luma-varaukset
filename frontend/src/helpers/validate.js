@@ -155,7 +155,6 @@ export const CustomFormValidation = Yup.object().shape({
 
 // some technical debt here, the same defined abow
 export const CancelFormValidation = form => {
-  console.log(form)
   const formFields = form?.fields ? Object.assign({}, ...Object.entries(form?.fields)
     .filter(e => e[1].validation.required)
     .map(e => {
