@@ -77,7 +77,8 @@ export const eventInitialValues = (event = {}) => {
 }
 
 export const visitInitialValues = (event, visit = {}) => {
-  const { inPersonVisit, language, remoteVisit } = visit
+  const { inPersonVisit, remoteVisit } = event
+  const { language } = visit
   const data = visit?.customFormData?.map(f => [f.name, f.value])
   const values = data ? Object.fromEntries(data) : {}
   const customFormData = event?.customForm?.fields?.map(({ type, name }) =>

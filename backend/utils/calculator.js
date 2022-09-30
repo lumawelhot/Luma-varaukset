@@ -1,5 +1,5 @@
 // NOTE: Do not return any Date objects, return ISOStrings instead.
-const { set } = require('date-fns')
+const { set, subHours } = require('date-fns')
 const { MINUTE, EARLIEST_START_HOURS, LATEST_END_HOURS } = require('../config')
 
 // --------------------- HELPERS
@@ -124,6 +124,8 @@ const helsinkiZoneOffset = () => {
   return today.getHours() - helsinkiHours
 }
 
+const helsinkiTime = date => subHours(new Date(date), helsinkiZoneOffset())
+
 module.exports = {
   findRange,
   calcAvailableTimes,
@@ -136,5 +138,6 @@ module.exports = {
   checkTimeslot,
   slotFromDate,
   parseDate,
-  helsinkiZoneOffset
+  helsinkiZoneOffset,
+  helsinkiTime
 }

@@ -1,5 +1,6 @@
 const { format } = require('date-fns')
 const { CLASSES } = require('../../config')
+const { helsinkiTime } = require('../calculator')
 
 const u = (field) => field === undefined ? '' : field
 
@@ -104,9 +105,9 @@ const getNotifyHtml = (visit, event) => {
           u(event.title),
           u(event.description),
           scienceClasses(event.resourceids),
-          u(format(new Date(event.start), 'dd.MM.yy')),
-          u(format(new Date(visit.startTime), 'HH:mm')),
-          u(format(new Date(visit.endTime), 'HH:mm')),
+          u(format(helsinkiTime(event.start), 'dd.MM.yy')),
+          u(format(helsinkiTime(event.start), 'HH:mm')),
+          u(format(helsinkiTime(visit.endTime), 'HH:mm')),
           u(visit.remoteVisit ? 'Etävierailu' : 'Lähivierailu'),
         ]
       ),

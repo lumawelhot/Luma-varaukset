@@ -49,6 +49,9 @@ const eventModifiable = (event) => {
 const createVisitValidate = (args, event, currentUser) => {
   if (event.reserved && event.reserved !== args.token) throw new UserInputError('Invalid session')
   if (event.disabled) throw new UserInputError('This event is disabled')
+  if (!args.remoteVisit && !args.inPersonVisit) {
+    throw new UserInputError('Provide remote or inperson visit')
+  }
   const limits = typeof event?.limits === 'string' ? JSON.parse(event.limits) : event?.limits
   const maxRemoteParticipants = limits?.remote?.maxParticipants
   const maxInPersonParticipants = limits?.inPerson?.maxParticipants

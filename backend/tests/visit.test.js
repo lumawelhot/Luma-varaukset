@@ -176,6 +176,26 @@ describe('As a customer I', () => {
     expect(errors[0].message).to.equal('Event is assigned to a disabled group')
   })
 
+  it('cannot book an event with too many participants', async () => {
+    const { mutate } = createTestClient(serverCustomer)
+    const [startTime, endTime] = timeSlotByDay(15, { start: 11, end: 12 })
+    const { errors } = await mutate({
+      mutation: CREATE_VISIT,
+      variables: { ...visitTwoWeeksAhead, startTime, endTime, participants: 100 }
+    })
+    expect(errors[0].message).to.equal('Max number of participants exceeded')
+  })
+
+  it('cannot book an event without specifying visit type', async () => {
+    const { mutate } = createTestClient(serverCustomer)
+    const [startTime, endTime] = timeSlotByDay(15, { start: 11, end: 12 })
+    const { errors } = await mutate({
+      mutation: CREATE_VISIT,
+      variables: { ...visitTwoWeeksAhead, startTime, endTime, remoteVisit: false, inPersonVisit: false }
+    })
+    expect(errors[0].message).to.equal('Provide remote or inperson visit')
+  })
+
   // ------------ VISIT GET
   it('cannot get all visits', async () => {
     const { query } = createTestClient(serverCustomer)

@@ -16,6 +16,7 @@
     "customForm": null,
     "group": null,
     "languages": ["fi"],
+    "limits": "{\"remote\":{},\"inPerson\":{\"maxParticipants\":\"99\"}}",
 
     "fromNow": 15
   },
