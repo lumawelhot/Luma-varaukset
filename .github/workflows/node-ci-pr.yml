@@ -40,7 +40,7 @@ jobs:
         run: cd ../backend && nohup npm run cypress &
         env:
           EMAILHOST: smtp.ethereal.email
-          EMAILUSER: clarabelle.terry@ethereal.email
+          EMAILUSER: graham.casper61@ethereal.email
           EMAILPASSWORD: ${{secrets.EMAILPASSWORD}}
           EMAILPORT: 587
           SECRET: ${{ secrets.SECRET }}
