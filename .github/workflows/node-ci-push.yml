@@ -7,75 +7,30 @@ on:
     branches: [main]
 
 jobs:
-#  frontend:
-#    runs-on: ubuntu-latest
-#    defaults:
-#      run:
-#        working-directory: frontend
-#
-#    strategy:
-#      matrix:
-#        node-version: [16.x]
-#
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Use Node.js ${{ matrix.node-version }}
-#        uses: actions/setup-node@v1
-#        with:
-#          node-version: ${{ matrix.node-version }}
-#      - run: npm ci && cd ../backend && npm ci && cd ../frontend
-#      - run: npm run build --if-present
-#      - name: Run Jest tests
-#        run: npm run test -- --watchAll=false
-#        working-directory: frontend
-#      - name: Cypress run
-#        uses: cypress-io/github-action@v2
-#        with:
-#          start: npm start, npm run cypress --prefix ../backend/
-#          working-directory: frontend
-#          wait-on: http://localhost:3000
-#          wait-on-timeout: 300
-#          record: true
-#        env:
-#          CYPRESS_RECORD_KEY: ${{secrets.CYPRESS_KEY}}
-#          #MONGODB_TEST_URI: ${{secrets.MONGODB_TEST_URI}}
-#          EMAILHOST: smtp.ethereal.email
-#          EMAILUSER: clarabelle.terry@ethereal.email
-#          EMAILPASSWORD: ${{secrets.EMAILPASSWORD}}
-#          EMAILPORT: 587
-#          SECRET: ${{secrets.SECRET}}
-#
-#  backend:
-#    runs-on: ubuntu-latest
-#    defaults:
-#      run:
-#        working-directory: backend
-#
-#    strategy:
-#      matrix:
-#        node-version: [16.x]
-#
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Use Node.js ${{ matrix.node-version }}
-#        uses: actions/setup-node@v1
-#        with:
-#          node-version: ${{ matrix.node-version }}
-#      - run: npm ci
-#      - name: Run backend Jest tests
-#        run: npm run test -- --detectOpenHandles=false
-#        working-directory: backend
-#        env:
-#          #MONGODB_TEST_URI: ${{secrets.MONGODB_TEST_URI}}
-#          EMAILHOST: smtp.ethereal.email
-#          EMAILUSER: clarabelle.terry@ethereal.email
-#          EMAILPASSWORD: ${{secrets.EMAILPASSWORD}}
-#          EMAILPORT: 587
-#          SECRET: ${{secrets.SECRET}}
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - name: Run backend Mocha tests
+        run: npm run test
+        working-directory: backend
 
   build:
     name: 'Publish to dockerhub'
-    #needs: [frontend, backend]
+    needs: [backend]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -92,10 +47,10 @@ jobs:
           tags: lumawelhot/luma-varaukset:latest
           build-args: |
             PUBLIC_URL=https://luma-varaukset.cs.helsinki.fi
-      - name: Publish staging version to Dockerhub
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: lumawelhot/luma-varaukset:staging
-          build-args: |
-            PUBLIC_URL=https://ohtup-staging.cs.helsinki.fi/luma-varaukset
+#      - name: Publish staging version to Dockerhub
+#        uses: docker/build-push-action@v2
+#        with:
+#          push: true
+#          tags: lumawelhot/luma-varaukset:staging
+#          build-args: |
+#            PUBLIC_URL=https://ohtup-staging.cs.helsinki.fi/luma-varaukset

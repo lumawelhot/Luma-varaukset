@@ -1,13 +1,11 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-import App from './App'
+import { createRoot } from 'react-dom/client'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { BrowserRouter as Router } from 'react-router-dom'
 import './i18n'
 import { setContext } from 'apollo-link-context'
 import 'react-datepicker/dist/react-datepicker.css'
 import 'rc-steps/assets/index.css'
-import 'react-datepicker/dist/react-datepicker.css'
 
 import {
   ApolloClient,
@@ -18,18 +16,22 @@ import {
 } from '@apollo/client'
 
 import { getMainDefinition } from '@apollo/client/utilities'
-import { WebSocketLink } from '@apollo/link-ws'
-import ContextProviders from './Components/ContextProviders'
 import { ChakraProvider } from '@chakra-ui/react'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
-import { registerLocale } from  'react-datepicker'
+import { registerLocale } from 'react-datepicker'
 import fi from 'date-fns/locale/fi'
+
+import { createClient } from 'graphql-ws'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+import Cache from './Cache'
+import App from './App'
+
 registerLocale('fi', fi)
 
 const BASE_URL = (process.env.NODE_ENV === 'production' && process.env.PUBLIC_URL) ? process.env.PUBLIC_URL : 'http://localhost:3001'
-const WS_URL = BASE_URL.replace(/^http/,'ws') + '/graphql/ws'
+const WS_URL = `${BASE_URL.replace(/^http/,'ws') }/graphql/ws`
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('app-token')
@@ -42,14 +44,9 @@ const authLink = setContext((_, { headers }) => {
   }
 })
 
-const httpLink = new HttpLink({ uri: BASE_URL + '/graphql' })
+const httpLink = new HttpLink({ uri: `${BASE_URL }/graphql` })
 
-const wsLink = new WebSocketLink({
-  uri: WS_URL,
-  options: {
-    reconnect: true,
-  },
-})
+const wsLink = new GraphQLWsLink(createClient({ url: WS_URL }))
 
 const splitLink = split(
   ({ query }) => {
@@ -66,22 +63,32 @@ const splitLink = split(
 export const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: splitLink,
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: 'no-cache',
+      errorPolicy: 'ignore',
+    },
+    query: {
+      fetchPolicy: 'no-cache',
+      errorPolicy: 'all',
+    },
+  }
 })
 
 const [, ...basename] = BASE_URL.split('://')[1].split('/')
 
-ReactDOM.render(
+const root = createRoot(document.getElementById('root'))
+root.render(
   <ApolloProvider client={client}>
     <React.StrictMode>
       <Router basename={`/${basename}`}>
-        <ContextProviders>
-          <ChakraProvider>
+        <ChakraProvider>
+          <Cache>
             <App />
             <ToastContainer />
-          </ChakraProvider>
-        </ContextProviders>
+          </Cache>
+        </ChakraProvider>
       </Router>
     </React.StrictMode>
-  </ApolloProvider>,
-  document.getElementById('root')
+  </ApolloProvider>
 )

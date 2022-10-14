@@ -37,6 +37,7 @@ const visitSchema = mongoose.Schema({
     type: Number,
     required: true
   },
+  // deprecated, moved to cancellation
   status: {
     type: Boolean,
     required: true,
@@ -77,6 +78,14 @@ const visitSchema = mongoose.Schema({
   },
   language: {
     type: String,
+    required: false
+  },
+  created: {
+    type: Date,
+    required: false
+  },
+  cancellation: {
+    type: mongoose.Schema.Types.Mixed,
     required: false
   }
 })

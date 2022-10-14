@@ -1,6 +1,5 @@
 const { gql } = require('apollo-server-express')
 
-//Visit- ja Event-tyyppien kentät gradeId ja online tarkistettava
 const typeDefs = gql`
   type Lock {
     event: ID!
@@ -51,7 +50,8 @@ const typeDefs = gql`
     group: Group
     publishDate: String
     languages: [String]
-
+    limits: String
+    closedDays: Int
   }
   type Visit {
     id: ID!
@@ -73,6 +73,8 @@ const typeDefs = gql`
     remotePlatform: String
     customFormData: String
     language: String
+    created: String
+    cancellation: String
   }
   type Token {
     value: String!
@@ -102,15 +104,15 @@ const typeDefs = gql`
   }
   type Query {
     getUsers: [User]!
-    me: User!
+    me: User
     getEvent(id: ID!): Event!
-    getEvents: [Event]!
+    getEvents(ids: [ID]): [Event]!
     findVisit(id: ID!): Visit
     getVisits: [Visit]
     getTags: [Tag]!
     getExtras: [Extra]!
-    getForm(id: ID): Form
     getForms: [Form]
+    getCancelForm: Form
     getEmailTemplates: [EmailTemplate]
     getGroups: [Group]
   }
@@ -131,24 +133,21 @@ const typeDefs = gql`
       publishDate: String
       disabled: Boolean
     ): Group
-    deleteGroup(
-      group: ID!
-    ): String
     deleteGroups(
       ids: [ID]!
-    ): String
+    ): [ID]
     assignEventsToGroup(
       events: [ID]
       group: ID!
     ): [Event]
     updateEmail(
       name: String!
-      html: String!
-      text: String!
-      subject: String!
-      ad: [String]!
-      adSubject: String!
-      adText: String!
+      html: String
+      text: String
+      subject: String
+      ad: [String]
+      adSubject: String
+      adText: String
     ): EmailTemplate
     lockEvent(
       event: ID!
@@ -159,17 +158,8 @@ const typeDefs = gql`
     updateUser(
       user: ID!
       password: String
-      username: String!
-      isAdmin: Boolean!
-    ): User
-    resetPassword(
-      user: ID!
-      password: String!
-    ): User
-    changeUsername(
-      user: ID!
-      username: String!
-      isAdmin: Boolean!
+      username: String
+      isAdmin: Boolean
     ): User
     createUser(
       username: String!
@@ -182,7 +172,7 @@ const typeDefs = gql`
     ): Token
     createEvents(
       title: String!
-      scienceClass: [Int]!
+      resourceids: [Int]!
       grades: [Int]!
       remotePlatforms: [Int]
       otherRemotePlatformOption: String
@@ -200,6 +190,8 @@ const typeDefs = gql`
       group: ID
       publishDate: String
       languages: [String]
+      limits: String
+      closedDays: Int
     ): [Event]
     modifyEvent(
       event: ID!
@@ -221,6 +213,8 @@ const typeDefs = gql`
       group: ID
       publishDate: String
       languages: [String]
+      limits: String
+      closedDays: Int
     ): Event
     createVisit(
       event: ID!
@@ -242,13 +236,33 @@ const typeDefs = gql`
       customFormData: String
       language: String
     ): Visit
+    modifyVisit(
+      visit: ID!
+      clientName: String
+      schoolName: String
+      schoolLocation: String
+      clientEmail: String
+      clientPhone: String
+      grade: String
+      participants: Int
+      extras: [ID]
+      inPersonVisit: Boolean
+      remoteVisit: Boolean
+      dataUseAgreement: Boolean
+      remotePlatform: String
+      customFormData: String
+      language: String
+    ): Visit
     disableEvent(
       event: ID!
     ): Event
     enableEvent(
       event: ID!
     ): Event
-    cancelVisit(id: ID!): Visit
+    cancelVisit(
+      id: ID!
+      cancellation: String
+    ): Visit
     createExtra(
       name: String!
       classes: [Int]!
@@ -257,30 +271,24 @@ const typeDefs = gql`
     ): Extra
     modifyExtra(
       id: ID!
-      name: String!
-      classes: [Int]!
-      remoteLength: Int!
-      inPersonLength: Int!
+      name: String
+      classes: [Int]
+      remoteLength: Int
+      inPersonLength: Int
     ): Extra
-    deleteExtra(
-      id: String!
-    ): String
     deleteExtras(
-      ids: [String]!
-    ): String
-    deleteEvent(
-      id: String!
-    ): String
+      ids: [ID]!
+    ): [ID]
     deleteEvents(
-      ids: [ID]
+      ids: [ID]!
     ): [ID]
     forceDeleteEvents(
-      events: [ID]
+      events: [ID]!
       password: String!
     ): [Event]
     deleteUsers(
       ids: [ID]!
-    ): String
+    ): [ID]
     createForm(
       name: String!
       fields: String
@@ -292,11 +300,12 @@ const typeDefs = gql`
     ): Form
     deleteForms(
       ids: [ID]!
-    ): String
+    ): [ID]
   }
   type Subscription {
     eventModified: Event
-    eventsDeleted: [Event]
+    eventsModified: [Event]
+    eventsDeleted: [ID]
   }
 `
 module.exports = typeDefs

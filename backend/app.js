@@ -1,89 +1,88 @@
-const createError = require('http-errors')
 const express = require('express')
 const cookieParser = require('cookie-parser')
-const logger = require('morgan')
-
 const path = require('path')
-
 const app = express()
 const cors = require('cors')
-
 const jwt = require('jsonwebtoken')
 
-const User = require('./models/user')
-
-const config = require('./utils/config')
+const { User } = require('./db')
+const config = require('./config')
 
 const { ApolloServer } = require('apollo-server-express')
 const { createServer } = require('http')
-const { execute, subscribe } = require('graphql')
-const { SubscriptionServer } = require('subscriptions-transport-ws')
 const { makeExecutableSchema } = require('@graphql-tools/schema')
 const httpServer = createServer(app)
+const logger = require('./logger')
+
+const { WebSocketServer } = require('ws')
+const { useServer } = require('graphql-ws/lib/use/ws')
+const rateLimit = require('express-rate-limit')
 
 const resolvers = require('./graphql/resolvers')
 const typeDefs = require('./graphql/typeDefs')
 const schema = makeExecutableSchema({ typeDefs, resolvers })
 
 const graphQLEndpoint = process.env.PUBLIC_URL?.includes('staging') ? '/luma-varaukset/graphql' : '/graphql'
+
 const server = new ApolloServer({
   schema,
+  cache: 'bounded',
   introspection: true,
+  csrfPrevention: true,
   playground: {
     endpoint: graphQLEndpoint,
-    subscriptionEndpoint: graphQLEndpoint + '/ws'
+    subscriptionEndpoint: `${graphQLEndpoint }/ws`
   },
   context: async ({ req }) => {
     const auth = req ? req.headers.authorization : null
-    if (auth && auth.toLowerCase().startsWith('bearer ')) {
+    const prefix = 'bearer '
+    if (auth && auth.toLowerCase().startsWith(prefix)) {
       try {
-        const decodedToken = jwt.verify(
-          auth.substring(7), config.SECRET
-        )
+        const decodedToken = jwt.verify(auth.substring(prefix.length), config.SECRET)
         const currentUser = await User.findById(decodedToken.id)
         return { currentUser: currentUser ? currentUser : 'user' }
       } catch (error) {
         return null
       }
     }
+  },
+  formatError: (err) => {
+    logger.debug(`Error: "${err.message}", Path: "${err.path}"`)
+    return Error('Internal Server Error')
   }
 })
-server.applyMiddleware({ app })
+server.start().then(() => server.applyMiddleware({ app }))
 
-SubscriptionServer.create({
-  schema,
-  execute,
-  subscribe,
-}, {
+const wsServer = new WebSocketServer({
   server: httpServer,
-  path: server.graphqlPath + '/ws',
+  path: `${server.graphqlPath }/ws`,
 })
+useServer({ schema }, wsServer)
 
-// Define this here
-require('./services/mongoSetup')
+// Setup MongoDB
+require('./services/dbsetup')
 
-app.use(logger('dev'))
+// Ensure that this cannot run on production environment
+if (process.env.NODE_ENV === 'e2e') {
+  const initE2E = require('./tests/utils/initE2E')
+  initE2E(app)
+}
+
+// These are not probably needed, consider to remove:
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
-app.use(express.static('build'))
-app.get('*', (req, res) => res.sendFile(path.resolve('build', 'index.html'))) // This is needed for React Router in frontend!
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-  next(createError(404))
-})
-
-// error handler
-app.use((err, req, res) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message
-  res.locals.error = req.app.get('env') === 'development' ? err : {}
-
-  // render the error page
-  res.status(err.status || 500)
-  res.render('error')
-})
+if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'docker') {
+  app.use(rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 300, // Limit each IP to 300 requests per `window` (here, per 15 minutes)
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  }))
+  app.use(express.static('build'))
+  app.get('*', (req, res) => res.sendFile(path.resolve('build', 'index.html'))) // This is needed for React Router in frontend!
+}
 
 module.exports = httpServer

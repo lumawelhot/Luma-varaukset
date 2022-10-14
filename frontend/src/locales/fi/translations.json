@@ -200,7 +200,7 @@
   "extra-classes": "Tiedeluokat",
 
   "forms": "Lomakkeet",
-  "add-new-form": "Liää uusi lomake",
+  "add-new-form": "Lisää uusi lomake",
   "form-name": "Lomakkeen nimi",
   "modify-form": "Muokkaa lomaketta",
   "create-form": "Luo uusi lomake",
@@ -311,5 +311,35 @@
   "step-confirm": "Vahvistus",
   "invalid-start": "Virheellinen aloitusajankohta",
   "invalid-end": "Virheellinen lopetusajankohta",
-  "end-after-start": "Virheellinen aloitusajankohta"
+  "end-after-start": "Virheellinen aloitusajankohta",
+  
+  "remove-user-confirm": "Haluatko varmasti poistaa valitut käyttäjät",
+  "created": "Luotu",
+  "disabled": "Piilotettu",
+  "unpublished": "Julkaisematon",
+  "invalid-syntax": "Virheellinen syöte",
+  "invalid-email": "Virheellinen sähköpostiosoite",
+
+  "notify-modify-visit-success": "Varauksen muokkaaminen onnistui",
+  "notify-modify-visit-failed": "Varauksen muokkaaminen epäonnistui",
+  "visit-details": "Varauksen tiedot",
+
+  "show-email-info": "Ohjeet",
+  "show-email-form": "Näytä lomake",
+  "invalid-participants": "Virheellinen osallistujamäärä",
+  "show-all": "Näytä kaikki",
+  "visit-cancelled": "Vierailu on peruttu",
+  "cancellation-details": "Peruutuksen tiedot",
+  "modify-cancellation-form": "Muokkaa peruutuslomaketta",
+  "create-cancellation-form": "Luo peruutuslomake",
+  "remove-cancellation-form": "Poista peruutuslomake",
+  "remote-max-participants": "Etä, max osallistujamäärä",
+  "inperson-max-participants": "Lähi, max osallistujamäärä",
+  "max-participants": "Maksimi osallistujamäärä",
+  "closing-time": "Varausaika päättyy",
+  "closed-days": "Vuorokausia vierailun alkamiseen oltava vähintään",
+  "booking-time-end": "Erääntynyt",
+
+  "notify-visit-cancel-success": "Varauksen peruuminen onnistui",
+  "notify-visit-cancel-failed": "Varauksen peruuminen epäonnistui"
 }

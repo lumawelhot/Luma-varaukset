@@ -30,19 +30,6 @@
   display: none;
 }
 
-.rs-anim-fade.rs-anim-in.rs-picker-date-menu.rs-picker-menu {
-  z-index: 10000;
-}
-
-.rs-picker-toggle-value {
-  color: rgb(62, 62, 62) !important;
-}
-
-.rs-table-cell-content {
-  font-size: 15px;
-  color: #363636;
-}
-
 #root {
   overflow-y: hidden;
   overflow-x: hidden;
@@ -207,20 +194,39 @@ body {
   overflow-x: auto !important;
 }
 
-.hide-visitform {
-  visibility: hidden;
-  display: none;
-}
-
-.show-visitform {
-  visibility: visible;
-  display: initial;
-}
-
 .fc-list-event-title {
   cursor: pointer !important;
 }
 
 .fc-daygrid-event {
   cursor: pointer !important;
+}
+
+.react-datepicker__time-list-item {
+  font-weight: bold;
+  font-size: larger;
+}
+
+.react-datepicker__time-container {
+  width: 100px;
+}
+
+.react-datepicker__time-box {
+  width: 100px !important;
+}
+
+.react-datepicker__day {
+  font-size: larger;
+  font-weight: bolder;
+}
+
+.react-datepicker__day-name {
+  text-transform: capitalize;
+  font-size: larger;
+  font-weight: bold;
+}
+
+.fc-popover-body {
+  max-height: 100px;
+  overflow: scroll;
 }

@@ -1,0 +1,17 @@
+[
+  {
+    "id": "1",
+    "fields": "[{\"name\":\"Kysymys 1?\",\"type\":\"text\",\"validation\":{\"required\":true}},{\"name\":\"Kysymys 2?\",\"type\":\"checkbox\",\"validation\":{\"required\":true},\"options\":[{\"value\":0,\"text\":\"option-1\"},{\"value\":1,\"text\":\"option-2\"}]},{\"name\":\"Kysymys 3?\",\"type\":\"radio\",\"validation\":{\"required\":false},\"options\":[{\"value\":0,\"text\":\"option-1\"},{\"value\":1,\"text\":\"option-2\"},{\"value\":2,\"text\":\"option-bonus\"}]}]",
+    "name": "Opiskelijan elämää"
+  },
+  {
+    "id": "2",
+    "fields": "[]",
+    "name": "Opiskelijan elämää 2"
+  },
+  {
+    "id": "3",
+    "fields": "[{\"name\":\"Interesting\",\"type\":\"text\",\"validation\":{\"required\":false}}]",
+    "name": "Test form"
+  }
+]

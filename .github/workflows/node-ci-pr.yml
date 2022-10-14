@@ -19,15 +19,18 @@ jobs:
         node-version: [16.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci && cd ../backend && npm ci && cd ../frontend
       - run: npm run build --if-present
-      - name: Run Jest tests
-        run: npm run test -- --coverage --watchAll=false --collectCoverageFrom="src/components/**/*js"
+      #- name: Run Jest tests
+      #  run: npm run test -- --coverage --watchAll=false --collectCoverageFrom="src/components/**/*js"
+      #  working-directory: frontend
+      - name: Run eslint
+        run: npm run lint
         working-directory: frontend
       - uses: codecov/codecov-action@v1
         with:
@@ -37,22 +40,22 @@ jobs:
         run: cd ../backend && nohup npm run cypress &
         env:
           EMAILHOST: smtp.ethereal.email
-          EMAILUSER: clarabelle.terry@ethereal.email
+          EMAILUSER: graham.casper61@ethereal.email
           EMAILPASSWORD: ${{secrets.EMAILPASSWORD}}
           EMAILPORT: 587
           SECRET: ${{ secrets.SECRET }}
           PORT: 3001
-      #- name: Cypress run
-      #  uses: cypress-io/github-action@v2
-      #  with:
-      #    start: npm start
-      #    working-directory: frontend
-      #    wait-on: http://localhost:3000
-      #    wait-on-timeout: 300
-      #  env:
-      #    CYPRESS_RECORD_KEY: ${{secrets.CYPRESS_KEY}}
-      #    #MONGODB_TEST_URI: ${{secrets.MONGODB_TEST_URI}}
-      #    SECRET: ${{secrets.SECRET}}
+      - name: Cypress run
+        uses: cypress-io/github-action@v4
+        with:
+          start: npm start
+          working-directory: frontend
+          wait-on: http://localhost:3000
+          wait-on-timeout: 300
+        env:
+          CYPRESS_RECORD_KEY: ${{secrets.CYPRESS_KEY}}
+          #MONGODB_TEST_URI: ${{secrets.MONGODB_TEST_URI}}
+          SECRET: ${{secrets.SECRET}}
 
   backend:
     runs-on: ubuntu-latest
@@ -65,22 +68,22 @@ jobs:
         node-version: [16.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
       - name: Run eslint
         run: npm run lint
         working-directory: backend
-      - name: Run backend Jest tests
-        run: npm run test -- --coverage --detectOpenHandles=false
+      - name: Run backend Mocha tests
+        run: npm run coverage
         working-directory: backend
         env:
           #MONGODB_TEST_URI: ${{secrets.MONGODB_TEST_URI}}
           EMAILHOST: smtp.ethereal.email
-          EMAILUSER: clarabelle.terry@ethereal.email
+          EMAILUSER: graham.casper61@ethereal.email
           EMAILPASSWORD: ${{secrets.EMAILPASSWORD}}
           EMAILPORT: 587
           SECRET: ${{secrets.SECRET}}

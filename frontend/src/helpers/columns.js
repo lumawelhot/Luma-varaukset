@@ -4,8 +4,11 @@ import parse from 'date-fns/parse'
 import { CLASSES } from '../config'
 
 const dateSort = (rowA, rowB, id) => {
-  let a = parse(rowA.values[id], 'd.M.y', new Date())
-  let b = parse(rowB.values[id], 'd.M.y', new Date())
+  const _a = rowA.values[id]
+  const _b = rowB.values[id]
+  if (!_b) return -1
+  const a = parse(_a, `d.M.y${_a.includes(' - ') ? ' - HH:mm' : ''}`, new Date())
+  const b = parse(_b, `d.M.y${_b.includes(' - ') ? ' - HH:mm' : ''}`, new Date())
   if (b - a > 0) return 1
   if (a - b > 0) return -1
   return 0
@@ -59,7 +62,7 @@ export const eventColumns = () => [
     Header: t('visit-count'),
     accessor: 'visitCount'
   }, {
-    Header: t('publish-date'),
+    Header: <span style={{ paddingRight: 10 }}>{t('publish-date')}</span>,
     accessor: 'publishDate'
   }
 ]
@@ -79,12 +82,18 @@ export const visitColumns = () => [
     sortType: dateSort
   },
   {
+    Header: <span style={{ paddingRight: 70 }}>{t('created')}</span>,
+    accessor: 'created',
+    sortType: dateSort
+  },
+  {
     Header: t('status'),
     accessor: 'status'
   },
   {
     Header: '',
-    accessor: 'urlCopy'
+    accessor: 'urlCopy',
+    rowClick: false
   },
 ]
 
@@ -110,11 +119,11 @@ export const extraColumns = () => [
   },
   {
     Header: t('length-inperson'),
-    accessor: 'inPerson'
+    accessor: 'inPersonLength'
   },
   {
     Header: t('length-remote'),
-    accessor: 'remote'
+    accessor: 'remoteLength'
   },
   ...CLASSES.map(c => ({
     Header: c.short,
@@ -159,9 +168,8 @@ export const formFieldColumns = () => [
 export const eventDateColumns = () => [
   {
     Header: t('event-date'),
-    Cell: ({ cell }) => {
-      return <div style={{ fontWeight: 'bold', marginTop: 7 }}>{cell.value}</div>
-    },
+    // eslint-disable-next-line react/prop-types
+    Cell: ({ cell }) => <div style={{ fontWeight: 'bold', marginTop: 7 }}>{cell.value}</div>,
     accessor: 'date',
     sortType: dateSort,
   },
@@ -198,7 +206,7 @@ export const eventInitialState = {
 export const visitInitialState = {
   sortBy: [
     {
-      id: 'date',
+      id: 'created',
       desc: false
     }
   ]

@@ -22,7 +22,7 @@ const groupSchema = mongoose.Schema({
       ref: 'Event'
     }
   ],
-  publishDate: {
+  publishDate: { // deprecated
     type: Date,
     required: false
   },

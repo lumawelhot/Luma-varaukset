@@ -1,9 +1,7 @@
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 
-const arrayLimit = (val) => {
-  return val.length > 0
-}
+const arrayLimit = (val) => !!val.length
 const eventSchema = mongoose.Schema({
   title: {
     type: String,
@@ -99,12 +97,24 @@ const eventSchema = mongoose.Schema({
     type: [String],
     required: false,
     default: ['fi']
+  },
+  limits: {
+    type: mongoose.Schema.Types.Mixed,
+  },
+  cancellationForm: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Form',
+    required: false
+  },
+  closedDays: {
+    type: Number
   }
 })
 
 eventSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
+    // are these creating errors ???
     returnedObject.start = document.start.toISOString()
     returnedObject.end = document.end.toISOString()
     delete returnedObject._id

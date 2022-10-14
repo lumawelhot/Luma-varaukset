@@ -34,6 +34,6 @@ read -p "Username for administrator [Admin]: " ADMIN_USERNAME
 ADMIN_USERNAME=${ADMIN_USERNAME:-Admin}
 read -p "Password for administrator [salainen]: " ADMIN_PASSWORD
 ADMIN_PASSWORD=${ADMIN_PASSWORD:-salainen}
-docker exec luma-varaukset-app /bin/sh -c "cd /app/backend && node utils/mongoinit.js $ADMIN_USERNAME $ADMIN_PASSWORD"
+docker exec luma-varaukset-app /bin/sh -c "cd /app/backend && node mongoinit.js $ADMIN_USERNAME $ADMIN_PASSWORD"
 echo "If docker-compose started up without errors, you can now browse to http://localhost/luma-varaukset"
 echo "MongoDB Admin is available here: http://localhost:8081"
