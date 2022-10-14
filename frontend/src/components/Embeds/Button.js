@@ -32,7 +32,7 @@ export const Button = styled.button`
   color: #0479a5;
   font-size: 15px;
   font-weight: 600;
-  //text-transform: uppercase;
+  text-transform: uppercase;
   border-radius: 0;
   &:hover {
     background-color: rgb(27, 28, 41);
