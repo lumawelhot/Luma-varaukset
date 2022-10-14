@@ -27,12 +27,12 @@ export const GroupValidation = Yup.object().shape({
 
 export const VisitValidation = form => {
   const formFields = form?.fields ? Object.assign({}, ...Object.entries(form?.fields)
-    .filter(e => e[1].validation.required)
+    .filter(e => e[1]?.validation?.required)
     .map(e => {
       const o = {}
-      o[`custom-${e[0]}`] = e[1].type === 'text'
-        ? Yup.string().required() : e[1].type === 'checkbox'
-          ? Yup.array().min(1, t('too-short')) : e[1].type === 'radio'
+      o[`custom-${e[0]}`] = e[1]?.type === 'text'
+        ? Yup.string().required() : e[1]?.type === 'checkbox'
+          ? Yup.array().min(1, t('too-short')) : e[1]?.type === 'radio'
             ? Yup.string().required() : undefined
       return o
     })) : {}
@@ -61,7 +61,7 @@ export const VisitValidation = form => {
       .test((value, handler) => {
         const eventTimes = handler?.parent?.eventTimes
         const endTime = handler?.parent?.endTime
-        if (eventTimes && (eventTimes.start > value || eventTimes.end < endTime)) {
+        if (eventTimes && (eventTimes?.start > value || eventTimes?.end < endTime)) {
           return handler.createError({
             message: t('invalid-start')
           })
@@ -80,11 +80,11 @@ export const VisitValidation = form => {
         const visitType = handler?.parent?.visitType
         const inPerson = limits?.inPerson
         const remote = limits?.remote
-        if (visitType === 'inperson' && inPerson.maxParticipants && Number(inPerson?.maxParticipants) < value) {
+        if (visitType === 'inperson' && inPerson?.maxParticipants && Number(inPerson?.maxParticipants) < value) {
           return handler.createError({
             message: t('too-large')
           })
-        } else if (visitType === 'remote' && remote.maxParticipants && Number(remote?.maxParticipants) < value) {
+        } else if (visitType === 'remote' && remote?.maxParticipants && Number(remote?.maxParticipants) < value) {
           return handler.createError({
             message: t('too-large')
           })
@@ -158,12 +158,12 @@ export const CustomFormValidation = Yup.object().shape({
 // some technical debt here, the same defined abow
 export const CancelFormValidation = form => {
   const formFields = form?.fields ? Object.assign({}, ...Object.entries(form?.fields)
-    .filter(e => e[1].validation.required)
+    .filter(e => e[1].validation?.required)
     .map(e => {
       const o = {}
-      o[`custom-${e[0]}`] = e[1].type === 'text'
-        ? Yup.string().required() : e[1].type === 'checkbox'
-          ? Yup.array().min(1, t('too-short')) : e[1].type === 'radio'
+      o[`custom-${e[0]}`] = e[1]?.type === 'text'
+        ? Yup.string().required() : e[1]?.type === 'checkbox'
+          ? Yup.array().min(1, t('too-short')) : e[1]?.type === 'radio'
             ? Yup.string().required() : undefined
       return o
     })) : {}

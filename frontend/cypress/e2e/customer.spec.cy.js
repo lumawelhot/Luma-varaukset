@@ -34,8 +34,14 @@ describe('As a customer I can', () => {
       cy.visit(`http://localhost:3000/${visits[0].id}/`)
       cy.contains('Peru vierailu')
       cy.get('.modal-footer > .sc-dkzDqf').click()
+      cy.get(':nth-child(1) > .vstack > :nth-child(1) > .chakra-checkbox__control').click()
+      cy.get(':nth-child(1) > .sc-jSMfEi').click()
+      cy.get(':nth-child(3) > .vstack > :nth-child(1) > .chakra-checkbox__control').click()
+      cy.get('.modal-footer > .active').click()
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(4000)
       cy.visit(`http://localhost:3000/${visits[0].id}/`)
-      cy.contains('Peru vierailu').should('not.exist')
+      cy.contains('Vierailu on peruttu')
     })
   })
 

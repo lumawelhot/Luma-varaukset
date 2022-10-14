@@ -16,11 +16,11 @@ const classified = (state, action) => {
       return {
         ...state,
         current: state.current?.id === action.modify?.id ? action.modify : state.current,
-        all: state.all.map(v => v.id === action.modify?.id ? action.modify : v)
+        all: state.all?.map(v => v.id === action.modify?.id ? action.modify : v)
       }
     case 'remove':
       return { ...state, all: state.all
-        .filter(v => !action.ids.includes(v.id)) }
+        .filter(v => !action.ids?.includes(v.id)) }
     case 'evict':
       return action.init
     default:
@@ -122,13 +122,13 @@ export const useEventReducer = () => {
       case 'modifyParsed':
         return {
           ...state,
-          parsed: state.parsed.filter(p => p.id !== action.modify.id)
+          parsed: state.parsed?.filter(p => p.id !== action.modify.id)
             .concat(parseEvent(action.modify))
         }
       case 'remove':
         return { ...state, all: deleteByIds(state.all, action.remove) }
       case 'removeParsed':
-        return { ...state, parsed: state.parsed.filter(p => !someExist([p.id], action.remove)) }
+        return { ...state, parsed: state.parsed?.filter(p => !someExist([p.id], action.remove)) }
       case 'evict':
         return action.init
       default:

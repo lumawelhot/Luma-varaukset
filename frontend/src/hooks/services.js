@@ -113,11 +113,11 @@ export const useVisitService = ({ visitReducer }) => {
     },
     remove: async (id, formValues) => {
       const result = await remove(id, formValues)
-      if (result) _modify({ ...state.all.find(v => v.id === result.id), status: false })
+      if (result) _modify({ ...state?.all?.find(v => v.id === result.id), status: false })
       return !!result
     },
     findVisit: async id => {
-      const visit = state.all.find(v => v.id === id)
+      const visit = state?.all?.find(v => v.id === id)
       if (visit) {
         _current(visit)
         return true
