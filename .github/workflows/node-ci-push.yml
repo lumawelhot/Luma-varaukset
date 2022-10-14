@@ -27,6 +27,12 @@ jobs:
       - name: Run backend Mocha tests
         run: npm run test
         working-directory: backend
+        env:
+          EMAILHOST: smtp.ethereal.email
+          EMAILUSER: graham.casper61@ethereal.email
+          EMAILPASSWORD: ${{secrets.EMAILPASSWORD}}
+          EMAILPORT: 587
+          SECRET: ${{secrets.SECRET}}
 
   build:
     name: 'Publish to dockerhub'
