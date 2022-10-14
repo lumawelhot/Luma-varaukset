@@ -46,7 +46,7 @@ jobs:
           SECRET: ${{ secrets.SECRET }}
           PORT: 3001
       - name: Cypress run
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v4
         with:
           start: npm start
           working-directory: frontend
@@ -78,7 +78,7 @@ jobs:
         run: npm run lint
         working-directory: backend
       - name: Run backend Mocha tests
-        run: npm run test
+        run: npm run coverage
         working-directory: backend
         env:
           #MONGODB_TEST_URI: ${{secrets.MONGODB_TEST_URI}}
