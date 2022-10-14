@@ -21,7 +21,7 @@ const resolvers = {
     getEvent: (root, args) => Event.findById(args.id, expandEvents),
     getEvents: async (root, args, { currentUser }) => {
       if (args.ids) return Event.findByIds(args.ids, expandEvents)
-      const events = await Event.FindByRange({ end: { after: subDays(new Date(), currentUser ? 90 : 0/* maybe just return 90 for all users */) } }, expandEvents)
+      const events = await Event.FindByRange({ end: { after: subDays(new Date(), currentUser?.isAdmin ? 365 * 10 : 90) } }, expandEvents)
       return currentUser ? events : events
         .filter(e => !e.publishDate || new Date() >= new Date(e.publishDate))
         .map(e => e.group?.disabled ? { ...e, availableTimes: [] } : e)

@@ -38,10 +38,7 @@ describe('As a customer I can', () => {
       cy.get(':nth-child(1) > .sc-jSMfEi').click()
       cy.get(':nth-child(3) > .vstack > :nth-child(1) > .chakra-checkbox__control').click()
       cy.get('.modal-footer > .active').click()
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(4000)
-      cy.visit(`http://localhost:3000/${visits[0].id}/`)
-      cy.contains('Vierailu on peruttu')
+      cy.contains('Varauksen peruuminen onnistui')
     })
   })
 

@@ -12,4 +12,5 @@ module.exports = defineConfig({
       // implement node event listeners here
     },
   },
+  defaultCommandTimeout: 10000 // This configured so CI have more time
 })
