@@ -13,27 +13,27 @@ const NavButton = styled(Button)`margin: 0; margin-left: -1px;`
 const DateString = styled.span`
   font-size: 25px;
   font-weight: bold;
-  @media (max-width: 1200px) {
+  @media (max-width: 1400px) {
     display: none;
     visibility: hidden;
   }
 `
 
 const MonthMedia = styled.span`
-  @media (max-width: 770px) {
+  @media (max-width: 990px) {
     display: none;
     visibility: hidden;
   }
 `
 
 const ToggleMedia = styled.span`
-  @media (max-width: 770px) {
+  @media (max-width: 990px) {
     margin-left: 10px !important;
   }
 `
 
 const ViewMedia = styled.span`
-  @media (max-width: 550px) {
+  @media (max-width: 780px) {
     display: none;
     visibility: hidden;
   }

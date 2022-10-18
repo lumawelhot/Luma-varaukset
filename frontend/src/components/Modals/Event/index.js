@@ -42,7 +42,7 @@ const Event = ({ close, initialValues, options, modify }) => {
           <Radio value='modify' style={{ marginLeft: 20 }}>{t('modify')}</Radio>
         </RadioGroup>
       </Modal.Header>}
-      <Modal.Body style={{ minHeight: 400 }}>
+      <Modal.Body>
         <Form
           formId={formId}
           type={type}
