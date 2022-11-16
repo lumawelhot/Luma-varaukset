@@ -27,6 +27,7 @@ const VisitList = () => {
       return someExist(findEvent(p?.event?.id)?.resourceids, classes.map(c => c.value))
     })
     ?.map(v => ({
+      id: v.id,
       title: <span
         style={{ cursor: 'pointer ' }}
         onClick={() => navigate(`/visits/${v.id}`)}
@@ -63,7 +64,7 @@ const VisitList = () => {
         data={visits}
         columns={columns}
         initialState={visitInitialState}
-        onClickRow={i => navigate(`/visits/${all[i]?.id}`)}
+        onClickRow={id => navigate(`/visits/${id}`)}
       />
     </>
   )

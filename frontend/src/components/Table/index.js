@@ -105,7 +105,7 @@ const Table = ({ columns, data, initialState, component, checkboxed, nosort, onC
                       {...cell.getCellProps({
                         className: cell.column.collapse ? 'collapse' : ''
                       })}
-                      onClick={() => rowClick && onClickRow(row.id)}
+                      onClick={() => rowClick && onClickRow(row?.original?.id || row.id)}
                       style={{ cursor: rowClick ? 'pointer' : 'initial' }}
                     >
                       {cell.render('Cell')}
