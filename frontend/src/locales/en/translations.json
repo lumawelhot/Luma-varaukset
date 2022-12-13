@@ -1,8 +1,8 @@
 {
   "banner-title": "Booking platform for LUMA science visits",
   "banner-text1": "Welcome! You can book a science visit to a University of Helsinki LUMA science class! Please read the general instructions for booking ",
-  "banner-text2": "here.",
-  "banner-text3": " Please note, that reservations must be booked at least two weeks in advance, so book well beforehand! In unclear situations you may contact us at: tiedekasvatus@helsinki.fi. We warmly welcome you on a science visit!",
+  "banner-text2": "here",
+  "banner-text3": ". In unclear situations you may contact us at: tiedekasvatus@helsinki.fi. We warmly welcome you on a science visit!",
   "username": "Username",
   "password": "Password",
   "login-header": "Log in (LUMA-booking)",
