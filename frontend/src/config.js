@@ -32,6 +32,11 @@ export const GRADES = [
   { value: 4, label: 'grade4' },
   { value: 5, label: 'grade5' }
 ]
+export const TEACHING_TYPES = [
+  'remote',
+  'inperson',
+  'school'
+]
 export const PLATFORMS = [
   'Zoom',
   'Google Meet',

@@ -26,12 +26,21 @@ const typeDefs = gql`
     remoteLength: Int!
     inPersonLength: Int!
   }
+  type Teaching {
+    type: String!
+    location: String
+  }
+  input ITeaching {
+    type: String!
+    location: String
+  }
   type Event {
     id: ID!
     title: String!
     resourceids: [Int]
     remoteVisit: Boolean!
     inPersonVisit: Boolean!
+    schoolVisit: Boolean!
     grades: [Int]!
     remotePlatforms: [Int]
     otherRemotePlatformOption: String
@@ -67,10 +76,8 @@ const typeDefs = gql`
     status: Boolean!
     startTime: String!
     endTime: String!
-    inPersonVisit: Boolean!
-    remoteVisit: Boolean!
+    teaching: Teaching
     dataUseAgreement: Boolean!
-    remotePlatform: String
     customFormData: String
     language: String
     created: String
@@ -182,6 +189,7 @@ const typeDefs = gql`
       desc: String
       inPersonVisit: Boolean!
       remoteVisit: Boolean!
+      schoolVisit: Boolean!
       tags: [String]
       waitingTime: Int!
       extras: [ID]
@@ -203,6 +211,7 @@ const typeDefs = gql`
       desc: String
       inPersonVisit: Boolean
       remoteVisit: Boolean
+      schoolVisit: Boolean
       extras: [ID]
       start: String
       end: String
@@ -228,10 +237,8 @@ const typeDefs = gql`
       grade: String!
       participants: Int!
       extras: [ID]
-      inPersonVisit: Boolean!
-      remoteVisit: Boolean!
+      teaching: ITeaching
       dataUseAgreement: Boolean!
-      remotePlatform: String
       token: String!
       customFormData: String
       language: String
@@ -246,10 +253,8 @@ const typeDefs = gql`
       grade: String
       participants: Int
       extras: [ID]
-      inPersonVisit: Boolean
-      remoteVisit: Boolean
+      teaching: ITeaching
       dataUseAgreement: Boolean
-      remotePlatform: String
       customFormData: String
       language: String
     ): Visit

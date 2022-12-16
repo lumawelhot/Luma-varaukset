@@ -93,6 +93,7 @@ export const CREATE_EVENTS = gql`
     $otherRemotePlatformOption: String,
     $remoteVisit: Boolean!,
     $inPersonVisit: Boolean!,
+    $schoolVisit: Boolean!,
     $desc: String,
     $tags: [String],
     $waitingTime: Int!
@@ -117,6 +118,7 @@ export const CREATE_EVENTS = gql`
       otherRemotePlatformOption: $otherRemotePlatformOption,
       remoteVisit: $remoteVisit,
       inPersonVisit: $inPersonVisit,
+      schoolVisit: $schoolVisit,
       tags: $tags
       waitingTime: $waitingTime
       extras: $extras
@@ -142,13 +144,11 @@ export const CREATE_VISIT = gql`
     $clientPhone: String!
     $grade: String!
     $participants: Int!
-    $inPersonVisit: Boolean!
-    $remoteVisit: Boolean!
     $startTime: String!
     $endTime: String!
     $dataUseAgreement: Boolean!
     $extras: [ID]
-    $remotePlatform: String
+    $teaching: ITeaching
     $token: String!
     $customFormData: String
     $language: String
@@ -164,11 +164,9 @@ export const CREATE_VISIT = gql`
       endTime: $endTime
       grade: $grade
       participants: $participants
-      inPersonVisit: $inPersonVisit
-      remoteVisit: $remoteVisit
       dataUseAgreement: $dataUseAgreement
       extras: $extras
-      remotePlatform: $remotePlatform
+      teaching: $teaching
       token: $token
       customFormData: $customFormData
       language: $language
@@ -187,10 +185,8 @@ export const MODIFY_VISIT = gql`
     $clientPhone: String
     $grade: String
     $participants: Int
-    $inPersonVisit: Boolean
-    $remoteVisit: Boolean
     $extras: [ID]
-    $remotePlatform: String
+    $teaching: ITeaching
     $customFormData: String
     $language: String
     $dataUseAgreement: Boolean
@@ -204,11 +200,9 @@ export const MODIFY_VISIT = gql`
       clientPhone: $clientPhone
       grade: $grade
       participants: $participants
-      inPersonVisit: $inPersonVisit
-      remoteVisit: $remoteVisit
       dataUseAgreement: $dataUseAgreement
       extras: $extras
-      remotePlatform: $remotePlatform
+      teaching: $teaching
       customFormData: $customFormData
       language: $language
     ) { ...VisitFields }
@@ -315,6 +309,7 @@ export const MODIFY_EVENT = gql`
     $desc: String
     $inPersonVisit: Boolean
     $remoteVisit: Boolean
+    $schoolVisit: Boolean
     $extras: [ID]
     $tags:[String]
     $start:String
@@ -336,6 +331,7 @@ export const MODIFY_EVENT = gql`
       desc: $desc
       inPersonVisit: $inPersonVisit
       remoteVisit: $remoteVisit
+      schoolVisit: $schoolVisit
       extras: $extras
       tags: $tags
       start: $start

@@ -29,6 +29,7 @@ export const EVENT_FIELDS = gql`
     desc
     inPersonVisit
     remoteVisit
+    schoolVisit
     availableTimes {
       startTime
       endTime
@@ -79,10 +80,11 @@ export const VISIT_FIELDS = gql`
     startTime
     endTime
     participants
-    inPersonVisit
-    remoteVisit
+    teaching {
+      type
+      location
+    }
     status
-    remotePlatform
     customFormData
     language
     created

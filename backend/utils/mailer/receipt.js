@@ -90,6 +90,7 @@ const bookingInfo = (event, visit, cancellation) => `
 
 const getNotifyHtml = (visit, event) => {
   try {
+    const type = visit?.teaching?.type
     return bookingInfo(
       containerContent(
         [
@@ -108,7 +109,9 @@ const getNotifyHtml = (visit, event) => {
           u(format(helsinkiTime(event.start), 'dd.MM.yy')),
           u(format(helsinkiTime(event.start), 'HH:mm')),
           u(format(helsinkiTime(visit.endTime), 'HH:mm')),
-          u(visit.remoteVisit ? 'Etävierailu' : 'Lähivierailu'),
+          u(type === 'remote' ? 'Etävierailu'
+            : type === 'school' ? 'Lähivierailu koululla'
+              : 'Lähivierailu Kumpulassa'),
         ]
       ),
       containerContent(

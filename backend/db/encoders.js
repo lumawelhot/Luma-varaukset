@@ -36,6 +36,7 @@ const event = {
         title: o.title,
         resourceids: o.resourceids,
         remoteVisit: o.remoteVisit,
+        schoolVisit: o.schoolVisit === undefined ? false : o.schoolVisit,
         inPersonVisit: o.inPersonVisit,
         grades: o.grades,
         remotePlatforms: o.remotePlatforms,
@@ -67,8 +68,19 @@ const event = {
 }
 
 const visit = {
-  encode: o => o,
+  encode: o => ({
+    ...o,
+    teaching: o.teaching ? o.teaching : {
+      type: o.remoteVisit ? 'remote' : 'inperson',
+      location: o.remoteVisit ? o.remotePlatform : undefined // for backwards compatibility
+    }
+  }),
   decode: o => {
+    const remote = o.remoteVisit
+    const type = o.teaching?.type ? o.teaching : {
+      type: remote ? 'remote' : 'inperson',
+      location: o.remoteVisit ? o.remotePlatform : undefined // for backwards compatibility
+    }
     try {
       return {
         _id: o.id,
@@ -85,10 +97,8 @@ const visit = {
         status: o.cancellation !== undefined ? false : true,
         startTime: o.startTime,
         endTime: o.endTime,
-        inPersonVisit: o.inPersonVisit,
-        remoteVisit: o.remoteVisit,
+        teaching: type,
         dataUseAgreement: o.dataUseAgreement,
-        remotePlatform: o.remotePlatform,
         customFormData: o.customFormData ? JSON.stringify(o.customFormData) : null,
         language: o.language,
         cancellation: o.cancellation ? JSON.stringify(o.cancellation) : null,

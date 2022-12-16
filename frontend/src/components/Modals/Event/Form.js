@@ -3,7 +3,7 @@ import { format, set } from 'date-fns'
 import React, { useEffect, useMemo } from 'react'
 import { Stack } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { CLASSES, GRADES, LANG_MAP, MAX_TAG_FILTER_TAGS, PLATFORMS } from '../../../config'
+import { CLASSES, GRADES, LANG_MAP, MAX_TAG_FILTER_TAGS, PLATFORMS, TEACHING_TYPES } from '../../../config'
 import { Input, Select, TextArea, DatePicker, TimePicker } from '../../Embeds/Input'
 import { Checkbox } from '../../Embeds/Table'
 import Title, { Error, required } from '../../Embeds/Title'
@@ -85,16 +85,13 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
         creatable
       />
 
-      <Title>{required(t('event-type'))}</Title>
-      <Stack style={{ marginLeft: 3 }} direction='col'>
-        <Checkbox {...register('remoteVisit')}>{t('remote-event')}</Checkbox>
-        <Checkbox {...register('inPersonVisit')}>{t('inperson-event')}</Checkbox>
-      </Stack>
-      {(errors.remoteVisit || errors.inPersonVisit) && (
-        <Error>{t(errors.remoteVisit ? errors.remoteVisit.message : errors.inPersonVisit.message)}</Error>
-      )}
+      <CheckboxGroup name='teaching' title={required(t('event-type'))} control={control} render={<>
+        {TEACHING_TYPES.map(v => <Checkbox key={v} value={v}>{t(v)}</Checkbox>)}
+      </>} />
+      {errors.teaching && <Error>{t(errors.teaching.message)}</Error>}
 
-      {watch('remoteVisit') && (
+
+      {watch('teaching')?.includes('remote') && (
         <CheckboxGroup name='remotePlatforms' title={required(t('remote-platforms'))} control={control} render={<>
           {PLATFORMS.map((_, i) => <Checkbox key={i} value={`${i + 1}`}>{PLATFORMS[i]}</Checkbox>)}
           <Checkbox value={`${PLATFORMS.length + 1}`}>{t('other-what')}</Checkbox>
@@ -106,11 +103,14 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
       )}
 
       <Stack style={{ overflow: 'auto' }} direction='horizontal'>
-        {watch('remoteVisit') && <div style={{ width: '100%', marginRight: 15 }}>
+        {watch('teaching')?.includes('remote') && <div style={{ width: '100%', marginRight: 15 }}>
           <Input id='remoteMaxParticipants' title={t('remote-max-participants')} type='number' {...register('remoteMaxParticipants')} />
         </div>}
-        {watch('inPersonVisit') && <div style={{ width: '100%', marginRight: type === 'create' ? 15 : 0 }}>
+        {watch('teaching')?.includes('inperson') && <div style={{ width: '100%', marginRight: 15 }}>
           <Input id='inPersonMaxParticipants' title={t('inperson-max-participants')} type='number' {...register('inPersonMaxParticipants')} />
+        </div>}
+        {watch('teaching')?.includes('school') && <div style={{ width: '100%', marginRight: 15 }}>
+          <Input id='schoolMaxParticipants' title={t('school-max-participants')} type='number' {...register('schoolMaxParticipants')} />
         </div>}
       </Stack>
 

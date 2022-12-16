@@ -41,6 +41,7 @@ const Info = () => {
       <P>
         <Title>{t('event-on-offer')}: </Title>
         {event.inPersonVisit ? t('in-inperson') : <></>}
+        {event.schoolVisit ? t('in-school') : <></>}
         {event.inPersonVisit && event.remoteVisit && t('and-remote')}
         {event.remoteVisit && !event.inPersonVisit ? t('in-remote') : <></>}
       </P>

@@ -37,8 +37,7 @@ const visitSchema = mongoose.Schema({
     type: Number,
     required: true
   },
-  // deprecated, moved to cancellation
-  status: {
+  status: { // deprecated, moved to cancellation
     type: Boolean,
     required: true,
   },
@@ -50,13 +49,18 @@ const visitSchema = mongoose.Schema({
     type: Date,
     required: true
   },
-  inPersonVisit: {
+  inPersonVisit: { // deprecated, moved to teaching
     type: Boolean,
-    required: true
+    //required: true, no longer required
   },
-  remoteVisit: {
+  remoteVisit: { // deprecated, moved to teaching
     type: Boolean,
-    required: true
+    //required: true, no longer required
+  },
+  teaching: {
+    type: { type: String },
+    location: String, // this will be remotePlatform
+    // not required for backwards compatibility
   },
   dataUseAgreement: {
     type: Boolean,
@@ -68,7 +72,7 @@ const visitSchema = mongoose.Schema({
       ref: 'Extra'
     }
   ],
-  remotePlatform: {
+  remotePlatform: { // deprecated, moved to teaching
     type: String,
     required: false
   },

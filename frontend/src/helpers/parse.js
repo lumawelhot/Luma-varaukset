@@ -70,6 +70,7 @@ export const parseCSV = (visit, event) => {
       ? 'Peruttu' : visit?.status === true
         ? 'Varattu' : event?.group?.disabled
           ? 'Kuului ryhmään, mutta ryhmä täynnä' : 'Varausaika päättyi'
+    const type = visit?.teaching?.type
 
     return {
       'Event id': visit?.event?.id || event?.id,
@@ -78,7 +79,9 @@ export const parseCSV = (visit, event) => {
       'Event date': visit?.startTime ? format(new Date(visit?.startTime), 'd.M.yyyy') : '',
       'Event start': visit?.startTime ? format(new Date(visit?.startTime), 'HH:mm') : '',
       'Event end': visit?.endTime ? format(new Date(visit?.endTime), 'HH:mm') : '',
-      'Event type': visit?.remoteVisit ? 'etäopetus' : 'lähiopetus',
+      'Event type': type === 'remote' ? 'etäopetus'
+        : type === 'inperson' ? 'lähiopetus Kumpulassa'
+          : 'lähiopetus koululla',
       'Event language': visit?.language === 'en' ? 'englanti' : (visit?.language === 'sv' ? 'ruotsi' : 'suomi'),
       'Event grade': visit?.grade,
       'Event group': event?.group?.name,
@@ -123,16 +126,15 @@ export const parseVisitSubmission = values => {
     .map(e => [Number(e[0].split('-')[1]), e[1]]))
   const otherRemote = values.otherRemotePlatformOption
   const type = values.visitType
+  const location = otherRemote?.length ? otherRemote : values?.remotePlatform
   const customFormData = JSON.stringify(values.customFormData?.map((c, i) => ({ ...c, value: fieldValues[i] })))
-  const inPersonVisit = type === 'inperson' ? true : false
-  const remoteVisit = type === 'remote' ? true : false
-  const remotePlatform = otherRemote?.length ? otherRemote : values.remotePlatform
   return {
     ...values,
-    inPersonVisit,
-    remoteVisit,
+    teaching: {
+      type,
+      location
+    },
     customFormData,
-    remotePlatform,
     participants: Number(values.participants)
   }
 }
@@ -149,7 +151,9 @@ export const parseEventSubmission = values => {
     dates,
     remoteMaxParticipants,
     inPersonMaxParticipants,
-    closedDays
+    schoolMaxParticipants,
+    closedDays,
+    teaching
   } = values
   return {
     ...values,
@@ -168,8 +172,14 @@ export const parseEventSubmission = values => {
       },
       inPerson: {
         maxParticipants: inPersonMaxParticipants
+      },
+      school: {
+        maxParticipants: schoolMaxParticipants
       }
-    })
+    }),
+    inPersonVisit: teaching.includes('inperson'),
+    remoteVisit: teaching.includes('remote'),
+    schoolVisit: teaching.includes('school')
   }
 }
 

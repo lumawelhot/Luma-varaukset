@@ -38,6 +38,7 @@ export const eventInitialValues = (event = {}) => {
     end,
     inPersonVisit,
     remoteVisit,
+    schoolVisit,
     remotePlatforms,
     extras,
     publishDate,
@@ -47,6 +48,10 @@ export const eventInitialValues = (event = {}) => {
     limits,
     closedDays
   } = event
+  const teaching = []
+  if (inPersonVisit) teaching.push('inperson')
+  if (remoteVisit) teaching.push('remote')
+  if (schoolVisit) teaching.push('school')
 
   return {
     ...event,
@@ -58,8 +63,6 @@ export const eventInitialValues = (event = {}) => {
     resourceids: resourceids?.map(r => String(r)) || [],
     start: start ? new Date(start) : todayByHours(8),
     end: end ? new Date(end) : todayByHours(16),
-    inPersonVisit: inPersonVisit !== undefined ? inPersonVisit : true,
-    remoteVisit: remoteVisit !== undefined ? remoteVisit : true,
     remotePlatforms: remotePlatforms?.map(r => String(r)) || ['1', '2', '3'],
     extras: extras ? parseExtras(extras) : [],
     publishDate: publishDate ? new Date(publishDate) : null,
@@ -71,13 +74,14 @@ export const eventInitialValues = (event = {}) => {
     } : null,
     group: group ? { value: group.id, label: group.name } : '',
     dates: [],
+    teaching,
     remoteMaxParticipants: limits?.remote?.maxParticipants,
-    inPersonMaxParticipants: limits?.inPerson?.maxParticipants
+    inPersonMaxParticipants: limits?.inPerson?.maxParticipants,
+    schoolMaxParticipants: limits?.school?.maxParticipants,
   }
 }
 
 export const visitInitialValues = (event, visit = {}) => {
-  const { inPersonVisit, remoteVisit } = event
   const { language } = visit
   const data = visit?.customFormData?.map(f => [f.name, f.value])
   const values = data ? Object.fromEntries(data) : {}
@@ -89,7 +93,6 @@ export const visitInitialValues = (event, visit = {}) => {
     extras: visit.extras?.map(e => e.id) || [],
     startTime: new Date(event.start),
     endTime: add(new Date(event.start), { minutes: event.duration }),
-    visitType: inPersonVisit ? 'inperson' : remoteVisit ? 'remote' : undefined,
     customFormData,
     limits: event.limits,
   }

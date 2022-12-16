@@ -8,11 +8,12 @@
     "customFormData": null,
     "extras": [],
     "grade": "2nd grade",
-    "inPersonVisit": true,
     "language": "fi",
+    "teaching": {
+      "type": "remote",
+      "location": null
+    },
     "participants": 13,
-    "remotePlatform": null,
-    "remoteVisit": false,
     "schoolLocation": "Ivalo",
     "schoolName": "Ivalon koulu",
     "cancellation": "[]",
@@ -28,11 +29,12 @@
     "customFormData": null,
     "extras": [],
     "grade": "2nd grade",
-    "inPersonVisit": true,
+    "teaching": {
+      "type": "remote",
+      "location": null
+    },
     "language": "fi",
     "participants": 13,
-    "remotePlatform": null,
-    "remoteVisit": false,
     "schoolLocation": "Ivalo",
     "schoolName": "Ivalon koulu",
 

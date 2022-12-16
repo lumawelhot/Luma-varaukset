@@ -37,6 +37,8 @@ export const VisitValidation = form => {
       return o
     })) : {}
   return Yup.object().shape({
+    visitType: Yup.string()
+      .required(t('choose-visit-type')),
     clientName: Yup.string()
       .min(5, t('too-short'))
       .required(t('fill-field')),
@@ -114,18 +116,15 @@ export const EventValidation = Yup.object().shape({
   duration: Yup.number()
     .min(1, t('too-small'))
     .required(t('fill-field')),
-  remoteVisit: Yup.bool().when('inPersonVisit', {
-    is: inPersonVisit => !inPersonVisit,
-    then: Yup.bool().oneOf([true], t('atleast-one-visittype'))
-  }),
-  inPersonVisit: Yup.bool().when('remoteVisit', {
-    is: remoteVisit => !remoteVisit,
-    then: Yup.bool().oneOf([true], t('atleast-one-visittype'))
-  }),
+  teaching: Yup.array().min(1, t('atleast-one-visittype')),
   remotePlatforms: Yup.array()
-    .when('remoteVisit', {
-      is: true,
-      then: Yup.array().min(1, t('atleast-one-remoteplatform'))
+    .test((value, handler) => {
+      const teaching = handler?.parent?.teaching
+      if (teaching && teaching.includes('remote') && value.length <= 0) {
+        return handler.createError({
+          message: t('atleast-one-remoteplatform')
+        })
+      } else return true
     }),
   languages: Yup.array().min(1, t('atleast-one-language')),
   grades: Yup.array().min(1, t('atleast-one-grade')),
@@ -149,7 +148,7 @@ export const EventValidation = Yup.object().shape({
   end: Yup.date()
     .required(t('fill-field'))
     .typeError(t('invalid-time')),
-}, [['inPersonVisit', 'remoteVisit']])
+}, [])
 
 export const CustomFormValidation = Yup.object().shape({
   name: Yup.string().required(t('fill-field')),

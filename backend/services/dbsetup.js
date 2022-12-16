@@ -53,6 +53,7 @@ const initializeDB = async () => {
     participants: 13,
     remotePlatform: null,
     remoteVisit: false,
+    schoolVisit: false,
     schoolLocation: 'Ivalo',
     schoolName: 'Ivalon koulu',
     status: true,
