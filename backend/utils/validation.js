@@ -1,6 +1,6 @@
 const { AuthenticationError, UserInputError } = require('apollo-server-express')
 const { checkTimeslot, validTimeSlot, calcTimeSlot } = require('./calculator')
-const { differenceInDays, differenceInHours } = require('date-fns')
+const { differenceInDays } = require('date-fns')
 const bcrypt = require('bcrypt')
 
 const authorized = fn => (root, args, context, ...rest) => {
@@ -63,9 +63,7 @@ const createVisitValidate = (args, event, currentUser) => {
   }
   const days = event.closedDays || 14
   const afterDays = differenceInDays(new Date(event.start), new Date()) >= days
-  const afterHours = differenceInHours(new Date(event.start), new Date()) >= 1
-  const eventCanBeBooked = !currentUser ? afterDays : afterHours
-  if (!eventCanBeBooked) throw new UserInputError('This event cannot be booked')
+  if (!currentUser && !afterDays) throw new UserInputError('This event cannot be booked')
   if (!validTimeSlot(event.availableTimes, args.startTime, args.endTime)) {
     throw new UserInputError('Given timeslot is invalid')
   }

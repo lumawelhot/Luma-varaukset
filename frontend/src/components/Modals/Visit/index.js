@@ -99,7 +99,7 @@ const Visit = ({ children }) => {
             {user && event?.visits?.length === 0 &&
             <Button onClick={handleRemove}>{t('delete-event')}</Button>}
             {children}
-            {available && (
+            {(user || available) && !event?.booked && (
               <Button className='active' onClick={async () => {
                 increment()
                 const token = await lock(event.id)
