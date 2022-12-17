@@ -29,10 +29,12 @@ const typeDefs = gql`
   type Teaching {
     type: String!
     location: String
+    payload: String
   }
   input ITeaching {
     type: String!
     location: String
+    payload: String
   }
   type Event {
     id: ID!

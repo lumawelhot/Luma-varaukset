@@ -49,6 +49,10 @@ const Details = ({ visit, event }) => {
         {<Li>{` ${t(visit.teaching.type)}`}</Li>}
       </Ul>
     </P>
+    {visit?.teaching?.payload && Object.entries(visit?.teaching?.payload)?.map((e, i) => <P key={i}>
+      <Title>{t(e[0])}: </Title>
+      <Text>{e[1]}</Text>
+    </P>)}
     <P>
       <Title>{t('event-date')}: </Title>
       <Text>{format(new Date(visit.startTime), 'd.M.yyyy')}</Text>

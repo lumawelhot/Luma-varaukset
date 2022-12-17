@@ -90,6 +90,11 @@ const Form = ({ formId, show, onSubmit, event, visit }) => {
         }/>}
       {errors.remotePlatform && <Error>{t(errors.remotePlatform.message)}</Error>}
 
+      {watch('visitType') === 'school' && <>
+        <Input id='schoolAddress' title={required(t('school-address'))} {...register('schoolAddress')} />
+        {errors.schoolAddress && <Error>{t('fill-field')}</Error>}
+      </>}
+
       <Input id='clientName' title={required(t('client-name'))} {...register('clientName')} />
       {errors.clientName && <Error>{t(errors.clientName.message)}</Error>}
 

@@ -83,6 +83,7 @@ export const VISIT_FIELDS = gql`
     teaching {
       type
       location
+      payload
     }
     status
     customFormData

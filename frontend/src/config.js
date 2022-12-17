@@ -68,5 +68,8 @@ export const CALENDAR_SETTINGS = {
     }
   }
 }
+export const VISIT_TYPE_PAYLOAD = {
+  school: ['schoolAddress']
+}
 // This list should contain atleas one element
 export const DEFAULT_FIELD_VALUES = ['option-1', 'option-2']

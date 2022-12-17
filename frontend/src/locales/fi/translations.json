@@ -350,5 +350,7 @@
   "visit-calendar": "Kalenteri",
   "slot": "Aikaikkuna",
   "visit": "Vierailu",
-  "modify-date": "Muokkaa päivää"
+  "modify-date": "Muokkaa päivää",
+  "school-address": "Koulun osoite",
+  "schoolAddress": "Koulun osoite"
 }

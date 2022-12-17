@@ -87,6 +87,8 @@ export const visitInitialValues = (event, visit = {}) => {
   const values = data ? Object.fromEntries(data) : {}
   const customFormData = event?.customForm?.fields?.map(({ type, name }) =>
     ({ name, value: values[name] || (type === 'checkbox' ? [] : '') }))
+  const payload = visit?.teaching?.payload
+
   return {
     ...visit,
     language: language || event.languages[0],
@@ -95,7 +97,8 @@ export const visitInitialValues = (event, visit = {}) => {
     endTime: add(new Date(event.start), { minutes: event.duration }),
     customFormData,
     limits: event.limits,
-    visitType: visit?.teaching?.type
+    visitType: visit?.teaching?.type,
+    ...(payload ? payload : {})
   }
 }
 

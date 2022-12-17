@@ -70,16 +70,24 @@ const event = {
 const visit = {
   encode: o => ({
     ...o,
-    teaching: o.teaching ? o.teaching : {
+    teaching: o.teaching ? {
+      ...o.teaching,
+      payload: typeof o?.teaching.payload === 'string'
+        ? JSON.parse(o?.teaching.payload) : o?.teaching.payload
+    } : {
       type: o.remoteVisit ? 'remote' : 'inperson',
-      location: o.remoteVisit ? o.remotePlatform : undefined // for backwards compatibility
+      location: o.remoteVisit ? o.remotePlatform : undefined, // for backwards compatibility
     }
   }),
   decode: o => {
     const remote = o.remoteVisit
-    const type = o.teaching?.type ? o.teaching : {
+    const type = o.teaching?.type ? {
+      ...o.teaching,
+      payload: typeof o?.teaching.payload !== 'string'
+        ? JSON.stringify(o?.teaching.payload) : o?.teaching.payload,
+    } : {
       type: remote ? 'remote' : 'inperson',
-      location: o.remoteVisit ? o.remotePlatform : undefined // for backwards compatibility
+      location: o.remoteVisit ? o.remotePlatform : undefined, // for backwards compatibility
     }
     try {
       return {

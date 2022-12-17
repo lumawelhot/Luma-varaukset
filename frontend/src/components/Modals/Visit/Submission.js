@@ -53,12 +53,12 @@ const Submission = () => {
   const modifyVisit = async values => {
     const variables = parseVisitSubmission({
       ...values,
-      payload: {
+      payload: selectedEvent ? {
         event: selectedEvent.id,
         date: selectedEvent.start,
         startTime,
         endTime,
-      }
+      } : undefined
     })
     const result = await modify({ visit: visit.id, ...variables })
     notifier.modifyVisit(result)

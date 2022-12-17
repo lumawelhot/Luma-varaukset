@@ -1,5 +1,5 @@
 import { differenceInDays, differenceInHours, format, set } from 'date-fns'
-import { BOOKING_FAILS_DAYS_REMAINING, BOOKING_FAILS_HOURS_REMAINING, CLASSES, PLATFORMS } from '../config'
+import { BOOKING_FAILS_DAYS_REMAINING, BOOKING_FAILS_HOURS_REMAINING, CLASSES, PLATFORMS, VISIT_TYPE_PAYLOAD } from '../config'
 
 export const parseEvent = (event) => event
   ?.availableTimes.map(timeSlot => ({
@@ -128,24 +128,37 @@ export const parseVisitSubmission = values => {
   const type = values.visitType
   const location = otherRemote?.length ? otherRemote : values?.remotePlatform
   const customFormData = JSON.stringify(values.customFormData?.map((c, i) => ({ ...c, value: fieldValues[i] })))
-  const { event, startTime, endTime, date } = values.payload
-  const sms = { secods: 0, milliseconds: 0 }
-  const s = new Date(startTime)
-  const e = new Date(endTime)
-  const start = set(new Date(date), { hours: s.getHours(), minutes: s.getMinutes() })
-  const end = set(new Date(date), { hours: e.getHours(), minutes: e.getMinutes() })
+
+  let payloadFields = null
+  if (values.payload) {
+    const { event, startTime, endTime, date } = values.payload
+    const sms = { secods: 0, milliseconds: 0 }
+    const s = new Date(startTime)
+    const e = new Date(endTime)
+    const start = set(new Date(date), { hours: s.getHours(), minutes: s.getMinutes() })
+    const end = set(new Date(date), { hours: e.getHours(), minutes: e.getMinutes() })
+    payloadFields = {
+      event,
+      startTime: set(start, sms).toISOString(),
+      endTime: set(end, sms).toISOString(),
+    }
+  }
+
+  // For mapping visit type specified fields
+  const typeEntries = VISIT_TYPE_PAYLOAD[type]
+    ?.map(t => [t, values[t]])
 
   return {
     ...values,
     teaching: {
       type,
-      location
+      location,
+      payload: typeEntries ? JSON.stringify(Object.fromEntries(typeEntries)) : undefined
     },
     customFormData,
     participants: Number(values.participants),
-    event,
-    startTime: set(start, sms).toISOString(),
-    endTime: set(end, sms).toISOString()
+    event: undefined, // important, otherwise ...values delivers it
+    ...payloadFields,
   }
 }
 

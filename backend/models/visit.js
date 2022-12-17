@@ -60,6 +60,7 @@ const visitSchema = mongoose.Schema({
   teaching: {
     type: { type: String },
     location: String, // this will be remotePlatform
+    payload: mongoose.Schema.Types.Mixed,
     // no required field for backwards compatibility
   },
   dataUseAgreement: {

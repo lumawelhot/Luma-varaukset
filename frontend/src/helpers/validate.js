@@ -54,6 +54,11 @@ export const VisitValidation = form => {
       .email('invalid-email')
       .oneOf([Yup.ref('clientEmail'), null], t('email-not-match'))
       .required(t('fill-field')),
+    schoolAddress: Yup.string()
+      .when('visitType', {
+        is: 'school',
+        then: Yup.string().required()
+      }),
     remotePlatform: Yup.string()
       .when('visitType', {
         is: 'remote',
