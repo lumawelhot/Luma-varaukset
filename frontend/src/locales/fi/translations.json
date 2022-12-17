@@ -346,5 +346,9 @@
   "notify-visit-cancel-failed": "Varauksen peruuminen epäonnistui",
   
   "in-school": "Koululla",
-  "school-event": "Lähivierailu koululla"
+  "school-event": "Lähivierailu koululla",
+  "visit-calendar": "Kalenteri",
+  "slot": "Aikaikkuna",
+  "visit": "Vierailu",
+  "modify-date": "Muokkaa päivää"
 }

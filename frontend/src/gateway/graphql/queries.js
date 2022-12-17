@@ -190,6 +190,9 @@ export const MODIFY_VISIT = gql`
     $customFormData: String
     $language: String
     $dataUseAgreement: Boolean
+    $event: ID
+    $startTime: String
+    $endTime: String
     ) {
     modifyVisit(
       visit: $visit
@@ -205,6 +208,9 @@ export const MODIFY_VISIT = gql`
       teaching: $teaching
       customFormData: $customFormData
       language: $language
+      event: $event
+      startTime: $startTime
+      endTime: $endTime
     ) { ...VisitFields }
   }
 `

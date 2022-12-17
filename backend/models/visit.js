@@ -60,7 +60,7 @@ const visitSchema = mongoose.Schema({
   teaching: {
     type: { type: String },
     location: String, // this will be remotePlatform
-    // not required for backwards compatibility
+    // no required field for backwards compatibility
   },
   dataUseAgreement: {
     type: Boolean,

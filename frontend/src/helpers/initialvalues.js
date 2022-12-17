@@ -95,6 +95,7 @@ export const visitInitialValues = (event, visit = {}) => {
     endTime: add(new Date(event.start), { minutes: event.duration }),
     customFormData,
     limits: event.limits,
+    visitType: visit?.teaching?.type
   }
 }
 

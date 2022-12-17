@@ -1,4 +1,4 @@
-import { differenceInDays, differenceInHours, format } from 'date-fns'
+import { differenceInDays, differenceInHours, format, set } from 'date-fns'
 import { BOOKING_FAILS_DAYS_REMAINING, BOOKING_FAILS_HOURS_REMAINING, CLASSES, PLATFORMS } from '../config'
 
 export const parseEvent = (event) => event
@@ -128,6 +128,13 @@ export const parseVisitSubmission = values => {
   const type = values.visitType
   const location = otherRemote?.length ? otherRemote : values?.remotePlatform
   const customFormData = JSON.stringify(values.customFormData?.map((c, i) => ({ ...c, value: fieldValues[i] })))
+  const { event, startTime, endTime, date } = values.payload
+  const sms = { secods: 0, milliseconds: 0 }
+  const s = new Date(startTime)
+  const e = new Date(endTime)
+  const start = set(new Date(date), { hours: s.getHours(), minutes: s.getMinutes() })
+  const end = set(new Date(date), { hours: e.getHours(), minutes: e.getMinutes() })
+
   return {
     ...values,
     teaching: {
@@ -135,7 +142,10 @@ export const parseVisitSubmission = values => {
       location
     },
     customFormData,
-    participants: Number(values.participants)
+    participants: Number(values.participants),
+    event,
+    startTime: set(start, sms).toISOString(),
+    endTime: set(end, sms).toISOString()
   }
 }
 

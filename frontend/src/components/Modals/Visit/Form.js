@@ -77,17 +77,17 @@ const Form = ({ formId, show, onSubmit, event, visit }) => {
       {errors.visitType && <Error>{t(errors.visitType.message)}</Error>}
 
       {watch('visitType') === 'remote' &&
-      <RadioGroup name='remotePlatform' title={required(t('choose-remote-platform'))} control={control} render={<>
-        {event?.remotePlatforms
-          .map(j => PLATFORMS.map((_, i) => i + 1).includes(j)
-            ? [PLATFORMS[j - 1], j] : [event.otherRemotePlatformOption, j])
-          .map(r => <Radio key={r[1]} value={`${r[1]}`}>{r[0]}</Radio>)
-        }
-        <Radio value={`${event?.remotePlatforms.length + 2}`}>{t('other-what')}</Radio>
-        {parseInt(watch('remotePlatform')) === event.remotePlatforms.length + 2 &&
-          <Input id='otherRemotePlatformOption' {...register('otherRemotePlatformOption')}/>
-        }</>
-      }/>}
+        <RadioGroup name='remotePlatform' title={required(t('choose-remote-platform'))} control={control} render={<>
+          {event?.remotePlatforms
+            .map(j => PLATFORMS.map((_, i) => i + 1).includes(j)
+              ? [PLATFORMS[j - 1], j] : [event.otherRemotePlatformOption, j])
+            .map(r => <Radio key={r[1]} value={`${r[1]}`}>{r[0]}</Radio>)
+          }
+          <Radio value={`${event?.remotePlatforms.length + 2}`}>{t('other-what')}</Radio>
+          {parseInt(watch('remotePlatform')) === event.remotePlatforms.length + 2 &&
+            <Input id='otherRemotePlatformOption' {...register('otherRemotePlatformOption')}/>
+          }</>
+        }/>}
       {errors.remotePlatform && <Error>{t(errors.remotePlatform.message)}</Error>}
 
       <Input id='clientName' title={required(t('client-name'))} {...register('clientName')} />

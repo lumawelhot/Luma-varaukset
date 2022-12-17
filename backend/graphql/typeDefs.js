@@ -257,6 +257,9 @@ const typeDefs = gql`
       dataUseAgreement: Boolean
       customFormData: String
       language: String
+      event: ID
+      startTime: String
+      endTime: String
     ): Visit
     disableEvent(
       event: ID!

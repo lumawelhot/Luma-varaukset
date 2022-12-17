@@ -239,10 +239,54 @@ const resolvers = {
       await session.commit()
       return visit
     },
-    modifyVisit: authorized((root, args) => Visit.update(args.visit, {
-      ...args,
-      customFormData: args.customFormData ? JSON.parse(args.customFormData) : null
-    }, expandVisits)),
+    modifyVisit: authorized(async (root, args) => {
+      const [session, eventInst, groupInst, visitInst] = Transaction.construct(Event, Group, Visit)
+
+      // get visit to be modified
+      const visit = await visitInst.findById(args.visit)
+      if (!visit || visit.status === false) throw new UserInputError('Visit not found')
+
+      // get original event assigned to the visit
+      const event = await eventInst.findById(visit.event, expandEvents)
+
+      // group delta update
+      await groupInst.DeltaUpdate(event.group, { visitCount: -1, returnOriginal: true })
+
+      // visit times should be released
+      const visitTimes = event.visits.filter(v => v.id !== visit.id)
+      await eventInst.update(event.id, {
+        visits: event.visits.filter(v => v.id.toString() !== visit.id),
+        availableTimes: calcFromVisitTimes(visitTimes, {
+          startTime: new Date(event.start),
+          endTime: new Date(event.end)
+        }, event.waitingTime, event.duration)
+      })
+
+      // group delta update
+      await groupInst.DeltaUpdate(event.group, { visitCount: 1, returnOriginal: true })
+
+      // find new event where the visit should be added
+      const _event = await eventInst.findById(args.event)
+      await eventInst.update(_event.id, {
+        availableTimes: calcAvailableTimes(_event.availableTimes, {
+          startTime: args.startTime,
+          endTime: args.endTime
+        }, _event.waitingTime, _event.duration),
+        visits: _event.visits.concat(visit.id),
+        reserved: null
+      })
+
+      // update visit instance
+      const danglingVisit = await visitInst.update(visit.id, {
+        ...args,
+        customFormData: args.customFormData ? JSON.parse(args.customFormData) : null
+      }, expandVisits)
+
+      // commit instances
+      await session.commit()
+
+      return danglingVisit
+    }),
     cancelVisit: async (root, args) => {
       const [session, eventInst, groupInst, visitInst] = Transaction.construct(Event, Group, Visit)
 
