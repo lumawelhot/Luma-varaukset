@@ -67,8 +67,8 @@ const Submission = () => {
 
   const handleSetSelected = v => {
     setSelectedEvent(v)
-    setStartTime(v.slot.start)
-    setEndTime(v.slot.end)
+    setStartTime(v?.slot?.start)
+    setEndTime(v?.slot?.end)
   }
 
   const event = findEvent(visit?.event?.id)
