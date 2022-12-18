@@ -245,16 +245,18 @@ const resolvers = {
       const visit = await visitInst.findById(args.visit)
       if (!visit || visit.status === false) throw new UserInputError('Visit not found')
 
+      let danglingEvent = null
+      let _danglingEvent = null
       if (args.event) {
         // get original event assigned to the visit
         const event = await eventInst.findById(visit.event, expandEvents)
 
         // group delta update
-        await groupInst.DeltaUpdate(event.group, { visitCount: -1, returnOriginal: true })
+        await groupInst.DeltaUpdate(event.group, { visitCount: -1, returnOriginal: true, forceUpdate: true })
 
         // visit times should be released
         const visitTimes = event.visits.filter(v => v.id !== visit.id)
-        await eventInst.update(event.id, {
+        danglingEvent = await eventInst.update(event.id, {
           visits: event.visits.filter(v => v.id.toString() !== visit.id),
           availableTimes: calcFromVisitTimes(visitTimes, {
             startTime: new Date(event.start),
@@ -267,9 +269,9 @@ const resolvers = {
         const _event = await eventInst.findById(args.event)
 
         // group delta update
-        await groupInst.DeltaUpdate(_event.group, { visitCount: 1, returnOriginal: true })
+        await groupInst.DeltaUpdate(_event.group, { visitCount: 1, returnOriginal: true, forceUpdate: true })
 
-        await eventInst.update(_event.id, {
+        _danglingEvent = await eventInst.update(_event.id, {
           availableTimes: calcAvailableTimes(_event.availableTimes, {
             startTime: args.startTime,
             endTime: args.endTime
@@ -288,6 +290,8 @@ const resolvers = {
       // commit instances
       await session.commit()
 
+      if (danglingEvent) pubsub.publish('EVENT_MODIFIED', { eventModified: danglingEvent })
+      if (_danglingEvent) pubsub.publish('EVENT_MODIFIED', { eventModified: _danglingEvent })
       return danglingVisit
     }),
     cancelVisit: async (root, args) => {
