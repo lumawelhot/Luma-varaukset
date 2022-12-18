@@ -6,6 +6,7 @@ import { useEvents, useEvict, useUsers } from '../hooks/cache'
 import { Container } from 'react-bootstrap'
 import Event from './Modals/Event'
 import Banner from './Embeds/Banner'
+import { BsEye, BsEyeSlash } from 'react-icons/bs'
 
 const Menu = () => {
   const { current: user } = useUsers()
@@ -24,6 +25,19 @@ const Menu = () => {
 
   if (!user) return <div style={{ marginBottom: 40 }}>
     <Banner show={showBanner} />
+    <MenuButton
+      className='mobile-eye'
+      style={{ borderColor: 'white', float: 'right' }}
+      onClick={() => setFilterOptions({
+        ...filterOptions,
+        showUnavailable: !filterOptions.showUnavailable
+      })}
+    >
+      {filterOptions.showUnavailable
+        ? <BsEye style={{ fontSize: 18 }} />
+        : <BsEyeSlash style={{ fontSize: 18 }} />
+      }
+    </MenuButton>
     <MenuButton
       onClick={() => {
         localStorage.setItem('hide-banner', String(!showBanner))

@@ -69,8 +69,8 @@ const Form = ({ formId, show, onSubmit, event, visit }) => {
           const endTime = add(set(new Date(watch('startTime')), { seconds: 0, milliseconds: 0 }), { minutes: duration })
           setValue('endTime', endTime)
         }} render={<>
-          {event.inPersonVisit && <Radio value='remote'>{t('remote')}</Radio>}
-          {event.remoteVisit && <Radio value='inperson'>{t('inperson')}</Radio>}
+          {event.remoteVisit && <Radio value='remote'>{t('remote')}</Radio>}
+          {event.inPerosnVisit && <Radio value='inperson'>{t('inperson')}</Radio>}
           {event.schoolVisit && <Radio value='school'>{t('school')}</Radio>}
         </>} />
       ) : null}
@@ -86,9 +86,10 @@ const Form = ({ formId, show, onSubmit, event, visit }) => {
           <Radio value={`${event?.remotePlatforms.length + 2}`}>{t('other-what')}</Radio>
           {parseInt(watch('remotePlatform')) === event.remotePlatforms.length + 2 &&
             <Input id='otherRemotePlatformOption' {...register('otherRemotePlatformOption')}/>
-          }</>
+          }
+          {errors.remotePlatform && <Error>{t('fill-field')}</Error>}
+        </>
         }/>}
-      {errors.remotePlatform && <Error>{t(errors.remotePlatform.message)}</Error>}
 
       {watch('visitType') === 'school' && <>
         <Input id='schoolAddress' title={required(t('school-address'))} {...register('schoolAddress')} />

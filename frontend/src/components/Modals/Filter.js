@@ -45,10 +45,9 @@ const Filter = ({ close }) => {
           setFilterOptions({ ...filterOptions, visitTypes: v })
         }}>
           <Title>{t('filter-by-visit-type')}</Title>
-          <Stack style={{ marginLeft: 3 }} direction='horizontal'>
-            <Checkbox value='remote' style={{ marginRight: 15 }}>{t('remote')}</Checkbox>
-            <Checkbox value='inperson'>{t('inperson')}</Checkbox>
-          </Stack>
+          <Checkbox value='remote' style={{ marginRight: 15 }}>{t('remote')}</Checkbox>
+          <Checkbox value='inperson' style={{ marginRight: 15 }}>{t('inperson')}</Checkbox>
+          <Checkbox value='school'>{t('school')}</Checkbox>
         </CheckboxGroup>
         <Title>{t('another-sort-options')}</Title>
         <Stack style={{ marginLeft: 3 }} direction='horizontal'>

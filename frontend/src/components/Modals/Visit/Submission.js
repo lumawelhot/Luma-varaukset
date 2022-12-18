@@ -90,6 +90,7 @@ const Submission = () => {
         {page === 'calendar' && <>
           <Calendar
             event={selectedEvent}
+            visit={visit}
             setEvent={handleSetSelected}
             slot={{
               start: startTime,

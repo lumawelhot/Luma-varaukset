@@ -230,3 +230,11 @@ body {
   max-height: 100px;
   overflow: scroll;
 }
+
+
+@media (min-width: 420px) {
+  .mobile-eye {
+    visibility: hidden !important;
+    display: none !important;
+  }
+}

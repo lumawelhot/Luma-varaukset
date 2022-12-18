@@ -14,6 +14,7 @@ const Info = () => {
   const { limits } = event
   const remoteMax = limits?.remote?.maxParticipants
   const inPersonMax = limits?.inPerson?.maxParticipants
+  const schoolMax = limits?.school?.maxParticipants
 
   return (
     <>
@@ -40,10 +41,11 @@ const Info = () => {
       </P>
       <P>
         <Title>{t('event-on-offer')}: </Title>
-        {event.inPersonVisit ? t('in-inperson') : <></>}
-        {event.schoolVisit ? t('in-school') : <></>}
-        {event.inPersonVisit && event.remoteVisit && t('and-remote')}
-        {event.remoteVisit && !event.inPersonVisit ? t('in-remote') : <></>}
+        <Ul>
+          {event.inPersonVisit && <Li>{t('in-inperson')}</Li>}
+          {event.remoteVisit && <Li>{t('in-remote')}</Li>}
+          {event.schoolVisit && <Li>{t('in-school')}</Li>}
+        </Ul>
       </P>
       <P>
         <Title>{t('event-date')}: </Title>
@@ -66,6 +68,7 @@ const Info = () => {
         <Ul>
           {remoteMax && <Li>{`${t('remote')}: ${remoteMax}`}</Li>}
           {inPersonMax && <Li>{`${t('inperson')}: ${inPersonMax}`}</Li>}
+          {schoolMax && <Li>{`${t('school')}: ${schoolMax}`}</Li>}
         </Ul>
       </P>}
     </>

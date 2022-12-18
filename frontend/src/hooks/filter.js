@@ -32,7 +32,7 @@ export const useEventFilter = ({ all, parsed }) => {
       ?.filter(p => {
         const inPerson = filterOptions.visitTypes?.includes('inperson') ? true : false
         const remote = filterOptions.visitTypes?.includes('remote') ? true : false
-        const school = filterOptions.visitTypes?.includes('schoool') ? true : false
+        const school = filterOptions.visitTypes?.includes('school') ? true : false
         return all[p.id]?.inPersonVisit === inPerson
           || all[p.id]?.remoteVisit === remote
           || all[p.id]?.schoolVisit === school

@@ -22,14 +22,14 @@ const DateString = styled.span`
   }
 `
 
-const Calendar = ({ event, setEvent, slot }) => {
+const Calendar = ({ event, visit, setEvent, slot }) => {
   const { current: user } = useUsers()
   const { parsed, findEvent } = useEvents()
   const [calendarOptions, setCalendarOptions] = useState({
     view: 'timeGridWeek',
     date: addDays(set(event
-      ? new Date(event.start) : new Date()
-    , { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }), event ? 0 : FIRST_EVENT_AFTER_DAYS),
+      ? new Date(event.start) : visit ? new Date(visit.startTime) : new Date()
+    , { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }), (event || visit) ? 0 : FIRST_EVENT_AFTER_DAYS),
   })
   const year = calendarOptions?.date?.getFullYear()
   const calendarRef = useRef()
@@ -71,11 +71,11 @@ const Calendar = ({ event, setEvent, slot }) => {
         initialView={calendarOptions.view}
         initialDate={calendarOptions.date}
         events={calendarEvents(parsed, user)
-          ?.filter(e => !e.unAvailable)
+          ?.filter(e => (!e.unAvailable || e?.id === visit?.event?.id))
           ?.map(e => (
             e.id === event?.id &&
             new Date(e.start).getTime() === new Date(slot?.start).getTime()
-          ) ? ({ ...e, color: 'grey' }) : e)
+          ) ? ({ ...e, color: '#568082' }) : e)
           ?.map(e => ({ ...e, editable: false }))}
         eventClick={handleClick}
         datesSet={handleView}
@@ -112,6 +112,7 @@ export default Calendar
 
 Calendar.propTypes = {
   event: PropTypes.object,
+  visit: PropTypes.object,
   slot: PropTypes.object,
   setEvent: PropTypes.func.isRequired,
 }

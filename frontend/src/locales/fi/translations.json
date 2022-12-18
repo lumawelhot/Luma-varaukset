@@ -53,7 +53,7 @@
   "geography": "Maantieto",
   "chemistry": "Kemia",
 
-  "in-inperson": "Lähiopetuksena",
+  "in-inperson": "Lähiopetuksena Kumpulassa",
   "in-remote": "Etäopetuksena",
   "and-remote": " ja etäopetuksena",
   "description": "Kuvaus",
@@ -345,7 +345,7 @@
   "notify-visit-cancel-success": "Varauksen peruuminen onnistui",
   "notify-visit-cancel-failed": "Varauksen peruuminen epäonnistui",
   
-  "in-school": "Koululla",
+  "in-school": "Lähiopetuksena koululla",
   "school-event": "Lähivierailu koululla",
   "visit-calendar": "Kalenteri",
   "slot": "Aikaikkuna",
