@@ -27,7 +27,9 @@ const Calendar = ({ event, setEvent, slot }) => {
   const { parsed, findEvent } = useEvents()
   const [calendarOptions, setCalendarOptions] = useState({
     view: 'timeGridWeek',
-    date: addDays(set(new Date(), { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }), FIRST_EVENT_AFTER_DAYS),
+    date: addDays(set(event
+      ? new Date(event.start) : new Date()
+    , { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }), event ? 0 : FIRST_EVENT_AFTER_DAYS),
   })
   const year = calendarOptions?.date?.getFullYear()
   const calendarRef = useRef()
