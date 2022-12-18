@@ -87,14 +87,20 @@ const Submission = () => {
         {page === 'details' && <Details visit={visit} event={event} />}
         {page === 'modify' && <Form formId={formId} show={true} onSubmit={modifyVisit} event={event} visit={visit} />}
         {page === 'cancellation' && <Cancellation formId={formId} show={true} onSubmit={cancelVisit} />}
-        {page === 'calendar' && <Calendar
-          event={selectedEvent}
-          setEvent={handleSetSelected}
-          slot={{
-            start: startTime,
-            end: endTime
-          }}
-        />}
+        {page === 'calendar' && <>
+          <Calendar
+            event={selectedEvent}
+            setEvent={handleSetSelected}
+            slot={{
+              start: startTime,
+              end: endTime
+            }}
+          />
+          <Button
+            style={{ marginTop: -10, marginLeft: 0 }}
+            onClick={() => setPage('modify')}>{t('confirm-choice')}
+          </Button>
+        </>}
         {page === 'modify' && selectedEvent && <>
           <Title>{t('visit')}: <span style={{ color: 'red' }}>
             {selectedEvent.title}, {format(new Date(selectedEvent.start), 'd.M.yyyy')}</span>
@@ -135,7 +141,7 @@ const Submission = () => {
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>
         {visit.status && <>
           {page !== 'details' && page !== 'calendar' && <Button onClick={() => setPage('details')}>{t('visit-details')}</Button>}
-          {user && page !== 'modify' && page !== 'cancellation'
+          {user && page !== 'modify' && page !== 'cancellation' && page !== 'calendar'
             && <Button onClick={() => setPage('modify')}>{t('modify')}</Button>}
           {page !== 'modify' && page !== 'cancellation' && page !== 'calendar' && <Button onClick={() => {
             if (cancelForm === null) cancelVisit()

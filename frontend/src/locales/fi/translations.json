@@ -352,5 +352,7 @@
   "visit": "Vierailu",
   "modify-date": "Muokkaa päivää",
   "school-address": "Koulun osoite",
-  "schoolAddress": "Koulun osoite"
+  "schoolAddress": "Koulun osoite",
+  "group-is-disabled": "Tämä ryhmä on täynnä",
+  "confirm-choice": "Vahvista valinta"
 }
