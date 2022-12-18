@@ -19,7 +19,7 @@ const DateString = styled.span`
   }
 `
 
-const Calendar = ({ event, setEvent }) => {
+const Calendar = ({ event, setEvent, slot }) => {
   const { current: user } = useUsers()
   const { parsed, findEvent } = useEvents()
   const { calendarOptions, setCalendarOptions } = useMisc()
@@ -34,8 +34,9 @@ const Calendar = ({ event, setEvent }) => {
 
   const handleClick = e => {
     const def = e.event._def
+    const start = def.extendedProps.eventStart
     const id = def.publicId
-    if (event?.id === id) setEvent()
+    if (event?.id === id && new Date(start).getTime() === new Date(slot?.start).getTime()) setEvent()
     else setEvent({
       ...findEvent(id),
       slot: {
@@ -57,7 +58,10 @@ const Calendar = ({ event, setEvent }) => {
         initialDate={calendarOptions.date}
         events={calendarEvents(parsed, user)
           ?.filter(e => !e.unAvailable)
-          ?.map(e => e.id === event?.id ? ({ ...e, color: 'grey' }) : e)
+          ?.map(e => (
+            e.id === event?.id &&
+            new Date(e.start).getTime() === new Date(slot?.start).getTime()
+          ) ? ({ ...e, color: 'grey' }) : e)
           ?.map(e => ({ ...e, editable: false }))}
         eventClick={handleClick}
         datesSet={handleView}
@@ -84,5 +88,6 @@ export default Calendar
 
 Calendar.propTypes = {
   event: PropTypes.object,
+  slot: PropTypes.object,
   setEvent: PropTypes.func.isRequired,
 }

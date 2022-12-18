@@ -87,7 +87,14 @@ const Submission = () => {
         {page === 'details' && <Details visit={visit} event={event} />}
         {page === 'modify' && <Form formId={formId} show={true} onSubmit={modifyVisit} event={event} visit={visit} />}
         {page === 'cancellation' && <Cancellation formId={formId} show={true} onSubmit={cancelVisit} />}
-        {page === 'calendar' && <Calendar event={selectedEvent} setEvent={handleSetSelected} />}
+        {page === 'calendar' && <Calendar
+          event={selectedEvent}
+          setEvent={handleSetSelected}
+          slot={{
+            start: startTime,
+            end: endTime
+          }}
+        />}
         {page === 'modify' && selectedEvent && <>
           <Title>{t('visit')}: <span style={{ color: 'red' }}>
             {selectedEvent.title}, {format(new Date(selectedEvent.start), 'd.M.yyyy')}</span>
