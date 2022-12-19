@@ -191,9 +191,9 @@ describe('As a customer I', () => {
     const [startTime, endTime] = timeSlotByDay(15, { start: 11, end: 12 })
     const { errors } = await mutate({
       mutation: CREATE_VISIT,
-      variables: { ...visitTwoWeeksAhead, startTime, endTime, remoteVisit: false, inPersonVisit: false }
+      variables: { ...visitTwoWeeksAhead, startTime, endTime, teaching: undefined }
     })
-    expect(errors[0].message).to.equal('Provide remote or inperson visit')
+    expect(errors[0].message).to.equal('Provide a teaching type')
   })
 
   // ------------ VISIT GET

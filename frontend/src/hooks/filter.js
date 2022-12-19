@@ -8,7 +8,7 @@ export const useEventFilter = ({ all, parsed }) => {
     tags: [],
     grades: [],
     classes: [],
-    visitTypes: ['inperson', 'remote'],
+    visitTypes: ['inperson', 'remote', 'school'],
     showUnavailable: false
   })
   const filtered = useMemo(() => {
@@ -32,7 +32,10 @@ export const useEventFilter = ({ all, parsed }) => {
       ?.filter(p => {
         const inPerson = filterOptions.visitTypes?.includes('inperson') ? true : false
         const remote = filterOptions.visitTypes?.includes('remote') ? true : false
-        return all[p.id]?.inPersonVisit === inPerson || all[p.id]?.remoteVisit === remote
+        const school = filterOptions.visitTypes?.includes('school') ? true : false
+        return all[p.id]?.inPersonVisit === inPerson
+          || all[p.id]?.remoteVisit === remote
+          || all[p.id]?.schoolVisit === school
       })
   }, [all, parsed, filterOptions])
 

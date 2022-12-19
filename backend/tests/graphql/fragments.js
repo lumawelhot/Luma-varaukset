@@ -77,10 +77,11 @@ const VISIT_FIELDS = gql`
     startTime
     endTime
     participants
-    inPersonVisit
-    remoteVisit
+    teaching {
+      type
+      location
+    }
     status
-    remotePlatform
     customFormData
     language
     created

@@ -1,5 +1,5 @@
-import { differenceInDays, differenceInHours, format } from 'date-fns'
-import { BOOKING_FAILS_DAYS_REMAINING, BOOKING_FAILS_HOURS_REMAINING, CLASSES, PLATFORMS } from '../config'
+import { differenceInDays, differenceInHours, format, set } from 'date-fns'
+import { BOOKING_FAILS_DAYS_REMAINING, BOOKING_FAILS_HOURS_REMAINING, CLASSES, PLATFORMS, VISIT_TYPE_PAYLOAD } from '../config'
 
 export const parseEvent = (event) => event
   ?.availableTimes.map(timeSlot => ({
@@ -70,6 +70,7 @@ export const parseCSV = (visit, event) => {
       ? 'Peruttu' : visit?.status === true
         ? 'Varattu' : event?.group?.disabled
           ? 'Kuului ryhmään, mutta ryhmä täynnä' : 'Varausaika päättyi'
+    const type = visit?.teaching?.type
 
     return {
       'Event id': visit?.event?.id || event?.id,
@@ -78,7 +79,9 @@ export const parseCSV = (visit, event) => {
       'Event date': visit?.startTime ? format(new Date(visit?.startTime), 'd.M.yyyy') : '',
       'Event start': visit?.startTime ? format(new Date(visit?.startTime), 'HH:mm') : '',
       'Event end': visit?.endTime ? format(new Date(visit?.endTime), 'HH:mm') : '',
-      'Event type': visit?.remoteVisit ? 'etäopetus' : 'lähiopetus',
+      'Event type': type === 'remote' ? 'etäopetus'
+        : type === 'inperson' ? 'lähiopetus Kumpulassa'
+          : 'lähiopetus koululla',
       'Event language': visit?.language === 'en' ? 'englanti' : (visit?.language === 'sv' ? 'ruotsi' : 'suomi'),
       'Event grade': visit?.grade,
       'Event group': event?.group?.name,
@@ -123,17 +126,39 @@ export const parseVisitSubmission = values => {
     .map(e => [Number(e[0].split('-')[1]), e[1]]))
   const otherRemote = values.otherRemotePlatformOption
   const type = values.visitType
+  const location = otherRemote?.length ? otherRemote : values?.remotePlatform
   const customFormData = JSON.stringify(values.customFormData?.map((c, i) => ({ ...c, value: fieldValues[i] })))
-  const inPersonVisit = type === 'inperson' ? true : false
-  const remoteVisit = type === 'remote' ? true : false
-  const remotePlatform = otherRemote?.length ? otherRemote : values.remotePlatform
+
+  let payloadFields = null
+  if (values.payload) {
+    const { event, startTime, endTime, date } = values.payload
+    const sms = { secods: 0, milliseconds: 0 }
+    const s = new Date(startTime)
+    const e = new Date(endTime)
+    const start = set(new Date(date), { hours: s.getHours(), minutes: s.getMinutes() })
+    const end = set(new Date(date), { hours: e.getHours(), minutes: e.getMinutes() })
+    payloadFields = {
+      event,
+      startTime: set(start, sms).toISOString(),
+      endTime: set(end, sms).toISOString(),
+    }
+  }
+
+  // For mapping visit type specified fields
+  const typeEntries = VISIT_TYPE_PAYLOAD[type]
+    ?.map(t => [t, values[t]])
+
   return {
     ...values,
-    inPersonVisit,
-    remoteVisit,
+    teaching: {
+      type,
+      location,
+      payload: typeEntries ? JSON.stringify(Object.fromEntries(typeEntries)) : undefined
+    },
     customFormData,
-    remotePlatform,
-    participants: Number(values.participants)
+    participants: Number(values.participants),
+    event: undefined, // important, otherwise ...values delivers it
+    ...payloadFields,
   }
 }
 
@@ -149,7 +174,9 @@ export const parseEventSubmission = values => {
     dates,
     remoteMaxParticipants,
     inPersonMaxParticipants,
-    closedDays
+    schoolMaxParticipants,
+    closedDays,
+    teaching
   } = values
   return {
     ...values,
@@ -168,8 +195,14 @@ export const parseEventSubmission = values => {
       },
       inPerson: {
         maxParticipants: inPersonMaxParticipants
+      },
+      school: {
+        maxParticipants: schoolMaxParticipants
       }
-    })
+    }),
+    inPersonVisit: teaching.includes('inperson'),
+    remoteVisit: teaching.includes('remote'),
+    schoolVisit: teaching.includes('school')
   }
 }
 

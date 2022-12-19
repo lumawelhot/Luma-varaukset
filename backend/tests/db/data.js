@@ -12,6 +12,7 @@ const commonDetails = {
   publishDate: null,
   remotePlatforms: [],
   remoteVisit: false,
+  schoolVisit: false,
   resourceids: [4],
   title: 'This is a new event',
   waitingTime: 15,
@@ -65,10 +66,12 @@ const visitClientDetails = {
   dataUseAgreement: false,
   extras: [],
   grade: '1st grade',
-  inPersonVisit: true,
   language: 'fi',
   participants: 13,
-  remoteVisit: false,
+  teaching: {
+    type: 'inperson',
+    location: undefined
+  },
   schoolLocation: 'Alppila',
   schoolName: 'Alppilan koulu',
   token: '43bbd438-7362-4981-a05b-708c1107e4c1',

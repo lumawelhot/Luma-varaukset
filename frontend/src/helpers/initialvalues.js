@@ -38,6 +38,7 @@ export const eventInitialValues = (event = {}) => {
     end,
     inPersonVisit,
     remoteVisit,
+    schoolVisit,
     remotePlatforms,
     extras,
     publishDate,
@@ -45,8 +46,14 @@ export const eventInitialValues = (event = {}) => {
     group,
     waitingTime,
     limits,
-    closedDays
+    closedDays,
+    originalStart,
+    originalEnd,
   } = event
+  const teaching = []
+  if (inPersonVisit) teaching.push('inperson')
+  if (remoteVisit) teaching.push('remote')
+  if (schoolVisit) teaching.push('school')
 
   return {
     ...event,
@@ -56,10 +63,8 @@ export const eventInitialValues = (event = {}) => {
     languages: languages || ['fi'],
     grades: grades?.map(g => String(g)) || [],
     resourceids: resourceids?.map(r => String(r)) || [],
-    start: start ? new Date(start) : todayByHours(8),
-    end: end ? new Date(end) : todayByHours(16),
-    inPersonVisit: inPersonVisit !== undefined ? inPersonVisit : true,
-    remoteVisit: remoteVisit !== undefined ? remoteVisit : true,
+    start: originalStart ? new Date(originalStart) : start ? new Date(start) : todayByHours(8),
+    end: originalEnd ? new Date(originalEnd) : end ? new Date(end) : todayByHours(16),
     remotePlatforms: remotePlatforms?.map(r => String(r)) || ['1', '2', '3'],
     extras: extras ? parseExtras(extras) : [],
     publishDate: publishDate ? new Date(publishDate) : null,
@@ -71,27 +76,34 @@ export const eventInitialValues = (event = {}) => {
     } : null,
     group: group ? { value: group.id, label: group.name } : '',
     dates: [],
+    teaching,
     remoteMaxParticipants: limits?.remote?.maxParticipants,
-    inPersonMaxParticipants: limits?.inPerson?.maxParticipants
+    inPersonMaxParticipants: limits?.inPerson?.maxParticipants,
+    schoolMaxParticipants: limits?.school?.maxParticipants,
   }
 }
 
 export const visitInitialValues = (event, visit = {}) => {
-  const { inPersonVisit, remoteVisit } = event
   const { language } = visit
   const data = visit?.customFormData?.map(f => [f.name, f.value])
   const values = data ? Object.fromEntries(data) : {}
   const customFormData = event?.customForm?.fields?.map(({ type, name }) =>
     ({ name, value: values[name] || (type === 'checkbox' ? [] : '') }))
+  const payload = visit?.teaching?.payload
+  const type = visit?.teaching?.type
+  const remote = event?.remoteVisit
+  const school = event?.schoolVisit
+
   return {
     ...visit,
     language: language || event.languages[0],
     extras: visit.extras?.map(e => e.id) || [],
     startTime: new Date(event.start),
     endTime: add(new Date(event.start), { minutes: event.duration }),
-    visitType: inPersonVisit ? 'inperson' : remoteVisit ? 'remote' : undefined,
     customFormData,
     limits: event.limits,
+    visitType: type ? type : remote ? 'remote' : school ? 'school' : 'inperson',
+    ...(payload ? payload : {})
   }
 }
 

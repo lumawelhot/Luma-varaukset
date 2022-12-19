@@ -1,6 +1,6 @@
 const { AuthenticationError, UserInputError } = require('apollo-server-express')
 const { checkTimeslot, validTimeSlot, calcTimeSlot } = require('./calculator')
-const { differenceInDays, differenceInHours } = require('date-fns')
+const { differenceInDays } = require('date-fns')
 const bcrypt = require('bcrypt')
 
 const authorized = fn => (root, args, context, ...rest) => {
@@ -49,23 +49,24 @@ const eventModifiable = (event) => {
 const createVisitValidate = (args, event, currentUser) => {
   if (event.reserved && event.reserved !== args.token) throw new UserInputError('Invalid session')
   if (event.disabled) throw new UserInputError('This event is disabled')
-  if (!args.remoteVisit && !args.inPersonVisit) {
-    throw new UserInputError('Provide remote or inperson visit')
-  }
+  const type = args.teaching?.type
+  if (!type) throw new UserInputError('Provide a teaching type')
   const limits = typeof event?.limits === 'string' ? JSON.parse(event.limits) : event?.limits
   const maxRemoteParticipants = limits?.remote?.maxParticipants
   const maxInPersonParticipants = limits?.inPerson?.maxParticipants
-  if (args.remoteVisit && maxRemoteParticipants && args.participants > maxRemoteParticipants) {
+  const maxSchoolParticipants = limits?.school?.maxParticipants
+  if (type === 'remote' && maxRemoteParticipants && args.participants > maxRemoteParticipants) {
     throw new UserInputError('Max number of participants exceeded')
   }
-  if (args.inPersonVisit && maxInPersonParticipants && args.participants > maxInPersonParticipants) {
+  if (type === 'inperson' && maxInPersonParticipants && args.participants > maxInPersonParticipants) {
+    throw new UserInputError('Max number of participants exceeded')
+  }
+  if (type === 'school' && maxSchoolParticipants && args.participants > maxSchoolParticipants) {
     throw new UserInputError('Max number of participants exceeded')
   }
   const days = event.closedDays || 14
   const afterDays = differenceInDays(new Date(event.start), new Date()) >= days
-  const afterHours = differenceInHours(new Date(event.start), new Date()) >= 1
-  const eventCanBeBooked = !currentUser ? afterDays : afterHours
-  if (!eventCanBeBooked) throw new UserInputError('This event cannot be booked')
+  if (!currentUser && !afterDays) throw new UserInputError('This event cannot be booked')
   if (!validTimeSlot(event.availableTimes, args.startTime, args.endTime)) {
     throw new UserInputError('Given timeslot is invalid')
   }

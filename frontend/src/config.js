@@ -32,6 +32,11 @@ export const GRADES = [
   { value: 4, label: 'grade4' },
   { value: 5, label: 'grade5' }
 ]
+export const TEACHING_TYPES = [
+  'remote',
+  'inperson',
+  'school'
+]
 export const PLATFORMS = [
   'Zoom',
   'Google Meet',
@@ -62,6 +67,9 @@ export const CALENDAR_SETTINGS = {
       titleFormat: 'd. MMMM',
     }
   }
+}
+export const VISIT_TYPE_PAYLOAD = {
+  school: ['schoolAddress']
 }
 // This list should contain atleas one element
 export const DEFAULT_FIELD_VALUES = ['option-1', 'option-2']

@@ -34,7 +34,8 @@
   "filter-by-grades": "Suodata luokka-asteen mukaan",
   "filter-by-visit-type": "Suodata vierailutyypin mukaan",
   "remote": "Etäopetus",
-  "inperson": "Lähiopetus",
+  "inperson": "Lähiopetus Kumpulassa",
+  "school": "Lähiopetus koululla",
 
   "grade1": "Varhaiskasvatus",
   "grade2": "1. – 2. luokka",
@@ -52,9 +53,9 @@
   "geography": "Maantieto",
   "chemistry": "Kemia",
 
-  "in-inperson": "Lähiopetuksena",
+  "in-inperson": "Lähiopetuksena Kumpulassa",
   "in-remote": "Etäopetuksena",
-  "and-remote": "ja etäopetuksena",
+  "and-remote": " ja etäopetuksena",
   "description": "Kuvaus",
   "languages": "Opintokäynti tarjotaan kielillä",
   "science-class": "Tiedeluokka",
@@ -139,7 +140,7 @@
   "create": "Luo uusi",
   "modify": "Muokkaa",
   "remote-event": "Etävierailu",
-  "inperson-event": "Lähivierailu",
+  "inperson-event": "Lähivierailu Kumpulassa",
   "choose-visit-type": "Valitse etä- tai lähiopetus",
   "choose-remote-platform": "Valitse haluamasi etäyhteysalusta",
   
@@ -269,7 +270,7 @@
   "password-not-match": "Salasanat eivät täsmää",
 
   "too-small": "Annetun syötteen oltava suurempi kuin 0",
-  "atleast-one-visittype": "Valitse etä- tai lähivierailu",
+  "atleast-one-visittype": "Valitse vähintään yksi vierailutyyppi",
   "atleast-one-language": "Valitse vähintään yksi kieli",
   "atleast-one-grade": "Valitse vähintään yksi luokka-aste",
   "atleast-one-resourceid": "Valitse vähintään yksi tiedeluokka",
@@ -334,12 +335,26 @@
   "create-cancellation-form": "Luo peruutuslomake",
   "remove-cancellation-form": "Poista peruutuslomake",
   "remote-max-participants": "Etä, max osallistujamäärä",
-  "inperson-max-participants": "Lähi, max osallistujamäärä",
+  "inperson-max-participants": "Lähi kampus, max osallistujamäärä",
+  "school-max-participants": "Lähi koulu, max osallistujamäärä",
   "max-participants": "Maksimi osallistujamäärä",
   "closing-time": "Varausaika päättyy",
   "closed-days": "Vuorokausia vierailun alkamiseen oltava vähintään",
   "booking-time-end": "Erääntynyt",
 
   "notify-visit-cancel-success": "Varauksen peruuminen onnistui",
-  "notify-visit-cancel-failed": "Varauksen peruuminen epäonnistui"
+  "notify-visit-cancel-failed": "Varauksen peruuminen epäonnistui",
+  
+  "in-school": "Lähiopetuksena koululla",
+  "school-event": "Lähivierailu koululla",
+  "visit-calendar": "Kalenteri",
+  "slot": "Aikaikkuna",
+  "visit": "Vierailu",
+  "modify-date": "Muokkaa päivää",
+  "school-address": "Koulun osoite",
+  "schoolAddress": "Koulun osoite",
+  "group-is-disabled": "Tämä ryhmä on täynnä",
+  "confirm-choice": "Vahvista valinta",
+  "current-event": "Nykyinen vierailu",
+  "belongs-to-group": "Kuuluu ryhmään"
 }

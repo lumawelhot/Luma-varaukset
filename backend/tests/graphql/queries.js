@@ -99,6 +99,7 @@ const CREATE_EVENTS = gql`
     $remotePlatforms: [Int],
     $otherRemotePlatformOption: String,
     $remoteVisit: Boolean!,
+    $schoolVisit: Boolean!,
     $inPersonVisit: Boolean!,
     $desc: String,
     $tags: [String],
@@ -122,6 +123,7 @@ const CREATE_EVENTS = gql`
       otherRemotePlatformOption: $otherRemotePlatformOption,
       remoteVisit: $remoteVisit,
       inPersonVisit: $inPersonVisit,
+      schoolVisit: $schoolVisit
       tags: $tags
       waitingTime: $waitingTime
       extras: $extras
@@ -147,13 +149,11 @@ const CREATE_VISIT = gql`
     $clientPhone: String!
     $grade: String!
     $participants: Int!
-    $inPersonVisit: Boolean!
-    $remoteVisit: Boolean!
     $startTime: String!
     $endTime: String!
     $dataUseAgreement: Boolean!
     $extras: [ID]
-    $remotePlatform: String
+    $teaching: ITeaching
     $token: String!
     $customFormData: String
     $language: String
@@ -169,19 +169,51 @@ const CREATE_VISIT = gql`
       endTime: $endTime
       grade: $grade
       participants: $participants
-      inPersonVisit: $inPersonVisit
-      remoteVisit: $remoteVisit
       dataUseAgreement: $dataUseAgreement
       extras: $extras
-      remotePlatform: $remotePlatform
+      teaching: $teaching
       token: $token
       customFormData: $customFormData
       language: $language
-    ) {
-      ...VisitFields
-    }
+    ) { ...VisitFields }
   }
 `
+
+const MODIFY_VISIT = gql`
+  ${VISIT_FIELDS}
+  mutation modifyVisit(
+    $visit: ID!
+    $clientName: String
+    $schoolName: String
+    $schoolLocation: String
+    $clientEmail: String
+    $clientPhone: String
+    $grade: String
+    $participants: Int
+    $extras: [ID]
+    $teaching: [Teaching]
+    $customFormData: String
+    $language: String
+    $dataUseAgreement: Boolean
+    ) {
+    modifyVisit(
+      visit: $visit
+      clientName: $clientName
+      schoolName: $schoolName
+      schoolLocation: $schoolLocation
+      clientEmail: $clientEmail
+      clientPhone: $clientPhone
+      grade: $grade
+      participants: $participants
+      dataUseAgreement: $dataUseAgreement
+      extras: $extras
+      teaching: $teaching
+      customFormData: $customFormData
+      language: $language
+    ) { ...VisitFields }
+  }
+`
+
 const FIND_VISIT = gql`
   ${VISIT_FIELDS}
   query findVisit($id: ID!) {
@@ -635,5 +667,6 @@ module.exports = {
   ASSIGN_EVENTS_TO_GROUP,
   ASSIGN_PUBLISH_DATE_TO_EVENTS,
   UPDATE_EMAIL,
-  GET_EMAIL_TEMPLATES
+  GET_EMAIL_TEMPLATES,
+  MODIFY_VISIT
 }

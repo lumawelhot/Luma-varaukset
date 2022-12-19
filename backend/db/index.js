@@ -53,7 +53,7 @@ class Group extends Common {
     const group = stub ? await stub.findById(id) : await this.findById(id)
     if (!group) return
     const visitCount = group.visitCount + delta.visitCount
-    if (group.maxCount < visitCount) {
+    if (group.maxCount < visitCount && !delta.forceUpdate) {
       throw new UserInputError('Max number of visits exceeded')
     }
     const disabled = group.disabled || visitCount >= group.maxCount

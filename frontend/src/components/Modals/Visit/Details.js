@@ -8,7 +8,7 @@ import PropTypes from 'prop-types'
 
 const Details = ({ visit, event }) => {
   const { t } = useTranslation()
-  const remotePlatform = Number(visit.remotePlatform) - 1
+  const remotePlatform = Number(visit?.teaching?.location) - 1
 
   return <>
     {visit.cancellation && <>
@@ -46,10 +46,13 @@ const Details = ({ visit, event }) => {
     <P>
       <Title>{t('teaching')}</Title>
       <Ul>
-        {visit.inPersonVisit ? <Li>{` ${t('inperson')}`}</Li> : <></>}
-        {visit.remoteVisit ? <Li>{` ${t('remote')}`}</Li> : <></>}
+        {<Li>{` ${t(visit.teaching.type)}`}</Li>}
       </Ul>
     </P>
+    {visit?.teaching?.payload && Object.entries(visit?.teaching?.payload)?.map((e, i) => <P key={i}>
+      <Title>{t(e[0])}: </Title>
+      <Text>{e[1]}</Text>
+    </P>)}
     <P>
       <Title>{t('event-date')}: </Title>
       <Text>{format(new Date(visit.startTime), 'd.M.yyyy')}</Text>
@@ -91,9 +94,9 @@ const Details = ({ visit, event }) => {
       <Title>{t('participants')}: </Title>
       <Text>{visit.participants}</Text>
     </P>
-    {visit.remoteVisit && <P>
+    {visit?.teaching?.type === 'remote' && <P>
       <Title>{t('selected-remote-platform')}: </Title>
-      <Text>{Number.isNaN(remotePlatform) ? visit.remotePlatform
+      <Text>{Number.isNaN(remotePlatform) ? visit.teaching.location
         : (PLATFORMS[remotePlatform] ? PLATFORMS[remotePlatform] : event.otherRemotePlatformOption)
       }</Text>
     </P>}

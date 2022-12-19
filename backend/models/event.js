@@ -36,6 +36,10 @@ const eventSchema = mongoose.Schema({
     type: Boolean,
     required: true
   },
+  schoolVisit: {
+    type: Boolean
+    // not required for backwards compatibility
+  },
   availableTimes: {
     type: [],
     required: true

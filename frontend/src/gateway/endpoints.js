@@ -21,28 +21,41 @@ export const visitGate = {
     ?.map(v => {
       const data = v?.customFormData
       const cancellation = v?.cancellation
+      const teaching = v?.teaching
       return {
         ...v,
         customFormData: typeof data === 'string' ? JSON.parse(data) : data,
-        cancellation: cancellation ? JSON.parse(cancellation) : cancellation
+        cancellation: cancellation ? JSON.parse(cancellation) : cancellation,
+        teaching: {
+          ...teaching, payload: teaching?.payload ? JSON.parse(teaching?.payload) : undefined
+        }
       }
     }),
   add: async variables => {
     const visit = await mutate(_Q.CREATE_VISIT, { variables, field: 'createVisit' })
-    if (visit) return { ...visit, customFormData: JSON.parse(visit?.customFormData) }
+    const teaching = visit?.teaching
+    if (visit) return { ...visit, customFormData: JSON.parse(visit?.customFormData), teaching: {
+      ...teaching, payload: teaching?.payload ? JSON.parse(teaching?.payload) : undefined
+    } }
   },
   modify: async variables => {
     const visit = await mutate(_Q.MODIFY_VISIT, { variables, field: 'modifyVisit' })
-    if (visit) return { ...visit, customFormData: JSON.parse(visit?.customFormData) }
+    const teaching = visit?.teaching
+    if (visit) return { ...visit, customFormData: JSON.parse(visit?.customFormData), teaching: {
+      ...teaching, payload: teaching?.payload ? JSON.parse(teaching?.payload) : undefined
+    } }
   },
   remove: (id, cancellation) => mutate(_Q.CANCEL_VISIT, { variables: { id, cancellation }, field: 'cancelVisit' }),
   fetch: async id => {
     const visit = await mutate(_Q.FIND_VISIT, { variables: { id }, field: 'findVisit' })
-    const { cancellation } = visit
+    const { cancellation, teaching } = visit
     if (visit) return {
       ...visit,
       customFormData: JSON.parse(visit?.customFormData),
-      cancellation: cancellation ? JSON.parse(cancellation) : cancellation
+      cancellation: cancellation ? JSON.parse(cancellation) : cancellation,
+      teaching: {
+        ...teaching, payload: teaching?.payload ? JSON.parse(teaching?.payload) : undefined
+      }
     }
   }
 }

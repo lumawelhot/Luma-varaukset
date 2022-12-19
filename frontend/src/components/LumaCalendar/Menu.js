@@ -39,6 +39,13 @@ const ViewMedia = styled.span`
   }
 `
 
+const NoEye = styled.span`
+  @media (max-width: 420px) {
+    display: none;
+    visibility: hidden;
+  }
+`
+
 const CalendarMenu = React.forwardRef((_, ref) => {
   const [showFilter, setShowFilter] = useState(false)
   const calApi = ref.current?.getApi()
@@ -83,15 +90,20 @@ const CalendarMenu = React.forwardRef((_, ref) => {
           }}
           className={view === 'listMonth' ? 'active' : ''}
         >{t('agenda')}</NavButton>
-        <NavButton
-          style={{ marginLeft: 15 }}
-          onClick={() => setFilterOptions({ ...filterOptions, showUnavailable: !filterOptions.showUnavailable })}
-        >
-          {filterOptions.showUnavailable
-            ? <BsEye style={{ fontSize: 18 }} />
-            : <BsEyeSlash style={{ fontSize: 18 }} />
-          }
-        </NavButton>
+        <NoEye>
+          <NavButton
+            style={{ marginLeft: 15 }}
+            onClick={() => setFilterOptions({
+              ...filterOptions,
+              showUnavailable: !filterOptions.showUnavailable
+            })}
+          >
+            {filterOptions.showUnavailable
+              ? <BsEye style={{ fontSize: 18 }} />
+              : <BsEyeSlash style={{ fontSize: 18 }} />
+            }
+          </NavButton>
+        </NoEye>
         <NavButton style={{ marginRight: 10 }} onClick={() => setShowFilter(true)}>
           <FaFilter style={{ marginRight: 5 }} />
           {t('filter')}
