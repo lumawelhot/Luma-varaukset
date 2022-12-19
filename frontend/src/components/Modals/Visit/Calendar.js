@@ -13,14 +13,6 @@ import { addDays, set } from 'date-fns'
 import { DatePicker } from '../../Embeds/Input'
 
 const NavButton = styled(Button)`margin: 0; margin-left: -1px;`
-const DateString = styled.span`
-  font-size: 25px;
-  font-weight: bold;
-  @media (max-width: 500px) {
-    display: none;
-    visibility: hidden;
-  }
-`
 
 const Calendar = ({ event, visit, setEvent, slot }) => {
   const { current: user } = useUsers()
@@ -58,20 +50,31 @@ const Calendar = ({ event, visit, setEvent, slot }) => {
 
   // This is here because of bugs with prodcution build. Race conditions ??? Do not remove or create an alternative solution.
   calendarEvents(parsed, user)
+  const currentEvent = findEvent(visit?.event?.id || event?.event)
 
   return (
     <>
+      {currentEvent && <div style={{ fontWeight: 'bold', fontSize: 20 }}>
+        <div>{t('current-event')}:
+          <span style={{ color: 'red', fontWeight: 'normal' }}> {currentEvent.title}</span>
+        </div>
+        {currentEvent.group && <div>{t('belongs-to-group')}:
+          <span style={{ color: 'red', fontWeight: 'normal' }}> {currentEvent?.group.name}</span>
+        </div>}
+      </div>}
+      <hr style={{ marginTop: 5, marginBottom: 5 }}></hr>
       {event?.group?.disabled && <div style={{ color: 'red', fontSize: 20 }}>
         {t('group-is-disabled')}
       </div>}
-      <DateString>{title}, {year}</DateString>
+      <div style={{ fontSize: 20, fontWeight: 'bold' }}>{title}, {year}</div>
       <FullCalendar
         ref={calendarRef}
         locale={fiLocale}
         initialView={calendarOptions.view}
         initialDate={calendarOptions.date}
         events={calendarEvents(parsed, user)
-          ?.filter(e => (!e.unAvailable || e?.id === visit?.event?.id))
+          ?.filter(e => (!e.unAvailable || (e?.id === visit?.event?.id &&
+            new Date(e?.start).getTime() === new Date(visit?.startTime).getTime())))
           ?.map(e => (
             e.id === event?.id &&
             new Date(e.start).getTime() === new Date(slot?.start).getTime()
