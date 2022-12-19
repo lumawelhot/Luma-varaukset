@@ -17,15 +17,15 @@ Dokumentaatio on saatavilla repositorion [wikistä](https://github.com/lumawelho
 
 ## Releaset
 
-[LUMA-varaukset 4.1](https://github.com/lumawelhot/Luma-varaukset/releases/tag/v4.1)
+[LUMA-varaukset 4.1](https://github.com/lumawelhot/Luma-varaukset/releases/tag/v4.1), (19.12.2022)
 
-[LUMA-varaukset 4.0](https://github.com/lumawelhot/Luma-varaukset/releases/tag/v4.0)
+[LUMA-varaukset 4.0](https://github.com/lumawelhot/Luma-varaukset/releases/tag/v4.0), (16.10.2022)
 
-[LUMA-varaukset 3.0](https://github.com/lumawelhot/Luma-varaukset/releases/tag/v3.0)
+[LUMA-varaukset 3.0](https://github.com/lumawelhot/Luma-varaukset/releases/tag/v3.0), (15.6.2022)
 
-[LUMA-varaukset 2.0](https://github.com/lumawelhot/Luma-varaukset/releases/tag/v2.0)
+[LUMA-varaukset 2.0](https://github.com/lumawelhot/Luma-varaukset/releases/tag/v2.0), (3.10.2021)
 
-[LUMA-varaukset 1.0](https://github.com/lumawelhot/Luma-varaukset/releases/tag/v1.0)
+[LUMA-varaukset 1.0](https://github.com/lumawelhot/Luma-varaukset/releases/tag/v1.0), (1.7.2021)
 
 ## Kiitokset
 
