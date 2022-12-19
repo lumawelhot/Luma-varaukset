@@ -13,6 +13,20 @@ const scienceClasses = data => {
   return html
 }
 
+const payloadDescriptions = {
+  schoolAddress: 'Koulun osoite'
+}
+
+const payloadHTML = data => {
+  if (!data) return ''
+  const entries = Object.entries(data)
+  let html = ''
+  for (const e of entries) {
+    html += gridContainer(payloadDescriptions[e[0]], e[1])
+  }
+  return html
+}
+
 const gridContainer = (name, value) => `
 <div class="grid-container">
   <div class="grid-item">${u(name)}</div>
@@ -91,6 +105,7 @@ const bookingInfo = (event, visit, cancellation) => `
 const getNotifyHtml = (visit, event) => {
   try {
     const type = visit?.teaching?.type
+    const payload = visit?.teaching?.payload
     return bookingInfo(
       containerContent(
         [
@@ -137,7 +152,8 @@ const getNotifyHtml = (visit, event) => {
           u(visit.dataUseAgreement ? 'Kyllä' : 'Ei'),
           u(visit.language === 'fi' ? 'Suomi' : (visit.language === 'en' ? 'Englanti' : 'Ruotsi'))
         ]
-      ) + u(customFormHtml(visit.customFormData)),
+      ) + u(payloadHTML(typeof payload === 'string' ? JSON.parse(payload) : payload),)
+        + u(customFormHtml(visit.customFormData)),
       visit.cancellation ? `
         <h3 id="subheader">
           Peruutuksen tiedot:

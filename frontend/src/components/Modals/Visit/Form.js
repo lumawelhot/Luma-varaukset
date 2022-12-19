@@ -70,7 +70,7 @@ const Form = ({ formId, show, onSubmit, event, visit }) => {
           setValue('endTime', endTime)
         }} render={<>
           {event.remoteVisit && <Radio value='remote'>{t('remote')}</Radio>}
-          {event.inPerosnVisit && <Radio value='inperson'>{t('inperson')}</Radio>}
+          {event.inPersonVisit && <Radio value='inperson'>{t('inperson')}</Radio>}
           {event.schoolVisit && <Radio value='school'>{t('school')}</Radio>}
         </>} />
       ) : null}

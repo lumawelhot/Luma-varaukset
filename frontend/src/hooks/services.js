@@ -206,7 +206,14 @@ export const useEventService = ({ eventReducer }) => {
       }
       const found = state.all[event]
       if (found) {
-        _current({ ...found, ...params })
+        const originalStart = found.start
+        const originalEnd = found.end
+        _current({
+          ...found,
+          ...params,
+          originalStart,
+          originalEnd
+        })
         return true
       }
       return false

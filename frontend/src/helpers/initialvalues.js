@@ -46,7 +46,9 @@ export const eventInitialValues = (event = {}) => {
     group,
     waitingTime,
     limits,
-    closedDays
+    closedDays,
+    originalStart,
+    originalEnd,
   } = event
   const teaching = []
   if (inPersonVisit) teaching.push('inperson')
@@ -61,8 +63,8 @@ export const eventInitialValues = (event = {}) => {
     languages: languages || ['fi'],
     grades: grades?.map(g => String(g)) || [],
     resourceids: resourceids?.map(r => String(r)) || [],
-    start: start ? new Date(start) : todayByHours(8),
-    end: end ? new Date(end) : todayByHours(16),
+    start: originalStart ? new Date(originalStart) : start ? new Date(start) : todayByHours(8),
+    end: originalEnd ? new Date(originalEnd) : end ? new Date(end) : todayByHours(16),
     remotePlatforms: remotePlatforms?.map(r => String(r)) || ['1', '2', '3'],
     extras: extras ? parseExtras(extras) : [],
     publishDate: publishDate ? new Date(publishDate) : null,
