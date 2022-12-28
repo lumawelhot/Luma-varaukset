@@ -6,7 +6,7 @@ import { CALENDAR_SETTINGS, FIRST_EVENT_AFTER_DAYS } from '../../../config'
 import { calendarEvents } from '../../../helpers/parse'
 import { useUsers, useEvents } from '../../../hooks/cache'
 import styled from 'styled-components'
-import { Button } from '../../Embeds/Button'
+import { Button, Checkbox } from '../../Embeds/Button'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 import { addDays, set } from 'date-fns'
@@ -23,6 +23,7 @@ const Calendar = ({ event, visit, setEvent, slot }) => {
       ? new Date(event.start) : visit ? new Date(visit.startTime) : new Date()
     , { hours: 12, minutes: 0, seconds: 0, milliseconds: 0 }), (event || visit) ? 0 : FIRST_EVENT_AFTER_DAYS),
   })
+  const [combined, setCombined] = useState(false)
   const year = calendarOptions?.date?.getFullYear()
   const calendarRef = useRef()
   const calApi = calendarRef?.current?.getApi()
@@ -52,6 +53,32 @@ const Calendar = ({ event, visit, setEvent, slot }) => {
   calendarEvents(parsed, user)
   const currentEvent = findEvent(visit?.event?.id || event?.event)
 
+  // these are used for merging the current event with other available times if possible
+  const current = parsed
+    ?.filter(e => e?.id === visit?.event?.id)
+    ?.sort((a, b) => new Date(a.start) - new Date(b.start))
+
+  const mergeable = current
+    ?.find(e => new Date(e.start).getTime() === new Date(visit?.startTime).getTime())
+
+  const index = current
+    ?.map((e, index) => ({ id: e.id, index, start: e?.start }))
+    ?.find(e => new Date(e?.start).getTime() === new Date(mergeable?.start).getTime())
+    ?.index
+
+  const merged = current
+    ?.map(e => {
+      if (e.booked) {
+        const start = index <= 0 ? mergeable?.start
+          : current[index - 1]?.booked ? mergeable?.start : current[index - 1]?.start
+        const end = index >= current.length - 1 ? mergeable?.end
+          : current[index + 1]?.booked ? mergeable?.end : current[index + 1]?.end
+        return { ...e, start, end }
+      } else return e
+    })
+    ?.filter((_, i) => i === index)
+  // ---------------------------------
+
   return (
     <>
       {currentEvent && <div style={{ fontWeight: 'bold', fontSize: 20 }}>
@@ -72,9 +99,13 @@ const Calendar = ({ event, visit, setEvent, slot }) => {
         locale={fiLocale}
         initialView={calendarOptions.view}
         initialDate={calendarOptions.date}
-        events={calendarEvents(parsed, user)
-          ?.filter(e => (!e.unAvailable || (e?.id === visit?.event?.id &&
-            new Date(e?.start).getTime() === new Date(visit?.startTime).getTime())))
+        events={calendarEvents(combined ? parsed
+          ?.filter(e => !merged?.map(f => f.id)?.includes(e.id))
+          .concat(merged) : parsed , user)
+          ?.filter(e => (!e.unAvailable || (e?.id === visit?.event?.id && (
+            new Date(e?.start).getTime() <= new Date(visit?.startTime).getTime() &&
+            new Date(e?.end).getTime() >= new Date(visit?.endTime).getTime()
+          ))))
           ?.map(e => (
             e.id === event?.id &&
             new Date(e.start).getTime() === new Date(slot?.start).getTime()
@@ -106,6 +137,11 @@ const Calendar = ({ event, visit, setEvent, slot }) => {
             })
           }}
         />
+        <div style={{ marginLeft: 10, marginTop: 15 }}>
+          <Checkbox onChange={e => setCombined(e.target.checked)}>
+            <span style={{ fontSize: 18 }}>{t('combine-timeslot')}</span>
+          </Checkbox>
+        </div>
       </div>
     </>
   )

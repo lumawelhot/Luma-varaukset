@@ -1,4 +1,3 @@
-
 import React, { useEffect, useId, useState } from 'react'
 import { Modal, Stack } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
@@ -109,6 +108,9 @@ const Submission = () => {
             {format(new Date(selectedEvent.slot.start), 'HH.mm')} - {format(new Date(selectedEvent.slot.end), 'HH.mm')}
           </span></div>
           </Title>
+          <Title>{t('visit-original-slot')}: <span style={{ color: 'red' }}>
+            {format(new Date(visit?.startTime), 'HH.mm')} - {format(new Date(visit?.endTime), 'HH.mm')}
+          </span></Title>
           <Stack direction='horizontal'>
             <TimePicker
               title={t('start-time')}

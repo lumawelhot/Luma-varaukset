@@ -211,8 +211,12 @@ const resolvers = {
       const event = await eventInst.findById(args.event)
       createVisitValidate(args, event, currentUser)
 
-      const group = await groupInst.DeltaUpdate(event.group, { visitCount: 1, returnOriginal: true })
-      if (group?.disabled) throw new UserInputError('Event is assigned to a disabled group')
+      const group = await groupInst.DeltaUpdate(event.group, {
+        visitCount: 1,
+        returnOriginal: true,
+        forceUpdate: !!currentUser
+      })
+      if (group?.disabled && !currentUser) throw new UserInputError('Event is assigned to a disabled group')
 
       const extras = await Extra.findByIds(args.extras)
 
@@ -257,13 +261,12 @@ const resolvers = {
         // visit times should be released
         const visitTimes = event.visits.filter(v => v.id !== visit.id)
         danglingEvent = await eventInst.update(event.id, {
-          visits: event.visits.filter(v => v.id.toString() !== visit.id),
+          visits: event.visits.filter(v => v.id !== visit.id),
           availableTimes: calcFromVisitTimes(visitTimes, {
             startTime: new Date(event.start),
             endTime: new Date(event.end)
           }, event.waitingTime, event.duration)
         })
-
 
         // find new event where the visit should be added
         const _event = await eventInst.findById(args.event)
@@ -326,7 +329,7 @@ const resolvers = {
       const visitTimes = event.visits.filter(v => v.id !== visit.id)
 
       event = await eventInst.update(event.id, {
-        visits: event.visits.filter(v => v.id.toString() !== visit.id),
+        visits: event.visits.filter(v => v.id !== visit.id),
         availableTimes: calcFromVisitTimes(visitTimes, {
           startTime: new Date(event.start),
           endTime: new Date(event.end)
