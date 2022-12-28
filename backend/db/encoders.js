@@ -26,7 +26,10 @@ const user = {
 const event = {
   encode: o => ({
     ...o,
-    limits: typeof o.limits === 'string' ? JSON.parse(o.limits) : o.limits
+    limits: typeof o.limits === 'string' ? JSON.parse(o.limits) : o.limits,
+    visits: process.env.NODE_ENV === 'test'
+      ? o.visits
+      : o?.visits?.map(v => v?.id ? v.id : v)
   }),
   decode: o => {
     try {
@@ -45,7 +48,11 @@ const event = {
         end: o.end ? new Date(o.end).toISOString() : undefined,
         desc: o.desc,
         tags: o.tags,
-        visits: o.visits ? o.visits : [],
+        visits: o.visits
+          ? (process.env.NODE_ENV === 'test'
+            ? o.visits
+            : o.visits.map(v => v.toJSON()))
+          : [],
         availableTimes: o.availableTimes,
         waitingTime: o.waitingTime,
         extras: o.extras,

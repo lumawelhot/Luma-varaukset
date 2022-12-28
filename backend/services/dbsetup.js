@@ -2,6 +2,7 @@
 const bcrypt = require('bcrypt')
 const { Event, User, Tag, Extra, Email, Visit, Group, Form } = require('../db')
 const mongoose = require('mongoose')
+mongoose.set('strictQuery', true)
 const { addBusinessDays, set } = require('date-fns')
 const logger = require('../logger')
 const { helsinkiZoneOffset } = require('../utils/calculator')

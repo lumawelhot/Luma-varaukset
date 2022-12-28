@@ -356,5 +356,6 @@
   "group-is-disabled": "Tämä ryhmä on täynnä",
   "confirm-choice": "Vahvista valinta",
   "current-event": "Nykyinen vierailu",
-  "belongs-to-group": "Kuuluu ryhmään"
+  "belongs-to-group": "Kuuluu ryhmään",
+  "combine-timeslot": "Yhdistä ajankohta"
 }
