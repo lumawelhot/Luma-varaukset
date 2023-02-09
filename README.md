@@ -13,7 +13,9 @@ Soveulluksen tuotantoversio on tällä hetkellä käytettävissä [täällä](ht
 
 ## Dokumentaatio
 
-Dokumentaatio on saatavilla repositorion [wikistä](https://github.com/lumawelhot/Luma-varaukset/wiki).
+```LUMA-varaukset 4.1``` dokumentaatio on luettavissa [täältä](https://github.com/lumawelhot/Luma-varaukset/tree/main/docs/v4).
+
+Vanhentunut ```LUMA-varaukset 2.0``` dokumentaatio on saatavilla repositorion [wikistä](https://github.com/lumawelhot/Luma-varaukset/wiki).
 
 ## Releaset
 
