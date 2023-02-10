@@ -18,7 +18,7 @@ Frontend rakentuu karkeasti seuraavasta rakenteesta
             * Täysin eristetty riippuvuuksista muista ```Embeds``` hakemiston ulkopuolisista tiedostoista.
         * ```Modals```
             * Sovellus sisältää useita lomakkeita. Kaikki lomakkeet on määritelty tänne. Lomakkeet eivät saa olla riippuvaisia ```Pages``` kanssa.
-            * Lomakkeiden tulee välttää riippuvuuksia muiden kuin ```cahce.js```ja ```helpers```kanssa.
+            * Lomakkeiden tulee välttää riippuvuuksia muiden kuin ```cache.js```ja ```helpers```kanssa.
         * ```Pages```
             * Tänne määritellään kaikki sovelluksen toiminnallisuuksia hyödyntävät sivut.
         * muut
