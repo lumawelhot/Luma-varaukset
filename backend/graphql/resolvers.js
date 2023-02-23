@@ -100,8 +100,9 @@ const resolvers = {
     }),
     login: async (root, args) => {
       const user = await User.findOne({ username: args.username })
-      await validPassword(args.password, user.passwordHash)
+      await validPassword(args.password, user.passwordHash, user.username)
       const userForToken = { username: user.username, id: user.id }
+      logger.info(`Logged in as a user: ${user.username.slice(0, 2)}****`)
       return { value: jwt.sign(userForToken, config.SECRET, { expiresIn: '12h' }) }
     },
     createEvents: authorized(async (root, args) => {
