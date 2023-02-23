@@ -2,6 +2,7 @@ const { AuthenticationError, UserInputError } = require('apollo-server-express')
 const { checkTimeslot, validTimeSlot, calcTimeSlot } = require('./calculator')
 const { differenceInDays } = require('date-fns')
 const bcrypt = require('bcrypt')
+const logger = require('../logger')
 
 const authorized = fn => (root, args, context, ...rest) => {
   if (!context.currentUser) {
@@ -47,27 +48,40 @@ const eventModifiable = (event) => {
 }
 
 const createVisitValidate = (args, event, currentUser) => {
-  if (event.reserved && event.reserved !== args.token) throw new UserInputError('Invalid session')
-  if (event.disabled) throw new UserInputError('This event is disabled')
+  if (event.reserved && event.reserved !== args.token) {
+    logger.warning('Reservation failed due to invalid session')
+    throw new UserInputError('Invalid session')
+  }
+  if (event.disabled) {
+    logger.warning('Reservation failed due to disabled event')
+    throw new UserInputError('This event is disabled')
+  }
   const type = args.teaching?.type
-  if (!type) throw new UserInputError('Provide a teaching type')
+  if (!type) {
+    logger.warning('Reservation failed due to invalid visit type')
+    throw new UserInputError('Provide a teaching type')
+  }
   const limits = typeof event?.limits === 'string' ? JSON.parse(event.limits) : event?.limits
   const maxRemoteParticipants = limits?.remote?.maxParticipants
   const maxInPersonParticipants = limits?.inPerson?.maxParticipants
   const maxSchoolParticipants = limits?.school?.maxParticipants
   if (type === 'remote' && maxRemoteParticipants && args.participants > maxRemoteParticipants) {
+    logger.warning('Reservation failed due to exceeded participants limit')
     throw new UserInputError('Max number of participants exceeded')
   }
   if (type === 'inperson' && maxInPersonParticipants && args.participants > maxInPersonParticipants) {
+    logger.warning('Reservation failed due to exceeded participants limit')
     throw new UserInputError('Max number of participants exceeded')
   }
   if (type === 'school' && maxSchoolParticipants && args.participants > maxSchoolParticipants) {
+    logger.warning('Reservation failed due to exceeded participants limit')
     throw new UserInputError('Max number of participants exceeded')
   }
   const days = event.closedDays || 14
   const afterDays = differenceInDays(new Date(event.start), new Date()) >= days
   if (!currentUser && !afterDays) throw new UserInputError('This event cannot be booked')
   if (!validTimeSlot(event.availableTimes, args.startTime, args.endTime)) {
+    logger.warning(`Reservation failed due to invalid timeslot. Expected ${event.start} - ${event.end} but got ${args.startTime} - ${args.endTime}`)
     throw new UserInputError('Given timeslot is invalid')
   }
 }
@@ -92,10 +106,13 @@ const notCurrentUser = (current, id) => {
   }
 }
 
-const validPassword = async (password, hash) => {
+const validPassword = async (password, hash, username) => {
   try {
     const passwordCorrect = await bcrypt.compare(password, hash)
-    if (!passwordCorrect) throw new UserInputError('Invalid password')
+    if (!passwordCorrect) {
+      logger.warning(`Tried to log in as a user: ${username.slice(0, 2)}****`)
+      throw new UserInputError('Invalid password')
+    }
   } catch (err) {
     throw new UserInputError(err.message)
   }

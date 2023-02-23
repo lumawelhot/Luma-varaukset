@@ -30,7 +30,10 @@ const resolvers = {
     getVisits: authorized(() => Visit.find({}, expandVisits)),
     getEmailTemplates: isAdmin(() => Email.find()),
     getGroups: authorized(() => Group.find({}, expandGroups)),
-    findVisit: (root, args) => Visit.findById(args.id, expandVisits),
+    findVisit: (root, args) => {
+      logger.info(`Tried to fetch visit ${args.id.toString().slice(0, 7)}****`)
+      return Visit.findById(args.id, expandVisits)
+    },
     me: (root, args, context) => context.currentUser,
     getExtras: () => Extra.find(),
     getForms: () => Form.find(),
@@ -100,8 +103,9 @@ const resolvers = {
     }),
     login: async (root, args) => {
       const user = await User.findOne({ username: args.username })
-      await validPassword(args.password, user.passwordHash)
+      await validPassword(args.password, user.passwordHash, user.username)
       const userForToken = { username: user.username, id: user.id }
+      logger.info(`Logged in as a user: ${user.username.slice(0, 2)}****`)
       return { value: jwt.sign(userForToken, config.SECRET, { expiresIn: '12h' }) }
     },
     createEvents: authorized(async (root, args) => {
