@@ -30,7 +30,10 @@ const resolvers = {
     getVisits: authorized(() => Visit.find({}, expandVisits)),
     getEmailTemplates: isAdmin(() => Email.find()),
     getGroups: authorized(() => Group.find({}, expandGroups)),
-    findVisit: (root, args) => Visit.findById(args.id, expandVisits),
+    findVisit: (root, args) => {
+      logger.info(`Tried to fetch visit ${args.id.toString().slice(0, 7)}****`)
+      return Visit.findById(args.id, expandVisits)
+    },
     me: (root, args, context) => context.currentUser,
     getExtras: () => Extra.find(),
     getForms: () => Form.find(),
