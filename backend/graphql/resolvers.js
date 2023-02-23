@@ -364,7 +364,7 @@ const resolvers = {
     }),
     forceDeleteEvents: isAdmin(async (root, args, { currentUser }) => {
       const user = await User.findOne({ username: currentUser.username })
-      await validPassword(args.password, user.passwordHash)
+      await validPassword(args.password, user.passwordHash, user.username)
       const events = await Promise.all((await Event.findByIds(args.events))
         .map(async event => {
           await Visit.remove(event.visits)
