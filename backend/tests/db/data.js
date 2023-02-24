@@ -5,7 +5,13 @@ const times = { minutes: 0, seconds: 0, milliseconds: 0 }
 const commonDetails = {
   desc: 'This is a description',
   duration: 45,
-  grades: [1, 3, 4],
+  grades: [{
+    'name': 'grade1'
+  }, {
+    'name': 'grade3'
+  }, {
+    'name': 'grade4'
+  }],
   inPersonVisit: true,
   languages: ['fi'],
   otherRemotePlatformOption: '',
@@ -24,7 +30,11 @@ const commonDetails = {
 const modifyDetails = {
   desc: 'Modified description',
   duration: 15,
-  grades: [2, 3],
+  grades: [{
+    'name': 'grade2'
+  }, {
+    'name': 'grade3'
+  }],
   languages: ['en'],
   resourceids: [1, 2],
   waitingTime: 5,

@@ -357,5 +357,8 @@
   "confirm-choice": "Vahvista valinta",
   "current-event": "Nykyinen vierailu",
   "belongs-to-group": "Kuuluu ryhmään",
-  "combine-timeslot": "Yhdistä ajankohta"
+  "combine-timeslot": "Yhdistä ajankohta",
+
+  "grade-info": "Lisätietoja ryhmästä (kurssi, tarkempi ikäluokka, valinnaisryhmä)",
+  "grade-information": "Lisätietoja ryhmästä"
 }

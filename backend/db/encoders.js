@@ -3,6 +3,8 @@
 // Encode: "app format" -> "mongo model format"
 // Modify this file instead of mongo models
 
+const { GRADES } = require('../config')
+
 const user = {
   encode: o => ({
     ...o,
@@ -26,6 +28,8 @@ const user = {
 const event = {
   encode: o => ({
     ...o,
+    grades2: o.grades,
+    grades: [],
     limits: typeof o.limits === 'string' ? JSON.parse(o.limits) : o.limits,
     visits: process.env.NODE_ENV === 'test'
       ? o.visits
@@ -41,7 +45,9 @@ const event = {
         remoteVisit: o.remoteVisit,
         schoolVisit: o.schoolVisit === undefined ? false : o.schoolVisit,
         inPersonVisit: o.inPersonVisit,
-        grades: o.grades,
+        grades: o.grades2 ? o.grades2 : o.grades.map(g => ({
+          name: GRADES[g - 1]
+        })),
         remotePlatforms: o.remotePlatforms,
         otherRemotePlatformOption: o.otherRemotePlatformOption,
         start: o.start ? new Date(o.start).toISOString() : undefined,
@@ -107,6 +113,7 @@ const visit = {
         clientEmail: o.clientEmail,
         clientPhone: o.clientPhone,
         grade: o.grade,
+        gradeInfo: o.gradeInfo,
         participants: o.participants,
         extras: o.extras,
         status: o.cancellation !== undefined ? false : true,

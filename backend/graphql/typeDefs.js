@@ -31,10 +31,16 @@ const typeDefs = gql`
     location: String
     payload: String
   }
+  type Grade {
+    name: String!
+  }
   input ITeaching {
     type: String!
     location: String
     payload: String
+  }
+  input InputGrade {
+    name: String!
   }
   type Event {
     id: ID!
@@ -43,7 +49,7 @@ const typeDefs = gql`
     remoteVisit: Boolean!
     inPersonVisit: Boolean!
     schoolVisit: Boolean!
-    grades: [Int]!
+    grades: [Grade]!
     remotePlatforms: [Int]
     otherRemotePlatformOption: String
     start: String!
@@ -73,6 +79,7 @@ const typeDefs = gql`
     clientEmail: String!
     clientPhone: String!
     grade: String!
+    gradeInfo: String
     participants: Int!
     extras: [Extra]
     status: Boolean!
@@ -182,7 +189,7 @@ const typeDefs = gql`
     createEvents(
       title: String!
       resourceids: [Int]!
-      grades: [Int]!
+      grades: [InputGrade]!
       remotePlatforms: [Int]
       otherRemotePlatformOption: String
       start: String!
@@ -207,7 +214,7 @@ const typeDefs = gql`
       event: ID!
       title: String
       resourceids: [Int]
-      grades: [Int]
+      grades: [InputGrade]
       remotePlatforms: [Int]
       otherRemotePlatformOption: String
       desc: String
@@ -244,6 +251,7 @@ const typeDefs = gql`
       token: String!
       customFormData: String
       language: String
+      gradeInfo: String
     ): Visit
     modifyVisit(
       visit: ID!
@@ -262,6 +270,7 @@ const typeDefs = gql`
       event: ID
       startTime: String
       endTime: String
+      gradeInfo: String
     ): Visit
     disableEvent(
       event: ID!

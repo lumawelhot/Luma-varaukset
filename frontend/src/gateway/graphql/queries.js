@@ -88,7 +88,7 @@ export const CREATE_EVENTS = gql`
     $start: String!,
     $end: String!,
     $resourceids: [Int]!,
-    $grades: [Int]!,
+    $grades: [InputGrade]!,
     $remotePlatforms: [Int],
     $otherRemotePlatformOption: String,
     $remoteVisit: Boolean!,
@@ -152,6 +152,7 @@ export const CREATE_VISIT = gql`
     $token: String!
     $customFormData: String
     $language: String
+    $gradeInfo: String
     ) {
     createVisit(
       event: $event
@@ -170,6 +171,7 @@ export const CREATE_VISIT = gql`
       token: $token
       customFormData: $customFormData
       language: $language
+      gradeInfo: $gradeInfo
     ) { ...VisitFields }
   }
 `
@@ -193,6 +195,7 @@ export const MODIFY_VISIT = gql`
     $event: ID
     $startTime: String
     $endTime: String
+    $gradeInfo: String
     ) {
     modifyVisit(
       visit: $visit
@@ -211,6 +214,7 @@ export const MODIFY_VISIT = gql`
       event: $event
       startTime: $startTime
       endTime: $endTime
+      gradeInfo: $gradeInfo
     ) { ...VisitFields }
   }
 `
@@ -309,7 +313,7 @@ export const MODIFY_EVENT = gql`
     $event: ID!
     $title: String
     $resourceids: [Int]
-    $grades: [Int]
+    $grades: [InputGrade]
     $remotePlatforms: [Int]
     $otherRemotePlatformOption: String
     $desc: String

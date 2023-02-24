@@ -95,7 +95,7 @@ const CREATE_EVENTS = gql`
     $start: String!,
     $end: String!,
     $resourceids: [Int]!,
-    $grades: [Int]!,
+    $grades: [InputGrade]!,
     $remotePlatforms: [Int],
     $otherRemotePlatformOption: String,
     $remoteVisit: Boolean!,
@@ -325,7 +325,7 @@ const MODIFY_EVENT = gql`
     $event: ID!
     $title: String
     $resourceids: [Int]
-    $grades: [Int]
+    $grades: [InputGrade]
     $remotePlatforms: [Int]
     $otherRemotePlatformOption: String
     $desc: String

@@ -16,7 +16,9 @@ export const EVENT_FIELDS = gql`
     id
     title
     resourceids
-    grades
+    grades {
+      name
+    }
     remotePlatforms
     otherRemotePlatformOption
     waitingTime
@@ -77,6 +79,7 @@ export const VISIT_FIELDS = gql`
     }
     extras { ...ExtraFields }
     grade
+    gradeInfo
     startTime
     endTime
     participants

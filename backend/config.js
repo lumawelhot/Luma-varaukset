@@ -32,6 +32,14 @@ const CLASSES = [
   'GADOLIN',
 ]
 
+const GRADES = [
+  'grade1',
+  'grade2',
+  'grade3',
+  'grade4',
+  'grade5'
+]
+
 const EARLIEST_START_HOURS = 8
 const LATEST_END_HOURS = 17
 
@@ -49,5 +57,6 @@ module.exports = {
   SALT,
   MINUTE,
   EARLIEST_START_HOURS,
-  LATEST_END_HOURS
+  LATEST_END_HOURS,
+  GRADES
 }

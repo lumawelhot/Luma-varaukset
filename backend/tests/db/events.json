@@ -3,7 +3,9 @@
     "id": "1",
     "title": "Maanjäristysten alueellisuus ja niiden vaikutukset",
     "resourceids": [4],
-    "grades": [1],
+    "grades": [{
+      "name": "grade1"
+    }],
     "inPersonVisit": true,
     "remoteVisit": false,
     "extras": [],
@@ -24,7 +26,9 @@
     "id": "2",
     "title": "Lämpösäteily ja ilmastonmuutos",
     "resourceids": [4],
-    "grades": [1],
+    "grades": [{
+      "name": "grade1"
+    }],
     "inPersonVisit": true,
     "remoteVisit": false,
     "waitingTime": 15,
@@ -43,7 +47,9 @@
     "id": "3",
     "title": "Kemian kokeelliset työt",
     "resourceids": [4],
-    "grades": [1],
+    "grades": [{
+      "name": "grade1"
+    }],
     "inPersonVisit": true,
     "remoteVisit": false,
     "waitingTime": 15,
@@ -63,7 +69,9 @@
     "id": "4",
     "title": "Python-ohjelmointikieli",
     "resourceids": [3],
-    "grades": [1],
+    "grades": [{
+      "name": "grade1"
+    }],
     "inPersonVisit": true,
     "remoteVisit": false,
     "waitingTime": 15,
@@ -82,8 +90,10 @@
     "id": "5",
     "title": "Matematiikan työpaja",
     "desc": "kuvaus",
-    "resourceids": [1,2],
-    "grades": [1],
+    "resourceids": [1, 2],
+    "grades": [{
+      "name": "grade1"
+    }],
     "inPersonVisit": true,
     "remoteVisit": false,
     "waitingTime": 15,
@@ -103,7 +113,11 @@
     "title": "Scratch-ohjelmointikieli",
     "desc": "kuvaus",
     "resourceids": [3],
-    "grades": [1, 2],
+    "grades": [{
+      "name": "grade1"
+    }, {
+      "name": "grade2"
+    }],
     "inPersonVisit": true,
     "remoteVisit": false,
     "waitingTime": 15,
@@ -122,7 +136,9 @@
     "id": "7",
     "title": "Fully booked",
     "resourceids": [4],
-    "grades": [1],
+    "grades": [{
+      "name": "grade1"
+    }],
     "inPersonVisit": true,
     "remoteVisit": false,
     "extras": [],
@@ -142,7 +158,9 @@
     "id": "8",
     "title": "Disabled event",
     "resourceids": [4],
-    "grades": [1],
+    "grades": [{
+      "name": "grade1"
+    }],
     "inPersonVisit": true,
     "remoteVisit": false,
     "extras": [],
@@ -161,7 +179,9 @@
     "id": "9",
     "title": "Event in full group",
     "resourceids": [4],
-    "grades": [1],
+    "grades": [{
+      "name": "grade1"
+    }],
     "inPersonVisit": true,
     "remoteVisit": false,
     "extras": [],
@@ -180,7 +200,9 @@
     "id": "10",
     "title": "Event in disabled group",
     "resourceids": [4],
-    "grades": [1],
+    "grades": [{
+      "name": "grade1"
+    }],
     "inPersonVisit": true,
     "remoteVisit": false,
     "extras": [],
