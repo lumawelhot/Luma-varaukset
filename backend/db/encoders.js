@@ -40,6 +40,7 @@ const event = {
   // Use "encode" ONLY if you have to, NEVER without a VALID reason.
   encode: o => ({
     ...o,
+    grades: o.grades?.map(g => GRADES.indexOf(g.name) + 1),
     grades2: o.grades,
     limits: typeof o.limits === 'string' ? JSON.parse(o.limits) : o.limits,
     visits: process.env.NODE_ENV === 'test'

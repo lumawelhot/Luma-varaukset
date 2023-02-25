@@ -27,7 +27,7 @@ const eventSchema = mongoose.Schema({
     type: [Number],
     required: true,
     //    validate: [arrayLimit, 'vähintään yksi luokka-aste valittava'],
-  }, // deprecated
+  }, // deprecated, we can probably remove this field
   grades2: [
     {
       name: {
