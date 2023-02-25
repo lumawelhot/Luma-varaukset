@@ -45,7 +45,7 @@ const event = {
         remoteVisit: o.remoteVisit,
         schoolVisit: o.schoolVisit === undefined ? false : o.schoolVisit,
         inPersonVisit: o.inPersonVisit,
-        grades: o.grades2 ? o.grades2 : o.grades.map(g => ({
+        grades: o.grades2?.length ? o.grades2 : o.grades.map(g => ({
           name: GRADES[g - 1]
         })),
         remotePlatforms: o.remotePlatforms,
