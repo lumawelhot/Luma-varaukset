@@ -1,13 +1,14 @@
 import React from 'react'
 import { Title, Text, Li, Ul, P } from '../../Embeds/Info'
-import { CLASSES } from '../../../config'
+import { CLASSES, PLATFORMS } from '../../../config'
 import { Heading } from '@chakra-ui/react'
 import { format } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import PropTypes from 'prop-types'
 
-const Details = ({ visit }) => {
+const Details = ({ visit, event }) => {
   const { t } = useTranslation()
+  const remotePlatform = Number(visit?.teaching?.location) - 1
 
   return <>
     {visit.cancellation && <>
@@ -99,7 +100,9 @@ const Details = ({ visit }) => {
     </P>
     {visit?.teaching?.type === 'remote' && <P>
       <Title>{t('selected-remote-platform')}: </Title>
-      <Text>{visit?.teaching?.location}</Text>
+      <Text>{Number.isNaN(remotePlatform) ? visit.teaching.location
+        : (PLATFORMS[remotePlatform] ? PLATFORMS[remotePlatform] : event.otherRemotePlatformOption)
+      }</Text>
     </P>}
     {!!visit?.customFormData
       && Array.isArray(visit.customFormData)
