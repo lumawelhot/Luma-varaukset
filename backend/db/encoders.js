@@ -4,13 +4,16 @@
 // Modify this file instead of mongo models
 
 // WARNING: Modifying "encode" method can cause dataloss.
-// If you want to modify "encode" method, make sure you NEVER initialize data with it
+// If you want to modify "encode" method, make sure you NEVER initialize any data with it
 // Initializing data with "encode" can cause fields to become overridden. Be careful!!!
 
 const { GRADES } = require('../config')
 
 const user = {
-  // WARNING: Modifying "encode" method can cause dataloss.
+  // WARNING: Never initialize ANY data with "encode" method
+  // Doing so can lead to unwanted dataloss
+  // grades: [] <-- this line in "encode" caused grades become overridden by empty list
+  // Use "encode" ONLY if you have to, NEVER without a VALID reason.
   encode: o => ({
     ...o,
     passwordHash: o.passwordHash ? o.passwordHash : undefined
@@ -31,13 +34,13 @@ const user = {
 }
 
 const event = {
-  // WARNING: Modifying "encode" method can cause dataloss.
+  // WARNING: Never initialize ANY data with "encode" method
+  // Doing so can lead to unwanted dataloss
+  // grades: [] <-- this line in "encode" caused grades become overridden by empty list
+  // Use "encode" ONLY if you have to, NEVER without a VALID reason.
   encode: o => ({
     ...o,
     grades2: o.grades,
-    grades: [1, 2, 3, 4, 5], /* <---- You can safely remove this line. (grades)
-                                This line is here for demostrating what you should never do here.
-                                NEVER initialize data with "encode" method !!!*/
     limits: typeof o.limits === 'string' ? JSON.parse(o.limits) : o.limits,
     visits: process.env.NODE_ENV === 'test'
       ? o.visits
@@ -89,7 +92,10 @@ const event = {
 }
 
 const visit = {
-  // WARNING: Modifying "encode" method can cause dataloss.
+  // WARNING: Never initialize ANY data with "encode" method
+  // Doing so can lead to unwanted dataloss
+  // grades: [] <-- this line in "encode" caused grades become overridden by empty list
+  // Use "encode" ONLY if you have to, NEVER without a VALID reason.
   encode: o => ({
     ...o,
     teaching: o.teaching ? {
@@ -142,7 +148,10 @@ const visit = {
 }
 
 const group = {
-  // WARNING: Modifying "encode" method can cause dataloss.
+  // WARNING: Never initialize ANY data with "encode" method
+  // Doing so can lead to unwanted dataloss
+  // grades: [] <-- this line in "encode" caused grades become overridden by empty list
+  // Use "encode" ONLY if you have to, NEVER without a VALID reason.
   encode: o => o,
   decode: o => {
     try {
@@ -162,7 +171,10 @@ const group = {
 }
 
 const form = {
-  // WARNING: Modifying "encode" method can cause dataloss.
+  // WARNING: Never initialize ANY data with "encode" method
+  // Doing so can lead to unwanted dataloss
+  // grades: [] <-- this line in "encode" caused grades become overridden by empty list
+  // Use "encode" ONLY if you have to, NEVER without a VALID reason.
   encode: o => o,
   decode: (o) => {
     try {
@@ -179,7 +191,10 @@ const form = {
 }
 
 const tag = {
-  // WARNING: Modifying "encode" method can cause dataloss.
+  // WARNING: Never initialize ANY data with "encode" method
+  // Doing so can lead to unwanted dataloss
+  // grades: [] <-- this line in "encode" caused grades become overridden by empty list
+  // Use "encode" ONLY if you have to, NEVER without a VALID reason.
   encode: o => o,
   decode: o => {
     try {
@@ -195,7 +210,10 @@ const tag = {
 }
 
 const extra = {
-  // WARNING: Modifying "encode" method can cause dataloss.
+  // WARNING: Never initialize ANY data with "encode" method
+  // Doing so can lead to unwanted dataloss
+  // grades: [] <-- this line in "encode" caused grades become overridden by empty list
+  // Use "encode" ONLY if you have to, NEVER without a VALID reason.
   encode: o => ({
     ...o,
     _id: o.id
@@ -217,7 +235,10 @@ const extra = {
 }
 
 const email = {
-  // WARNING: Modifying "encode" method can cause dataloss.
+  // WARNING: Never initialize ANY data with "encode" method
+  // Doing so can lead to unwanted dataloss
+  // grades: [] <-- this line in "encode" caused grades become overridden by empty list
+  // Use "encode" ONLY if you have to, NEVER without a VALID reason.
   encode: o => o,
   decode: o => {
     try {
