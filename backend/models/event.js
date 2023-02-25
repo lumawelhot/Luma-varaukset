@@ -110,6 +110,7 @@ const eventSchema = mongoose.Schema({
     required: false,
     default: ['fi']
   },
+  // For readability, limits could be defined like grades2
   limits: {
     type: mongoose.Schema.Types.Mixed,
   },

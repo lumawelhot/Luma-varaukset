@@ -83,7 +83,7 @@ const Submission = () => {
           : <Modal.Title style={{ color: '#bd4047' }}>{t('visit-cancelled')}</Modal.Title>}
       </Modal.Header>
       <Modal.Body>
-        {page === 'details' && <Details visit={visit} event={event} />}
+        {page === 'details' && <Details visit={visit} />}
         {page === 'modify' && <Form formId={formId} show={true} onSubmit={modifyVisit} event={event} visit={visit} />}
         {page === 'cancellation' && <Cancellation formId={formId} show={true} onSubmit={cancelVisit} />}
         {page === 'calendar' && <>

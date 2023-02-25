@@ -137,10 +137,10 @@ const getNotifyHtml = (visit, event) => {
             : type === 'school' ? 'Lähivierailu koululla'
               : 'Lähivierailu Kumpulassa'),
         ]
-      ) /* + u(type === 'remote'
-        ? gridContainer('Etäyhteysalusta', visit?.remotePlatform)
+      ) + u(type === 'remote'
+        ? gridContainer('Etäyhteysalusta', visit?.teaching?.location)
         : undefined
-      ) */,
+      ),
       containerContent(
         [
           'Varaajan nimi',
