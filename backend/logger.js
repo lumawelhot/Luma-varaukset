@@ -40,4 +40,16 @@ const development = createLogger({
   ],
 })
 
-module.exports = process.env.NODE_ENV === 'production' ? production : development
+const test = createLogger({
+  ...settings,
+  level: 'error',
+  transports: [
+    new transports.Console()
+  ]
+})
+
+const mode = process.env.NODE_ENV
+
+module.exports = mode === 'production'
+  ? production : (mode === 'development' || mode === 'docker'
+    ? development : test)

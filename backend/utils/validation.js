@@ -110,7 +110,7 @@ const validPassword = async (password, hash, username) => {
   try {
     const passwordCorrect = await bcrypt.compare(password, hash)
     if (!passwordCorrect) {
-      logger.warning(`Tried to log in as a user: ${username.slice(0, 2)}****`)
+      logger.warning(`Authentication failure: ${username.slice(0, 1)}****`)
       throw new UserInputError('Invalid password')
     }
   } catch (err) {

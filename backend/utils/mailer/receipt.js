@@ -42,6 +42,15 @@ const containerContent = (names, values) => {
   return containerHtml
 }
 
+const extraHtml = data => {
+  if (!data) return ''
+  let html = ''
+  for (const extra of data) {
+    html += `<div>${extra.name}</div>`
+  }
+  return gridContainer('Lisävalinnat', html)
+}
+
 const customFormHtml = data => {
   if (!data) return ''
   const fields = typeof data === 'string' ? JSON.parse(data) : data
@@ -122,12 +131,15 @@ const getNotifyHtml = (visit, event) => {
           u(event.description),
           scienceClasses(event.resourceids),
           u(format(helsinkiTime(event.start), 'dd.MM.yy')),
-          u(format(helsinkiTime(event.start), 'HH:mm')),
+          u(format(helsinkiTime(visit.startTime), 'HH:mm')),
           u(format(helsinkiTime(visit.endTime), 'HH:mm')),
           u(type === 'remote' ? 'Etävierailu'
             : type === 'school' ? 'Lähivierailu koululla'
               : 'Lähivierailu Kumpulassa'),
         ]
+      ) + u(type === 'remote'
+        ? gridContainer('Etäyhteysalusta', visit?.teaching?.location)
+        : undefined
       ),
       containerContent(
         [
@@ -137,6 +149,7 @@ const getNotifyHtml = (visit, event) => {
           'Opetusyhteisön nimi',
           'Opetusyhteisön sijainti',
           'Luokka-aste',
+          'Lisätiedot ryhmästä',
           'Osallistujamäärä',
           'Lupa tutkimuskäyttöön',
           'Kieli'
@@ -148,11 +161,13 @@ const getNotifyHtml = (visit, event) => {
           u(visit.schoolName),
           u(visit.schoolLocation),
           u(visit.grade),
+          u(visit.gradeInfo),
           u(visit.participants),
           u(visit.dataUseAgreement ? 'Kyllä' : 'Ei'),
           u(visit.language === 'fi' ? 'Suomi' : (visit.language === 'en' ? 'Englanti' : 'Ruotsi'))
         ]
       ) + u(payloadHTML(typeof payload === 'string' ? JSON.parse(payload) : payload),)
+        + u(extraHtml(visit.extras))
         + u(customFormHtml(visit.customFormData)),
       visit.cancellation ? `
         <h3 id="subheader">

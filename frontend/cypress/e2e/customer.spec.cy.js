@@ -18,7 +18,7 @@ describe('As a customer I can', () => {
     cy.get('#clientEmail').type('olli.opettaja@client.com')
     cy.get('#verifyEmail').type('olli.opettaja@client.com')
     cy.get('#clientPhone').type('+358 31331313')
-    cy.get('#grade').type('1 luokka')
+    cy.get('.select__input-container').type('Varhaiskasvatus{enter}')
     cy.get('#participants').type('13')
     cy.get(':nth-child(1) > .chakra-checkbox__control').click()
     cy.get(':nth-child(3) > .chakra-checkbox__control').click()

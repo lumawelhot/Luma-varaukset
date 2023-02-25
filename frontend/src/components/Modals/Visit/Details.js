@@ -91,6 +91,10 @@ const Details = ({ visit, event }) => {
       <Text>{visit.grade}</Text>
     </P>
     <P>
+      <Title>{t('grade-information')}: </Title>
+      <Text>{visit.gradeInfo}</Text>
+    </P>
+    <P>
       <Title>{t('participants')}: </Title>
       <Text>{visit.participants}</Text>
     </P>

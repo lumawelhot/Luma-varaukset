@@ -22,7 +22,7 @@ export const useEventFilter = ({ all, parsed }) => {
       ?.filter(p => {
         const { grades } = filterOptions
         if (grades.length <= 0) return true
-        return someExist(all[p.id]?.grades, grades.map(c => c.value))
+        return someExist(all[p.id]?.grades?.map(g => g.name), grades.map(c => c.id))
       })
       ?.filter(p => {
         const { tags } = filterOptions

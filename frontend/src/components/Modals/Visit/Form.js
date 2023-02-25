@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { Stack } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { Input, TimePicker } from '../../Embeds/Input'
+import { Input, Select, TimePicker } from '../../Embeds/Input'
 import Title, { Error, required } from '../../Embeds/Title'
-import { PLATFORMS } from '../../../config'
+import { GRADES, PLATFORMS } from '../../../config'
 import { Checkbox, Radio, RadioGroup, CheckboxGroup } from '../../Embeds/Button'
 import { add, format, set } from 'date-fns'
 import { VisitValidation } from '../../../helpers/validate'
@@ -22,6 +22,7 @@ const Form = ({ formId, show, onSubmit, event, visit }) => {
 
   if (!event) return <></>
   const form = event?.customForm
+  const grades = event?.grades
 
   const { control, register, handleSubmit, formState: { errors }, setValue, watch, getValues } = useForm({
     resolver: !visit ? yupResolver(VisitValidation(form)) : undefined,
@@ -81,7 +82,7 @@ const Form = ({ formId, show, onSubmit, event, visit }) => {
           {event?.remotePlatforms
             .map(j => PLATFORMS.map((_, i) => i + 1).includes(j)
               ? [PLATFORMS[j - 1], j] : [event.otherRemotePlatformOption, j])
-            .map(r => <Radio key={r[1]} value={`${r[1]}`}>{r[0]}</Radio>)
+            .map(r => <Radio key={r[1]} value={`${r[0]}`}>{r[0]}</Radio>)
           }
           <Radio value={`${event?.remotePlatforms.length + 2}`}>{t('other-what')}</Radio>
           {parseInt(watch('remotePlatform')) === event.remotePlatforms.length + 2 &&
@@ -116,7 +117,18 @@ const Form = ({ formId, show, onSubmit, event, visit }) => {
 
       <Stack direction='horizontal'>
         <div style={{ width: '70%', marginRight: 15 }}>
-          <Input id='grade' title={required(t('grade'))} {...register('grade')} />
+          <Select
+            title={required(t('grade'))}
+            isMulti={false}
+            value={watch('grade')}
+            isClearable={false}
+            menuPlacement='top'
+            options={GRADES
+              .filter(g => grades?.map(g => g.name)?.includes(g.label))
+              .map(g => ({ ...g, label: t(g.label) }))
+            }
+            onChange={v => setValue('grade', v)}
+          />
         </div>
         <div>
           <Input id='participants' type='number' title={required(t('participants'))} {...register('participants')} />
@@ -124,6 +136,8 @@ const Form = ({ formId, show, onSubmit, event, visit }) => {
       </Stack>
       {errors.grade && <Error>{t(errors.grade.message)}</Error>}
       {!errors.grade && errors.participants && <Error>{t('invalid-participants')}</Error>}
+
+      <Input id='gradeInfo' title={t('grade-info')} {...register('gradeInfo')} />
 
       <CheckboxGroup name='extras' control={control} onChange={v => {
         const duration = totalDuration({ extras: v })

@@ -78,7 +78,7 @@ export const VisitValidation = form => {
       .typeError(t('invalid-time')),
     clientPhone: Yup.string()
       .required(t('fill-field')),
-    grade: Yup.string()
+    grade: Yup.object()
       .required(t('fill-field')),
     participants: Yup.number()
       .min(1, t('too-small'))

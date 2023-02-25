@@ -123,7 +123,7 @@ const Form = ({ formId, onSubmit, initialValues, type }) => {
 
       <CheckboxGroup name='grades' title={required(t('choose-grades'))} control={control} render={<>
         {GRADES.map(c => (
-          <Checkbox key={c.value} value={c.value.toString()}>{t(c.label)}</Checkbox>
+          <Checkbox key={c.value} value={c.label}>{t(c.label)}</Checkbox>
         ))}
       </>}/>
       {errors.grades && <Error>{t(errors.grades.message)}</Error>}

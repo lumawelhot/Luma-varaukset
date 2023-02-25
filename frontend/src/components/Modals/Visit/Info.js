@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Badge } from '../../Embeds/Utils'
-import { LANG_MAP, CLASSES, GRADES } from '../../../config'
+import { LANG_MAP, CLASSES } from '../../../config'
 import { format } from 'date-fns'
 import { Title, Text, Li, Ul, P } from '../../Embeds/Info'
 import { useEvents } from '../../../hooks/cache'
@@ -37,7 +37,7 @@ const Info = () => {
       </P>}
       <P>
         <Title>{t('available-grades')}: </Title>
-        <Ul>{event?.grades?.map((g, i) => <Li key={i}>{t(GRADES[g - 1]?.label)}</Li>)}</Ul>
+        <Ul>{event?.grades?.map((g, i) => <Li key={i}>{t(g.name)}</Li>)}</Ul>
       </P>
       <P>
         <Title>{t('event-on-offer')}: </Title>

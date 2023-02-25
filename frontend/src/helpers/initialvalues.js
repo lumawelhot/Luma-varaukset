@@ -61,7 +61,7 @@ export const eventInitialValues = (event = {}) => {
     duration: duration || 60,
     tags: tags ? parseTags(tags) : [],
     languages: languages || ['fi'],
-    grades: grades?.map(g => String(g)) || [],
+    grades: grades?.map(g => g?.name) || [],
     resourceids: resourceids?.map(r => String(r)) || [],
     start: originalStart ? new Date(originalStart) : start ? new Date(start) : todayByHours(8),
     end: originalEnd ? new Date(originalEnd) : end ? new Date(end) : todayByHours(16),
@@ -100,6 +100,10 @@ export const visitInitialValues = (event, visit = {}) => {
     extras: visit.extras?.map(e => e.id) || [],
     startTime: new Date(event.start),
     endTime: add(new Date(event.start), { minutes: event.duration }),
+    eventTimes: {
+      start: new Date(event.start),
+      end: new Date(event.end)
+    },
     customFormData,
     limits: event.limits,
     visitType: type ? type : remote ? 'remote' : school ? 'school' : 'inperson',

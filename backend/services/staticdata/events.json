@@ -2,7 +2,9 @@
   {
     "title": "Maanjäristysten alueellisuus ja niiden vaikutukset",
     "resourceids": [4],
-    "grades": [1],
+    "grades": [{
+      "name": "grade1"
+    }],
     "inPersonVisit": true,
     "remoteVisit": false,
     "schoolVisit": false,
@@ -16,7 +18,9 @@
   {
     "title": "Lämpösäteily ja ilmastonmuutos",
     "resourceids": [4],
-    "grades": [1],
+    "grades": [{
+      "name": "grade1"
+    }],
     "inPersonVisit": true,
     "remoteVisit": false,
     "schoolVisit": false,
@@ -30,7 +34,9 @@
   {
     "title": "Kemian kokeelliset työt",
     "resourceids": [4],
-    "grades": [1],
+    "grades": [{
+      "name": "grade1"
+    }],
     "inPersonVisit": true,
     "remoteVisit": false,
     "schoolVisit": false,
@@ -44,7 +50,9 @@
   {
     "title": "Python-ohjelmointikieli",
     "resourceids": [3],
-    "grades": [1],
+    "grades": [{
+      "name": "grade1"
+    }],
     "inPersonVisit": true,
     "remoteVisit": false,
     "schoolVisit": false,
@@ -59,7 +67,9 @@
     "title": "Matematiikan työpaja",
     "desc": "kuvaus",
     "resourceids": [1,2],
-    "grades": [1],
+    "grades": [{
+      "name": "grade1"
+    }],
     "inPersonVisit": true,
     "remoteVisit": false,
     "schoolVisit": false,
@@ -74,7 +84,11 @@
     "title": "Scratch-ohjelmointikieli",
     "desc": "kuvaus",
     "resourceids": [3],
-    "grades": [1, 2],
+    "grades": [{
+      "name": "grade1"
+    }, {
+      "name": "Toinen aste"
+    }],
     "inPersonVisit": true,
     "remoteVisit": false,
     "schoolVisit": false,
@@ -89,7 +103,11 @@
     "title": "Booked",
     "desc": "kuvaus",
     "resourceids": [3],
-    "grades": [1, 2],
+    "grades": [{
+      "name": "grade1"
+    }, {
+      "name": "Toinen aste"
+    }],
     "inPersonVisit": true,
     "remoteVisit": false,
     "schoolVisit": false,

@@ -97,7 +97,10 @@ class TransactionMock {
     for (const [key, inst] of Object.entries(this.instances)) {
       const model = key.split('-')[1]
       delete inst._id
-      const modelInst = new models[model](inst)
+      const modelInst = new models[model](
+        // We have to use encoder here because otherwise data is not compatible with models
+        encoders[model.toLowerCase()].encode(inst)
+      )
       const error = modelInst.validateSync()
       if (error
         && !error.message.includes('Cast to ObjectId failed for value')

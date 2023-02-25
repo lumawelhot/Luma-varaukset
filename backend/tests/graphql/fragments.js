@@ -5,7 +5,9 @@ const EVENT_FIELDS = gql`
     id
     title
     resourceids
-    grades
+    grades {
+      name
+    }
     remotePlatforms
     otherRemotePlatformOption
     waitingTime

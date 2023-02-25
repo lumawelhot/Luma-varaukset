@@ -33,6 +33,9 @@ const visitSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  gradeInfo: {
+    type: String
+  },
   participants: {
     type: Number,
     required: true

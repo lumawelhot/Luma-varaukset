@@ -84,6 +84,7 @@ export const parseCSV = (visit, event) => {
           : 'lähiopetus koululla',
       'Event language': visit?.language === 'en' ? 'englanti' : (visit?.language === 'sv' ? 'ruotsi' : 'suomi'),
       'Event grade': visit?.grade,
+      'Event grade information': visit?.gradeInfo,
       'Event group': event?.group?.name,
       'Event science class': event?.resourceids?.map(r => CLASSES?.find(c => c?.value === r)?.label).join(', '),
       'Event status': status,
@@ -128,6 +129,7 @@ export const parseVisitSubmission = values => {
   const type = values.visitType
   const location = otherRemote?.length ? otherRemote : values?.remotePlatform
   const customFormData = JSON.stringify(values.customFormData?.map((c, i) => ({ ...c, value: fieldValues[i] })))
+  const { grade } = values
 
   let payloadFields = null
   if (values.payload) {
@@ -159,6 +161,7 @@ export const parseVisitSubmission = values => {
     participants: Number(values.participants),
     event: undefined, // important, otherwise ...values delivers it
     ...payloadFields,
+    grade: grade.label
   }
 }
 
@@ -183,7 +186,9 @@ export const parseEventSubmission = values => {
     dates: dates?.map(d => new Date(d.date).toISOString()),
     tags: tags?.map(t => t.label),
     resourceids: resourceids?.map(r => Number(r)),
-    grades: grades?.map(g => Number(g)),
+    grades: grades?.map(g => ({
+      name: g
+    })),
     closedDays: Number(closedDays),
     remotePlatforms: remotePlatforms?.map(r => Number(r)),
     group: group?.value || null,
