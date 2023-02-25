@@ -84,6 +84,7 @@ export const parseCSV = (visit, event) => {
           : 'lähiopetus koululla',
       'Event language': visit?.language === 'en' ? 'englanti' : (visit?.language === 'sv' ? 'ruotsi' : 'suomi'),
       'Event grade': visit?.grade,
+      'Event grade information': visit?.gradeInfo,
       'Event group': event?.group?.name,
       'Event science class': event?.resourceids?.map(r => CLASSES?.find(c => c?.value === r)?.label).join(', '),
       'Event status': status,

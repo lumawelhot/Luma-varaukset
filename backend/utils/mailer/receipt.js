@@ -149,6 +149,7 @@ const getNotifyHtml = (visit, event) => {
           'Opetusyhteisön nimi',
           'Opetusyhteisön sijainti',
           'Luokka-aste',
+          'Lisätiedot ryhmästä',
           'Osallistujamäärä',
           'Lupa tutkimuskäyttöön',
           'Kieli'
@@ -160,6 +161,7 @@ const getNotifyHtml = (visit, event) => {
           u(visit.schoolName),
           u(visit.schoolLocation),
           u(visit.grade),
+          u(visit.gradeInfo),
           u(visit.participants),
           u(visit.dataUseAgreement ? 'Kyllä' : 'Ei'),
           u(visit.language === 'fi' ? 'Suomi' : (visit.language === 'en' ? 'Englanti' : 'Ruotsi'))
