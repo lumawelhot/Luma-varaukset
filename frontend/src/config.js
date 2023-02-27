@@ -27,6 +27,7 @@ export const CLASSES = [
 ]
 export const GRADES = [
   { value: 1, label: 'grade1' },
+  { value: 2, label: 'grade2' },
   { value: 3, label: 'grade3' },
   { value: 4, label: 'grade4' },
   { value: 5, label: 'grade5' }
