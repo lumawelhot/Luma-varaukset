@@ -37,7 +37,7 @@ const Info = () => {
       </P>}
       <P>
         <Title>{t('available-grades')}: </Title>
-        <Ul>{event?.grades?.map((g, i) => <Li key={i}>{t(g.name)}</Li>)}</Ul>
+        <Ul>{event?.grades?.map(g => g.name)?.sort()?.map((g, i) => <Li key={i}>{t(g)}</Li>)}</Ul>
       </P>
       <P>
         <Title>{t('event-on-offer')}: </Title>
