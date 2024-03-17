@@ -56,3 +56,11 @@ Kun MongoDB pyörii Docker kontissa voidaan sovelluksen backend käynnistää ko
 ## Muuta
 
 Vanhentuneita varausjärjestelmän v2 käyttöohjeita voidaan tarkastella repositorion wikistä. Osa käyttöohjeista saattaa olla vielä käyttökelpoisia.
+
+### Tiedot testikäyttäjille
+
+Testikäyttäjät löytyvät backend\services\staticdata\users.json 
+
+Admintili - Admin:salainen
+Käyttäjätili - Employee:emp
+Käyttäjätili - Employee2:emp

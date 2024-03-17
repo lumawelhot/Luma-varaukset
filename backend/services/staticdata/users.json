@@ -8,5 +8,10 @@
     "username": "Employee",
     "password": "emp",
     "isAdmin": false
+  },
+  {
+    "username": "Employee2",
+    "password": "emp",
+    "isAdmin": false
   }
 ]
