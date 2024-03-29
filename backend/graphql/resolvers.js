@@ -238,8 +238,8 @@ const resolvers = {
         reserved: null
       })
 
-      //await sendWelcomes(visit, danglingEvent)
-      logger.info("REMEMBER TO UNCOMMENT ABOVE")
+      await sendWelcomes(visit, danglingEvent)
+
       pubsub.publish('EVENT_MODIFIED', { eventModified: danglingEvent })
       await session.commit()
       return visit
@@ -308,12 +308,7 @@ const resolvers = {
       const visitStartDate = new Date(visit.startTime)
       const daysUntilVisit = differenceInCalendarDays(visitStartDate, today)
 
-      logger.info(daysUntilVisit)
-      if (daysUntilVisit <= 14) {
-        logger.info('Cancellation not allowed within two weeks of the visit')
-        throw new UserInputError('Cancellation not allowed within two weeks of the visit')
-      }
-
+      if (daysUntilVisit <= 14) throw new UserInputError('Cancellation not allowed within two weeks of the visit')
 
       let event = await eventInst.findById(visit.event, expandEvents)
 
@@ -351,8 +346,8 @@ const resolvers = {
         cancellation: args.cancellation ? JSON.parse(args.cancellation) : null // do not return undefined
       })
 
-      //await sendCancellation(danglingVisit, event)
-      logger.info("REMEMBER UNCOMMENT ABOVE")
+      await sendCancellation(danglingVisit, event)
+
       await session.commit()
       if (danglingEvent) {
         pubsub.publish('EVENT_MODIFIED', { eventModified: danglingEvent })
