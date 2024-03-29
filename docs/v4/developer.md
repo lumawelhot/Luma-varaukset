@@ -64,3 +64,9 @@ Testikäyttäjät löytyvät backend\services\staticdata\users.json
 - Admintili - Admin:salainen
 - Käyttäjätili - Employee:emp
 - Käyttäjätili - Employee2:emp
+
+### Virhetilanteita
+
+- [debug] [24-03-29 15:05:34]: Error: "connect ECONNREFUSED fe80::9e96:24ff:6372:4a58:587", Path: "createVisit"
+    - Virhe johtuu CORS:sista (https://github.com/Janitus/Luma-varaukset/blob/main/backend/app.js#L72).
+    - On mahdollista säätää tämä väliaikaisesti pois päältä hyväksyen kaikki yhteydet, mutta tälläisenään sitä ei kuuluisi jättää!
