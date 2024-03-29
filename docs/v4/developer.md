@@ -61,6 +61,6 @@ Vanhentuneita varausjärjestelmän v2 käyttöohjeita voidaan tarkastella reposi
 
 Testikäyttäjät löytyvät backend\services\staticdata\users.json 
 
-Admintili - Admin:salainen
-Käyttäjätili - Employee:emp
-Käyttäjätili - Employee2:emp
+- Admintili - Admin:salainen
+- Käyttäjätili - Employee:emp
+- Käyttäjätili - Employee2:emp
