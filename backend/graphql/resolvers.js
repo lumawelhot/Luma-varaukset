@@ -238,8 +238,8 @@ const resolvers = {
         reserved: null
       })
 
-      await sendWelcomes(visit, danglingEvent)
-
+      //await sendWelcomes(visit, danglingEvent)
+      logger.info("REMEMBER TO UNCOMMENT ABOVE")
       pubsub.publish('EVENT_MODIFIED', { eventModified: danglingEvent })
       await session.commit()
       return visit
@@ -346,8 +346,8 @@ const resolvers = {
         cancellation: args.cancellation ? JSON.parse(args.cancellation) : null // do not return undefined
       })
 
-      await sendCancellation(danglingVisit, event)
-
+      //await sendCancellation(danglingVisit, event)
+      logger.info("REMEMBER UNCOMMENT ABOVE")
       await session.commit()
       if (danglingEvent) {
         pubsub.publish('EVENT_MODIFIED', { eventModified: danglingEvent })

@@ -69,16 +69,7 @@ if (process.env.NODE_ENV === 'e2e') {
 }
 
 // These are not probably needed, consider to remove:
-//app.use(cors())
-
-// REMOVE LATER
-
-const corsOptions = {
-  origin: '*',
-  optionsSuccessStatus: 200
-}
-app.use(cors(corsOptions))
-// REMOVE LATER
+app.use(cors())
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
