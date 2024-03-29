@@ -12,7 +12,7 @@ const { sendWelcomes, sendCancellation } = require('../utils/mailer/mailSender')
 const { PubSub } = require('graphql-subscriptions')
 const { expandEvents, expandGroups, expandVisits, expandVisitTimes } = require('../db/expand')
 const logger = require('../logger')
-const { subDays } = require('date-fns')
+const { subDays, differenceInCalendarDays } = require('date-fns')
 const pubsub = new PubSub()
 
 const resolvers = {
@@ -207,8 +207,8 @@ const resolvers = {
     }),
     createVisit: async (root, args, { currentUser }) => {
       const [session, eventInst, groupInst, visitInst] = Transaction.construct(Event, Group, Visit)
-
       const event = await eventInst.findById(args.event)
+
       createVisitValidate(args, event, currentUser)
 
       const group = await groupInst.DeltaUpdate(event.group, {
@@ -216,10 +216,10 @@ const resolvers = {
         returnOriginal: true,
         forceUpdate: !!currentUser
       })
+
       if (group?.disabled && !currentUser) throw new UserInputError('Event is assigned to a disabled group')
 
       const extras = await Extra.findByIds(args.extras)
-
       const visit = await visitInst.insert({
         ...args,
         event: event.id,
@@ -238,7 +238,8 @@ const resolvers = {
         reserved: null
       })
 
-      await sendWelcomes(visit, danglingEvent)
+      //await sendWelcomes(visit, danglingEvent)
+      logger.info("REMEMBER TO UNCOMMENT ABOVE")
       pubsub.publish('EVENT_MODIFIED', { eventModified: danglingEvent })
       await session.commit()
       return visit
@@ -303,6 +304,17 @@ const resolvers = {
       const visit = await visitInst.findById(args.id)
       if (!visit || visit.status === false) throw new UserInputError('Visit not found')
 
+      const today = new Date()
+      const visitStartDate = new Date(visit.startTime)
+      const daysUntilVisit = differenceInCalendarDays(visitStartDate, today)
+
+      logger.info(daysUntilVisit)
+      if (daysUntilVisit <= 14) {
+        logger.info('Cancellation not allowed within two weeks of the visit')
+        throw new UserInputError('Cancellation not allowed within two weeks of the visit')
+      }
+
+
       let event = await eventInst.findById(visit.event, expandEvents)
 
       const group = await groupInst.DeltaUpdate(event.group, { visitCount: -1, returnOriginal: true })
@@ -339,7 +351,8 @@ const resolvers = {
         cancellation: args.cancellation ? JSON.parse(args.cancellation) : null // do not return undefined
       })
 
-      await sendCancellation(danglingVisit, event)
+      //await sendCancellation(danglingVisit, event)
+      logger.info("REMEMBER UNCOMMENT ABOVE")
       await session.commit()
       if (danglingEvent) {
         pubsub.publish('EVENT_MODIFIED', { eventModified: danglingEvent })
