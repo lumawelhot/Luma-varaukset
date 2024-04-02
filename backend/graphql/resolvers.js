@@ -21,10 +21,14 @@ const resolvers = {
     getEvent: (root, args) => Event.findById(args.id, expandEvents),
     getEvents: async (root, args, { currentUser }) => {
       if (args.ids) return Event.findByIds(args.ids, expandEvents)
-      const events = await Event.FindByRange({ end: { after: subDays(new Date(), currentUser?.isAdmin ? 365 * 10 : 90) } }, expandEvents)
-      return currentUser ? events : events
+      const rangeDays = currentUser ? 90 : 365 * 10
+      const events = await Event.FindByRange({ end: { after: subDays(new Date(), rangeDays) } }, expandEvents)
+
+      const returnedEvents = currentUser ? events : events
         .filter(e => !e.publishDate || new Date() >= new Date(e.publishDate))
         .map(e => e.group?.disabled ? { ...e, availableTimes: [] } : e)
+
+      return returnedEvents
     },
     getTags: () => Tag.find(),
     getVisits: authorized(() => Visit.find({}, expandVisits)),
