@@ -21,7 +21,7 @@ const resolvers = {
     getEvent: (root, args) => Event.findById(args.id, expandEvents),
     getEvents: async (root, args, { currentUser }) => {
       if (args.ids) return Event.findByIds(args.ids, expandEvents)
-      const rangeDays = currentUser ? 90 : 365 * 10
+      const rangeDays = currentUser ? 365 * 10 : 90 // 10 years when logged in, 90 days otherwise
       const events = await Event.FindByRange({ end: { after: subDays(new Date(), rangeDays) } }, expandEvents)
 
       const returnedEvents = currentUser ? events : events
