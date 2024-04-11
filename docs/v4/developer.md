@@ -68,4 +68,4 @@ Testikäyttäjät löytyvät backend\services\staticdata\users.json
 ### Virhetilanteita
 
 - [debug] [24-03-29 15:05:34]: Error: "connect ECONNREFUSED fe80::9e96:24ff:6372:4a58:587", Path: "createVisit" (tai "cancelVisit")
-    - Virhe johtuu utils/mailer/mailSenderin 'sendWelcomes' ja 'sendCancellation' funktionaalisuuksista, todennäköisesti kun yrität käyttää jotain kahta ylempää mainittua queryä. Nämä voi disabloida, mutta muista palauttaa takaisin.
+    - Virhe mahdollisesti johtuu utils/mailer/mailSenderin 'sendWelcomes' ja 'sendCancellation' funktionaalisuuksista, todennäköisesti kun yrität käyttää jotain kahta ylempää mainittua queryä.
