@@ -301,7 +301,7 @@ const resolvers = {
       if (_danglingEvent) pubsub.publish('EVENT_MODIFIED', { eventModified: _danglingEvent })
       return danglingVisit
     }),
-    cancelVisit: async (root, args) => {
+    cancelVisit: async (root, args, { currentUser }) => {
       const [session, eventInst, groupInst, visitInst] = Transaction.construct(Event, Group, Visit)
 
       const visit = await visitInst.findById(args.id)
@@ -311,7 +311,7 @@ const resolvers = {
       const visitStartDate = new Date(visit.startTime)
       const daysUntilVisit = differenceInCalendarDays(visitStartDate, today)
 
-      if (daysUntilVisit <= 14) throw new UserInputError('Cancellation not allowed within two weeks of the visit')
+      if (daysUntilVisit <= 14 && !currentUser) throw new UserInputError('Cancellation not allowed within two weeks of the visit')
 
       let event = await eventInst.findById(visit.event, expandEvents)
 
