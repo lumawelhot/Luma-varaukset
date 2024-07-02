@@ -177,7 +177,7 @@ const Form = ({ formId, show, onSubmit, event, visit }) => {
         {!visit && <Checkbox {...register('privacyPolicy')} >
           {required(<span>{t('accept-privacy-policy1')} <a
             className='default'
-            href='https://www2.helsinki.fi/fi/tiedekasvatus/tietosuojailmoitus-opintokaynnit'
+            href='https://www.helsinki.fi/fi/tiedekasvatus/tietoa-meista'
             target='_blank'
             rel='noreferrer'
           >{t('privacy-policy')}</a> {t('accept-privacy-policy2')}</span>)}
