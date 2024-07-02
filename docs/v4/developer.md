@@ -56,3 +56,16 @@ Kun MongoDB pyörii Docker kontissa voidaan sovelluksen backend käynnistää ko
 ## Muuta
 
 Vanhentuneita varausjärjestelmän v2 käyttöohjeita voidaan tarkastella repositorion wikistä. Osa käyttöohjeista saattaa olla vielä käyttökelpoisia.
+
+### Tiedot testikäyttäjille
+
+Testikäyttäjät löytyvät backend\services\staticdata\users.json 
+
+- Admintili - Admin:salainen
+- Käyttäjätili - Employee:emp
+- Käyttäjätili - Employee2:emp
+
+### Virhetilanteita
+
+- [debug] [24-03-29 15:05:34]: Error: "connect ECONNREFUSED fe80::9e96:24ff:6372:4a58:587", Path: "createVisit" (tai "cancelVisit")
+    - Virhe mahdollisesti johtuu utils/mailer/mailSenderin 'sendWelcomes' ja 'sendCancellation' funktionaalisuuksista, todennäköisesti kun yrität käyttää jotain kahta ylempää mainittua queryä.

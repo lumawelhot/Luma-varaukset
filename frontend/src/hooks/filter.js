@@ -9,7 +9,7 @@ export const useEventFilter = ({ all, parsed }) => {
     grades: [],
     classes: [],
     visitTypes: ['inperson', 'remote', 'school'],
-    showUnavailable: false
+    showUnavailable: true
   })
   const filtered = useMemo(() => {
     if (!all) return parsed

@@ -7,7 +7,7 @@ describe('Common.js', () => {
   // find
   it('all users are returned', async () => {
     const users = await User.find()
-    expect(users.map(u => u.username)).to.deep.members(['Admin', 'Employee'])
+    expect(users.map(u => u.username)).to.deep.members(['Admin', 'Employee', 'Employee2'])
   })
 
   // findOne
@@ -54,7 +54,7 @@ describe('Common.js', () => {
     const users = await User.find()
     expect(user.username).to.equal('NewUser')
     expect(users.map(u => u.id)).to.include(user.id)
-    expect(users.length).to.equal(3)
+    expect(users.length).to.equal(4)
   })
 
   it('a new user is not added if a session is valid', async () => {

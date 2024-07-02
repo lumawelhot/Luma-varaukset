@@ -12,7 +12,7 @@ const { sendWelcomes, sendCancellation } = require('../utils/mailer/mailSender')
 const { PubSub } = require('graphql-subscriptions')
 const { expandEvents, expandGroups, expandVisits, expandVisitTimes } = require('../db/expand')
 const logger = require('../logger')
-const { subDays } = require('date-fns')
+const { subDays, differenceInCalendarDays } = require('date-fns')
 const pubsub = new PubSub()
 
 const resolvers = {
@@ -21,10 +21,14 @@ const resolvers = {
     getEvent: (root, args) => Event.findById(args.id, expandEvents),
     getEvents: async (root, args, { currentUser }) => {
       if (args.ids) return Event.findByIds(args.ids, expandEvents)
-      const events = await Event.FindByRange({ end: { after: subDays(new Date(), currentUser?.isAdmin ? 365 * 10 : 90) } }, expandEvents)
-      return currentUser ? events : events
+      const rangeDays = currentUser ? 365 * 10 : 90 // 10 years when logged in, 90 days otherwise
+      const events = await Event.FindByRange({ end: { after: subDays(new Date(), rangeDays) } }, expandEvents)
+
+      const returnedEvents = currentUser ? events : events
         .filter(e => !e.publishDate || new Date() >= new Date(e.publishDate))
         .map(e => e.group?.disabled ? { ...e, availableTimes: [] } : e)
+
+      return returnedEvents
     },
     getTags: () => Tag.find(),
     getVisits: authorized(() => Visit.find({}, expandVisits)),
@@ -207,8 +211,8 @@ const resolvers = {
     }),
     createVisit: async (root, args, { currentUser }) => {
       const [session, eventInst, groupInst, visitInst] = Transaction.construct(Event, Group, Visit)
-
       const event = await eventInst.findById(args.event)
+
       createVisitValidate(args, event, currentUser)
 
       const group = await groupInst.DeltaUpdate(event.group, {
@@ -216,10 +220,10 @@ const resolvers = {
         returnOriginal: true,
         forceUpdate: !!currentUser
       })
+
       if (group?.disabled && !currentUser) throw new UserInputError('Event is assigned to a disabled group')
 
       const extras = await Extra.findByIds(args.extras)
-
       const visit = await visitInst.insert({
         ...args,
         event: event.id,
@@ -302,6 +306,12 @@ const resolvers = {
 
       const visit = await visitInst.findById(args.id)
       if (!visit || visit.status === false) throw new UserInputError('Visit not found')
+
+      const today = new Date()
+      const visitStartDate = new Date(visit.startTime)
+      const daysUntilVisit = differenceInCalendarDays(visitStartDate, today)
+
+      if (daysUntilVisit <= 14) throw new UserInputError('Cancellation not allowed within two weeks of the visit')
 
       let event = await eventInst.findById(visit.event, expandEvents)
 

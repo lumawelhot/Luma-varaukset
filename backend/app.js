@@ -70,6 +70,7 @@ if (process.env.NODE_ENV === 'e2e') {
 
 // These are not probably needed, consider to remove:
 app.use(cors())
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
