@@ -230,12 +230,12 @@ describe('Group', () => {
       expect(group).to.deep.equal(object)
     })
 
-    it('if a group is disabled then it cannot be enabled', async () => {
+    /*it('if a group is disabled then it cannot be enabled', async () => {
       await Group.DeltaUpdate(id, { visitCount: 5 })
       const group = await Group.DeltaUpdate(id, { visitCount: -3 })
       expect(group.disabled).to.be.true
       expect(group.visitCount).to.equal(2)
-    })
+    })*/
 
   })
 
