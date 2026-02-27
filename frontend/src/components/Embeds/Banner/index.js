@@ -29,6 +29,11 @@ const Banner = ({ show }) => {
             >{t('banner-text2')}</BannerLink>
             {t('banner-text3')}
           </BannerText>
+          <div style={{ backgroundColor: 'white', color: 'black', padding: '0.5rem', marginTop: '1rem', borderLeft: '5px solid orange', borderRadius: '5px' }}>
+            <BannerText>
+              {t('banner-instructions')}
+            </BannerText>
+          </div>
           <div style={{ marginLeft: -10, marginTop: 5 }}>
             <Button className='active' onClick={() => i18n.changeLanguage('fi-FI')}>FI</Button>
             <Button className='active' onClick={() => i18n.changeLanguage('sv-SV')}>SV</Button>
