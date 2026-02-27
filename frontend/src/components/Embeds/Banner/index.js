@@ -22,7 +22,7 @@ const Banner = ({ show }) => {
           <BannerTitle>{t('banner-title')}</BannerTitle>
           <BannerText>
             {t('banner-text1')}
-            <BannerLink
+            <BannerLink style={{ fontWeight: 'bold' }}
               href='https://www.helsinki.fi/fi/tiedekasvatus/opettajille-ja-opetuksen-tueksi/opintokaynnit-ja-lainattavat-tarvikkeet'
               target='_blank'
               rel='noreferrer'
