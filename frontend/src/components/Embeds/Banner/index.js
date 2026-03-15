@@ -29,7 +29,7 @@ const Banner = ({ show }) => {
             >{t('banner-text2')}</BannerLink>
             {t('banner-text3')}
           </BannerText>
-          <div style={{ backgroundColor: 'rgb(255 242 225)', color: '#1A202C', padding: '.75rem', marginTop: '0.5rem', borderLeft: '1px solid #FF991C', borderLeftWidth: '0.5rem' }}>
+          <div className='calendar-instruction' style={{ backgroundColor: 'rgb(255 242 225)', color: '#1A202C', padding: '.75rem', marginTop: '0.5rem', borderLeft: '1px solid #FF991C', borderLeftWidth: '0.5rem' }}>
             <BannerText>
               {t('banner-instructions')}
             </BannerText>
