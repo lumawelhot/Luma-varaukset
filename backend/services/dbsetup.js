@@ -12,7 +12,7 @@ const createEvent = async event => {
   const randomDays = Math.floor(Math.random() * 10)
   const start = addBusinessDays(set(new Date(), { hours: 8 + randomHours, minutes: 0, seconds: 0, milliseconds: 0 }), 10 + randomDays).toISOString()
   const end = addBusinessDays(set(new Date(), { hours: 10 + randomHours, minutes: 0, seconds: 0, milliseconds: 0 }), 10 + randomDays).toISOString()
-  Event.insert({
+  await Event.insert({
     ...event,
     start,
     end,
@@ -34,8 +34,8 @@ const initializeDB = async () => {
   }))
     .concat(extras.map(e => Extra.insert(e)))
     .concat(emails.map(e => Email.insert(e)))
-    .concat(events.map(event => createEvent(event)))
-    .concat(events.map(event => createEvent(event)))
+    .concat(await Promise.all(events.map(event => createEvent(event))))
+    .concat(await Promise.all(events.map(event => createEvent(event))))
     .concat(groups.map(group => Group.Insert(group)))
     .concat(forms.map(f => ({ ...f, fields: JSON.parse(f.fields) })).map(form => Form.insert(form))))
   const booked = await Event.find({ title: 'Booked' })
