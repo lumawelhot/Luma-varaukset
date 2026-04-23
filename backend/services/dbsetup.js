@@ -78,18 +78,25 @@ const unlockEvents = async () => {
 
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'e2e') { // dev mode
   const { MongoMemoryServer } = require('mongodb-memory-server')
-  const mongoServer = new MongoMemoryServer()
-  mongoServer.getUri().then(uri => {
-    mongoose.connect(uri)
-      .then(async () => {
-        logger.info('Connected to MongoDB memory server, initializing database')
-        await initializeDB()
-        logger.info('Database initialized')
-      })
-      .catch((error) => {
-        logger.critical('Error connecting to MongoDB: ', error.message)
-      })
-  })
+
+  const startMemoryDB = async () => {
+    try {
+      const mongoServer = await MongoMemoryServer.create()
+      const uri = mongoServer.getUri()
+
+      await mongoose.connect(uri)
+
+      logger.info('Connected to MongoDB memory server, initializing database')
+
+      await initializeDB()
+
+      logger.info('Database initialized')
+    } catch (error) {
+      logger.critical('Error connecting to MongoDB memory server: ', error.message)
+    }
+  }
+
+  startMemoryDB()
 } else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'docker') {
   const uri = process.env.NODE_ENV === 'production'
     ? 'mongodb://luma-varaukset-db:27017/luma-varaukset' // production mode
