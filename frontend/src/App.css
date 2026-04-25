@@ -238,3 +238,9 @@ body {
     display: none !important;
   }
 }
+
+@media (max-width: 1000px) {
+  .calendar-instruction {
+    display: none
+  }
+}

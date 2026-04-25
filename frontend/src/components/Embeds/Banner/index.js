@@ -22,13 +22,18 @@ const Banner = ({ show }) => {
           <BannerTitle>{t('banner-title')}</BannerTitle>
           <BannerText>
             {t('banner-text1')}
-            <BannerLink
+            <BannerLink style={{ fontWeight: '600', textUnderlineOffset: '2px' }}
               href='https://www.helsinki.fi/fi/tiedekasvatus/opettajille-ja-opetuksen-tueksi/opintokaynnit-ja-lainattavat-tarvikkeet'
               target='_blank'
               rel='noreferrer'
             >{t('banner-text2')}</BannerLink>
             {t('banner-text3')}
           </BannerText>
+          <div className='calendar-instruction' style={{ backgroundColor: 'rgb(255 242 225)', color: '#1A202C', padding: '.75rem', marginTop: '0.5rem', borderLeft: '1px solid #FF991C', borderLeftWidth: '0.5rem' }}>
+            <BannerText>
+              {t('banner-instructions')}
+            </BannerText>
+          </div>
           <div style={{ marginLeft: -10, marginTop: 5 }}>
             <Button className='active' onClick={() => i18n.changeLanguage('fi-FI')}>FI</Button>
             <Button className='active' onClick={() => i18n.changeLanguage('sv-SV')}>SV</Button>

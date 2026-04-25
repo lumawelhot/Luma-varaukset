@@ -12,7 +12,7 @@ const createEvent = async event => {
   const randomDays = Math.floor(Math.random() * 10)
   const start = addBusinessDays(set(new Date(), { hours: 8 + randomHours, minutes: 0, seconds: 0, milliseconds: 0 }), 10 + randomDays).toISOString()
   const end = addBusinessDays(set(new Date(), { hours: 10 + randomHours, minutes: 0, seconds: 0, milliseconds: 0 }), 10 + randomDays).toISOString()
-  Event.insert({
+  await Event.insert({
     ...event,
     start,
     end,
@@ -34,8 +34,8 @@ const initializeDB = async () => {
   }))
     .concat(extras.map(e => Extra.insert(e)))
     .concat(emails.map(e => Email.insert(e)))
-    .concat(events.map(event => createEvent(event)))
-    .concat(events.map(event => createEvent(event)))
+    .concat(await Promise.all(events.map(event => createEvent(event))))
+    .concat(await Promise.all(events.map(event => createEvent(event))))
     .concat(groups.map(group => Group.Insert(group)))
     .concat(forms.map(f => ({ ...f, fields: JSON.parse(f.fields) })).map(form => Form.insert(form))))
   const booked = await Event.find({ title: 'Booked' })
@@ -78,18 +78,25 @@ const unlockEvents = async () => {
 
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'e2e') { // dev mode
   const { MongoMemoryServer } = require('mongodb-memory-server')
-  const mongoServer = new MongoMemoryServer()
-  mongoServer.getUri().then(uri => {
-    mongoose.connect(uri)
-      .then(async () => {
-        logger.info('Connected to MongoDB memory server, initializing database')
-        await initializeDB()
-        logger.info('Database initialized')
-      })
-      .catch((error) => {
-        logger.critical('Error connecting to MongoDB: ', error.message)
-      })
-  })
+
+  const startMemoryDB = async () => {
+    try {
+      const mongoServer = await MongoMemoryServer.create()
+      const uri = mongoServer.getUri()
+
+      await mongoose.connect(uri)
+
+      logger.info('Connected to MongoDB memory server, initializing database')
+
+      await initializeDB()
+
+      logger.info('Database initialized')
+    } catch (error) {
+      logger.critical('Error connecting to MongoDB memory server: ', error.message)
+    }
+  }
+
+  startMemoryDB()
 } else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'docker') {
   const uri = process.env.NODE_ENV === 'production'
     ? 'mongodb://luma-varaukset-db:27017/luma-varaukset' // production mode
