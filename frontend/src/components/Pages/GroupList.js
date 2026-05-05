@@ -15,7 +15,7 @@ const GroupList = () => {
   const [group, setGroup] = useState()
   useEffect(exec(fetchAll), [])
 
-  const groups = useMemo(() => all?.map(g => ({
+  const groups = useMemo(() => all?.slice().reverse().map(g => ({
     ...g,
     eventCount: g?.events?.length,
     hidden: g?.disabled ? t('yes') : t('no'),
