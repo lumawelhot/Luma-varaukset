@@ -185,7 +185,7 @@
   "groups": "Ryhmät",
   "name": "Nimi",
   "max-visits": "Varausmaksimi",
-  "event-count": "Vierailuiden määrä",
+  "event-count": "Mahdollisten vierailuiden määrä",
   "hidden": "Piilotettu",
   "add-group": "Lisää ryhmä",
   "create-group": "Luo uusi ryhmä",
