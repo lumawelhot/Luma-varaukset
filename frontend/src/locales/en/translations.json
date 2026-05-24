@@ -312,5 +312,8 @@
   "step-confirm": "Confirmation",
   "invalid-start": "Invalid start time",
   "invalid-end": "Invalid end time",
-  "end-after-start": "Invalid start time"
+  "end-after-start": "Invalid start time",
+
+  "grade-info": "Optional information about the group (course, more specific age group, optional group)",
+  "grade-information": "Optional information about the group"
 }
