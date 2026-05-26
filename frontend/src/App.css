@@ -246,7 +246,7 @@ body {
 }
 
 /* Background for week and day calendar cells */
-.fc-timegrid-col-frame {
+.fc-timegrid-body {
   background-image: repeating-linear-gradient(
     45deg,
     #f3f3f3,
