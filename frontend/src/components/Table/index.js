@@ -32,7 +32,7 @@ const Table = ({ columns, data, initialState, component, checkboxed, nosort, onC
     setPageSize,
     state: { pageIndex, pageSize }
   } = useTable(
-    { columns, data, initialState },
+    { columns, data, initialState, autoResetPage: false },
     useSortBy,
     usePagination
   )
