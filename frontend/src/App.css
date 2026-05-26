@@ -244,3 +244,25 @@ body {
     display: none
   }
 }
+
+/* Background for week and day calendar cells */
+.fc-timegrid-col-frame {
+  background-image: repeating-linear-gradient(
+    45deg,
+    #f3f3f3,
+    #f3f3f3 10px,
+    #ffffff 10px,
+    #ffffff 20px
+  )
+}
+
+/* Background for cells indicating date */
+.fc-col-header {
+  background-color: whitesmoke;
+}
+
+/* Background for cells indicating hours */
+.fc-timegrid-slot-label,
+.fc-timegrid-slot-label-frame {
+  background-color: whitesmoke;
+}
