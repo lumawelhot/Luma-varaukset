@@ -57,7 +57,7 @@ const ExtraList = () => {
       <Table checkboxed data={extras} columns={columns} component={e => (<>
         <Button onClick={() => setExtra(null)}>{t('create')}</Button>
         {e.checked.length > 0 && <Button onClick={() => {
-          const ids = e.checked.map(c => all[Number(c)].id) // WHY misc.extras ??
+          const ids = e.checked.map(c => extras[Number(c)].id) // WHY misc.extras ??
           handleRemove(ids)
           e.reset()
         }}>{t('remove-selected')}</Button>}
