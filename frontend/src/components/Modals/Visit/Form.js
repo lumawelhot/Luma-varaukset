@@ -161,11 +161,16 @@ const Form = ({ formId, show, onSubmit, event, visit }) => {
             hideHours={hour => hour < 8 || hour > 17}
             hideMinutes={minute => minute % 5 !== 0}
             onChange={v => {
-              const startTime = set(new Date(v), { seconds: 0, milliseconds: 0 })
+              const current = watch('startTime') ?? new Date()
+              const startTime = set(current, {
+                hours: v.getHours(),
+                minutes: v.getMinutes(),
+                seconds: 0,
+                milliseconds: 0,
+              })
               setValue('startTime', startTime)
               const duration = totalDuration()
-              const endTime = add(set(new Date(v), { seconds: 0, milliseconds: 0 }), { minutes: duration })
-              setValue('endTime', endTime)
+              setValue('endTime', add(startTime, { minutes: duration }))
             }}
           />
           <span style={{ fontSize: 15, marginTop: 8, marginLeft: 10 }}>{` – ${format(watch('endTime'), 'HH:mm')}`}</span>

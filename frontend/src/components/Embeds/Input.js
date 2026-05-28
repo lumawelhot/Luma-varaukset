@@ -97,6 +97,12 @@ export const TimePicker = React.forwardRef((rest, ref) => <div>
     timeCaption='Time'
     locale='fi'
     dateFormat='H:mm'
+    timeFormat='H:mm'
+    onChangeRaw={(e) => {
+      const input = e.target.value
+      const normalized = input.replace('.', ':')
+      e.target.value = normalized
+    }}
     { ...rest}
     title={undefined}
   />
