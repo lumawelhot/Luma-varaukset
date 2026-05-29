@@ -114,9 +114,19 @@ export const VisitValidation = form => {
 
 export const ExtraValidation = Yup.object().shape({
   name: Yup.string().required(t('fill-field')),
-  inPersonLength: Yup.number().min(1, t('too-small')).required(t('fill-field')),
-  remoteLength: Yup.number().min(1, t('too-small')).required(t('fill-field')),
-  classes: Yup.array().min(1)
+  inPersonLength: Yup.number()
+    .transform((value, originalValue) =>
+      originalValue === '' ? undefined : value
+    )
+    .required(t('fill-field'))
+    .min(1, t('too-small')),
+  remoteLength: Yup.number()
+    .transform((value, originalValue) =>
+      originalValue === '' ? undefined : value
+    )
+    .required(t('fill-field'))
+    .min(1, t('too-small')),
+  classes: Yup.array().min(1, t('atleast-one-resourceid'))
 })
 
 export const EventValidation = Yup.object().shape({
