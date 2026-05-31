@@ -1,5 +1,5 @@
 import React, { useId } from 'react'
-import { Button } from '../Embeds/Button'
+import { Button, CheckboxGroup, Checkbox } from '../Embeds/Button'
 import { Modal, ModalHeader } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { GroupValidation } from '../../helpers/validate'
@@ -10,6 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useGroups } from '../../hooks/cache'
 import { notifier } from '../../helpers/notifier'
 import { useCloseModal } from '../../hooks/utils'
+import { CLASSES } from '../../config'
 import PropTypes from 'prop-types'
 
 const Group = ({ close, initialValues, type }) => {
@@ -18,19 +19,19 @@ const Group = ({ close, initialValues, type }) => {
   const { modify, add } = useGroups()
   const [show, closeModal] = useCloseModal(close)
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { control, register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(GroupValidation),
     defaultValues: initialValues
   })
 
   const handleAddGroup = async values => {
-    const status = await add({ ...values })
+    const status = await add({ ...values, classes: values.classes.map(Number) })
     notifier.addGroup(status)
     if (status) closeModal()
   }
 
   const handleModifyGroup = async values => {
-    const status = await modify({ id: initialValues.id, ...values })
+    const status = await modify({ id: initialValues.id, ...values, classes: values.classes.map(Number) })
     notifier.modifyGroup(status)
     if (status) closeModal()
   }
@@ -50,6 +51,10 @@ const Group = ({ close, initialValues, type }) => {
           {errors.name && <Error>{t(errors.name.message)}</Error>}
           <Input id='maxCount' title={required(t('group-maxcount'))} type='number' {...register('maxCount')} />
           {errors.maxCount && <Error>{t(errors.maxCount.message)}</Error>}
+          <CheckboxGroup name='classes' control={control} title={t('extra-classes')} render={<>
+            {CLASSES.map(c => <Checkbox key={c.value} value={c.value.toString()}>{c.label}</Checkbox>)}
+          </>} />
+          {errors.classes && <Error>{t(errors.classes.message)}</Error>}
         </form>
       </Modal.Body>
       <Modal.Footer style={{ backgroundColor: '#f5f5f5' }}>

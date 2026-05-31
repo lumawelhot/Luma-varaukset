@@ -29,7 +29,11 @@ const groupSchema = mongoose.Schema({
   disabled: {
     type: Boolean,
     required: true
-  }
+  },
+  classes: {
+    type: [Number],
+    default: []
+  },
 })
 
 groupSchema.set('toJSON', {

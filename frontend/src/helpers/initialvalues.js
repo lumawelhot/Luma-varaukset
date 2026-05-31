@@ -18,7 +18,8 @@ export const userInit = {
 
 export const groupInit = {
   name: '',
-  maxCount: ''
+  maxCount: '',
+  classes: []
 }
 
 export const customformInit = isCancellation => ({

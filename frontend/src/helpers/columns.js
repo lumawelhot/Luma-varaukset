@@ -35,6 +35,10 @@ export const groupColumns = () => [
     Header: t('hidden'),
     accessor: 'hidden'
   },
+  ...CLASSES.map(c => ({
+    Header: c.short,
+    accessor: c.short
+  })),
   {
     Header: t(''),
     accessor: 'modifyButton'

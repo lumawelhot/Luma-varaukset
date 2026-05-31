@@ -163,7 +163,10 @@ const group = {
         maxCount: o.maxCount,
         visitCount: o.visitCount,
         disabled: o.disabled,
-        events: o.events
+        events: o.events,
+        classes: Array.isArray(o.classes)
+          ? o.classes.filter(c => c !== null && c !== undefined)
+          : []
       }
     } catch (err) {
       throw new Error(`Failed to decode a group with id: "${o?.id}"`)

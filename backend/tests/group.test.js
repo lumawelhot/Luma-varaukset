@@ -108,13 +108,13 @@ describe('As an employee I', () => {
     const assignedGroup = session.committed['7-Group']
     const oldGroups = oldGroupIds.map(g => session.committed[`${g}-Group`])
     expect(oldGroups).to.deep.equal([
-      { id: '5', name: 'Group 5', maxCount: 3, visitCount: 1, disabled: true, events: [] },
-      { id: '6', name: 'Group 6', maxCount: 2, visitCount: 0, disabled: true, events: [] }
+      { id: '5', name: 'Group 5', maxCount: 3, visitCount: 1, disabled: true, events: [], classes: [] },
+      { id: '6', name: 'Group 6', maxCount: 2, visitCount: 0, disabled: true, events: [], classes: [] }
     ])
     expect(events.find(e => e.id === '10').group).to.equal('7')
     expect(events.find(e => e.id === '7').group).to.equal('7')
     expect(assignedGroup).to.deep.equal({
-      id: '7', name: 'Group 7', maxCount: 7, visitCount: 4, disabled: false, events: [ '7', '10' ]
+      id: '7', name: 'Group 7', maxCount: 7, visitCount: 4, disabled: false, events: [ '7', '10' ], classes: []
     })
     expect(data.assignEventsToGroup.map(e => e.id)).to.have.members(['10', '7'])
   })

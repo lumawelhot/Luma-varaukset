@@ -548,6 +548,7 @@ export const GROUPS = gql`
         id
         title
       }
+      classes
       maxCount
       visitCount
       disabled
@@ -559,13 +560,16 @@ export const CREATE_GROUP = gql`
   mutation createGroup (
     $name: String!
     $maxCount: Int!
+    $classes: [Int]
   ) {
     createGroup(
       name: $name
       maxCount: $maxCount
+      classes: $classes
     ) {
       id
       name
+      classes
       events {
         id
         title
@@ -624,15 +628,18 @@ export const MODIFY_GROUP = gql`
     $name: String
     $maxCount: Int
     $disabled: Boolean
+    $classes: [Int]
   ) {
     modifyGroup(
       id: $id
       name: $name
       maxCount: $maxCount
       disabled: $disabled
+      classes: $classes
     ) {
       id
       name
+      classes
       events {
         id
         title
