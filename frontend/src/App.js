@@ -21,6 +21,7 @@ import Root from './Root'
 import Submission from './components/Modals/Visit/Submission'
 import { useUsers, useEvents } from './hooks/cache'
 import { exec } from './helpers/utils'
+import InfoPage from './components/Pages/InfoPage'
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false)
@@ -58,6 +59,7 @@ const App = () => {
           <Route path='/configs/:page' element={user ? <Configs /> : <Root />} />
           <Route path='/extras' element={user ? <ExtraList /> : <Root />} />
           <Route path='/forms' element={user ? <FormList /> : <Root />} />
+          <Route path='/info' element={<InfoPage />} />
           <Route path='/visit' element={<>
             <Visit>
               {user && !event?.disabled && !event?.booked && <>

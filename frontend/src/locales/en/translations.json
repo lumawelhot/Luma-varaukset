@@ -1,8 +1,8 @@
 {
   "banner-title": "Booking platform for LUMA science visits",
   "banner-text1": "Welcome! You can book a science visit to a University of Helsinki LUMA science class! Please read the general instructions for booking ",
-  "banner-text2": "here",
-  "banner-text3": ". In unclear situations you may contact us at: tiedekasvatus@helsinki.fi. We warmly welcome you on a science visit!",
+  "banner-text2": "https://www.helsinki.fi/fi/tiedekasvatus/opettajille-ja-opetuksen-tueksi/opintokaynnit-ja-lainattavat-tarvikkeet",
+  "banner-text3": ". Read the instructions for using the booking calendar under the INFO tab. A warm welcome to your study visit!",
   "banner-instructions": "Booking a study visit does not require logging in. The colored time slots in the calendar show the study visits that are available for booking. An empty box means that there are no study visits available during that time.",
   "username": "Username",
   "password": "Password",
@@ -17,6 +17,7 @@
   "group-list": "Groups",
   "extra-list": "Extra services",
   "form-list": "Forms",
+  "info": "INFO",
   "configurations": "Settings",
   "create-event": "Create event",
   "log-out": "Log out",

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../Button'
+import { Button, MenuButton } from '../Button'
 import {
   BannerImage,
   BannerLink,
@@ -10,9 +10,12 @@ import {
   BannerTitle
 } from './components'
 import PropTypes from 'prop-types'
+import { useNavigate } from 'react-router-dom'
 
 const Banner = ({ show }) => {
   const { t, i18n } = useTranslation()
+
+  const navigate = useNavigate()
 
   return (
     <BannerProvider show={show}>
@@ -34,10 +37,16 @@ const Banner = ({ show }) => {
               {t('banner-instructions')}
             </BannerText>
           </div>
-          <div style={{ marginLeft: -10, marginTop: 5 }}>
-            <Button className='active' onClick={() => i18n.changeLanguage('fi-FI')}>FI</Button>
-            <Button className='active' onClick={() => i18n.changeLanguage('sv-SV')}>SV</Button>
-            <Button className='active' onClick={() => i18n.changeLanguage('en-US')}>EN</Button>
+          <div style={{ marginLeft: -10, marginTop: 5, display: 'flex', justifyContent: 'space-between' }}>
+            <div>
+              <MenuButton className='active' onClick={() => navigate('/')}>{t('calendar')}</MenuButton>
+              <MenuButton className='active' onClick={() => navigate('/info')}>{t('info')}</MenuButton>
+            </div>
+            <div>
+              <Button className='active' onClick={() => i18n.changeLanguage('fi-FI')}>FI</Button>
+              <Button className='active' onClick={() => i18n.changeLanguage('sv-SV')}>SV</Button>
+              <Button className='active' onClick={() => i18n.changeLanguage('en-US')}>EN</Button>
+            </div>
           </div>
         </BannerTextBox>
       </div>
